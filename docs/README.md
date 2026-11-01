@@ -172,6 +172,17 @@ To add, remove or re-classify a plugin: edit `plugins.json`, add its doc under
 | [reports/](reports/) | English rollout (Stages 0–9) + navigation-fix reports |
 | [reports/english-stage43-production-deployment.md](reports/english-stage43-production-deployment.md) | Stage 4.3 production deployment record |
 | [reports/2026-10-02-event-source-restoration.md](reports/2026-10-02-event-source-restoration.md) | Why the event-source registry reported 6 sources, and how the full 58 (6 legacy + 52 county) were recovered |
+| [reports/2026-10-26-halloween-homepage-plan.md](reports/2026-10-26-halloween-homepage-plan.md) | Plan for the centered, dismissible Halloween homepage refinement |
+| [reports/2026-10-26-halloween-homepage-report.md](reports/2026-10-26-halloween-homepage-report.md) | Implementation and verification record for the Halloween homepage experience |
+| [reports/2026-10-27-halloween-navigation-continuity-plan.md](reports/2026-10-27-halloween-navigation-continuity-plan.md) | Plan for one-second Halloween navigation-effect continuity |
+| [reports/2026-10-27-halloween-navigation-continuity-report.md](reports/2026-10-27-halloween-navigation-continuity-report.md) | Implementation and verification record for cross-navigation Halloween effects |
+| [reports/2026-10-27-halloween-witch-animation-plan.md](reports/2026-10-27-halloween-witch-animation-plan.md) | Plan for the rare, three-second witch-on-a-broom navigation effect |
+| [reports/2026-10-27-halloween-witch-animation-report.md](reports/2026-10-27-halloween-witch-animation-report.md) | Implementation, responsive browser checks, and test results for the witch animation |
+| [reports/2026-10-27-halloween-witch-animation-report.md](reports/2026-10-27-halloween-witch-animation-report.md) | Implementation, responsive browser checks, and test results for the witch animation |
+| [reports/2026-10-27-halloween-theme-compatibility-plan.md](reports/2026-10-27-halloween-theme-compatibility-plan.md) | Plan for adapting Halloween visuals to the existing light and dark themes |
+| [reports/2026-10-27-halloween-theme-compatibility-report.md](reports/2026-10-27-halloween-theme-compatibility-report.md) | Light/dark implementation, browser verification, tests, and limitations |
+| [reports/2026-10-27-halloween-mobile-experience-plan.md](reports/2026-10-27-halloween-mobile-experience-plan.md) | Plan for safe, occasional mobile Halloween appearances |
+| [reports/2026-10-27-halloween-mobile-experience-report.md](reports/2026-10-27-halloween-mobile-experience-report.md) | Implementation, timing, responsive browser evidence, tests, and limitations |
 | [events/](events/) | Events location-filters and copy reports |
 | [importers/](importers/) | Event/Lazer/IVVCC/Mondello import pipeline reports and plans |
 | [research/](research/) | Topic research notes (e.g. recruitment agencies, employment permits) |
@@ -209,3 +220,8 @@ _Last verified: 2026-10-03 — added the UI / UX audit to the index_
 _Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_
 
 _Last verified: 2026-10-10 by UI polish Phase 3 — component-heading tokens, card-CTA 44px floor, single editorial measure_
+
+_Last verified: 2026-10-27 by Halloween navigation continuity_
+_Last verified: 2026-10-27 by Halloween witch animation_
+_Last verified: 2026-10-27 by Halloween theme compatibility_
+_Last verified: 2026-10-27 by Halloween mobile spontaneous appearances_

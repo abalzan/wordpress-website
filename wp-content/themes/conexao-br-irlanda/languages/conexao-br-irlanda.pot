@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-22 08:21+0000\n"
+"POT-Creation-Date: 2026-10-27 08:31+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 
 
@@ -33,7 +33,7 @@ msgstr ""
 msgid "Guias Práticos"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/404.php:17
-#: wp-content/themes/conexao-br-irlanda/front-page.php:166
+#: wp-content/themes/conexao-br-irlanda/front-page.php:175
 #: wp-content/themes/conexao-br-irlanda/inc/navigation.php:111
 #: wp-content/themes/conexao-br-irlanda/inc/navigation.php:849
 #: wp-content/themes/conexao-br-irlanda/inc/seo/schema.php:431
@@ -59,13 +59,13 @@ msgstr ""
 msgid "Carteira de Motorista"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/404.php:60
-#: wp-content/themes/conexao-br-irlanda/front-page.php:519
+#: wp-content/themes/conexao-br-irlanda/front-page.php:527
 #: wp-content/themes/conexao-br-irlanda/page-landing.php:184
 #: wp-content/themes/conexao-br-irlanda/template-parts/hero-events.php:74
 msgid "Próximos Eventos"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/404.php:108
-#: wp-content/themes/conexao-br-irlanda/front-page.php:583
+#: wp-content/themes/conexao-br-irlanda/front-page.php:591
 msgid "Nenhum evento próximo no momento."
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/archive.php:36
@@ -184,16 +184,33 @@ msgstr ""
 #: wp-content/themes/conexao-br-irlanda/front-page.php:128
 msgid "Ver Eventos"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:149
+#: wp-content/themes/conexao-br-irlanda/front-page.php:159
 msgid "Acesso Rápido"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:159
+#: wp-content/themes/conexao-br-irlanda/front-page.php:169
 msgid "Moradia"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:159
+#: wp-content/themes/conexao-br-irlanda/front-page.php:169
 msgid "Casas e apartamentos"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:160
+#: wp-content/themes/conexao-br-irlanda/front-page.php:170
+msgid "Saúde"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/front-page.php:170
+msgid "Acesso à saúde"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/front-page.php:171
+#: wp-content/themes/conexao-br-irlanda/inc/seo/titles.php:59
+#: wp-content/themes/conexao-br-irlanda/inc/seo/titles.php:131
+msgid "Lazer"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/front-page.php:171
+#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:113
+#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:408
+#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:850
+msgid "Lazer e turismo"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/front-page.php:172
 #: wp-content/themes/conexao-br-irlanda/inc/navigation.php:114
 #: wp-content/themes/conexao-br-irlanda/inc/navigation.php:854
 #: wp-content/themes/conexao-br-irlanda/inc/seo/schema.php:432
@@ -201,60 +218,37 @@ msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/seo/titles.php:125
 msgid "Empregos"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:160
-msgid "Vagas de trabalho"
+#: wp-content/themes/conexao-br-irlanda/front-page.php:172
+msgid "Oportunidades de trabalho"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:161
-msgid "Saúde"
-msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:161
-msgid "Acesso à saúde"
-msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:162
-#: wp-content/themes/conexao-br-irlanda/inc/seo/titles.php:59
-#: wp-content/themes/conexao-br-irlanda/inc/seo/titles.php:131
-msgid "Lazer"
-msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:162
-#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:113
-#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:408
-#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:850
-msgid "Lazer e turismo"
-msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:163
-msgid "Transporte"
-msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:163
-msgid "Como se locomover"
-msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:164
+#: wp-content/themes/conexao-br-irlanda/front-page.php:173
 msgid "Finanças"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:164
+#: wp-content/themes/conexao-br-irlanda/front-page.php:173
 msgid "Bancos e impostos"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:165
+#: wp-content/themes/conexao-br-irlanda/front-page.php:174
 msgid "Benefícios"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:165
+#: wp-content/themes/conexao-br-irlanda/front-page.php:174
 msgid "Auxílios e subsídios"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:166
+#: wp-content/themes/conexao-br-irlanda/front-page.php:175
 msgid "Agenda da comunidade"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:167
+#: wp-content/themes/conexao-br-irlanda/front-page.php:176
 msgid "Educação"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:167
+#: wp-content/themes/conexao-br-irlanda/front-page.php:176
 msgid "Cursos e escolas"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:168
+#: wp-content/themes/conexao-br-irlanda/front-page.php:177
 msgid "Documentos"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:168
+#: wp-content/themes/conexao-br-irlanda/front-page.php:177
 msgid "Vistos e PPS Number"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:174
+#: wp-content/themes/conexao-br-irlanda/front-page.php:183
 #: wp-content/themes/conexao-br-irlanda/inc/navigation.php:109
 #: wp-content/themes/conexao-br-irlanda/inc/navigation.php:855
 #: wp-content/themes/conexao-br-irlanda/inc/seo/schema.php:433
@@ -263,78 +257,78 @@ msgstr ""
 #: wp-content/themes/conexao-br-irlanda/page-landing.php:128
 msgid "Apoiadores"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:174
+#: wp-content/themes/conexao-br-irlanda/front-page.php:183
 msgid "Negócios parceiros"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:178
-#: wp-content/themes/conexao-br-irlanda/front-page.php:456
+#: wp-content/themes/conexao-br-irlanda/front-page.php:187
+#: wp-content/themes/conexao-br-irlanda/front-page.php:464
 #: wp-content/themes/conexao-br-irlanda/home.php:29
 #: wp-content/themes/conexao-br-irlanda/inc/seo/schema.php:435
 #: wp-content/themes/conexao-br-irlanda/index.php:7
 msgid "Blog"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:178
+#: wp-content/themes/conexao-br-irlanda/front-page.php:187
 msgid "Novidades e artigos"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:183
+#: wp-content/themes/conexao-br-irlanda/front-page.php:192
 #: wp-content/themes/conexao-br-irlanda/inc/navigation.php:110
 #: wp-content/themes/conexao-br-irlanda/inc/navigation.php:848
 #: wp-content/themes/conexao-br-irlanda/template-parts/guide-filters.php:36
 msgid "Guias"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:183
+#: wp-content/themes/conexao-br-irlanda/front-page.php:192
 msgid "Guias práticos"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:226
+#: wp-content/themes/conexao-br-irlanda/front-page.php:234
 msgid "Conteúdo em Destaque"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:227
+#: wp-content/themes/conexao-br-irlanda/front-page.php:235
 msgid "Últimas Publicações"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:230
+#: wp-content/themes/conexao-br-irlanda/front-page.php:238
 msgid "Ver todas"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:337
+#: wp-content/themes/conexao-br-irlanda/front-page.php:345
 msgid "Novos conteúdos serão publicados em breve."
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:349
+#: wp-content/themes/conexao-br-irlanda/front-page.php:357
 msgid "Mais Lidos"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:424
+#: wp-content/themes/conexao-br-irlanda/front-page.php:432
 msgid "Precisa de ajuda?"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:425
+#: wp-content/themes/conexao-br-irlanda/front-page.php:433
 msgid "Atalhos para as principais áreas do site"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:457
+#: wp-content/themes/conexao-br-irlanda/front-page.php:465
 msgid "Últimas novidades"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:460
-#: wp-content/themes/conexao-br-irlanda/front-page.php:523
+#: wp-content/themes/conexao-br-irlanda/front-page.php:468
+#: wp-content/themes/conexao-br-irlanda/front-page.php:531
 msgid "Ver todos"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:518
+#: wp-content/themes/conexao-br-irlanda/front-page.php:526
 msgid "Agenda"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:520
+#: wp-content/themes/conexao-br-irlanda/front-page.php:528
 msgid "Não perca os eventos da comunidade brasileira na Irlanda."
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:589
+#: wp-content/themes/conexao-br-irlanda/front-page.php:597
 #: wp-content/themes/conexao-br-irlanda/template-parts/hero-events.php:180
 msgid "Ver todos os eventos"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:604
+#: wp-content/themes/conexao-br-irlanda/front-page.php:612
 #: wp-content/themes/conexao-br-irlanda/page-empregos.php:35
 msgid "Oportunidades"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:605
+#: wp-content/themes/conexao-br-irlanda/front-page.php:613
 #: wp-content/themes/conexao-br-irlanda/inc/job-resources.php:143
 #: wp-content/themes/conexao-br-irlanda/inc/job-resources.php:144
 #: wp-content/themes/conexao-br-irlanda/inc/job-resources.php:170
 #: wp-content/themes/conexao-br-irlanda/template-parts/job-resources.php:25
 msgid "Onde procurar emprego"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/front-page.php:607
+#: wp-content/themes/conexao-br-irlanda/front-page.php:615
 #: wp-content/themes/conexao-br-irlanda/template-parts/leisure-card.php:231
 msgid "Ver mais"
 msgstr ""
@@ -776,6 +770,29 @@ msgid "Cursos"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/navigation.php:116
 msgid "Contato"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/inc/occasion.php:184
+#, php-format
+msgid "Seasonal Occasion: %s"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/inc/occasion.php:198
+msgid "Christmas"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/inc/occasion.php:208
+#: wp-content/themes/conexao-br-irlanda/template-parts/halloween-hero.php:102
+msgid "Halloween"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/inc/occasion.php:218
+msgid "New Year"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/inc/occasion.php:228
+msgid "St. Patrick's Day"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/inc/occasion.php:238
+msgid "Valentine's Day"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/inc/occasion.php:248
+msgid "Easter"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/permit-employers.php:241
 msgid "Saúde e Cuidados"
@@ -1504,6 +1521,34 @@ msgid "Ir para Apoiador %1$d"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/guide-filters.php:35
 msgid "Filtrar guias por categoria"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/halloween-hero.php:28
+msgid "Happy Halloween!"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/halloween-hero.php:28
+msgid "Feliz Halloween!"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/halloween-hero.php:30
+msgid ""
+"The most spooktacular time of year has arrived in Ireland. Wishing our whole "
+"community a magical Halloween!"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/halloween-hero.php:31
+msgid ""
+"A época mais assustadoramente divertida chegou à Irlanda. Desejamos um "
+"Halloween mágico a toda a nossa comunidade!"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/halloween-hero.php:32
+msgid "Explore events"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/halloween-hero.php:32
+msgid "Explorar eventos"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/halloween-hero.php:33
+msgid "Close Halloween message"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/halloween-hero.php:33
+msgid "Fechar mensagem de Halloween"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/hero-events.php:76
 msgid "na agenda"

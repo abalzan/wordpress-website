@@ -211,7 +211,11 @@ $event_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int) $
 								// Selecting a county clears a town that belongs to another
 								      // county (towns are scoped server-side), so invalid
 								      // County + City combinations can never be built from the UI.
-								$county_link_state = array( 'county' => ( $term->slug === $current_county ) ? '' : $term->slug );
+								// Skip invalid/placeholder county slug that should not be displayed to visitors.
+	if ( 'ev-uncounty' === $term->slug ) {
+		continue;
+	}
+	$county_link_state = array( 'county' => ( $term->slug === $current_county ) ? '' : $term->slug );
 								if ( $term->slug !== $current_county ) {
 									$county_link_state['cidade'] = '';
 								}

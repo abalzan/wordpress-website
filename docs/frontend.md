@@ -323,8 +323,104 @@ the speculative request. `tests/test-hero-preload-fallback.php`
 (`wp-content/themes/conexao-br-irlanda/tests/`) is the gate that keeps the
 desktop preload present and keeps its fallback pointing at the 1600w asset.
 
+### Seasonal Halloween presentation
+
+The Halloween welcome is a non-modal, centered overlay within the homepage
+hero. Its muted twilight backdrop intentionally de-emphasizes the sponsor
+carousel while open; dismissal restores the hero's original interactions. The
+markup is emitted only for the enabled Halloween occasion selected by the
+existing occasion engine, starts hidden until the deferred initializer runs,
+and uses session-only storage keyed by occasion and occurrence year.
+
+The centered PT/EN card uses original inline SVG artwork, a 44px close target,
+visible keyboard focus, and no focus trap. The hero content is inert while the
+presentation is open. Bats use short CSS flight and wing animations; reduced
+motion disables them. The seasonal styles live in
+`wp-content/themes/conexao-br-irlanda/assets/css/main.css` and behavior in the
+existing `assets/js/main.js` bundle. See the
+[theme reference](themes/conexao-br-irlanda.md#seasonal-halloween-welcome) and
+[homepage report](reports/2026-10-26-halloween-homepage-report.md) for the
+presentation foundation and the
+[theme compatibility report](reports/2026-10-27-halloween-theme-compatibility-report.md)
+for the theme-specific verification.
+
+The Halloween palette is scoped to the presentation and temporary navigation
+effect layer. Light mode uses a warm cream card, deep-plum text, and shaded
+pumpkin-orange accents; dark mode uses a distinct midnight-plum surface,
+warm-white text, and brighter amber/violet illumination. Both follow the
+existing root `data-theme` attribute. The inline pumpkin artwork and navigation
+effects inherit these CSS custom properties, so changing themes recolors an
+in-flight effect without reinitializing JavaScript, resetting the presentation,
+or changing the existing `conexao-theme` preference and Halloween dismissal
+keys. The locally loaded witch SVG keeps its amber outline; the theme-aware CSS
+rim and glow preserve its silhouette without inverting the artwork.
+
+During the active Halloween occasion, eligible same-origin primary-navigation
+clicks may carry a single allowlisted effect across a normal document
+navigation. The originating page records only a schema version, allowlisted
+effect, clock type and start time, target path, and viewport position in a
+Halloween-specific `sessionStorage` key; it does not persist query strings or
+fragments.
+The destination consumes and removes that record before validating its target,
+same-origin referrer, active-occasion marker, reduced-motion preference, and
+navigation type; refresh and back/forward loads cannot resume it. It resumes
+the CSS animation at the elapsed progress; existing bat, pumpkin and ghost
+effects remain 1,000 ms, while the rare witch flight is 3,000 ms, with a
+3,500 ms state-expiry ceiling. The witch is selected on one in eight eligible
+effect rolls (never on consecutive rolls); the existing single-active-effect
+guard prevents overlap. Its local SVG is requested only when selected, and
+four CSS sparkles remain bounded to that flight. A monotonic
+performance clock is used when available, with a bounded wall-clock fallback.
+Unavailable/invalid storage or unsupported clock continuity simply omits the
+cross-page effect; ordinary link navigation is never intercepted or delayed.
+If Navigation Timing cannot identify a fresh document navigation, continuity
+is also skipped rather than risking a stale replay.
+Reduced-motion users receive neither a persisted nor resumed effect, and the
+witch is hidden by the reduced-motion stylesheet. Welcome-card dismissal
+remains a separate key and does not disable nav effects. The witch appears
+only while the existing selected occasion emits the Halloween marker; no
+date/window logic is duplicated. See the [navigation continuity report](reports/2026-10-27-halloween-navigation-continuity-report.md)
+and [witch animation report](reports/2026-10-27-halloween-witch-animation-report.md)
+for implementation and verification details.
+
+### Occasional mobile appearances
+
+The existing Halloween effect initializer may show one spontaneous bat,
+pumpkin, ghost, or witch at a time on viewports up to 768px. The active
+`.seasonal-halloween-active-marker` remains the only eligibility signal; no
+date or occasion rule is duplicated in JavaScript. Before the first appearance,
+the scheduler waits a randomized 20–30 seconds; later appearances wait 25–35
+seconds after the preceding effect finishes. A failed safe-placement attempt
+is skipped and retried with the first-appearance range until something is
+actually shown.
+
+Pumpkins and ghosts use shuffled, bounded edge/corner candidates; bats and the
+witch use deliberate horizontal flight bands. Candidate bounds include CSS
+safe-area insets and an 8px clearance, and candidates that intersect visible
+text, navigation, controls, forms, or the active greeting are rejected. If no
+candidate is safe, the effect is skipped. Spontaneous animations complete at
+their CSS durations (bat 900ms, pumpkin 1,100ms, ghost 1,200ms, witch 3,000ms);
+the established navigation handoff durations remain unchanged.
+
+The single timer is cleared on hidden-page, pagehide, reduced-motion,
+desktop-width, or occasion-marker removal. Returning to an eligible visible
+page schedules a fresh bounded delay; elapsed hidden time never creates a
+burst. A direct navigation interaction retains priority and cancels an active
+spontaneous layer. The welcome-card dismissal remains independent, and theme
+changes recolor an in-flight effect through the existing `data-theme` tokens
+without restarting the timer. `prefers-reduced-motion: reduce` prevents new
+surprises and disables any in-flight CSS animation. The system adds no
+persistent preference, sound, asset request, or animation loop. See the
+[mobile experience report](reports/2026-10-27-halloween-mobile-experience-report.md)
+for actual responsive and timing evidence.
+
 _Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_
 _Last verified: 2026-10-03 by Stage 20 — hero preload fallback (Firefox speculative-loader cost bound)_
 
 _Last verified: 2026-10-08 by the Apoiadores single-page directory change (single-page directory; the shared pagination component renders nothing)_
 _Last verified: 2026-10-10 by UI polish Phase 3 — card-CTA 44px floor, single editorial measure, component-heading tokens_
+_Last verified: 2026-10-26 by Halloween homepage presentation refinement_
+_Last verified: 2026-10-27 by Halloween navigation continuity_
+_Last verified: 2026-10-27 by Halloween witch animation_
+_Last verified: 2026-10-27 by Halloween theme compatibility_
+_Last verified: 2026-10-27 by Halloween mobile spontaneous appearances_

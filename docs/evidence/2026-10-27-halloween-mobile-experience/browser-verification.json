@@ -1,0 +1,106 @@
+{
+  "date": "2026-10-27",
+  "site": "http://localhost:8080",
+  "browser": "Integrated Playwright browser",
+  "timing": {
+    "initial_delay_ms": {
+      "bounds": [20000, 30000],
+      "observed_sample": 25000
+    },
+    "subsequent_delay_ms": {
+      "bounds": [25000, 35000],
+      "observed_sample": 30000,
+      "measured_from": "completion of the preceding spontaneous effect"
+    },
+    "observed_effects": ["pumpkin", "ghost"],
+    "visibility_resume": {
+      "hidden_clock_advance_ms": 60000,
+      "effects_while_hidden": 0,
+      "visible_clock_advance_ms": 35000,
+      "effects_after_resume": 1,
+      "observed_effect": "pumpkin"
+    },
+    "reduced_motion": {
+      "emulated_preference": "reduce",
+      "clock_advance_ms": 60000,
+      "effects": 0
+    }
+  },
+  "witch_navigation_flight": {
+    "viewport": [390, 844],
+    "trigger": "Existing navigation click effect, selected deterministically",
+    "class": "seasonal-halloween-witch-nav flying",
+    "computed_animation_duration": "3s",
+    "initial_bounds_px": {
+      "x": -135,
+      "y": 242,
+      "width": 124,
+      "height": 72
+    },
+    "note": "The negative initial x-coordinate is the intentional off-screen entry of the existing flight path."
+  },
+  "responsive_matrix": [
+    {
+      "viewport": [320, 844],
+      "effect": "pumpkin",
+      "position_px": [250, 545],
+      "measured_collision": false,
+      "horizontal_scroll_width_increased": false
+    },
+    {
+      "viewport": [375, 844],
+      "effect": "pumpkin",
+      "position_px": [305, 545],
+      "measured_collision": false,
+      "horizontal_scroll_width_increased": false
+    },
+    {
+      "viewport": [390, 844],
+      "effect": "ghost",
+      "position_px": [328, 103],
+      "measured_collision": false,
+      "horizontal_scroll_width_increased": false
+    },
+    {
+      "viewport": [430, 844],
+      "effect": "pumpkin",
+      "position_px": [360, 545],
+      "measured_collision": false,
+      "horizontal_scroll_width_increased": false
+    },
+    {
+      "viewport": [768, 844],
+      "effect": "pumpkin",
+      "position_px": [698, 87],
+      "measured_collision": false,
+      "horizontal_scroll_width_increased": false
+    },
+    {
+      "viewport": [1024, 844],
+      "effect": null,
+      "spontaneous_timer_or_effect": false
+    },
+    {
+      "viewport": [1440, 844],
+      "effect": null,
+      "spontaneous_timer_or_effect": false
+    }
+  ],
+  "theme_checks": {
+    "dark_mode_effect": "pumpkin",
+    "light_mode_effect": "ghost",
+    "theme_toggle_restarted_or_duplicated_timer": false,
+    "observed": "Theme-aware colors and shadows changed while the active effect remained coherent."
+  },
+  "welcome_card": {
+    "homepage_viewport": [320, 844],
+    "dismissed_by_existing_close_control": true,
+    "effect_observed_during_350ms_capture": false,
+    "note": "The short capture did not establish a spontaneous appearance or a post-dismissal cadence."
+  },
+  "limitations": [
+    "The browser is an emulated viewport, not a physical device; hardware safe-area insets were not verified.",
+    "Integrated-browser screenshots were visibly cropped despite reporting the requested dimensions. Those invalid screenshots were removed and are not visual evidence.",
+    "At the 320px homepage check, the baseline page measured scrollWidth 316px and clientWidth 305px. The effect did not increase the measured scroll width; this does not establish that the whole site has no pre-existing overflow."
+  ]
+}

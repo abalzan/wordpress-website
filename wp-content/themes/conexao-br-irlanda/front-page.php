@@ -141,6 +141,16 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 			<?php endif; ?>
 		</div>
 	</div>
+	<?php
+	$active_occasion = function_exists( 'ocons_get_primary_active' ) ? ocons_get_primary_active() : null;
+	if ( $active_occasion && 'halloween' === $active_occasion->id && $active_occasion->enabled ) {
+		get_template_part(
+			'template-parts/halloween-hero',
+			null,
+			array( 'seasonal_occasion' => $active_occasion )
+		);
+	}
+	?>
 </section>
 
 <!-- Quick Access Categories -->
@@ -157,10 +167,9 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 			// hard-coding a second, drift-prone copy.
 			$quick_access_cards = array(
 				array( 'key' => 'moradia', 'icon' => 'home', 'title' => __( 'Moradia', 'conexao-br-irlanda' ), 'description' => __( 'Casas e apartamentos', 'conexao-br-irlanda' ), 'term' => 'moradia' ),
-				array( 'key' => 'empregos', 'icon' => 'briefcase', 'title' => __( 'Empregos', 'conexao-br-irlanda' ), 'description' => __( 'Vagas de trabalho', 'conexao-br-irlanda' ), 'url' => '/empregos/', 'mobile_priority' => 'empregos' ),
 				array( 'key' => 'saude', 'icon' => 'heart', 'title' => __( 'Saúde', 'conexao-br-irlanda' ), 'description' => __( 'Acesso à saúde', 'conexao-br-irlanda' ), 'term' => 'saude' ),
 				array( 'key' => 'lazer', 'icon' => 'compass', 'title' => __( 'Lazer', 'conexao-br-irlanda' ), 'description' => __( 'Lazer e turismo', 'conexao-br-irlanda' ), 'url' => '/lazer/', 'mobile_priority' => 'lazer', 'mobile_label' => __( 'Lazer e turismo', 'conexao-br-irlanda' ) ),
-				array( 'key' => 'transporte', 'icon' => 'car', 'title' => __( 'Transporte', 'conexao-br-irlanda' ), 'description' => __( 'Como se locomover', 'conexao-br-irlanda' ), 'term' => 'transporte' ),
+				array( 'key' => 'empregos', 'icon' => 'briefcase', 'title' => __( 'Empregos', 'conexao-br-irlanda' ), 'description' => __( 'Oportunidades de trabalho', 'conexao-br-irlanda' ), 'url' => '/empregos/', 'mobile_priority' => 'empregos' ),
 				array( 'key' => 'financas', 'icon' => 'dollar', 'title' => __( 'Finanças', 'conexao-br-irlanda' ), 'description' => __( 'Bancos e impostos', 'conexao-br-irlanda' ), 'term' => 'financas' ),
 				array( 'key' => 'beneficios', 'icon' => 'gift', 'title' => __( 'Benefícios', 'conexao-br-irlanda' ), 'description' => __( 'Auxílios e subsídios', 'conexao-br-irlanda' ), 'term' => 'beneficios' ),
 				array( 'key' => 'eventos', 'icon' => 'calendar', 'title' => __( 'Eventos', 'conexao-br-irlanda' ), 'description' => __( 'Agenda da comunidade', 'conexao-br-irlanda' ), 'url' => '/eventos/' ),
@@ -185,10 +194,9 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 
 			$icon_svgs = array(
 				'home' => '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline>',
-				'briefcase' => '<rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>',
+				'briefcase' => '<rect x="3" y="7" width="18" height="14" rx="2"></rect><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><path d="M3 12h18"></path>',
 				'heart' => '<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>',
 				'users' => '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>',
-				'car' => '<path d="M14 16H9m10 0h3v-3.15a1 1 0 0 0-.84-.99L16 11l-2.7-3.6a1 1 0 0 0-.8-.4H5.24a2 2 0 0 0-1.8 1.1l-.8 1.63A6 6 0 0 0 2 12.42V16h2"></path><circle cx="6.5" cy="16.5" r="2.5"></circle><circle cx="16.5" cy="16.5" r="2.5"></circle>',
 				'dollar' => '<line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>',
 				'gift' => '<polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path>',
 				'utensils' => '<path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line>',
@@ -206,7 +214,7 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 			// down) and are excluded from the primary Quick Access grid below, so no
 			// destination is ever rendered as two tiles. Membership is by the inert
 			// 'key' slug, never by translated display text.
-			$help_shortcut_keys = array( 'moradia', 'empregos', 'documentos', 'saude', 'beneficios', 'financas' );
+			$help_shortcut_keys = array( 'moradia', 'documentos', 'saude', 'beneficios', 'financas' );
 			foreach ( $quick_access_cards as $card ) :
 				if ( in_array( $card['key'], $help_shortcut_keys, true ) ) {
 					continue;
@@ -413,7 +421,7 @@ foreach ( $quick_access_cards as $qa_card ) {
 		$help_shortcuts[ $qa_card['key'] ] = $qa_card;
 	}
 }
-// The help subset is always non-empty: $help_shortcut_keys names six cards that
+// The help subset is always non-empty: $help_shortcut_keys names five cards that
 // are defined in $quick_access_cards above. PHPStan checks that invariant, so a
 // future edit that removes one of them fails analysis instead of rendering an
 // empty help section.

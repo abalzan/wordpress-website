@@ -68,6 +68,66 @@ The front-page hero is a single full-bleed cinematic image with overlaid text (t
 
 The hero background is **not** a Customizer setting — the `conexao_hero_image` Media control was removed (the green text-safe zone and castle/family/flags are part of the fixed asset). Only `conexao_hero_title` / `conexao_hero_subtitle` remain customisable.
 
+### Seasonal Halloween welcome
+
+`template-parts/halloween-hero.php` renders the seasonal presentation only
+when `ocons_get_primary_active()` selects an enabled Halloween occasion. It
+does not calculate dates or add another activation path. The presentation
+starts hidden so the ordinary hero remains available without JavaScript;
+`assets/js/main.js` reveals it unless the visitor dismissed it in the current
+tab session. The session key includes the occasion ID and occurrence year, so
+dismissal neither disables the occasion nor carries forward to another year.
+
+While open, a centered welcome card sits above a darkened, moonlit hero
+backdrop. This de-emphasizes the sponsor carousel while open and makes the
+hero content inert for pointer, keyboard, and assistive-technology
+interaction. Closing hides the presentation, restores the hero, and returns
+focus to the first hero CTA when the close button held focus. Sponsor data and
+carousel behavior are unchanged.
+
+The scene uses original inline SVG bat silhouettes with articulated wings and
+a carved, warmly lit pumpkin. Bat flight and wing movement use lightweight CSS
+animations that stop under `prefers-reduced-motion: reduce`. Greeting,
+supporting copy, CTA, and close label follow the current Polylang locale. See
+the dated Halloween report for the responsive and browser verification record.
+
+The presentation and temporary navigation-effect layer use a Halloween-scoped
+semantic palette in `main.css`, with dark values in `dark-mode.css`. The
+existing root `data-theme` attribute selects a warm cream/deep-plum light
+treatment or a midnight-plum/warm-amber dark treatment. Inline pumpkin artwork
+and active CSS effects inherit those values directly; the toggle changes colors
+in place without a second theme state, animation restart, or change to the
+session-only welcome dismissal. The witch retains its locally stored SVG and
+warm outline, with CSS rim lighting for separation against both themes. See
+the [theme compatibility report](../reports/2026-10-27-halloween-theme-compatibility-report.md)
+for the measured light/dark treatment.
+
+The header navigation marker is emitted only while the existing occasion
+engine selects Halloween. Eligible same-origin navigation effects use a
+one-shot, expiring tab-session handoff and resume only the remaining portion of
+their effect-specific animation. The bat, pumpkin and ghost remain 1,000 ms;
+the rare witch is a 3,000 ms, left-to-right flight, with a 3,500 ms handoff
+expiry. Four restrained CSS sparkles follow the witch. Its locally stored SVG
+(`assets/images/halloween/witch-broom.svg`) is requested only when selected.
+The existing single-active-effect guard prevents overlap, link activation is
+not delayed, and reduced motion prevents persistence and replay and hides the
+witch. The handoff does not share the welcome-card dismissal state. See the
+[navigation continuity report](../reports/2026-10-27-halloween-navigation-continuity-report.md)
+and [witch animation report](../reports/2026-10-27-halloween-witch-animation-report.md).
+
+The same initializer also owns sparse, spontaneous mobile appearances; it does
+not add another seasonal system. It requires the existing Halloween marker,
+waits 20–30 seconds before the first visible surprise and 25–35 seconds between
+completed effects, and uses the existing bat/pumpkin/ghost artwork plus the
+local witch SVG. Bounded viewport candidates account for safe-area insets and
+reject visible content and controls; a dense screen is allowed to skip an
+appearance. The one timer pauses across hidden/ineligible states, direct
+navigation remains higher priority, the welcome dismissal stays independent,
+and theme changes remain CSS-only. Reduced motion suppresses scheduling and
+animation. Full behavior and browser evidence are recorded in the
+[frontend contract](../frontend.md#occasional-mobile-appearances) and
+[mobile experience report](../reports/2026-10-27-halloween-mobile-experience-report.md).
+
 ## Homepage Apoiadores Carousel
 
 The Featured Apoiadores carousel is a compact supporting showcase **inside the homepage Hero** (right-hand column beside the copy at every breakpoint, including mobile), rendered by the reusable template part `template-parts/featured-sponsors.php`. It is a responsive, dependency-free carousel over the **existing sponsor data model** — no new content type, no duplicated supporter data:
@@ -904,3 +964,8 @@ _Last verified: 2026-10-03 by Stage 20 — hero preload fallback (Firefox specul
 _Last verified: 2026-10-08 by the Apoiadores single-page directory change (the archive renders its whole editor-curated set on one page; no pagination is generated and `/apoiadores/page/N/` keeps its 404)_
 _Last verified: 2026-10-10 by UI polish Phase 3 — card-CTA 44px floor and the 720px single editorial measure_
 _Last verified: 2026-10-12 by the Empregos job-search resources restoration — `template-parts/job-resources.php` renders on `/empregos/` again and its CTA follows the homepage "Acessar" pattern_
+_Last verified: 2026-10-26 by Halloween homepage presentation refinement_
+_Last verified: 2026-10-27 by Halloween navigation continuity_
+_Last verified: 2026-10-27 by Halloween witch animation_
+_Last verified: 2026-10-27 by Halloween theme compatibility_
+_Last verified: 2026-10-27 by Halloween mobile spontaneous appearances_
