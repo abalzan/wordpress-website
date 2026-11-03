@@ -1,0 +1,6 @@
+wp-content/themes/conexao-br-irlanda/tests/test-event-filter-cache.php           17 passed, 5 failed
+wp-content/themes/conexao-br-irlanda/tests/test-stage33-bilingual.php            196 passed, 2 failed
+wp-content/themes/conexao-br-irlanda/tests/test-translation-completeness.php     21 passed, 2 failed
+wp-content/themes/conexao-br-irlanda/tests/test-seasonal-halloween-nav-effects.php 102 passed, 5 failed
+wp-content/plugins/conexao-event-importer/tests/test-town-sanitization.php       82 passed, 1 failed
+BASELINE-DONE

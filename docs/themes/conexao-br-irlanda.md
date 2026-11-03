@@ -192,6 +192,111 @@ Features:
 - Sponsors carousel (homepage Apoiadores: scroll-snap track, arrows, keyboard nav, adaptive static mode, 10-second autoplay on the Hero variant with pause-on-interaction and reduced-motion support)
 - Infinite scroll (`initInfiniteScroll`) — progressive enhancement on the Blog (`/blog/`), Guias (`/guias/`), Lazer (`/lazer/`), **Eventos (`/eventos/`)** and **Cursos (`/cursos/`)** archives, plus the Blog's own category-filtered views (`/blog/?categoria=slug`), and the unified Empregos directory (`/empregos/` — a static page, so pagination there is a hand-rendered `?pagina=N` component over the already-filtered merged opportunities array in `template-parts/employment-opportunities.php`: 24 cards per page, stable `id="opp-{key}"` per card, pagination URLs preserve every active filter, filter links never carry `pagina`). Grids are tagged `data-infinite-scroll` in `home.php`/`archive.php`; the JS reads the next-page URL from the server-rendered `.conexao-pagination` component, fetches the real `/page/N/` URL (so `?categoria=`/`?county=` filters and main-query ordering are preserved by construction), parses the document, dedupes by `id="post-{ID}"`, and appends the cards via an IntersectionObserver sentinel (no scroll listeners). One request at a time; `history.pushState` per loaded page; `aria-live="polite"` loading state; manual "Tentar novamente" retry on error; observer disconnects at the end of pagination. A `pageshow` (bfcache) guard resets an in-flight request abandoned by back/forward navigation so scrolling continues where it stopped. Without JavaScript the numeric pagination keeps rendering and working — it is only hidden via the `.conexao-pagination--infinite-hidden` class when the enhancement initializes.
 - Manual Load More (`initLoadMore`) — explicit "Carregar mais" button; **no archive currently uses it** (Cursos was the last one and was retagged to infinite scroll in the 2026-10-18 change — see `docs/reports/2026-10-18-cursos-infinite-scroll-plan.md`). The handler stays in `main.js` and binds to any grid tagged `data-load-more` in `archive.php`; the mechanism is otherwise identical to infinite scroll (next-page URL read from the server-rendered pagination component, real `/page/N/` fetch, `id="post-{ID}"` dedupe, append-only). The button is disabled with a "Carregando..." label while the request is active, announces "Mais N cursos carregados." via an `aria-live="polite"` status region, has a visible `:focus-visible` outline, is re-enabled by a `pageshow` (bfcache) guard after back/forward cache restore, and is removed with a "Você chegou ao fim." note when no further page exists. Without JavaScript the numeric pagination keeps working untouched. (Eventos was retagged to infinite scroll in the 2026-10-17 change — see `docs/reports/2026-10-17-eventos-infinite-scroll-plan.md`.)
+- Lazer location services (`initLeisureProximity` + `assets/js/leisure-proximity.js`) — optional proximity ordering on `/lazer/` and `/en/lazer/`. See the dedicated section below.
+
+## Lazer location services (proximity ordering + distance estimates)
+
+Optional, progressive-enhancement feature on the Lazer archive only. When a
+visitor grants browser geolocation, attractions are ordered globally
+nearest-first and each geolocated card shows an estimated straight-line
+distance. When location is unavailable, denied or unsupported, the page
+behaves exactly as it did before the feature.
+
+**Files**
+
+| File | Role |
+|---|---|
+| `assets/js/leisure-proximity.js` | Pure helpers: Haversine distance, locale-aware formatting, global ordering, geolocation outcome classification, batch cursor. Loaded only on the leisure archive; Node-testable (see `tests/js/test-leisure-proximity.mjs`). |
+| `assets/js/main.js` → `initLeisureProximity()` | DOM orchestration: pre-permission explanation, one-shot geolocation, dataset fetch, atomic list swap, proximity batch loading, distance insertion, scroll/focus preservation. |
+| `inc/leisure-location.php` | The two read-only REST endpoints, the shared query-args builder, the JS config payload and the `conexao-leisure-location` body class. |
+| `inc/archive-query.php` → `conexao_leisure_archive_tax_query()` | The **single** interpreter of the Lazer county/category/attribute filters, used by both the archive query and the endpoints. |
+| `inc/i18n.php` | The four new JS strings (explanation, distance template, proximity note, screen-reader announcement). |
+| `assets/css/leisure.css` | `.leisure-card-distance`, `.leisure-proximity-explanation`, `.leisure-proximity-note` (existing muted-text tokens; dark mode inherited). |
+
+**Scope.** `initLeisureProximity()` returns immediately unless the page is the
+leisure archive: it requires `window.ConexaoLeisureLocation` (injected by
+`inc/assets.php` only when `is_post_type_archive('leisure')`) **and** the
+`conexao-leisure-location` body class. No other page requests location.
+
+**Permission experience.** A short explanation
+(`leisureLocationExplanation`) is inserted near the archive heading *before*
+`navigator.geolocation.getCurrentPosition()` is called, with
+`{ enableHighAccuracy: false, timeout: 10000, maximumAge: 0 }`. Exactly one
+request is made per page load — never `watchPosition()`, never a retry. The
+explanation is removed once the request resolves (grant or failure).
+
+**Endpoint contracts** (public, read-only, no authentication required — they
+serve public attraction data and accept no visitor coordinates):
+
+`GET /wp-json/conexao/v1/leisure-coordinates`
+
+| Param | Notes |
+|---|---|
+| `county`, `categoria`, `atributo` | The active Lazer filter state (same shapes the filter bar produces), normalised by the shared filter builder. |
+| `lang` | Requested language slug, validated against Polylang's registered languages; falls back to the current/default language. |
+
+Response: `{ lang, count, items: [ { id, lat, lng, index } ] }`, where `index`
+is the **original archive position**, `lat`/`lng` are numbers or `null`
+(attractions without coordinates are always included) and no editorial
+provenance is present. The set mirrors the archive query exactly: published
+`leisure` posts, the shared filter clause, the archive ordering and the B2
+language scope.
+
+`GET /wp-json/conexao/v1/leisure-cards?ids=1,2,3`
+
+| Param | Notes |
+|---|---|
+| `ids` | Required. Comma-separated positive integers, de-duplicated, ≤ 50 (`conexao_leisure_location_max_batch()`). Invalid values answer **400**. |
+| `county`, `categoria`, `atributo`, `lang` | Same as above; requested IDs outside the matching set are dropped. |
+
+Response: `{ ids, count, html }`. `ids` is the requested order (filtered to the
+matching set) and `html` is the server-rendered `template-parts/leisure-card.php`
+markup for those IDs **in that order** — there is no second card renderer.
+Drafts, private posts and other post types can never be returned. No new cache
+is introduced: each request runs one bounded `posts_per_page => -1` ID query
+(meta cache primed) over the matching set.
+
+**Global sorting.** After a successful position, the complete dataset is sorted
+by `sortByProximity()`: valid-coordinate attractions ascending by distance,
+ties broken by the original archive index, then attractions without
+coordinates appended in their original relative order. Nothing is removed. If
+no attraction has coordinates the page keeps its default order.
+
+**Infinite scroll integration.** `initInfiniteScroll()` gained a loader
+indirection: a `null` loader is the original `/page/N/` behaviour (unchanged),
+and proximity mode installs its own loader via
+`grid.conexaoInfiniteScroll.takeOver()`. Both reuse the **same**
+status/sentinel/observer UI, the same retry button and the same
+end-of-results note. A generation counter discards an in-flight `/page/N/`
+fetch that resolves after a proximity take-over, so server-ordered cards can
+never be appended to a proximity-ordered grid. Proximity batches never
+`pushState`; on activation the page URL is reset to the archive URL so no
+misleading `/page/N/` URL is left behind.
+
+**Transition.** The initial server-rendered cards stay visible and usable while
+location, the dataset and the first batch load. The first batch is built in a
+detached fragment and the grid is replaced only once it has been fetched and
+validated (atomic — no partial or duplicated content). Scroll position and
+keyboard focus are restored from an anchor captured before the swap.
+
+**Failure handling.** A dataset or first-batch failure keeps the original cards
+and the default infinite scroll (silent). A later batch failure keeps the
+already-loaded proximity cards, shows the standard error/retry UI and leaves
+the cursor unchanged, so retrying requests the identical slice — no skipped and
+no duplicated IDs. Successfully activated proximity mode is never reverted.
+
+**Privacy.** The visitor's coordinates live only in the
+`initLeisureProximity()` closure. They are never sent to WordPress, never
+stored (no cookie, no localStorage, no visitor meta) and never used as a query
+parameter. The endpoints have no coordinate input.
+
+**Accessibility.** Distances are visible text (`A aproximadamente 2,5 km de
+si`), a single `aria-live="polite"` region announces "Atrações ordenadas por
+proximidade." once when proximity ordering activates, focus inside the list is
+preserved across the swap, and no animation is introduced (so
+`prefers-reduced-motion` needs no special case). The "Ordenado por
+proximidade" note never appears when location is denied or unavailable.
+
 
 ## Custom WordPress Integration
 

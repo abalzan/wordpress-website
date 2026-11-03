@@ -1994,3 +1994,25 @@ msgstr "Business"
 #, php-format
 msgid "até %1$d %2$s"
 msgstr "until %1$d %2$s"
+
+# Lazer location services (2026-11-02) — optional proximity ordering on
+# /lazer/. PT is the source string; these EN entries localize the
+# pre-permission explanation, the distance label, the "ordered by
+# proximity" note and its single screen-reader announcement.
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php
+msgid "Encontre atrações perto de si. Permita o acesso à sua localização para ordenar as atrações pela distância."
+msgstr "Find attractions near you. Allow location access to sort attractions by distance."
+
+#. translators: %s is a formatted distance, e.g. "2,5 km" or "400 m".
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php
+#, php-format
+msgid "A aproximadamente %s de si"
+msgstr "Approximately %s away"
+
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php
+msgid "Ordenado por proximidade"
+msgstr "Ordered by proximity"
+
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php
+msgid "Atrações ordenadas por proximidade."
+msgstr "Attractions ordered by proximity."

@@ -183,6 +183,7 @@ To add, remove or re-classify a plugin: edit `plugins.json`, add its doc under
 | [reports/2026-10-27-halloween-theme-compatibility-report.md](reports/2026-10-27-halloween-theme-compatibility-report.md) | Light/dark implementation, browser verification, tests, and limitations |
 | [reports/2026-10-27-halloween-mobile-experience-plan.md](reports/2026-10-27-halloween-mobile-experience-plan.md) | Plan for safe, occasional mobile Halloween appearances |
 | [reports/2026-10-27-halloween-mobile-experience-report.md](reports/2026-10-27-halloween-mobile-experience-report.md) | Implementation, timing, responsive browser evidence, tests, and limitations |
+| [reports/2026-11-03-commemorative-events-architecture-audit.md](reports/2026-11-03-commemorative-events-architecture-audit.md) | **Commemorative Events System — read-only architecture audit & redesign proposal** (CPT + engine + admin UX + presentation registry; 9-stage roadmap; reproduces the New Year year-boundary defect). No implementation performed |
 | [events/](events/) | Events location-filters and copy reports |
 | [importers/](importers/) | Event/Lazer/IVVCC/Mondello import pipeline reports and plans |
 | [research/](research/) | Topic research notes (e.g. recruitment agencies, employment permits) |

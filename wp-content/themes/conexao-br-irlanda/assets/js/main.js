@@ -31,6 +31,7 @@
 		initHalloweenNavEffects();
 		initInfiniteScroll();
 		initLoadMore();
+		initLeisureProximity();
 	});
 
 	// ===== Seasonal Halloween welcome =====
@@ -1672,6 +1673,17 @@ function initHalloweenNavEffects() {
 			// which was rendered from the filtered query.
 			initInfiniteScroll();
 
+			// Lazer location services: the in-place swap replaced the grid, so
+			// re-apply proximity ordering to the filtered list using the
+			// position already obtained (no second geolocation request).
+			if (typeof window.ConexaoLeisureProximityReapply === 'function') {
+				try {
+					window.ConexaoLeisureProximityReapply();
+				} catch (error) {
+					// The swap must succeed even if the enhancement fails.
+				}
+			}
+
 			restoreFocusAfterSwap();
 		}
 
@@ -2447,6 +2459,18 @@ function initHalloweenNavEffects() {
 		var errored = false;  // errors wait for an explicit retry
 		var finished = false;
 
+		// Loader indirection. `null` means the built-in server-order loader
+		// (the /page/N/ fetch below) — i.e. the behaviour every existing
+		// archive has always had. Lazer proximity mode installs its own
+		// loader through grid.conexaoInfiniteScroll.takeOver(), reusing the
+		// SAME status/sentinel/observer UI and the same retry contract.
+		var loader = null;
+
+		// Bumped when a proximity loader takes over, so an in-flight default
+		// /page/N/ fetch that resolves afterwards is discarded instead of
+		// appending server-ordered cards into the proximity-ordered grid.
+		var generation = 0;
+
 		// Hide the numeric pagination visually while keeping it in the
 		// markup for no-JS visitors, crawlers and keyboard fallbacks.
 		pagination.classList.add('conexao-pagination--infinite-hidden');
@@ -2511,12 +2535,52 @@ function initHalloweenNavEffects() {
 		}
 
 		function loadNext() {
-			if (busy || finished || errored || !nextUrl) return;
+			if (busy || finished || errored) return;
 
 			busy = true;
 			setStatusLoading();
 
-			fetch(nextUrl, {
+			var run = loader || defaultLoad;
+
+			run().then(function(outcome) {
+				// `null` means the batch was deliberately discarded (stale
+				// grid or superseded by a proximity take-over).
+				if (!outcome) {
+					busy = false;
+					return;
+				}
+
+				busy = false;
+				clearStatus();
+
+				if (!outcome.following) {
+					finish();
+					return;
+				}
+				nextUrl = outcome.following;
+
+				// Re-arm the observer: if the sentinel is still inside the
+				// (enlarged) rootMargin, observing again fires a fresh
+				// callback and the next batch loads immediately.
+				observer.unobserve(sentinel);
+				observer.observe(sentinel);
+			}).catch(function() {
+				// Network/server/parse failure: show a recoverable error
+				// state. No automatic retries — the user decides.
+				busy = false;
+				errored = true;
+				setStatusError();
+			});
+		}
+
+		// The built-in loader: fetch the next /page/N/ URL and append the
+		// server-rendered cards, exactly as before the proximity feature.
+		function defaultLoad() {
+			if (!nextUrl) return Promise.reject(new Error('no next page'));
+
+			var myGeneration = generation;
+
+			return fetch(nextUrl, {
 				credentials: 'same-origin',
 				headers: { 'X-Requested-With': 'conexao-infinite-scroll' }
 			}).then(function(response) {
@@ -2528,9 +2592,8 @@ function initHalloweenNavEffects() {
 				// If so, discard the stale batch — it must never reach the
 				// DOM, update the URL via pushState or re-arm the observer
 				// on the old, detached markup.
-				if (!grid.isConnected) {
-					busy = false;
-					return;
+				if (!grid.isConnected || myGeneration !== generation) {
+					return null;
 				}
 				var doc = new DOMParser().parseFromString(html, 'text/html');
 				var remoteGrid = doc.querySelector('[data-infinite-scroll]');
@@ -2555,28 +2618,20 @@ function initHalloweenNavEffects() {
 					}
 				}
 
-				busy = false;
-				clearStatus();
-
-				if (!following) {
-					finish();
-					return;
-				}
-				nextUrl = following;
-
-				// Re-arm the observer: if the sentinel is still inside the
-				// (enlarged) rootMargin, observing again fires a fresh
-				// callback and the next batch loads immediately.
-				observer.unobserve(sentinel);
-				observer.observe(sentinel);
-			}).catch(function() {
-				// Network/server/parse failure: show a recoverable error
-				// state. No automatic retries — the user decides.
-				busy = false;
-				errored = true;
-				setStatusError();
+				return { following: following };
 			});
 		}
+
+		// Proximity-mode control surface (used only by the Lazer location
+		// feature). Additive: nothing else reads it, and when no proximity
+		// loader is installed the grid behaves exactly as before.
+		grid.conexaoInfiniteScroll = {
+			takeOver: function(proximityLoader) {
+				generation++;
+				loader = typeof proximityLoader === 'function' ? proximityLoader : null;
+				busy = false;
+			}
+		};
 
 		// Back/forward navigation (bfcache): a fetch that was in flight
 		// when the user left the page never resolves after restore, which
@@ -2615,6 +2670,400 @@ function initHalloweenNavEffects() {
 			end.className = 'infinite-scroll__end';
 			end.textContent = t('reachedEnd', 'Você chegou ao fim.');
 			status.appendChild(end);
+		}
+	}
+
+	// ===== Lazer location services (optional proximity ordering) =====
+	// Runs ONLY on the leisure archive (/lazer/ and /en/lazer/), identified
+	// by the injected config + body class. Everything is progressive
+	// enhancement: the server-rendered list is left untouched until a
+	// complete proximity batch has been fetched and validated, and every
+	// failure path is a silent no-op that leaves today's page exactly as it
+	// was. The visitor's coordinates live only in this closure — they are
+	// never sent to the server, never stored and never re-requested.
+	function initLeisureProximity() {
+		var config = window.ConexaoLeisureLocation;
+		var proximity = window.ConexaoLeisureProximity;
+		if (!config || !proximity) return;
+		if (!document.body || !document.body.classList.contains('conexao-leisure-location')) return;
+		if (typeof config.coordinatesUrl !== 'string' || typeof config.cardsUrl !== 'string') return;
+
+		var grid = document.querySelector('[data-infinite-scroll]');
+		if (!grid) return;
+
+		// Feature detection: the enhancement is inert (not broken) when any
+		// required API is missing.
+		if (!window.fetch || !window.Promise || !window.Map || !window.DOMParser || !window.URLSearchParams) return;
+
+		var locale = typeof config.locale === 'string' ? config.locale : '';
+		var pageSize = 0;
+
+		// The visitor's position lives ONLY here, for the lifetime of the page.
+		var visitorPosition = null;
+
+		// The mobile leisure filter sheet swaps the grid IN PLACE (no page
+		// navigation), so proximity ordering must be re-applied to the freshly
+		// swapped grid — reusing the position already obtained, never asking
+		// the browser again. The desktop filter links navigate normally and
+		// therefore re-run the whole flow on the new page.
+		window.ConexaoLeisureProximityReapply = function() {
+			if (!visitorPosition) return;
+			var freshGrid = document.querySelector('[data-infinite-scroll]');
+			if (!freshGrid || freshGrid === grid) return;
+			grid = freshGrid;
+			try {
+				activate(visitorPosition);
+			} catch (error) {
+				// Never let the enhancement break the swapped page.
+			}
+		};
+
+		// 1. Pre-permission explanation — inserted BEFORE any location request.
+		var explanation = createNote(
+			'leisure-proximity-explanation',
+			'leisureLocationExplanation',
+			'Encontre atrações perto de si. Permita o acesso à sua localização para ordenar as atrações pela distância.'
+		);
+		insertNearHeading(explanation);
+
+		// 2. One-shot geolocation. getCurrentPosition() only — never
+		//    watchPosition(), never a second request, never a retry.
+		var support = proximity.classifyGeolocationSupport(
+			navigator,
+			typeof window.isSecureContext === 'boolean' ? window.isSecureContext : undefined
+		);
+		if (support !== 'available') {
+			// Unsupported API or insecure context: nothing to ask for.
+			removeNote(explanation);
+			return;
+		}
+
+		try {
+			navigator.geolocation.getCurrentPosition(onPosition, onPositionError, {
+				enableHighAccuracy: false,
+				timeout: 10000,
+				maximumAge: 0
+			});
+		} catch (error) {
+			removeNote(explanation);
+		}
+
+		function onPosition(position) {
+			removeNote(explanation);
+
+			var visitor = proximity.readPosition(position);
+			if (!visitor) return; // invalid coordinates → silent no-op
+
+			visitorPosition = visitor;
+
+			try {
+				activate(visitor);
+			} catch (error) {
+				// The enhancement must never break the page.
+			}
+		}
+
+		function onPositionError() {
+			// Denied, previously denied, revoked, unavailable or timeout —
+			// every failure is a silent no-op: the default server order
+			// stays, no distance is shown, no error message, no retry. The
+			// explanation is removed because the decision is made.
+			removeNote(explanation);
+		}
+
+		// 3. Fetch the complete coordinate dataset, sort it globally, load the
+		//    first proximity batch and only THEN swap the list.
+		function activate(visitor) {
+			fetchCoordinates()
+				.then(function(items) {
+					if (!items || !items.length) return null;
+
+					var ordered = proximity.sortByProximity(items, visitor);
+					if (ordered.geolocated < 1) return null; // nothing to sort by
+
+					pageSize = grid.children.length;
+					if (pageSize < 1) return null;
+
+					var firstBatch = proximity.sliceBatch(ordered.ids, 0, pageSize);
+					if (!firstBatch.slice.length) return null;
+
+					return fetchCards(firstBatch.slice).then(function(payload) {
+						var fragment = buildFragment(payload, firstBatch.slice, ordered.distances);
+						if (!fragment.childNodes.length) return null;
+						swapGrid(fragment, ordered, firstBatch);
+						return true;
+					});
+				})
+				.catch(function() {
+					// Coordinate-dataset or first-batch failure: keep the
+					// original cards and the default infinite scroll.
+				});
+		}
+
+		// 4. Proximity batch loading: globally sorted slices of IDs, rendered
+		//    by the server, appended in the requested order, distances
+		//    re-applied from the ID-keyed Map.
+		function swapGrid(fragment, ordered, firstBatch) {
+			var anchor = captureAnchor();
+			var focusedId = captureFocusedCardId();
+
+			while (grid.firstChild) {
+				grid.removeChild(grid.firstChild);
+			}
+			grid.appendChild(fragment);
+
+			restoreAnchor(anchor);
+			restoreFocus(focusedId);
+
+			// The proximity list is not a paginated page: drop any /page/N/
+			// URL the default infinite scroll may have pushed before this
+			// take-over, and never push one for a proximity batch.
+			if (window.history && history.replaceState) {
+				try {
+					history.replaceState(null, '', archiveUrl());
+				} catch (error) {
+					// History is optional.
+				}
+			}
+
+			announceOrderedByProximity();
+
+			var control = grid.conexaoInfiniteScroll;
+			if (!control || typeof control.takeOver !== 'function') return;
+
+			var batchSize = firstBatch.slice.length;
+			var cursor = firstBatch.nextCursor;
+			var done = firstBatch.done;
+
+			control.takeOver(function() {
+				if (done) return Promise.resolve({ following: null });
+
+				var batch = proximity.sliceBatch(ordered.ids, cursor, batchSize);
+				if (!batch.slice.length) {
+					done = true;
+					return Promise.resolve({ following: null });
+				}
+
+				return fetchCards(batch.slice).then(function(payload) {
+					var nextFragment = buildFragment(payload, batch.slice, ordered.distances);
+					appendCards(nextFragment);
+					// The cursor only advances on SUCCESS, so a failed batch
+					// is retried with the identical slice — no skipped and no
+					// duplicated IDs.
+					cursor = batch.nextCursor;
+					done = batch.done;
+					return { following: done ? null : 'proximity' };
+				});
+			});
+		}
+
+		function appendCards(fragment) {
+			// Duplicate guard: every card carries id="post-{ID}".
+			var nodes = Array.prototype.slice.call(fragment.childNodes);
+			nodes.forEach(function(node) {
+				if (node.nodeType !== 1) return;
+				if (node.id && document.getElementById(node.id)) return;
+				grid.appendChild(node);
+			});
+		}
+
+		// 5. Server round-trips. Visitor coordinates are never parameters.
+		function filterParams() {
+			var source = new URLSearchParams(window.location.search);
+			var params = new URLSearchParams();
+			['county', 'categoria', 'atributo'].forEach(function(key) {
+				var value = source.get(key);
+				if (value) params.set(key, value);
+			});
+			if (typeof config.lang === 'string' && config.lang) {
+				params.set('lang', config.lang);
+			}
+			return params;
+		}
+
+		function fetchCoordinates() {
+			var params = filterParams();
+			var url = config.coordinatesUrl + (params.toString() ? '?' + params.toString() : '');
+
+			return fetch(url, {
+				credentials: 'same-origin',
+				headers: { 'X-Requested-With': 'conexao-leisure-proximity' }
+			}).then(function(response) {
+				if (!response.ok) throw new Error('HTTP ' + response.status);
+				return response.json();
+			}).then(function(payload) {
+				return payload && Array.isArray(payload.items) ? payload.items : [];
+			});
+		}
+
+		function fetchCards(ids) {
+			var params = filterParams();
+			params.set('ids', ids.join(','));
+			var url = config.cardsUrl + '?' + params.toString();
+
+			return fetch(url, {
+				credentials: 'same-origin',
+				headers: { 'X-Requested-With': 'conexao-leisure-proximity' }
+			}).then(function(response) {
+				if (!response.ok) throw new Error('HTTP ' + response.status);
+				return response.json();
+			}).then(function(payload) {
+				if (!payload || typeof payload.html !== 'string') {
+					throw new Error('Unexpected proximity payload');
+				}
+				return payload;
+			});
+		}
+
+		// 6. Build a detached fragment in the REQUESTED order and attach the
+		//    calculated distance to each card that has one.
+		function buildFragment(payload, ids, distances) {
+			var fragment = document.createDocumentFragment();
+			var parsed = new DOMParser().parseFromString(
+				'<div data-proximity-batch>' + payload.html + '</div>',
+				'text/html'
+			);
+			var container = parsed.querySelector('[data-proximity-batch]');
+			if (!container) return fragment;
+
+			var byId = {};
+			Array.prototype.forEach.call(container.children, function(node) {
+				if (node.nodeType === 1 && node.id) byId[node.id] = node;
+			});
+
+			ids.forEach(function(id) {
+				var node = byId['post-' + id];
+				if (!node) return;
+				var card = document.importNode(node, true);
+				applyDistance(card, id, distances);
+				fragment.appendChild(card);
+			});
+
+			return fragment;
+		}
+
+		function applyDistance(card, id, distances) {
+			if (!distances || typeof distances.has !== 'function' || !distances.has(id)) return;
+			var details = card.querySelector('.leisure-card-details');
+			if (!details) return;
+
+			var value = proximity.formatDistanceValue(distances.get(id), locale);
+			if (!value) return;
+
+			var span = document.createElement('span');
+			span.className = 'leisure-card-detail leisure-card-distance';
+			span.setAttribute('data-leisure-distance', String(id));
+			// Visible text (never icon-only), localized through gettext.
+			span.textContent = t('leisureDistanceTemplate', 'A aproximadamente %s de si').replace('%s', value);
+			details.appendChild(span);
+		}
+
+		// 7. Scroll/focus preservation + the single "ordered by proximity"
+		//    announcement.
+		function captureAnchor() {
+			var cards = grid.children;
+			for (var i = 0; i < cards.length; i++) {
+				var rect = cards[i].getBoundingClientRect();
+				if (rect.bottom > 0) {
+					return { id: cards[i].id, top: rect.top };
+				}
+			}
+			return null;
+		}
+
+		function restoreAnchor(anchor) {
+			if (!anchor || !anchor.id) return;
+			var node = document.getElementById(anchor.id);
+			if (!node) return;
+			var delta = node.getBoundingClientRect().top - anchor.top;
+			if (delta) window.scrollBy(0, delta);
+		}
+
+		function captureFocusedCardId() {
+			var active = document.activeElement;
+			if (!active || !grid.contains(active)) return null;
+			if (active.id) return active.id;
+			var card = active.closest ? active.closest('article[id^="post-"]') : null;
+			return card && card.id ? card.id : null;
+		}
+
+		function restoreFocus(elementId) {
+			// Nothing was focused inside the list → do not steal focus.
+			if (!elementId) return;
+			var node = document.getElementById(elementId);
+			if (!node) return;
+			var target = ('post-' === elementId.slice(0, 5))
+				? (node.querySelector('a[href], button, input, select, textarea') || node)
+				: node;
+			if (!target || typeof target.focus !== 'function') return;
+			try {
+				target.focus({ preventScroll: true });
+			} catch (error) {
+				target.focus();
+			}
+		}
+
+		function archiveUrl() {
+			// /lazer/page/2/ → /lazer/ (query string untouched).
+			return window.location.href.replace(/\/page\/\d+\/?(?=[?#]|$)/, '/');
+		}
+
+		function createNote(className, key, fallback) {
+			var note = document.createElement('p');
+			note.className = className;
+			note.setAttribute('data-leisure-proximity', className);
+			note.textContent = t(key, fallback);
+			return note;
+		}
+
+		function insertNearHeading(node) {
+			var header = document.querySelector('.page-header');
+			if (header) {
+				header.appendChild(node);
+				return;
+			}
+			if (grid.parentElement) {
+				grid.parentElement.insertBefore(node, grid);
+				return;
+			}
+			grid.insertAdjacentElement('beforebegin', node);
+		}
+
+		function removeNote(node) {
+			if (node && node.parentNode) node.parentNode.removeChild(node);
+		}
+
+		function announceOrderedByProximity() {
+			// Never stack duplicate notes (the mobile in-place filter swap can
+			// re-apply proximity ordering on the same page).
+			Array.prototype.forEach.call(
+				document.querySelectorAll("[data-leisure-proximity='leisure-proximity-note']"),
+				removeNote
+			);
+
+			// Visible, low-prominence note near the heading.
+			insertNearHeading(createNote(
+				'leisure-proximity-note',
+				'leisureOrderedByProximity',
+				'Ordenado por proximidade'
+			));
+
+			// ONE aria-live announcement, not one per batch. The region is
+			// added empty and filled on the next tick so assistive tech
+			// reliably announces it, then removed.
+			var live = document.createElement('p');
+			live.className = 'screen-reader-text';
+			live.setAttribute('role', 'status');
+			live.setAttribute('aria-live', 'polite');
+			document.body.appendChild(live);
+
+			var message = t('leisureProximityAnnouncement', 'Atrações ordenadas por proximidade.');
+			window.setTimeout(function() {
+				live.textContent = message;
+				window.setTimeout(function() {
+					removeNote(live);
+				}, 1500);
+			}, 50);
 		}
 	}
 

@@ -1,0 +1,122 @@
+
+== Lazer location services ==
+
+=== Coordinate meta registration ===
+  PASS: _leisure_lat is registered for the leisure post type
+  PASS: _leisure_lng is registered for the leisure post type
+  PASS: _leisure_lat is readable through REST
+  PASS: _leisure_lng is readable through REST
+  PASS: the coordinate verification flag is registered
+  PASS: the coordinate source field is registered
+  PASS: the verification flag is NOT exposed through REST
+  PASS: the coordinate source is NOT exposed through REST
+
+=== Coordinate validation and sanitisation ===
+  PASS: a valid latitude is preserved
+  PASS: a valid negative longitude is preserved
+  PASS: zero is a VALID coordinate (not treated as missing)
+  PASS: zero longitude is a VALID coordinate
+  PASS: a comma decimal separator is normalised
+  PASS: a leading plus sign is accepted
+  PASS: an empty latitude stays empty (missing, never 0)
+  PASS: a whitespace-only latitude is treated as missing
+  PASS: a null latitude is treated as missing
+  PASS: a latitude above 90 is rejected
+  PASS: a latitude below -90 is rejected
+  PASS: a longitude above 180 is rejected
+  PASS: a longitude below -180 is rejected
+  PASS: a non-numeric latitude is rejected
+  PASS: a malformed decimal is rejected
+  PASS: exponent notation is rejected
+  PASS: an array value is rejected
+  PASS: 90 is a valid latitude boundary
+  PASS: -90 is a valid latitude boundary
+  PASS: an empty latitude is not valid
+  PASS: a latitude just above the boundary is invalid
+  PASS: 180 is a valid longitude boundary
+  PASS: a longitude past the boundary is invalid
+
+=== Coordinate persistence (write paths are sanitised) ===
+  PASS: a temporary leisure record was created
+  PASS: a valid latitude persists through update_post_meta
+  PASS: an out-of-range latitude can never be persisted (sanitised to empty)
+  PASS: get_coordinates returns a pair for a valid record
+  PASS: get_coordinates returns the latitude as a float
+  PASS: get_coordinates returns the longitude as a float
+
+=== Coordinate inventory states ===
+  PASS: a record with coordinates but no confirmation is "unverified"
+  PASS: confirming the coordinates moves the record to "verified"
+  PASS: a record without coordinates is "missing"
+  PASS: get_coordinates returns null when coordinates are missing
+  PASS: a stored malformed value is reported as "invalid"
+
+=== Admin editor: coordinate field, save and validation ===
+  PASS: the leisure admin configuration is available
+  PASS: the latitude field renders a numeric input
+  PASS: the latitude input carries the -90 lower bound
+  PASS: the latitude input carries the 90 upper bound
+  PASS: the latitude field displays the saved value
+  PASS: the latitude field posts to the expected meta key
+  PASS: the latitude field carries its label
+  PASS: the longitude input carries the -180 lower bound
+  PASS: the longitude field displays a negative saved value
+  PASS: the admin save path persists a valid latitude
+  PASS: the admin save path persists a valid longitude
+  PASS: an invalid latitude submission preserves the stored value
+  PASS: an explicitly emptied latitude clears the meta
+  PASS: an explicitly emptied longitude clears the meta
+  PASS: an out-of-range latitude produces a specific validation message
+  PASS: a half-supplied coordinate pair produces a pairing message
+  PASS: a valid coordinate pair produces no validation errors
+
+=== REST: coordinate dataset endpoint ===
+  PASS: the coordinate dataset endpoint answers without error
+  PASS: the coordinate dataset endpoint answers 200
+  PASS: a published attraction with coordinates is returned
+  PASS: a published attraction WITHOUT coordinates is still returned
+  PASS: a draft attraction is never returned
+  PASS: a non-leisure record is never returned
+  PASS: the dataset carries the attraction latitude
+  PASS: the dataset carries the attraction longitude
+  PASS: an attraction without coordinates is represented with null lat/lng
+  PASS: each dataset entry carries its original archive position
+  PASS: the dataset never exposes the verification flag
+  PASS: the dataset never exposes the coordinate source
+  PASS: the dataset never exposes editorial provenance
+  PASS: the county filter keeps the matching attraction
+  PASS: the county filter drops the non-matching attraction
+  PASS: the category filter keeps every matching attraction
+  PASS: the attribute filter keeps the matching attraction
+  PASS: the attribute filter drops the non-matching attraction
+  PASS: an unknown filter slug matches nothing
+  PASS: the dataset order starts with the same attraction as the archive query
+
+=== REST: ordered card endpoint ===
+  PASS: the card endpoint answers without error
+  PASS: the card endpoint preserves the requested order
+  PASS: the card endpoint reports the rendered count
+  PASS: the card HTML is the real leisure card template
+  PASS: every requested attraction is rendered
+  PASS: a reversed request is returned reversed (the order is the caller's)
+  PASS: duplicate IDs are de-duplicated
+  PASS: a non-leisure ID is handled safely
+  PASS: a non-leisure ID renders nothing
+  PASS: a non-leisure ID produces no HTML
+  PASS: a draft attraction is never rendered
+  PASS: the card endpoint honours the active filter scope
+  PASS: an invalid IDs parameter is rejected with 400: abc
+  PASS: the invalid IDs rejection carries a machine-readable code: abc
+  PASS: an invalid IDs parameter is rejected with 400: 0
+  PASS: the invalid IDs rejection carries a machine-readable code: 0
+  PASS: an invalid IDs parameter is rejected with 400: -1
+  PASS: the invalid IDs rejection carries a machine-readable code: -1
+  PASS: an invalid IDs parameter is rejected with 400: 1,abc
+  PASS: the invalid IDs rejection carries a machine-readable code: 1,abc
+  PASS: a batch above the maximum size is rejected with 400
+  PASS: a batch exactly at the maximum size is accepted
+
+=== Cleanup ===
+  PASS: no temporary test posts remain
+
+102 passed, 0 failed

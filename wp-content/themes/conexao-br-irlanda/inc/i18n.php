@@ -163,6 +163,12 @@ function conexao_js_i18n_strings(): array {
 		'nounEventsPlural'        => __( 'eventos', 'conexao-br-irlanda' ),
 		'nounCourses'             => __( 'curso', 'conexao-br-irlanda' ),
 		'nounCoursesPlural'       => __( 'cursos', 'conexao-br-irlanda' ),
+		/* Lazer location services (optional proximity ordering). */
+		'leisureLocationExplanation'  => __( 'Encontre atrações perto de si. Permita o acesso à sua localização para ordenar as atrações pela distância.', 'conexao-br-irlanda' ),
+		/* translators: %s is a formatted distance, e.g. "2,5 km" or "400 m". */
+		'leisureDistanceTemplate'     => __( 'A aproximadamente %s de si', 'conexao-br-irlanda' ),
+		'leisureOrderedByProximity'   => __( 'Ordenado por proximidade', 'conexao-br-irlanda' ),
+		'leisureProximityAnnouncement' => __( 'Atrações ordenadas por proximidade.', 'conexao-br-irlanda' ),
 	);
 }
 

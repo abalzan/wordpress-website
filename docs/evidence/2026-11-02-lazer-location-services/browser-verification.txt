@@ -1,0 +1,45 @@
+== Lazer proximity browser acceptance ==
+   base url: http://localhost:8080
+
+-- granted --
+  PASS  the pre-permission explanation is rendered before the request resolves
+  PASS  the explanation is removed once the position resolves
+  PASS  exactly one 'Ordenado por proximidade' note is shown
+  PASS  cards are globally nearest-first with the coordinate-less attraction last: ['post-117053', 'post-117054', 'post-117055', 'post-117056']
+  PASS  no duplicate cards after the proximity swap
+  PASS  exactly the three geolocated cards show a distance (3)
+  PASS  a sub-kilometre distance is shown in metres
+  PASS  a multi-kilometre distance is shown in kilometres
+  PASS  each distance detail is bound to its attraction id
+  PASS  no console/page errors (granted): []
+  PASS  every proximity endpoint call answered 200: []
+  PASS  infinite scroll appended further proximity batches (30 cards rendered)
+  PASS  the rendered cards across every batch match the globally sorted order exactly
+  PASS  no duplicate cards after loading several proximity batches
+  PASS  every proximity batch card keeps its post id
+  PASS  a filtered page load re-runs the one-shot request without duplicating the note
+  PASS  the filtered page has no duplicate cards
+
+-- denied --
+  PASS  no proximity note when permission is denied
+  PASS  no distance is shown when permission is denied
+  PASS  the default (server) order is preserved when denied
+  PASS  the explanation is removed after a denial
+  PASS  no console/page errors (denied): []
+   note: 5 unrelated static-resource 404(s) on the page (pre-existing theme assets)
+
+-- timeout --
+  PASS  no proximity note on a timeout
+  PASS  no distance on a timeout
+  PASS  the default order is preserved on a timeout
+  PASS  no page errors (timeout): []
+
+-- unsupported --
+  PASS  no proximity note when the API is unavailable
+  PASS  no distance when the API is unavailable
+  PASS  the default order is preserved when unsupported
+  PASS  the explanation is removed when the API is unavailable
+  PASS  no page errors (unsupported): []
+
+31 passed, 0 failed
+EXIT=0

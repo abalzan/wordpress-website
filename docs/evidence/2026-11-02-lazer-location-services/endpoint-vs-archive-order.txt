@@ -1,0 +1,21 @@
+Environment: local Docker WordPress container (localhost:8081 with Host: localhost:8080).
+The container canonical-redirects 8081 -> 8080, so the Host header is required
+to reach the container's own database. Nothing production is contacted.
+
+PT archive first 10: [20948, 10146, 10147, 10148, 10149, 10150, 10151, 10152, 10153, 10154]
+PT dataset first 10: [20948, 10146, 10147, 10148, 10149, 10150, 10151, 10152, 10153, 10154]  (dataset count=293)
+PT ORDER: MATCH
+PT page: config=True proximity_script=True body_class=True
+
+EN archive first 10: [20948, 10146, 10147, 10148, 10149, 10151, 10152, 10153, 10154, 10155]
+EN dataset first 10: [20948, 10146, 10147, 10148, 10149, 10151, 10152, 10153, 10154, 10155]  (dataset count=293)
+EN ORDER: MATCH
+EN page: config=True proximity_script=True body_class=True
+
+FILTER county=dublin archive first 10: [20918, 20910, 20911, 20912, 20913, 20914, 20915, 20916, 20917, 20909]
+FILTER county=dublin dataset first 10: [20918, 20910, 20911, 20912, 20913, 20914, 20915, 20916, 20917, 20909] (count=35)
+FILTER ORDER: MATCH
+
+Dataset entries with null coordinates: 293
+Dataset entries with coordinates    : 0
+Editorial provenance keys present   : []

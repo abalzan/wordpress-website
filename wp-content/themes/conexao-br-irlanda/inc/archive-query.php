@@ -13,6 +13,66 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Build the Lazer archive taxonomy filter clause from an explicit state.
+ *
+ * The SINGLE interpretation of the Lazer filter dimensions (county /
+ * category / attribute), shared by the main archive query and the
+ * location-services endpoints so a filtered archive and its coordinate
+ * dataset can never diverge. `$params` carries the raw request values in
+ * the same shapes the filter bar produces:
+ *
+ *   - `county`    — a single county slug (string);
+ *   - `categoria` — comma-separated string OR array of slugs (multi-select);
+ *   - `atributo`  — comma-separated string OR array of slugs (multi-select).
+ *
+ * Semantics are unchanged from the original inline implementation: OR within
+ * a multi-select dimension (tax_query IN), AND between dimensions. An
+ * unknown slug simply never matches — no raw SQL, no second query system.
+ *
+ * @param array $params Raw filter state.
+ * @return array tax_query clauses (with a 'relation' key when more than one).
+ */
+function conexao_leisure_archive_tax_query( array $params = array() ) {
+	$county          = isset( $params['county'] ) ? sanitize_title( (string) $params['county'] ) : '';
+	$category_slugs  = conexao_leisure_multi_slugs( isset( $params['categoria'] ) ? $params['categoria'] : '' );
+	$attribute_slugs = conexao_leisure_multi_slugs( isset( $params['atributo'] ) ? $params['atributo'] : '' );
+
+	$tax_query = array();
+
+	if ( '' !== $county ) {
+		$tax_query[] = array(
+			'taxonomy' => 'conexao_county',
+			'field'    => 'slug',
+			'terms'    => $county,
+		);
+	}
+
+	if ( ! empty( $category_slugs ) ) {
+		$tax_query[] = array(
+			'taxonomy' => 'conexao_category',
+			'field'    => 'slug',
+			'terms'    => $category_slugs,
+			'operator' => 'IN',
+		);
+	}
+
+	if ( taxonomy_exists( 'conexao_leisure_attribute' ) && ! empty( $attribute_slugs ) ) {
+		$tax_query[] = array(
+			'taxonomy' => 'conexao_leisure_attribute',
+			'field'    => 'slug',
+			'terms'    => $attribute_slugs,
+			'operator' => 'IN',
+		);
+	}
+
+	if ( count( $tax_query ) > 1 ) {
+		$tax_query['relation'] = 'AND';
+	}
+
+	return $tax_query;
+}
+
 function conexao_content_archive_query( $query ) {
 	if ( is_admin() || ! $query->is_main_query() ) {
 		return;
@@ -235,46 +295,26 @@ function conexao_content_archive_query( $query ) {
 			$tax_query = array();
 		}
 
-		$county = isset( $_GET['county'] ) ? sanitize_title( wp_unslash( $_GET['county'] ) ) : '';
-		// Tipo and Características are multi-select dimensions: each may
-		// arrive as a comma-separated string (desktop hyperlink dropdowns)
-		// or as an array of slugs (mobile checkbox groups submit categoria[]
-		// / atributo[]). Both shapes are normalized by the shared helper —
-		// sanitized, de-duplicated, selection order preserved.
-		$category_slugs  = conexao_leisure_query_slugs( 'categoria' );
-		$attribute_slugs = conexao_leisure_query_slugs( 'atributo' );
+		// The Lazer filter clause is built by the SAME shared helper the
+		// location-services endpoints use, so the archive and the
+		// coordinate/card datasets can never disagree about which
+		// attractions match the active filters. The helper receives the raw
+		// request values; normalization (sanitize_title + the multi-slug
+		// rules) lives inside it, exactly as it did inline before.
+		$leisure_tax_query = conexao_leisure_archive_tax_query(
+			array(
+				'county'    => isset( $_GET['county'] ) ? wp_unslash( $_GET['county'] ) : '',
+				'categoria' => isset( $_GET['categoria'] ) ? wp_unslash( $_GET['categoria'] ) : '',
+				'atributo'  => isset( $_GET['atributo'] ) ? wp_unslash( $_GET['atributo'] ) : '',
+			)
+		);
 
-		if ( $county ) {
-			$tax_query[] = array(
-				'taxonomy' => 'conexao_county',
-				'field'    => 'slug',
-				'terms'    => $county,
-			);
-		}
-
-		// Tipo: OR within the dimension (Natureza OR Cultura), AND with every
-		// other dimension. A single-slug URL (?categoria=natureza) produces
-		// exactly the same query as before — IN with one term is identical
-		// to the previous single-term match. Unknown slugs simply never
-		// match, so they are ignored safely without raw SQL.
-		if ( ! empty( $category_slugs ) ) {
-			$tax_query[] = array(
-				'taxonomy' => 'conexao_category',
-				'field'    => 'slug',
-				'terms'    => $category_slugs,
-				'operator' => 'IN',
-			);
-		}
-
-		// Características: OR within the dimension, AND with county/category
-		// groups.
-		if ( taxonomy_exists( 'conexao_leisure_attribute' ) && ! empty( $attribute_slugs ) ) {
-			$tax_query[] = array(
-				'taxonomy' => 'conexao_leisure_attribute',
-				'field'    => 'slug',
-				'terms'    => $attribute_slugs,
-				'operator' => 'IN',
-			);
+		unset( $tax_query['relation'] );
+		foreach ( $leisure_tax_query as $clause_key => $clause ) {
+			if ( 'relation' === $clause_key ) {
+				continue;
+			}
+			$tax_query[] = $clause;
 		}
 
 		if ( ! empty( $tax_query ) ) {

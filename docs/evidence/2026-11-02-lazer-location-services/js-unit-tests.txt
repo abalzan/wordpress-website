@@ -1,0 +1,82 @@
+
+== Haversine — known coordinate pairs ==
+  PASS: Dublin → Cork ≈ 219.6 km
+  PASS: identical points → 0 m
+  PASS: 1° latitude ≈ 111.2 km
+  PASS: 1° longitude at equator ≈ 111.2 km
+  PASS: antipodal points return a finite positive distance
+
+== Haversine — invalid inputs return null (never a number) ==
+  PASS: null latitude → null
+  PASS: undefined longitude → null
+  PASS: empty strings → null
+  PASS: non-numeric → null
+  PASS: latitude > 90 → null
+  PASS: latitude < -90 → null
+  PASS: longitude > 180 → null
+  PASS: longitude < -180 → null
+  PASS: NaN → null
+  PASS: Infinity → null
+  PASS: numeric strings are accepted
+  PASS: valid zero coordinates are accepted
+
+== formatDistanceValue — kilometres and metres, PT and EN ==
+  PASS: PT: 2500 m → "2,5 km"
+  PASS: EN: 2500 m → "2.5 km"
+  PASS: PT: 1000 m → "1,0 km"
+  PASS: EN: 12500 m → "12.5 km"
+  PASS: PT: 400 m → "400 m" (below 1 km)
+  PASS: EN: 400 m → "400 m"
+  PASS: PT: 396 m rounds to nearest 10 → "400 m"
+  PASS: EN: 394 m rounds to nearest 10 → "390 m"
+  PASS: EN: 999 m rounds up across the km boundary → "1.0 km"
+  PASS: PT: 999 m rounds up across the km boundary → "1,0 km"
+  PASS: PT: 0 m → "0 m"
+  PASS: negative distance → "" (invalid)
+  PASS: NaN distance → "" (invalid)
+  PASS: non-number distance → "" (invalid)
+
+== sortByProximity — global nearest-first ordering ==
+  PASS: nearest first, ties by original archive order, no-coordinate attractions appended last
+  PASS: four attractions have usable coordinates
+  PASS: all six attractions are represented (none dropped)
+  PASS: distances are returned as an ID-keyed Map
+  PASS: ID 30 is associated with its own 0 m distance
+  PASS: ID 40 is associated with a ~30 m distance
+  PASS: tied attractions share the same distance
+  PASS: an attraction without coordinates has NO distance entry
+  PASS: an attraction with a partial coordinate has NO distance entry
+  PASS: ordering is deterministic across repeated calls
+  PASS: with no coordinates anywhere, the original archive order is preserved
+  PASS: nothing is reported as geolocated
+  PASS: an invalid visitor position preserves the original archive order
+  PASS: an invalid visitor position produces no distances
+
+== Geolocation outcome classification (permission + failure branches) ==
+  PASS: permission denied (code 1) → "denied"
+  PASS: position unavailable (code 2) → "unavailable"
+  PASS: timeout (code 3) → "timeout"
+  PASS: a missing error → "unknown" (never throws)
+  PASS: no geolocation API → "unsupported"
+  PASS: no navigator → "unsupported"
+  PASS: geolocation present but insecure context → "insecure"
+  PASS: geolocation present in a secure context → "available"
+  PASS: a granted position yields the visitor coordinates
+  PASS: out-of-range visitor latitude → null
+  PASS: missing visitor coordinates → null
+  PASS: missing position object → null (never throws)
+  PASS: numeric-string visitor coordinates are accepted
+
+== sliceBatch — proximity batch cursor arithmetic ==
+  PASS: first batch is the first three sorted IDs
+  PASS: first batch advances the cursor to 3
+  PASS: first batch is not the end
+  PASS: second batch continues where the first stopped (no skips)
+  PASS: retrying an unadvanced cursor returns the same slice
+  PASS: final batch contains the remaining IDs
+  PASS: final batch reports done
+  PASS: past the end the batch is empty
+  PASS: past the end done stays true
+  PASS: walking batches in sequence visits every ID exactly once, in order
+
+68 passed, 0 failed

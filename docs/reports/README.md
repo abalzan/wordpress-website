@@ -179,6 +179,18 @@ The authorised follow-up to the BLOCKED finding above. The empty archive was a
 | [`2026-10-27-halloween-mobile-experience-plan.md`](2026-10-27-halloween-mobile-experience-plan.md) | Plan for bounded, occasional mobile Halloween appearances. |
 | [`2026-10-27-halloween-mobile-experience-report.md`](2026-10-27-halloween-mobile-experience-report.md) | Implementation, cadence, responsive browser results, tests, and limitations. |
 
+## Commemorative events system (2026-11-03)
+
+| Report | Content |
+|---|---|
+| [`2026-11-03-commemorative-events-architecture-audit.md`](2026-11-03-commemorative-events-architecture-audit.md) | **Read-only architecture audit and redesign proposal** for a reusable Commemorative Events System (Halloween, Christmas, New Year, Easter, …). Reproduces a year-boundary defect in the current New Year scheduling and a red test; recommends a `commemorative_event` CPT + engine + admin UX + presentation registry + dispatcher, with a 9-stage roadmap. No implementation performed. |
+
+## Lazer location services (2026-11-02)
+
+| Report | Content |
+|---|---|
+| [`2026-11-02-lazer-location-services.md`](2026-11-02-lazer-location-services.md) | Implementation of the approved location-services plan: leisure coordinate meta + validation + provenance + admin inventory column, one-shot browser geolocation on `/lazer/` + `/en/lazer/`, client-side Haversine distances, two read-only REST endpoints reusing the archive filter builder, global nearest-first ordering with proximity-aware infinite scroll, and PT/EN copy. `PASS WITH LIMITATION` — no attraction has coordinates yet, so the feature is inert until coordinate population (a separate editorial prerequisite); HTTP acceptance was BLOCKED by a pre-existing local port/DB mismatch. **0 production writes, 0 deployments.** |
+
 ## Related: `docs/audit/` (engineering audits), `docs/engineering-standard.md`
 (the normative standard these reports are measured against).
 

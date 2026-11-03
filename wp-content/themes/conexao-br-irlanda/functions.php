@@ -134,6 +134,7 @@ require_once CONEXAO_THEME_DIR . '/inc/archive-filters.php';
 require_once CONEXAO_THEME_DIR . '/inc/leisure.php';
 require_once CONEXAO_THEME_DIR . '/inc/events.php';
 require_once CONEXAO_THEME_DIR . '/inc/archive-query.php';
+require_once CONEXAO_THEME_DIR . '/inc/leisure-location.php';
 require_once CONEXAO_THEME_DIR . '/inc/b2-fallback.php';
 require_once CONEXAO_THEME_DIR . '/inc/shortcodes.php';
 require_once CONEXAO_THEME_DIR . '/inc/ui.php';

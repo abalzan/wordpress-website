@@ -250,6 +250,25 @@ case 'radio':
 				$html .= '<input type="number" class="conexao-field-input" id="' . esc_attr( $id ) . '" name="' . esc_attr( $name ) . '" value="' . esc_attr( $value ) . '"' . $required_attr . $aria_req . ' />';
 				break;
 
+			case 'coordinate':
+				// Geographic coordinate (latitude/longitude). Rendered as a
+				// native number input with the geographic range as the
+				// browser-level hint; the authoritative validation is
+				// server-side (Conexao_Data_Model_Meta + validate()), so an
+				// out-of-range value can never be persisted even when the
+				// browser hint is bypassed.
+				$coord_min = isset( $field['min'] ) ? (string) $field['min'] : '';
+				$coord_max = isset( $field['max'] ) ? (string) $field['max'] : '';
+				$coord_attrs = ' step="any" inputmode="decimal"';
+				if ( '' !== $coord_min ) {
+					$coord_attrs .= ' min="' . esc_attr( $coord_min ) . '"';
+				}
+				if ( '' !== $coord_max ) {
+					$coord_attrs .= ' max="' . esc_attr( $coord_max ) . '"';
+				}
+				$html .= '<input type="number" class="conexao-field-input conexao-field-input--coordinate" id="' . esc_attr( $id ) . '" name="' . esc_attr( $name ) . '" value="' . esc_attr( $value ) . '"' . $coord_attrs . ' />';
+				break;
+
 			case 'media':
 				// The hidden input MUST always carry the stored value verbatim
 				// (attachment ID, or a legacy URL). It must never be derived
@@ -429,6 +448,26 @@ case 'radio':
 					break;
 				case 'number':
 					$value = ( '' !== $value && null !== $value ) ? absint( $value ) : '';
+					break;
+				case 'coordinate':
+					// Geographic coordinate. An invalid submission must NOT
+					// wipe a previously valid value, so the stored value is
+					// preserved when the submitted string is non-empty but
+					// fails validation (the editor still sees a clear error
+					// through validate()). An explicitly emptied field
+					// clears the meta as usual.
+					$raw_coord = is_string( $value ) ? trim( $value ) : '';
+					if ( '' === $raw_coord ) {
+						$value = '';
+						break;
+					}
+					$sanitised = self::sanitize_coordinate_value( $field, $raw_coord );
+					if ( '' === $sanitised ) {
+						$stored = get_post_meta( $post_id, $key, true );
+						$value  = is_string( $stored ) ? $stored : '';
+					} else {
+						$value = $sanitised;
+					}
 					break;
 				case 'checkbox':
 					$value = ! empty( $value ) ? 1 : 0;
@@ -645,6 +684,27 @@ case 'radio':
 			}
 		}
 
+		// Leisure coordinates: validate the PAIR. A malformed value, an
+		// out-of-range value, or one coordinate supplied without its
+		// counterpart is rejected with a specific, human-readable message.
+		// (The value itself can never be persisted regardless — the
+		// registered sanitize_callback is the hard gate — but the editor
+		// must be told why the save did not take.)
+		if ( isset( $config['post_type'] ) && 'leisure' === $config['post_type'] && class_exists( 'Conexao_Data_Model_Meta' ) ) {
+			$lat = isset( $meta['leisure_lat'] ) ? trim( (string) $meta['leisure_lat'] ) : '';
+			$lng = isset( $meta['leisure_lng'] ) ? trim( (string) $meta['leisure_lng'] ) : '';
+
+			if ( '' !== $lat && ! Conexao_Data_Model_Meta::is_valid_latitude( $lat ) ) {
+				$errors[] = 'A latitude deve ser um número entre -90 e 90 (use ponto como separador decimal).';
+			}
+			if ( '' !== $lng && ! Conexao_Data_Model_Meta::is_valid_longitude( $lng ) ) {
+				$errors[] = 'A longitude deve ser um número entre -180 e 180 (use ponto como separador decimal).';
+			}
+			if ( ( '' === $lat ) !== ( '' === $lng ) ) {
+				$errors[] = 'Informe a latitude e a longitude em conjunto (ou deixe ambas vazias).';
+			}
+		}
+
 		return $errors;
 	}
 
@@ -772,6 +832,47 @@ case 'radio':
 			return sprintf( '%02d:%02d', $hour, $min );
 		}
 		return '';
+	}
+
+	/**
+	 * Sanitize a geographic coordinate submitted through a `coordinate` field.
+	 *
+	 * The authoritative validation lives in the data-model plugin
+	 * (`Conexao_Data_Model_Meta`) so the editor, REST and any importer share
+	 * one rule. This wrapper only maps the field's configured axis to the
+	 * right validator, with a range-only fallback for environments where the
+	 * data-model plugin is inactive (the field must never crash the editor).
+	 *
+	 * @param array  $field Field config (expects `min` / `max`).
+	 * @param string $raw   Raw submitted value.
+	 * @return string Canonical decimal string, or '' when invalid.
+	 */
+	public static function sanitize_coordinate_value( $field, $raw ) {
+		$raw = trim( (string) $raw );
+		if ( '' === $raw ) {
+			return '';
+		}
+
+		$min = isset( $field['min'] ) ? (float) $field['min'] : -180.0;
+		$max = isset( $field['max'] ) ? (float) $field['max'] : 180.0;
+
+		if ( class_exists( 'Conexao_Data_Model_Meta' ) ) {
+			return (string) Conexao_Data_Model_Meta::sanitize_coordinate( $raw, $min, $max );
+		}
+
+		$normalised = str_replace( ',', '.', $raw );
+		if ( ! preg_match( '/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/', $normalised ) ) {
+			return '';
+		}
+		$number = (float) $normalised;
+		if ( ! is_finite( $number ) || $number < $min || $number > $max ) {
+			return '';
+		}
+		if ( 0.0 === $number ) {
+			return '0';
+		}
+		$canonical = rtrim( rtrim( number_format( $number, 6, '.', '' ), '0' ), '.' );
+		return '' === $canonical || '-' === $canonical ? '0' : $canonical;
 	}
 
 	/**

@@ -881,6 +881,34 @@
 	color: var(--conexao-text-muted, #6b7280);
 }
 
+/* --- Lazer location services: distance + proximity notes ---
+ *
+ * The distance reuses the existing .leisure-card-detail tokens so it sits
+ * naturally in the county · town row and stays visually secondary to the
+ * title. It is inserted by JavaScript only, and only after the visitor's
+ * location has been successfully resolved — PHP never renders it.
+ */
+.leisure-card-distance {
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+}
+
+.leisure-proximity-explanation,
+.leisure-proximity-note {
+	margin: 8px 0 0;
+	font-size: 0.88rem;
+	line-height: 1.5;
+	color: var(--conexao-text-muted, #6b7280);
+}
+
+.leisure-proximity-explanation {
+	max-width: 60ch;
+}
+
+.leisure-proximity-note {
+	font-weight: 600;
+}
+
 .leisure-card-excerpt {
 	font-size: 0.9rem;
 	line-height: 1.55;

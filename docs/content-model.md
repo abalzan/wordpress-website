@@ -323,6 +323,50 @@ Opening hours are intentionally NOT modelled (high-maintenance without a
 verification workflow; the official website CTA remains the authoritative
 source for current hours).
 
+#### Leisure coordinates (Lazer location services)
+
+Optional geographic coordinates power the proximity ordering and distance
+estimates on `/lazer/` and `/en/lazer/`. They are ordinary leisure post meta,
+registered by `Conexao_Data_Model_Meta::register_leisure_coordinates()`:
+
+| Meta key | Type | REST | Meaning |
+|---|---|---|---|
+| `_leisure_lat` | string (decimal) | readable (`show_in_rest: true`) | Latitude, −90..90 |
+| `_leisure_lng` | string (decimal) | readable (`show_in_rest: true`) | Longitude, −180..180 |
+| `_leisure_coord_source` | string | **not** exposed | Editorial provenance (how the coordinates were obtained) |
+| `_leisure_coord_verified` | boolean | **not** exposed | Whether an editor confirmed the coordinates on the map |
+
+Validation and storage rules (the single source of truth is
+`Conexao_Data_Model_Meta::sanitize_coordinate()`, applied by the registered
+`sanitize_callback` on **every** write path — REST, the admin editor, any
+importer):
+
+- an empty / null value is **missing**, never `0`;
+- a legitimate `0` (or `0.0`) is stored as `0` and is a valid coordinate;
+- values outside the geographic range are **rejected** (sanitised to empty);
+- non-numeric, malformed and exponent-notation values are rejected;
+- a comma decimal separator (`53,5`) is normalised to `53.5`; a leading `+`
+  is accepted;
+- stored values are canonical dot-separated decimals with at most 6 decimal
+  places (≈0.11 m), so identical input always yields identical storage.
+
+Latitude and longitude must be supplied **as a pair**: the admin editor
+reports "Informe a latitude e a longitude em conjunto" when only one is
+provided, and an invalid submission never overwrites a previously valid
+value.
+
+Editorial provenance is deliberately **not** part of the public coordinate
+dataset. Administrators distinguish four inventory states, surfaced by the
+leisure list's "Coordenadas" column
+(`Conexao_Data_Model_Meta::coordinate_status()`): `missing` (Sem
+coordenadas), `unverified` (Por verificar), `verified` (Verificadas) and
+`invalid` (Inválidas).
+
+Coordinates are **never** guessed, geocoded or inferred from an address by the
+code. Populating them for existing attractions is an editorial content change
+that must follow the repository's six-step content-change contract — the
+implementation itself writes no production coordinates.
+
 Related events + SEO (Phase 3C): on INTERNAL single pages only, county is the
 single reliable relationship used to surface a \"Próximos eventos\" section —
 the destination's `conexao_county` term intersects the SHARED cached

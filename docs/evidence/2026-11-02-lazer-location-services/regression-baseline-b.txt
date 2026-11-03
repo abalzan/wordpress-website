@@ -1,0 +1,7 @@
+wp-content/themes/conexao-br-irlanda/tests/test-blog-en-translation.php              25 passed, 3 failed
+wp-content/themes/conexao-br-irlanda/tests/test-en-jobs-shared-slug.php              35 passed, 4 failed
+wp-content/themes/conexao-br-irlanda/tests/test-job-en-translation.php               28 passed, 4 failed
+wp-content/themes/conexao-br-irlanda/tests/test-jobs-en-language.php                 98 passed, 6 failed
+wp-content/themes/conexao-br-irlanda/tests/test-stage45-pages.php                    364 passed, 2 failed
+wp-content/themes/conexao-br-irlanda/tests/test-guide-en-translation.php             667 passed, 7 failed
+wp-content/plugins/conexao-event-importer/tests/test-import-continuation.php         
