@@ -1,0 +1,295 @@
+post_id,slug,title,lang,county_tax,town_tax,category,meta_county,meta_town,address,official_website,discover_ireland,map_url,existing_lat,existing_lng,uuid
+10146,trinity-college-book-of-kells,Trinity College & Book of Kells,pt,Dublin,,História,Dublin,Dublin,,https://www.tcd.ie/visitors/book-of-kells/,,,,,e975270c-6e3c-4e5c-b021-5696150f6b60
+10147,dublin-castle,Dublin Castle,pt,Dublin,,Castelos,Dublin,Dublin,,https://www.dublincastle.ie/,,,,,75dbd826-8c18-4ab3-94ea-28bd4c44e5d1
+10148,kilmainham-gaol,Kilmainham Gaol,pt,Dublin,,História,Dublin,Dublin,,https://kilmainhamgaolmuseum.ie/,,,,,8de44ca1-d0a8-4492-b0fe-4ed3bbb43587
+10149,guinness-storehouse,Guinness Storehouse,pt,Dublin,,Cultura,Dublin,Dublin,,https://www.guinness-storehouse.com/,,,,,8d0a05e9-f806-48ed-bb5b-57e420e23603
+10150,phoenix-park,Phoenix Park (sintético),pt,Dublin,Dublin,Natureza,Dublin,Dublin,,https://www.phoenixpark.ie/,,,,,ci-fixture-0000-0000-4000-8000-000000000002
+10151,dublin-zoo,Dublin Zoo,pt,Dublin,,Vida Selvagem,Dublin,Dublin,,https://www.dublinzoo.ie/,,,,,d0ec7752-cd9a-42d8-845e-fbb112f070b1
+10152,howth-cliff-walk,Howth Cliff Walk,pt,Dublin,,Caminhadas,Dublin,Howth,,https://www.discoverireland.ie/dublin/howth-cliff-path-loop,,,,,6a06df2d-4fe7-439d-ad92-21c781584b43
+10153,malahide-castle-gardens,Malahide Castle & Gardens,pt,Dublin,,Castelos,Dublin,Malahide,,https://www.malahidecastleandgardens.ie/,,,,,d27f453e-1872-44b3-b65a-f43f6b8db07c
+10154,wicklow-mountains-national-park,Wicklow Mountains National Park,pt,Wicklow,,Natureza,Wicklow,,,https://www.nationalparks.ie/wicklow/,,,,,ee378751-c439-4bbe-920b-a677df76d73c
+10155,glendalough,Glendalough,pt,Wicklow,,História,Wicklow,Wicklow,,https://www.visitwicklow.ie/glendalough/,,,,,3aa07d9e-9b08-4ae6-990f-598d50e48844
+10156,powerscourt-estate,Powerscourt Estate,pt,Wicklow,,Jardins,Wicklow,Enniskerry,,https://powerscourt.com/,,,,,a0700cc7-2faa-48be-bff5-b39d04772b09
+10157,powerscourt-waterfall,Powerscourt Waterfall,pt,Wicklow,,Natureza,Wicklow,Enniskerry,,https://powerscourt.com/gardens-and-waterfall/,,,,,4465ef5f-3844-49e0-9f7f-97afbbb253b9
+10158,bray-head,Bray Head,pt,Wicklow,,Caminhadas,Wicklow,Bray,,https://www.discoverireland.ie/bray,,,,,6ccb1cc8-fcf0-434e-b0df-7c22bee10975
+10159,great-sugar-loaf,Great Sugar Loaf,pt,Wicklow,,Caminhadas,Wicklow,Kilmacanogue,,https://www.discoverireland.ie/wicklow,,,,,d104ea5f-72ba-4022-8fce-3063d0fea4ec
+10160,sally-gap,Sally Gap,pt,Wicklow,,Natureza,Wicklow,,,https://www.discoverireland.ie/wicklow,,,,,8f7fae17-8b50-4309-8678-bad39ddfbaea
+10161,avondale-forest-park,Avondale Forest Park,pt,Wicklow,,Natureza,Wicklow,Rathdrum,,https://www.avondaleforestpark.ie/,,,,,ff08f4fa-0c92-4ec5-8e1c-58ce68c01c24
+10162,newgrange,Newgrange,pt,Meath,,História,Meath,Slane,,https://www.newgrange.com/,,,,,d32ac3fa-0e97-4238-9ce1-a63216961cd2
+10163,knowth,Knowth,pt,Meath,,História,Meath,Slane,,https://www.worldheritageireland.ie/bru-na-boinne/built-heritage/knowth/,,,,,ebd1a273-cb9c-4822-8eb3-c31cebe5d414
+10164,hill-of-tara,Hill of Tara,pt,Meath,,História,Meath,Navan,,https://heritageireland.ie/places-to-visit/hill-of-tara/,,,,,245f6b35-d6ef-44ee-be83-ac1c2387a188
+10165,trim-castle,Trim Castle,pt,Meath,,Castelos,Meath,Trim,,https://heritageireland.ie/places-to-visit/trim-castle/,,,,,af959254-53ae-4961-83f2-ee96b5db4f84
+10166,slane-castle,Slane Castle,pt,Meath,,Castelos,Meath,Slane,,https://www.slanecastle.ie/,,,,,f8b097ea-667f-45e4-aa26-740ee5e4dfa1
+10167,loughcrew,Loughcrew,pt,Meath,,História,Meath,Oldcastle,,https://heritageireland.ie/places-to-visit/loughcrew-cairns/,,,,,0e2e1a93-f2f5-412b-91ce-2d39522db980
+10168,battle-of-the-boyne-visitor-centre,Battle of the Boyne Visitor Centre,pt,Meath,,História,Meath,Drogheda,,https://www.battleoftheboyne.ie/,,,,,e7dffca6-1abd-4d15-a1b7-cadfc2518cc4
+10169,kylemore-abbey,Kylemore Abbey,pt,Galway,,História,Galway,Connemara,,https://kylemoreabbey.com/,,,,,3a372e10-13a9-4b7f-ab6c-d1bdcc8bdfb9
+10170,connemara-national-park,Connemara National Park,pt,Galway,,Natureza,Galway,Letterfrack,,https://www.nationalparks.ie/connemara/,,,,,6ec71170-3955-4be2-a72b-73d39930612f
+10171,salthill,Salthill,pt,Galway,,Praias,Galway,Galway,,https://www.discoverireland.ie/galway/salthill,,,,,97c10bdb-ca52-436a-803c-1f4d267e47a5
+10172,sky-road,Sky Road,pt,Galway,,Natureza,Galway,Clifden,,https://www.discoverireland.ie/galway/sky-road,,,,,b0b62fc6-79dd-48de-97f1-0baf848af7df
+10173,aran-islands,Aran Islands,pt,Galway,,Ilhas,Galway,,,https://www.arannislands.ie/,,,,,72097b85-5292-4d82-8cc5-cf815156685a
+10174,dun-aonghasa,Dún Aonghasa,pt,Galway,,História,Galway,Inishmore,,https://heritageireland.ie/places-to-visit/dun-aonghasa/,,,,,371b9a05-13ee-4ae3-82f6-4fb0e26be048
+10175,diamond-hill,Diamond Hill,pt,Galway,,Caminhadas,Galway,Letterfrack,,https://www.nationalparks.ie/connemara/,,,,,b4a15533-660b-4608-8244-2925192e1bd5
+10176,galway-atlantaquaria,Galway Atlantaquaria,pt,Galway,,Vida na Irlanda,Galway,Salthill,,https://www.nationalaquarium.ie/,,,,,0594222a-924a-4ccb-9120-b0a00d435564
+10177,cliffs-of-moher,Cliffs of Moher (sintético),pt,Clare,Liscannor,Natureza,Clare,Liscannor,,https://www.cliffsofmoher.ie/,,,,,d1aceaf4-6ceb-41ec-9cdb-33898caebac2
+10178,burren-national-park,Burren National Park,pt,Clare,,Natureza,Clare,,,https://www.nationalparks.ie/burren/,,,,,68aefeeb-b10c-4f3a-ba8c-b2b6d0ad3f25
+10179,bunratty-castle-folk-park,Bunratty Castle & Folk Park,pt,Clare,,Castelos,Clare,Bunratty,,https://www.bunrattycastle.ie/,,,,,a6e9a793-cb6a-4a13-9722-b8d348fed983
+10180,aillwee-caves,Aillwee Caves,pt,Clare,,Natureza,Clare,Ballyvaughan,,https://aillweecave.ie/,,,,,0acc9f75-c7fd-4a5c-91e0-05db796465d8
+10181,doolin-cave,Doolin Cave,pt,Clare,,Natureza,Clare,Doolin,,https://doolincave.ie/,,,,,6b74f1be-1648-4c97-8b8b-018dc6dd4fac
+10182,loop-head,Loop Head,pt,Clare,,Natureza,Clare,Kilbaha,,https://loophead.ie/,,,,,0d6072c4-a646-4c61-9581-66db253d41c6
+10183,lahinch-beach,Lahinch Beach,pt,Clare,,Praias,Clare,Lahinch,,https://www.discoverireland.ie/lahinch,,,,,37db3e02-a331-4335-b79d-6056a6bb14f1
+10184,kilkee-cliffs,Kilkee Cliffs,pt,Clare,,Natureza,Clare,Kilkee,,https://www.discoverireland.ie/clare/kilkee-cliffs,,,,,34bf43f0-8bb1-4421-b2e7-d4ed62636f28
+10185,blarney-castle,Blarney Castle,pt,Cork,,Castelos,Cork,Blarney,,https://blarneycastle.ie/,,,,,78094161-3268-4693-b1d3-5b995e33da85
+10186,cobh,Cobh,pt,Cork,,Cidades,Cork,Cobh,,https://www.discoverireland.ie/cobh,,,,,60aeca55-07e8-4246-832a-0e8386b40180
+10187,titanic-experience-cobh,Titanic Experience Cobh,pt,Cork,,História,Cork,Cobh,,https://www.titanicexperiencecobh.ie/,,,,,bfd3a006-ae8e-49ed-a8fe-3f6be372bbe6
+10188,fota-wildlife-park,Fota Wildlife Park (sintético),pt,Cork,Carrigtwohill,Natureza,Cork,Carrigtwohill,,https://example.invalid/fota,,,,,f73e8857-3546-4fb9-95f4-965a1b70f8e0
+10189,jameson-distillery-midleton,Jameson Distillery Midleton,pt,Cork,,Cultura,Cork,Midleton,,https://www.jamesonwhiskey.com/distilleries/jameson-distillery-midleton,,,,,b508455a-993f-4aa3-b9d6-9b988e8dbd80
+10190,kinsale,Kinsale,pt,Cork,,Cidades,Cork,Kinsale,,https://www.discoverireland.ie/kinsale,,,,,a57fb284-a17a-437f-acc3-c5c35e17581d
+10191,charles-fort,Charles Fort,pt,Cork,,História,Cork,Kinsale,,https://heritageireland.ie/places-to-visit/charles-fort/,,,,,000bb239-f0d1-436b-a431-2fd998b60c1b
+10192,mizen-head,Mizen Head,pt,Cork,,Natureza,Cork,Goleen,,https://www.mizenhead.ie/,,,,,9b00618e-39e1-4d36-b968-6beea2ebd3b5
+10193,killarney-national-park,Killarney National Park,pt,Kerry,,Natureza,Kerry,Killarney,,https://www.nationalparks.ie/killarney/,,,,,dd17d092-e991-43d3-b2fe-ea7e12585272
+10194,muckross-house,Muckross House,pt,Kerry,,História,Kerry,Killarney,,https://muckross-house.ie/,,,,,2c0ae3fb-d182-43a3-9876-732a861853d0
+10195,ross-castle,Ross Castle,pt,Kerry,,Castelos,Kerry,Killarney,,https://www.rosscastlekillarney.com/,,,,,adc78c7c-68bc-4e04-8726-390b2d0a5efb
+10196,torc-waterfall,Torc Waterfall,pt,Kerry,,Natureza,Kerry,Killarney,,https://www.discoverireland.ie/kerry/torc-waterfall,,,,,598cc913-74c5-4560-9a60-83c5fcc0e2c7
+10197,gap-of-dunloe,Gap of Dunloe,pt,Kerry,,Natureza,Kerry,Killarney,,https://www.discoverireland.ie/kerry/gap-of-dunloe,,,,,d1af0c21-6d1c-4001-b155-190045595e1c
+10198,ring-of-kerry,Ring of Kerry,pt,Kerry,,Natureza,Kerry,,,https://www.discoverireland.ie/kerry/ring-of-kerry,,,,,e631ec3b-771a-4d4b-8078-19b650078166
+10199,dingle-peninsula,Dingle Peninsula,pt,Kerry,,Natureza,Kerry,Dingle,,https://www.discoverireland.ie/dingle,,,,,94121a1a-29d9-4793-9ff7-11f0a183ead2
+10200,inch-beach,Inch Beach,pt,Kerry,,Praias,Kerry,Inch,,https://www.discoverireland.ie/kerry/inch-beach,,,,,08d38f81-aedc-4777-8c01-5e6ecee8c062
+10539,national-museum-archaeology,National Museum of Ireland – Archaeology,pt,Dublin,,Museus,Dublin,Dublin,,https://www.museum.ie/en-IE/Museums/Archaeology,,,,,89ab7de5-0ce0-48b7-a776-994858fd6cf7
+10541,epic-irish-emigration-museum,EPIC The Irish Emigration Museum,pt,Dublin,,Museus,Dublin,Dublin,,https://epicchq.com/,,,,,eb5f5e49-ccff-46ff-8488-81a03a55c1aa
+10543,national-botanic-gardens-dublin,National Botanic Gardens,pt,Dublin,,Jardins,Dublin,Glasnevin,,https://botanicgardens.ie/,,,,,ad0360da-bc6c-428a-b861-0201140f2b54
+10545,glasnevin-cemetery-museum,Glasnevin Cemetery Museum,pt,Dublin,,História,Dublin,Dublin,,https://www.dctrust.ie/,,,,,1af418e9-aeb1-4ecc-a648-d17dfefec879
+10547,dun-laoghaire-east-pier,Dún Laoghaire East Pier,pt,Dublin,,Caminhadas,Dublin,Dún Laoghaire,,,,,,,90507016-04d1-476e-a996-d7f7f07ce864
+10549,portmarnock-beach,Portmarnock Beach (Velvet Strand),pt,Dublin,,Praias,Dublin,Portmarnock,,,,,,,d5b7510c-c9b1-4e45-ba37-0a03ba70aff0
+10551,russborough-house,Russborough House,pt,Wicklow,,História,Wicklow,Blessington,,,,,,,aa7996db-cb71-433a-9062-27481a108fcc
+10553,wicklow-historic-gaol,Wicklow's Historic Gaol,pt,Wicklow,,Museus,Wicklow,Wicklow Town,,https://www.wicklowshistoricgaol.com/,,,,,e333ce20-fb93-4923-9450-b05c115369e6
+10555,brittas-bay-beach,Brittas Bay Beach,pt,Wicklow,,Praias,Wicklow,Brittas Bay,,,,,,,c17c4d8e-2e45-4e69-8bd1-369a88123624
+10557,killruddery-house-gardens,Killruddery House & Gardens,pt,Wicklow,,Jardins,Wicklow,Bray,,https://killruddery.com/,https://www.discoverireland.ie/wicklow/killruddery-house-gardens,,,,fa47bb0d-3c03-4184-a45a-8f2ef4d4d1d7
+10559,mount-usher-gardens,Mount Usher Gardens,pt,Wicklow,,Jardins,Wicklow,Ashford,,https://www.avoca.com/en/stores-and-cafes/mount-usher/,https://www.discoverireland.ie/wicklow/mount-usher-gardens,,,,1a724ee5-21d4-4a11-8dd9-d9cd23162b8a
+10561,wicklow-way,The Wicklow Way,pt,Wicklow,,Caminhadas,Wicklow,Marlay Park – Clonegal,,,,,,,60ce37ee-3396-4cf4-9707-65832a64564f
+10563,emerald-park,Emerald Park,pt,Meath,,Aventura,Meath,Ashbourne,,https://www.emeraldpark.ie/,https://www.discoverireland.ie/meath/emerald-park,,,,3d9a6806-716d-4a70-b057-13843785d4b5
+10565,bective-abbey,Bective Abbey,pt,Meath,,História,Meath,Bective,,,https://www.discoverireland.ie/meath/bective-abbey,,,,c957d7aa-5dd0-4128-bb3e-b673a2712fe9
+10567,kells-historic-town,Kells Historic Town,pt,Meath,,Cidades,Meath,Kells,,,,,,,813f6525-06d0-4fcd-9e6f-ec57cb8be651
+10569,sonairte-ecology-centre,Sonairte Ecology Centre,pt,Meath,,Natureza,Meath,Laytown,,https://sonairte.ie/,,,,,0feed24b-a5bc-41f6-b55d-a59adfca1983
+10571,dowth,Dowth Passage Tomb,pt,Meath,,História,Meath,Slane,,https://heritageireland.ie/places-to-visit/bru-na-boinne-visitor-centre-newgrange-and-knowth/,,,,,42c57da2-b56d-4d7e-81e7-1c481ce358d3
+10573,spanish-arch-long-walk,Spanish Arch & Long Walk,pt,Galway,,História,Galway,Galway,,,,,,,d5416858-d613-4174-b1bc-c459785bab02
+10575,galway-city-museum,Galway City Museum,pt,Galway,,Museus,Galway,Galway,,https://www.galwaycitymuseum.ie/,https://www.discoverireland.ie/galway/galway-city-museum,,,,ef080f77-3d68-4848-9a3f-43a675430400
+10577,brigits-garden,Brigit's Garden,pt,Galway,,Jardins,Galway,Rosscahill,,https://brigitsgarden.ie/,,,,,717b064d-9197-4972-aa8b-cf643004099b
+10579,coole-park,Coole Park,pt,Galway,,Natureza,Galway,Gort,,,,,,,48ddda5e-d58c-448c-8c3d-0b1b60342341
+10581,portumna-castle-gardens,Portumna Castle & Gardens,pt,Galway,,Castelos,Galway,Portumna,,https://heritageireland.ie/places-to-visit/portumna-castle-and-gardens/,,,,,1601adff-456e-4658-830f-3e6e999e2619
+10583,thoor-ballylee,Thoor Ballylee,pt,Galway,,História,Galway,Gort,,,https://www.discoverireland.ie/galway/thoor-ballylee,,,,766cff77-39fd-4ce1-a36a-ca6c63b10e46
+10585,ennis-friary,Ennis Friary,pt,Clare,,História,Clare,Ennis,,https://heritageireland.ie/places-to-visit/ennis-friary/,https://www.discoverireland.ie/clare/ennis-friary,,,,3c9b0b22-e8a9-436e-ae23-827ee93285a4
+10587,scattery-island,Scattery Island,pt,Clare,,Ilhas,Clare,Kilrush,,,https://www.discoverireland.ie/clare/scattery-island,,,,b8b80937-a074-4aec-b016-dd6e1712edbd
+10589,holy-island-inis-cealtra,Holy Island (Inis Cealtra),pt,Clare,,Ilhas,Clare,Mountshannon,,,,,,,57210cbd-cd39-496c-8390-b5202f1165d1
+10591,spanish-point-beach,Spanish Point Beach,pt,Clare,,Praias,Clare,Spanish Point,,,https://www.discoverireland.ie/clare/spanish-point,,,,06c14a51-ffbc-4c93-a6fa-36027bcd85fd
+10593,craggaunowen,Craggaunowen,pt,Clare,,História,Clare,Quin,,,,,,,7a7c684a-20a4-4990-9dcb-646b2f1387f7
+10595,vandeleur-walled-garden,Vandeleur Walled Garden,pt,Clare,,Jardins,Clare,Kilrush,,,,,,,8157744a-db49-466f-b8ff-f13ddcdf7355
+10597,english-market-cork,English Market,pt,Cork,,Cultura,Cork,Cork,,,https://www.discoverireland.ie/cork/english-market,,,,5b56bcb0-fcc8-4554-b982-92aa8ff0f801
+10599,cork-city-gaol,Cork City Gaol,pt,Cork,,Museus,Cork,Cork,,https://corkcitygaol.com/,,,,,01928600-8ea1-4612-9156-6d2e26f9dea9
+10601,blackrock-castle-observatory,Blackrock Castle Observatory,pt,Cork,,Cultura,Cork,Cork,,https://www.bco.ie/,,,,,1ebfa407-2ef7-4a85-94b1-6ab4fb1a7be8
+10603,garnish-island,Garnish Island,pt,Cork,,Jardins,Cork,Glengarriff,,https://heritageireland.ie/places-to-visit/ilnacullin-garinish-island/,,,,,be3f360a-5dc7-427e-8d63-6703e7be8931
+10605,spike-island-cork,Spike Island,pt,Cork,,Ilhas,Cork,Cobh,,https://www.spikeislandcork.ie/,,,,,e356b661-39ea-4475-a10c-e400567f3791
+10607,doneraile-park,Doneraile Park,pt,Cork,,Natureza,Cork,Doneraile,,https://heritageireland.ie/places-to-visit/doneraile-court-and-estate/,,,,,42dd2427-1d23-4bba-ac40-90691a53347b
+10609,skellig-michael,Skellig Michael,pt,Kerry,,Ilhas,Kerry,Portmagee,,https://heritageireland.ie/places-to-visit/skellig-michael/,,,,,25097520-d4f3-4b7c-952f-ac717ebbcebc
+10611,valentia-island,Valentia Island,pt,Kerry,,Ilhas,Kerry,Cahersiveen,,https://valentiaisland.ie/,https://www.discoverireland.ie/valentia-island,,,,33950d53-97e5-455c-b38d-9de5920aaafd
+10613,kerry-cliffs,Kerry Cliffs,pt,Kerry,,Natureza,Kerry,Portmagee,,,https://www.discoverireland.ie/kerry/kerry-cliffs,,,,7b3e4544-9e71-422a-975b-96fa342e3796
+10615,derrynane-house,Derrynane House & National Historic Park,pt,Kerry,,História,Kerry,Caherdaniel,,https://heritageireland.ie/places-to-visit/daniel-oconnell-house-derrynane-house/,https://www.discoverireland.ie/kerry/derrynane-house,,,,b27b366d-1f02-433c-af46-35bb5a4dfa84
+10617,gallarus-oratory,Gallarus Oratory,pt,Kerry,,História,Kerry,Dingle,,,,,,,f3289b7d-c297-41f2-a565-e7397b620af1
+10619,muckross-abbey,Muckross Abbey,pt,Kerry,,História,Kerry,Killarney,,,,,,,2089e866-0ae6-48ec-89f0-e09177a1b6d5
+10621,banna-strand,Banna Strand,pt,Kerry,,Praias,Kerry,Ardfert,,,https://www.discoverireland.ie/kerry/banna-strand,,,,4759d6b0-3204-4306-a639-ef5f17282f0f
+10623,rock-of-dunamase,Rock of Dunamase,pt,Laois,,Castelos,Laois,Stradbally,,,https://www.discoverireland.ie/laois/rock-of-dunamase,,,,fe17d99c-3c76-45dc-a384-49af326156e1
+10625,emo-court,Emo Court,pt,Laois,,Jardins,Laois,Emo,,https://heritageireland.ie/places-to-visit/emo-court/,https://www.discoverireland.ie/laois/emo-court,,,,90c3d415-87fc-42dd-a4a7-4e4a9b721c16
+10627,heywood-gardens,Heywood Gardens,pt,Laois,,Jardins,Laois,Ballinakill,,https://heritageireland.ie/places-to-visit/heywood-gardens/,https://www.discoverireland.ie/laois/heywood-gardens,,,,8bca33d9-75c0-4bd1-89c4-148dce35e7fe
+10629,timahoe-round-tower,Timahoe Round Tower,pt,Laois,,História,Laois,Timahoe,,,https://www.discoverireland.ie/laois/timahoe-round-tower,,,,1e6ba67f-7ee4-42bc-acb8-5f749c074609
+10631,abbeyleix-heritage-house,Abbeyleix Heritage House,pt,Laois,,Museus,Laois,Abbeyleix,,https://abbeyleixheritage.com/,https://www.discoverireland.ie/laois/abbeyleix-heritage-house,,,,d79d1cd4-f003-4831-9721-9fd6cc0e732f
+10633,slieve-bloom-mountains,Slieve Bloom Mountains,pt,Laois,,Natureza,Laois,Clonaslee / Cadamstown,,https://slievebloom.ie/,,,,,31e1c53c-ab59-4806-8bd2-1bc0a9343641
+10635,clonmacnoise,Clonmacnoise,pt,Offaly,,História,Offaly,Shannonbridge,,https://heritageireland.ie/places-to-visit/clonmacnoise/,https://www.discoverireland.ie/offaly/clonmacnoise,,,,7022d563-ddcd-4cff-be5a-667695a2fcdc
+10637,birr-castle-demesne,Birr Castle Demesne,pt,Offaly,,Jardins,Offaly,Birr,,https://birrcastle.com/,,,,,fdd1615c-af6b-4388-9a0c-616cb76d4368
+10639,lough-boora-discovery-park,Lough Boora Discovery Park,pt,Offaly,,Natureza,Offaly,Boora,,https://loughboora.com/,https://www.discoverireland.ie/offaly/lough-boora-discovery-park,,,,b56bd6e7-b859-44f0-bfff-8487a6c5d382
+10641,charleville-forest-castle,Charleville Forest Castle,pt,Offaly,,Castelos,Offaly,Tullamore,,,,,,,0f355f43-5950-4e0f-978d-cafe256af286
+10643,tullamore-dew-experience,Tullamore D.E.W. Experience,pt,Offaly,,Cultura,Offaly,Tullamore,,https://www.tullamoredew.com/en-gb/visit-tullamore-dew/,,,,,9b84cf42-6324-47ee-afb2-e296f8dbf19f
+10645,belvedere-house-gardens,Belvedere House Gardens & Park,pt,Westmeath,,Jardins,Westmeath,Mullingar,,https://belvedere-house.ie/,,,,,7a77fa2d-4995-48c3-a748-99528b61f844
+10647,athlone-castle,Athlone Castle Visitor Centre,pt,Westmeath,,Castelos,Westmeath,Athlone,,https://www.athlonecastle.ie/,https://www.discoverireland.ie/westmeath/athlone-castle,,,,a7411cfc-06d5-45da-b4b8-97b579b68f4f
+10649,kilbeggan-distillery,Kilbeggan Distillery Experience,pt,Westmeath,,Cultura,Westmeath,Kilbeggan,,https://www.kilbeggandistillery.com/,,,,,682343e7-24da-4bdc-8fe5-368cbb3630df
+10651,mullaghmeen-forest,Mullaghmeen Forest,pt,Westmeath,,Natureza,Westmeath,Castlepollard,,,,,,,0f3aad67-8642-4acd-9322-a54449977258
+10653,glendeer-pet-farm,Glendeer Pet Farm,pt,Westmeath,,Vida Selvagem,Westmeath,Athlone,,https://glendeerpetfarm.ie/,,,,,b33f1813-e5d6-4fc0-b2dc-75e40f84f18f
+10654,corlea-trackway,Corlea Trackway Visitor Centre,pt,Longford,,História,Longford,Kenagh,,https://heritageireland.ie/places-to-visit/corlea-trackway-visitor-centre/,,,,,8438b8a3-0dda-4a22-8a60-b45975f4abd3
+10656,ardagh-heritage-village,Ardagh Heritage Village,pt,Longford,,Cidades,Longford,Ardagh,,,,,,,53769cc1-e58c-4595-9d39-e008df75ad85
+10658,granard-motte-bailey,Granard Motte & Bailey,pt,Longford,,História,Longford,Granard,,,,,,,58f73767-81b3-4d0c-9a6a-054cfe91965b
+10660,royal-canal-greenway,Royal Canal Greenway,pt,Longford,,Greenways,Longford,Cloondara,,,,,,,ef88406c-c896-4c35-be8e-aff979945eb1
+10662,newcastle-wood,Newcastle Wood,pt,Longford,,Natureza,Longford,Ballymahon,,,,,,,9f247400-2a4a-4a9a-8ccf-34c1bf164411
+10664,lough-ree,Lough Ree,pt,Longford,,Natureza,Longford,Lanesborough,,,,,,,3c8b25d4-47e2-4b5c-a91b-a265ca8e9f7b
+10666,rathcroghan,Rathcroghan,pt,Roscommon,,História,Roscommon,Tulsk,,https://rathcroghan.ie/,,,,,8faa7266-b83e-4306-9f11-6d8245766850
+10668,boyle-abbey,Boyle Abbey,pt,Roscommon,,História,Roscommon,Boyle,,https://heritageireland.ie/places-to-visit/boyle-abbey/,https://www.discoverireland.ie/roscommon/boyle-abbey,,,,d0bc5915-7830-4e1c-96a2-98fc0b6a25e9
+10670,strokestown-park-famine-museum,Strokestown Park & National Famine Museum,pt,Roscommon,,Museus,Roscommon,Strokestown,,https://strokestownpark.ie/,,,,,b67650fb-8318-4867-905d-86c536a3b0cd
+10672,arigna-mining-experience,Arigna Mining Experience,pt,Roscommon,,Museus,Roscommon,Arigna,,https://www.arignaminingexperience.ie/,https://www.discoverireland.ie/roscommon/arigna-mining-experience,,,,c4da8419-9adf-4841-a4cf-c1c8cb5b8bab
+10674,lough-key-forest-park,Lough Key Forest & Activity Park,pt,Roscommon,,Natureza,Roscommon,Boyle,,https://loughkey.ie/,,,,,8247d0df-7392-47ac-a82f-9e3366820e55
+10676,roscommon-castle,Roscommon Castle,pt,Roscommon,,Castelos,Roscommon,Roscommon,,,https://www.discoverireland.ie/roscommon/roscommon-castle,,,,b1ef4bdd-56cf-44a0-8073-0edd824dcff3
+10678,glencar-waterfall,Glencar Waterfall,pt,Leitrim,,Natureza,Leitrim,Manorhamilton,,,https://www.discoverireland.ie/leitrim/glencar-waterfall,,,,8c169009-8e89-41f1-bb16-a5ad17729ad7
+10680,parkes-castle,Parke's Castle,pt,Leitrim,,Castelos,Leitrim,Dromahair,,https://heritageireland.ie/places-to-visit/parkes-castle/,,,,,f2ed3e8f-1a8f-4420-b10c-a262a96a4a62
+10682,acres-lake-floating-boardwalk,Acres Lake Floating Boardwalk,pt,Leitrim,,Caminhadas,Leitrim,Drumshanbo,,,,,,,59f9ce7e-6175-410a-9e2f-27609c160032
+10684,lough-allen,Lough Allen,pt,Leitrim,,Natureza,Leitrim,Drumshanbo,,,,,,,f5cf7b52-6050-428a-b309-dc18c9442103
+10686,lough-rynn-castle-gardens,Lough Rynn Castle Gardens,pt,Leitrim,,Jardins,Leitrim,Mohill,,,,,,,ab365713-a4d0-4fb8-836a-9421cf0dec4b
+10688,sean-mac-diarmada-cottage,Seán Mac Diarmada Cottage,pt,Leitrim,,História,Leitrim,Kiltyclogher,,,,,,,53580764-8f52-46e2-84d4-8d51857d4d01
+10690,cavan-burren-park,Cavan Burren Park,pt,Cavan,,Natureza,Cavan,Blacklion,,,https://www.discoverireland.ie/cavan/cavan-burren-park,,,,a7520736-fdf0-414d-a009-12f413c4eacc
+10692,killykeen-forest-park,Killykeen Forest Park,pt,Cavan,,Natureza,Cavan,Gowna,,,,,,,7490b7fc-81c9-484f-92a1-44cab7941b9a
+10694,dun-a-ri-forest-park,Dún a Rí Forest Park,pt,Cavan,,Natureza,Cavan,Kingscourt,,,,,,,4d769e30-7c9b-49e8-a426-531923f01ce0
+10696,shannon-pot,Shannon Pot,pt,Cavan,,Natureza,Cavan,Dowra,,,,,,,5d6223e4-d6f0-4edc-b468-8dc7720f58fe
+10698,cavan-county-museum,Cavan County Museum,pt,Cavan,,Museus,Cavan,Ballyjamesduff,,,https://www.discoverireland.ie/cavan/cavan-county-museum,,,,147237ba-15d9-4fbe-9061-278500d41813
+10700,belturbet-railway-station,Belturbet Railway Station,pt,Cavan,,História,Cavan,Belturbet,,,,,,,6edceeaf-bc4d-44a8-9f76-fea8a44b355e
+10702,castle-leslie-estate,Castle Leslie Estate,pt,Monaghan,,Castelos,Monaghan,Glaslough,,https://www.castleleslie.com/,https://www.discoverireland.ie/monaghan/castle-leslie-estate,,,,9eb31d3a-a0a9-4932-9664-a9cc9f4b938b
+10704,rossmore-forest-park,Rossmore Forest Park,pt,Monaghan,,Natureza,Monaghan,Monaghan,,,https://www.discoverireland.ie/monaghan/rossmore-forest-park,,,,5e0b9680-2264-4ffe-a564-1206f69fe053
+10706,monaghan-county-museum,Monaghan County Museum,pt,Monaghan,,Museus,Monaghan,Monaghan,,https://monaghan.ie/museum/,https://www.discoverireland.ie/monaghan/monaghan-county-museum,,,,489f119a-6a72-4828-be1f-32f8c7153815
+10708,carrickmacross-lace-gallery,Carrickmacross Lace Gallery,pt,Monaghan,,Cultura,Monaghan,Carrickmacross,,https://www.carrickmacrosslace.ie/,https://www.discoverireland.ie/monaghan/carrickmacross-lace-gallery,,,,aed54b27-dbfd-4ca8-8026-790ff8edf6fc
+10710,patrick-kavanagh-centre,Patrick Kavanagh Centre,pt,Monaghan,,Cultura,Monaghan,Inniskeen,,,https://www.discoverireland.ie/monaghan/patrick-kavanagh-centre,,,,70aafa06-e160-42f4-b33f-20599c40acbd
+10712,sliabh-beagh,Sliabh Beagh,pt,Monaghan,,Caminhadas,Monaghan,Knockatallon,,,,,,,6552cf9c-096a-4352-9ac9-018712daba3a
+10714,glenveagh-national-park,Glenveagh National Park,pt,Donegal,,Natureza,Donegal,Churchill,,https://www.glenveaghnationalpark.ie/,,,,,f3fec26c-2db2-4eaa-bf46-f79a0d8c0a3b
+10716,sliabh-liag,Sliabh Liag (Slieve League),pt,Donegal,,Natureza,Donegal,Carrick,,,,,,,7b90e413-2968-431f-b18d-5628c9fd725e
+10718,donegal-castle,Donegal Castle,pt,Donegal,,Castelos,Donegal,Donegal Town,,https://heritageireland.ie/places-to-visit/donegal-castle/,https://www.discoverireland.ie/donegal/donegal-castle,,,,b04a7665-ba57-49a0-bfaa-709d6b2d90a4
+10720,malin-head,Malin Head,pt,Donegal,,Natureza,Donegal,Malin,,,https://www.discoverireland.ie/donegal/malin-head,,,,7593dc50-48ba-48a3-8341-c9072ccf749b
+10722,fanad-head-lighthouse,Fanad Head Lighthouse,pt,Donegal,,Patrimônio,Donegal,Fanad,,https://fanadlighthouse.com/,,,,,fefb34ca-6fc0-4538-a151-a05dcf9fe2a8
+10724,grianan-of-aileach,Grianán of Aileach,pt,Donegal,,História,Donegal,Burt,,,https://www.discoverireland.ie/donegal/grianan-of-aileach,,,,b27baa48-dffb-4f2c-92c9-ffe75ed5d673
+10726,errigal,Errigal,pt,Donegal,,Caminhadas,Donegal,Dunlewey,,,,,,,006299dc-d2e3-48a7-af50-bebc8bc7dbc0
+10728,ards-forest-park,Ards Forest Park,pt,Donegal,,Natureza,Donegal,Creeslough,,,https://www.discoverireland.ie/donegal/ards-forest-park,,,,0abc0e1f-f0bd-4560-8716-693de13e4515
+10730,benbulben,Benbulben,pt,Sligo,,Natureza,Sligo,Grange,,,https://www.discoverireland.ie/sligo/benbulben,,,,f8e7679b-bf29-4581-805e-4ed674fbe16e
+10732,strandhill-beach,Strandhill Beach,pt,Sligo,,Praias,Sligo,Strandhill,,,https://www.discoverireland.ie/sligo/strandhill-beach,,,,61353024-e366-41ce-a24b-50e252aabc51
+10734,carrowmore-megalithic-cemetery,Carrowmore Megalithic Cemetery,pt,Sligo,,História,Sligo,Sligo,,https://heritageireland.ie/places-to-visit/carrowmore-megalithic-cemetery/,https://www.discoverireland.ie/sligo/carrowmore-megalithic-cemetery,,,,319ef218-bc55-415c-9dd6-e5dc1abb0d1a
+10736,queen-maeves-trail-knocknarea,Queen Maeve's Trail (Knocknarea),pt,Sligo,,Caminhadas,Sligo,Strandhill,,,https://www.discoverireland.ie/sligo/queen-maeve-trail,,,,4125e1c9-93e0-43a8-96b2-eed0ae50f101
+10738,sligo-abbey,Sligo Abbey,pt,Sligo,,História,Sligo,Sligo,,https://heritageireland.ie/places-to-visit/sligo-abbey/,https://www.discoverireland.ie/sligo/sligo-abbey,,,,a22d96e9-655a-45d5-ac84-04920c823c77
+10740,lissadell-house,Lissadell House,pt,Sligo,,História,Sligo,Sligo,,https://lissadellhouse.com/,,,,,c709c0c9-5d96-4454-9405-2fe0ccf92106
+10742,drumcliffe,Drumcliffe,pt,Sligo,,História,Sligo,Drumcliffe,,,,,,,504eb4db-18f9-4ccf-8891-0de35b1eb238
+10744,eagles-flying,Eagles Flying,pt,Sligo,,Vida Selvagem,Sligo,Ballymote,,https://www.eaglesflying.com/,,,,,14a9cc15-7306-4153-850f-bae58a65e19d
+10746,croagh-patrick,Croagh Patrick,pt,Mayo,,Caminhadas,Mayo,Westport,,,https://www.discoverireland.ie/mayo/croagh-patrick,,,,7a64a58c-792b-459b-a737-4031dc660562
+10748,achill-island,Achill Island,pt,Mayo,,Ilhas,Mayo,Achill,,,,,,,2a237607-e089-405c-9871-9b8db397f31d
+10750,keem-bay,Keem Bay,pt,Mayo,,Praias,Mayo,Achill,,,https://www.discoverireland.ie/mayo/keem-bay,,,,fba622dd-b64b-40b8-af59-c9465d666585
+10752,westport-house,Westport House & Adventure Park,pt,Mayo,,Castelos,Mayo,Westport,,https://westporthouse.ie/,https://www.discoverireland.ie/mayo/westport-house,,,,1c9660c1-6ecd-4c5c-90aa-88ddab034889
+10754,national-museum-country-life,National Museum of Ireland – Country Life,pt,Mayo,,Museus,Mayo,Turlough,,https://www.museum.ie/en-IE/Museums/Country-Life,,,,,14bf5181-0d18-40d5-bd78-6d4532552b06
+10756,downpatrick-head,Downpatrick Head,pt,Mayo,,Natureza,Mayo,Ballycastle,,,https://www.discoverireland.ie/mayo/downpatrick-head,,,,9e48439d-9f55-4e56-b7d0-13564403f8eb
+10758,ceide-fields,Céide Fields,pt,Mayo,,História,Mayo,Ballycastle,,https://ceidefields.com/,https://www.discoverireland.ie/mayo/ceide-fields,,,,73238b6e-71ee-44da-bb8a-8380558517b6
+10760,great-western-greenway,Great Western Greenway,pt,Mayo,,Greenways,Mayo,Westport – Achill,,,https://www.discoverireland.ie/mayo/great-western-greenway,,,,57f4488d-8ef4-49c4-844d-d54bdfcda67a
+10762,wild-nephin-ballycroy-national-park,Wild Nephin Ballycroy National Park,pt,Mayo,,Natureza,Mayo,Ballycroy,,,https://www.discoverireland.ie/mayo/wild-nephin-ballycroy-national-park,,,,6ea3c33a-8b5f-4dc6-913d-b20b2527c270
+10764,clare-island,Clare Island,pt,Mayo,,Ilhas,Mayo,Clew Bay,,https://clareisland.ie/,https://www.discoverireland.ie/mayo/clare-island,,,,a1ad52f6-1047-4ad8-a7a2-3df90da39db3
+10766,kilkenny-castle,Kilkenny Castle,pt,Kilkenny,,Castelos,Kilkenny,Kilkenny,,https://www.kilkennycastle.ie/,https://www.discoverireland.ie/kilkenny/kilkenny-castle,,,,23763013-3b9c-453f-a166-9b7690b7c5e3
+10768,medieval-mile-museum,Medieval Mile Museum,pt,Kilkenny,,Museus,Kilkenny,Kilkenny,,https://www.medievalmilemuseum.ie/,https://www.discoverireland.ie/kilkenny/medieval-mile-museum,,,,59dd3f39-bf7f-4afa-853a-4ef5849bf967
+10770,jerpoint-abbey,Jerpoint Abbey,pt,Kilkenny,,História,Kilkenny,Thomastown,,https://heritageireland.ie/places-to-visit/jerpoint-abbey/,https://www.discoverireland.ie/kilkenny/jerpoint-abbey,,,,9f34f60b-5e7b-4979-9f5e-aed43480664f
+10772,rothe-house-garden,Rothe House & Garden,pt,Kilkenny,,História,Kilkenny,Kilkenny,,https://rothehouse.com/,https://www.discoverireland.ie/kilkenny/rothe-house-garden,,,,431bf8c5-5d0d-4490-aea7-32d9e3df38c8
+10774,smithwicks-experience,Smithwick's Experience,pt,Kilkenny,,Cultura,Kilkenny,Kilkenny,,https://www.smithwicksexperience.com/,,,,,2d41ba78-11ff-49c5-809f-0a6cf328a12b
+10776,dunmore-cave,Dunmore Cave,pt,Kilkenny,,Natureza,Kilkenny,Ballyfoyle,,https://heritageireland.ie/places-to-visit/dunmore-cave/,https://www.discoverireland.ie/kilkenny/dunmore-cave,,,,c1f2fc3f-85af-4877-8f9a-bf149eea48ac
+10778,castlecomer-discovery-park,Castlecomer Discovery Park,pt,Kilkenny,,Aventura,Kilkenny,Castlecomer,,https://discoverypark.ie/,,,,,ca40b2d5-6ea6-4659-b59c-d6098e125226
+10779,jerpoint-park,Jerpoint Park (Newtown Jerpoint),pt,Kilkenny,,História,Kilkenny,Thomastown,,https://jerpointpark.com/,,,,,e5eab2ed-9e8c-4e4c-997a-475bc176d627
+10781,woodstock-gardens,Woodstock Gardens,pt,Kilkenny,,Jardins,Kilkenny,Inistioge,,,,,,,e8249bfa-12b6-44a0-9341-fb878800571d
+10783,house-of-waterford-crystal,House of Waterford Crystal,pt,Waterford,,Cultura,Waterford,Waterford,,https://www.waterfordvisitorcentre.com/,,,,,c3a0f87b-96fe-4d2d-8cb2-2daa90d9e811
+10785,waterford-treasures,Waterford Treasures Museums,pt,Waterford,,Museus,Waterford,Waterford,,https://www.waterfordtreasures.com/,,,,,16e68f52-de4b-4198-8917-9037d4224d40
+10787,reginals-tower,Reginald's Tower,pt,Waterford,,História,Waterford,Waterford,,https://heritageireland.ie/places-to-visit/reginalds-tower/,,,,,c36a5da4-0039-42b6-938d-ace0e642ddf0
+10789,waterford-greenway,Waterford Greenway,pt,Waterford,,Greenways,Waterford,Waterford – Dungarvan,,https://deisegreenway.com/,https://www.discoverireland.ie/waterford/waterford-greenway,,,,f978e545-e65e-461d-bfc4-eaf5ade3ccfc
+10791,copper-coast-geopark,Copper Coast Geopark,pt,Waterford,,Natureza,Waterford,Bunmahon,,https://coppercoastgeopark.com/,,,,,16828ddc-378c-4299-bfbe-aa2bece11542
+10793,mount-congreve-gardens,Mount Congreve Gardens,pt,Waterford,,Jardins,Waterford,Kilmeaden,,https://mountcongreve.com/,https://www.discoverireland.ie/waterford/mount-congreve-gardens,,,,d7c23a06-5fbc-4b06-8c2a-49aaa3f4aa68
+10795,lismore-castle-gardens,Lismore Castle Gardens,pt,Waterford,,Jardins,Waterford,Lismore,,https://lismorecastle.com/,https://www.discoverireland.ie/waterford/lismore-castle-gardens,,,,761fc042-50d7-4102-ad9f-9e5ef95e9ec5
+10797,ardmore-round-tower,Ardmore Round Tower & Cathedral,pt,Waterford,,História,Waterford,Ardmore,,,https://www.discoverireland.ie/waterford/ardmore-round-tower-and-cathedral,,,,885f4fc7-9dc1-4203-89cb-b88ef1f1b6fe
+10799,coumshingaun-loop,Coumshingaun Loop (Comeragh Mountains),pt,Waterford,,Caminhadas,Waterford,Kilclooney,,,,,,,3318ea1e-b58c-4921-a57c-6c112472ae55
+10801,irish-national-heritage-park,Irish National Heritage Park,pt,Wexford,,História,Wexford,Ferrycarrig,,https://irishheritage.ie/,https://www.discoverireland.ie/wexford/irish-national-heritage-park,,,,034f6009-2ec5-4055-8556-0922a32cbc65
+10803,johnstown-castle,Johnstown Castle,pt,Wexford,,Castelos,Wexford,Wexford,,https://johnstowncastle.ie/,,,,,dec2c8a1-9899-4fa2-af5f-c25ac2ebd760
+10805,hook-lighthouse,Hook Lighthouse,pt,Wexford,,Patrimônio,Wexford,Hook Peninsula,,https://hookheritage.ie/,,,,,a150eba7-7cf3-48b1-9a8b-44edb00d1fa3
+10807,dunbrody-famine-ship,Dunbrody Famine Ship,pt,Wexford,,Museus,Wexford,New Ross,,https://www.dunbrody.com/,,,,,d451062f-d2fa-4823-90e2-2c0a2df14d04
+10809,saltee-islands,Saltee Islands,pt,Wexford,,Ilhas,Wexford,Kilmore Quay,,,https://www.discoverireland.ie/wexford/saltee-islands,,,,df4de7fb-b113-4a89-8301-b51cb8cecc68
+10811,curracloe-beach,Curracloe Beach,pt,Wexford,,Praias,Wexford,Curracloe,,,https://www.discoverireland.ie/wexford/curracloe-beach,,,,46897e47-b235-40af-9235-4f4a1abfdd87
+10813,wexford-wildfowl-reserve,Wexford Wildfowl Reserve,pt,Wexford,,Vida Selvagem,Wexford,Wexford,,https://www.npws.ie/protected-sites/nature-reserves/wexford-wildfowl-reserve,,,,,e27c41a2-6142-411e-86a1-ef4192988345
+10815,ferns-castle,Ferns Castle,pt,Wexford,,Castelos,Wexford,Ferns,,https://heritageireland.ie/places-to-visit/ferns-castle/,https://www.discoverireland.ie/wexford/ferns-castle,,,,3f32e306-b8bc-47f3-ad67-1c888c9730b5
+10817,tintern-abbey-wexford,Tintern Abbey,pt,Wexford,,História,Wexford,Saltmills,,https://heritageireland.ie/places-to-visit/tintern-abbey/,,,,,02df0233-4939-4646-af5e-01c8c45c0b42
+10819,rock-of-cashel,Rock of Cashel,pt,Tipperary,,História,Tipperary,Cashel,,https://heritageireland.ie/places-to-visit/rock-of-cashel/,https://www.discoverireland.ie/tipperary/rock-of-cashel,,,,caaff7b7-5aa8-466c-954c-11ba9663e572
+10821,cahir-castle,Cahir Castle,pt,Tipperary,,Castelos,Tipperary,Cahir,,https://heritageireland.ie/places-to-visit/cahir-castle/,https://www.discoverireland.ie/tipperary/cahir-castle,,,,ce674848-f0f0-4c4e-a20d-a337d143728d
+10823,swiss-cottage,Swiss Cottage,pt,Tipperary,,História,Tipperary,Cahir,,https://heritageireland.ie/places-to-visit/swiss-cottage/,https://www.discoverireland.ie/tipperary/swiss-cottage,,,,5838fa3f-9b14-4103-b0aa-5b292b516871
+10825,glen-of-aherlow,Glen of Aherlow,pt,Tipperary,,Natureza,Tipperary,Bansha,,https://aherlow.com/,https://www.discoverireland.ie/glen-of-aherlow,,,,983e824a-e914-47fd-8b3a-ff4ced65da9a
+10827,the-vee-bay-lough,The Vee & Bay Lough,pt,Tipperary,,Natureza,Tipperary,Clogheen,,,,,,,e4e4e595-14b3-4c25-a039-428c0fee0548
+10829,ormond-castle,Ormond Castle,pt,Tipperary,,Castelos,Tipperary,Carrick-on-Suir,,https://heritageireland.ie/places-to-visit/ormond-castle/,https://www.discoverireland.ie/tipperary/ormond-castle,,,,d48e9415-f375-4a59-9a89-5b9ff1dcb9df
+10831,mitchelstown-cave,Mitchelstown Cave,pt,Tipperary,,Natureza,Tipperary,Burncourt,,https://www.mitchelstowncave.com/,https://www.discoverireland.ie/tipperary/mitchelstown-cave,,,,d8733e1f-50c0-4e95-826f-2e648731bee7
+10833,holy-cross-abbey,Holy Cross Abbey,pt,Tipperary,,História,Tipperary,Holycross,,,,,,,bc52d731-f9da-495d-b18e-075cb4c46894
+10835,king-johns-castle-limerick,King John's Castle,pt,Limerick,,Castelos,Limerick,Limerick,,https://kingjohnscastle.com/,,,,,27d35a15-ba9f-4502-9989-7dfbeee4d6af
+10837,hunt-museum,Hunt Museum,pt,Limerick,,Museus,Limerick,Limerick,,https://www.huntmuseum.com/,,,,,bca282ce-64c3-4506-b945-783d2fdb6836
+10839,st-marys-cathedral-limerick,St Mary's Cathedral,pt,Limerick,,História,Limerick,Limerick,,https://saintmaryscathedral.ie/,,,,,8ad80201-f4c9-4050-9a8d-c9f8797bad98
+10841,adare-village,Adare,pt,Limerick,,Cidades,Limerick,Adare,,,,,,,97578a8e-be2f-4c2e-aa40-7710a6dbba73
+10843,foynes-flying-boat-museum,Foynes Flying Boat & Maritime Museum,pt,Limerick,,Museus,Limerick,Foynes,,https://www.flyingboatmuseum.com/,,,,,52716bb7-44b2-498f-aa55-7f8938b9d743
+10845,lough-gur,Lough Gur,pt,Limerick,,História,Limerick,Bruff,,https://loughgur.com/,https://www.discoverireland.ie/limerick/lough-gur,,,,6a1942ba-ff22-4a93-8d4e-6d3fa2b55f8d
+10847,curraghchase-forest-park,Curraghchase Forest Park,pt,Limerick,,Natureza,Limerick,Adare,,,,,,,6c22fc88-9626-4815-8ad5-d8b5a8ec385d
+10849,irish-national-stud-japanese-gardens,Irish National Stud & Japanese Gardens,pt,Kildare,,Vida Selvagem,Kildare,Kildare Town,,https://irishnationalstud.ie/,,,,,d1f3434d-2b30-4a78-9b19-a0312e450d29
+10851,castletown-house,Castletown House,pt,Kildare,,História,Kildare,Celbridge,,https://heritageireland.ie/places-to-visit/castletown-house-and-parklands/,https://www.discoverireland.ie/kildare/castletown-house,,,,e1e13b06-6ff9-4ca1-b4ff-6edc75a4a82c
+10853,bog-of-allen-nature-centre,Bog of Allen Nature Centre,pt,Kildare,,Vida Selvagem,Kildare,Lullymore,,https://www.ipcc.ie/,https://www.discoverireland.ie/kildare/bog-of-allen-nature-centre,,,,1b3be6e9-18dc-48fd-acfb-d7cc0bd6001c
+10855,pollardstown-fen,Pollardstown Fen,pt,Kildare,,Natureza,Kildare,Newbridge,,,https://www.discoverireland.ie/kildare/pollardstown-fen,,,,60c293ae-2e73-41df-b4e4-f9785619da58
+10857,maynooth-castle,Maynooth Castle,pt,Kildare,,Castelos,Kildare,Maynooth,,https://heritageireland.ie/places-to-visit/maynooth-castle/,https://www.discoverireland.ie/kildare/maynooth-castle,,,,9e6d30ed-7fca-447b-8121-f3e0924439db
+10859,donadea-forest-park,Donadea Forest Park,pt,Kildare,,Natureza,Kildare,Donadea,,,https://www.discoverireland.ie/kildare/donadea-forest-park,,,,a41c16e8-38f2-4826-a77a-c81a1854ecb4
+10861,lullymore-heritage-park,Lullymore Heritage & Discovery Park,pt,Kildare,,Aventura,Kildare,Rathangan,,https://lullymoreheritagepark.com/,,,,,9de04b62-cf15-4273-8022-6d96493424fe
+10863,mondello-park,Mondello Park,pt,Kildare,,Aventura,Kildare,Naas,,https://www.mondellopark.com/,,,,,df1b63a8-7ec5-48d4-a5a4-a003e8409ac3
+10865,carlingford,Carlingford,pt,Louth,,Cidades,Louth,Carlingford,,,,,,,2b43c2dc-a5bd-4adc-87c4-4827768ff75a
+10867,proleek-dolmen,Proleek Dolmen,pt,Louth,,História,Louth,Ballymascanlon,,,https://www.discoverireland.ie/louth/proleek-dolmen,,,,77bbc4c4-9b18-4e10-b2c8-34bfd50c410a
+10869,monasterboice,Monasterboice,pt,Louth,,História,Louth,Monasterboice,,,,,,,4d6b1bd8-77c7-467f-af3f-fd9451e506f1
+10871,mellifont-abbey,Mellifont Abbey,pt,Louth,,História,Louth,Collon,,https://heritageireland.ie/places-to-visit/old-mellifont-cistercian-abbey-monastic-site/,,,,,21a20a30-7686-4113-a6a9-08c02cc7b398
+10873,carlingford-lough-greenway,Carlingford Lough Greenway,pt,Louth,,Greenways,Louth,Carlingford – Newry,,,,,,,60c18aaf-95db-4f0d-84f5-67339e1c55c4
+10875,millmount-fort-museum,Millmount Fort & Museum,pt,Louth,,Museus,Louth,Drogheda,,,,,,,d6d34f79-c43e-4e48-8005-254c3dcaa62e
+10877,brownshill-dolmen,Brownshill Dolmen,pt,Carlow,,História,Carlow,Carlow,,,https://www.discoverireland.ie/carlow/brownshill-dolmen,,,,286d5248-7f1c-4285-b8e6-f11a56190075
+10879,altamont-gardens,Altamont Gardens,pt,Carlow,,Jardins,Carlow,Tullow,,https://heritageireland.ie/places-to-visit/altamont-gardens/,https://www.discoverireland.ie/carlow/altamont-gardens,,,,fa065f7d-71e6-43e6-919e-7f692958d299
+10881,ducketts-grove,Duckett's Grove,pt,Carlow,,Castelos,Carlow,Keenogue,,,,,,,ba4c5bea-5d8c-436a-a888-526fd8a2ecae
+10883,huntington-castle-gardens,Huntington Castle & Gardens,pt,Carlow,,Castelos,Carlow,Clonegal,,https://huntingtoncastle.com/,,,,,d57ef577-2c06-48d3-b015-87a9bae3f574
+10885,borris-house,Borris House,pt,Carlow,,História,Carlow,Borris,,https://borrishouse.com/,https://www.discoverireland.ie/carlow/borris-house,,,,69ff66be-a467-43f9-ab5b-ce2f4178b7e0
+10887,oak-park-forest-park,Oak Park Forest Park,pt,Carlow,,Natureza,Carlow,Carlow,,,https://www.discoverireland.ie/carlow/oak-park-forest-park,,,,e0d5ec06-99bb-41c7-808f-5ddd6e615d0d
+10889,mount-leinster-nine-stones,Mount Leinster & Nine Stones,pt,Carlow,,Caminhadas,Carlow,Borris,,,,,,,370f8e87-d21f-4c3d-b38f-70c68eb4f2cb
+10891,king-johns-castle-carlingford,King John's Castle (Carlingford),pt,Louth,,Castelos,Louth,Carlingford,,https://heritageireland.ie/places-to-visit/carlingford-castle/,,,,,1362c48c-a927-415f-94ef-ad3096045c2c
+13860,chester-beatty,Chester Beatty,pt,Dublin,,Museus,Dublin,Dublin City,"Chester Beatty, Dublin Castle, Dublin 2, D02 AD92",https://chesterbeatty.ie/,https://www.discoverireland.ie/dublin/chester-beatty,,,,76f6df2e-47e2-4d7b-a2db-2616b266fb7f
+13861,forty-foot,The Forty Foot,pt,Dublin,,Praias,Dublin,Sandycove,"Sandycove Point, Dún Laoghaire, Dublin",,,,,,4094e853-12ad-4d7a-bb6b-9cfffd2f7b39
+13862,derrigimlagh,Derrigimlagh,pt,Galway,,História,Galway,Ballyconneely,"Ballinaboy, Co. Galway",,https://www.discoverireland.ie/galway/derrigimlagh,,,,e237cccb-1e94-4378-a644-6eb60185620c
+13863,joyce-tower-museum,James Joyce Tower Museum,pt,Dublin,,Museus,Dublin,Sandycove,"Sandycove Point, Dún Laoghaire, Dublin, A96 FX33",https://joycetower.ie/,https://www.discoverireland.ie/dublin/james-joyce-museum,,,,dd0cf46a-8d00-4487-a5d7-2960dc54d4e2
+13864,the-model,The Model,pt,Sligo,,Museus,Sligo,Sligo,"The Mall, Sligo, F91 TP20",https://www.themodel.ie/,https://www.discoverireland.ie/sligo/the-model-home-of-the-niland-collection,,,,20c845d9-1683-4c4f-846d-980683c0f7a8
+13865,doagh-famine-village,Doagh Famine Village,pt,Donegal,,Patrimônio,Donegal,Ballyliffin,"Lagacurry, Ballyliffin, Co. Donegal, F93 PK19",https://www.doaghfaminevillage.com/,https://www.discoverireland.ie/donegal/doagh-famine-village,,,,582f80be-c0a8-495a-a96a-495dabdbae4c
+13866,dursey-island,Dursey Island,pt,Cork,,Ilhas,Cork,Dursey / Allihies (Beara),,,https://www.discoverireland.ie/cork/dursey-island,,,,fddcf86a-655c-4f3b-b3f2-5b03cd9c7a55
+13867,old-head-of-kinsale,Old Head of Kinsale,pt,Cork,,Natureza,Cork,Kinsale,"Old Head of Kinsale, Kinsale, Co. Cork",,https://www.discoverireland.ie/cork/old-head-signal-tower-signature-discovery-point,,,,9d8e89db-db9d-43d7-b26a-011696cb79a9
+13868,lough-muckno-leisure-park,Lough Muckno Leisure Park,pt,Monaghan,,Natureza,Monaghan,Castleblayney,,,https://www.discoverireland.ie/monaghan/lough-muckno-leisure-park,,,,8c190be6-248a-440d-ad30-2e8abb776d81
+13869,jfk-arboretum,The John F. Kennedy Arboretum,pt,Wexford,,Jardins,Wexford,New Ross,"Ballysop, New Ross, Co. Wexford, Y34 KA48",,https://www.discoverireland.ie/wexford/the-john-f-kennedy-arboretum,,,,61067e86-76d3-401b-8dc9-809b2a6cd255
+13870,cavan-cathedral,Cavan Cathedral,pt,Cavan,,Patrimônio,Cavan,Cavan,,,,,,,3fff8153-eecf-4fc6-a0ff-a71b3248c6cb
+13871,national-design-craft-gallery,National Design & Craft Gallery,pt,Kilkenny,,Cultura,Kilkenny,Kilkenny,"Castle Yard, Kilkenny, R95 CAA6",https://www.ndcg.ie/,,,,,6f74d452-d691-4fc7-b236-d8b897a15ad9
+20905,annes-grove-gardens,Annes Grove Gardens,pt,Cork,,Jardins,Cork,Castletownroche,"Annes Grove, Castletownroche, Co. Cork, P51 K064",https://heritageireland.ie/places-to-visit/annes-grove-gardens/,,,,,6578eef6-e9b5-4305-9771-e0353c8bf17d
+20906,barryscourt-castle,Barryscourt Castle,pt,Cork,,Castelos,Cork,Carrigtwohill,"Barryscourt Castle, Carrigtwohill, Co. Cork, T45 Y290",https://heritageireland.ie/places-to-visit/barryscourt-castle/,,,,,25ade0ed-b26e-41ae-896a-d4bf3d572f04
+20907,desmond-castle-kinsale,Desmond Castle Kinsale,pt,Cork,,Castelos,Cork,Kinsale,"Cork Street, Kinsale, Co. Cork, P17 TY09",https://heritageireland.ie/places-to-visit/desmond-castle-kinsale/,,,,,e3cc2e57-b223-4cb3-8e6b-8931dd7f7894
+20908,fota-arboretum-and-gardens,Fota Arboretum and Gardens,pt,Cork,,Jardins,Cork,Fota Island,"Fota Estate, Carrigtwohill, Co. Cork, T45 K656",https://heritageireland.ie/places-to-visit/fota-arboretum-and-gardens/,,,,,070a5962-c0f9-4c18-bb3e-42ef97a2da63
+20909,arbour-hill-cemetery,Arbour Hill Cemetery,pt,Dublin,,História,Dublin,Dublin,"Arbour Hill, Dublin 7, D07 YRR2",https://heritageireland.ie/places-to-visit/arbour-hill-cemetery/,,,,,b4c67db8-7ad1-4fc6-a7da-d9d41f4dc7d5
+20910,casino-marino,Casino Marino,pt,Dublin,,Patrimônio,Dublin,Marino,"Cherrymount Crescent, off Malahide Road, Marino, Dublin 3, D03 HH70",https://heritageireland.ie/places-to-visit/casino-marino/,,,,,4281cd7b-5810-487d-8e2d-cd71a0d4af1a
+20911,custom-house-visitor-centre,Custom House Visitor Centre,pt,Dublin,,Patrimônio,Dublin,Dublin,"Custom House Quay, Dublin 1, D01 W6X0",https://heritageireland.ie/places-to-visit/custom-house-visitor-centre/,,,,,400c911f-1adf-47c3-b790-66f66db2bced
+20912,farmleigh-house-and-estate,Farmleigh House and Gardens,pt,Dublin,,História,Dublin,Phoenix Park,"Phoenix Park, Dublin 15, D15 TD50",https://heritageireland.ie/places-to-visit/farmleigh-house-and-estate/,,,,,165b5fb9-77fa-4aa7-81b8-beada1e535ba
+20913,garden-of-remembrance,Garden of Remembrance,pt,Dublin,,História,Dublin,Dublin,"Parnell Square East, Dublin 1, D01 AOF8",https://heritageireland.ie/places-to-visit/garden-of-remembrance/,,,,,d0ac9919-8670-4183-936f-1a858c98faac
+20914,government-buildings,Government Buildings,pt,Dublin,,Patrimônio,Dublin,Dublin,"Upper Merrion Street, Dublin 2, D02 R583",https://heritageireland.ie/places-to-visit/government-buildings/,,,,,65f7e258-db2b-4563-8ac5-2824970e79a4
+20915,grangegorman-military-cemetery,Grangegorman Military Cemetery,pt,Dublin,,História,Dublin,Dublin,"Blackhorse Avenue, Dublin 7, D07 PK13",https://heritageireland.ie/places-to-visit/grangegorman-military-cemetery/,,,,,81afcda5-1068-4a9c-81ec-30bc68016abf
+20916,irish-national-war-memorial-gardens,Irish National War Memorial Gardens,pt,Dublin,,Jardins,Dublin,Islandbridge,"Islandbridge, Dublin 8, D08 T20W",https://heritageireland.ie/places-to-visit/irish-national-war-memorial-gardens/,,,,,ce97b54a-7b59-491e-bebe-8ccf05b6aa99
+20917,iveagh-gardens,Iveagh Gardens,pt,Dublin,,Jardins,Dublin,Dublin,"Clonmel Street / Hatch Street, Dublin 2",https://www.iveaghgardens.ie/,,,,,96930e89-fddc-436d-aedc-54652551b8c6
+20918,pearse-museum-st-endas-park,Pearse Museum – St. Enda's Park,pt,Dublin,,Museus,Dublin,Rathfarnham,"St. Enda's Park, Grange Road, Rathfarnham, Dublin 16, D16 Y7Y5",https://heritageireland.ie/places-to-visit/pearse-museum-st-endas-park/,,,,,b3f990d2-5632-401f-bd45-c4c127613774
+20919,phoenix-park-visitor-centre-ashtown-castle,"Phoenix Park Visitor Centre, Ashtown Castle and Biodiversity Centre",pt,Dublin,,Castelos,Dublin,Phoenix Park,"Phoenix Park, Dublin 8, D08 Y304",https://heritageireland.ie/places-to-visit/phoenix-park-visitor-centre-ashtown-castle/,,,,,3d3c9cdf-d957-4b03-a971-e7b7d7f08d40
+20920,phoenix-park-peoples-flower-gardens,Phoenix Park – People’s Flower Gardens,pt,Dublin,,Jardins,Dublin,Phoenix Park,"Phoenix Park, Dublin 8, D08 E5RK",https://heritageireland.ie/places-to-visit/phoenix-park-peoples-flower-gardens/,,,,,5c3faa0c-ecc1-4fe4-8bc4-744a2e6babe5
+20921,rathfarnham-castle,Rathfarnham Castle,pt,Dublin,,Castelos,Dublin,Rathfarnham,"Rathfarnham, Dublin 14, D14 K3T6",https://heritageireland.ie/places-to-visit/rathfarnham-castle/,,,,,1192daa6-7f67-4054-bd69-13443faeee6c
+20922,royal-hospital-kilmainham,Royal Hospital Kilmainham,pt,Dublin,,Patrimônio,Dublin,Kilmainham,"Military Road, Kilmainham, Dublin 8, D08 FW31",https://heritageireland.ie/places-to-visit/royal-hospital-kilmainham/,,,,,2895d9b9-55be-4947-add6-5d481dfe3a5c
+20923,st-marys-abbey-chapter-house,St. Mary’s Abbey – Chapter House – Cistercian Monastery,pt,Dublin,,Patrimônio,Dublin,Dublin,"4 Meetinghouse Lane, Smithfield, Dublin 7, D07 VY06",https://heritageireland.ie/places-to-visit/st-marys-abbey-chapter-house/,,,,,38cdd1b5-233a-4eaa-9130-a40aa32438db
+20924,st-audens-church,St Audoen’s Church and Visitor Centre,pt,Dublin,,Patrimônio,Dublin,Dublin,"Corn Market (near High Street), Dublin 8, D08 W99H",https://heritageireland.ie/places-to-visit/st-audoens-church/,,,,,f7f5d649-b207-473b-aea9-9286431ec169
+20925,st-stephens-green,St Stephen’s Green,pt,Dublin,,Jardins,Dublin,Dublin,"St. Stephen's Green, Dublin 2, D02 DX88",https://heritageireland.ie/places-to-visit/st-stephens-green/,,,,,8489d271-6f18-4a04-823f-05eff3dce87d
+20926,aras-an-uachtarain,Áras an Uachtaráin,pt,Dublin,,Patrimônio,Dublin,Phoenix Park,"Phoenix Park, Dublin 8, D08 E1W3",https://heritageireland.ie/places-to-visit/aras-an-uachtarain/,,,,,ee12d33f-d88e-4262-a4cb-c7abd6c234f0
+20927,ardfert-cathedral,Ardfert Cathedral,pt,Kerry,,Patrimônio,Kerry,Ardfert,"Ardfert, Tralee, Co. Kerry, V92 KR7P",https://heritageireland.ie/places-to-visit/ardfert-cathedral/,,,,,b79f923b-5ffe-4206-a07b-e0aac735c165
+20928,listowel-castle,Listowel Castle,pt,Kerry,,Castelos,Kerry,Listowel,"The Square, Listowel, Co. Kerry, V31 RD93",https://heritageireland.ie/places-to-visit/listowel-castle/,,,,,01784d59-c04d-474e-bf10-128ce7716cad
+20929,blasket-centre-ionad-an-bhlascaoid,Ionad an Bhlascaoid – The Blasket Centre,pt,Kerry,,Museus,Kerry,Dún Chaoin,"Dún Chaoin, Dingle, Co. Kerry, V92 TH73",https://heritageireland.ie/places-to-visit/the-blasket-centre-ionad-an-bhlascaoid/,,,,,9cb80f72-bead-4d5f-ac24-30d3c5e34a14
+20930,askeaton-castle,Askeaton Castle,pt,Limerick,,Castelos,Limerick,Askeaton,"Askeaton, Co. Limerick",https://heritageireland.ie/places-to-visit/askeaton-castle/,,,,,2e4e7734-bf1a-49f0-88b6-b8cf10b5a720
+20931,desmond-castle-adare,Adare Castle,pt,Limerick,,Castelos,Limerick,Adare,"Adare Heritage Centre, Adare, Co. Limerick, V94 DWV7",https://heritageireland.ie/places-to-visit/adare-castle/,,,,,ff5441ae-3dcd-4fb3-a0fd-9fb111618b8e
+20932,desmond-castle-newcastlewest,Desmond Castle Newcastlewest,pt,Limerick,,Castelos,Limerick,Newcastle West,"The Square, Newcastle West, Co. Limerick, V42 YD76",https://heritageireland.ie/places-to-visit/desmond-castle-newcastlewest/,,,,,11bf591e-8afb-4e67-a488-63244fd1f5c9
+20933,athenry-castle,Athenry Castle,pt,Galway,,Castelos,Galway,Athenry,"Athenry, Co. Galway, H65 WP93",https://heritageireland.ie/places-to-visit/athenry-castle/,,,,,181c5d21-0ca5-45e1-95da-710c11243257
+20934,aughnanure-castle,Aughnanure Castle,pt,Galway,,Castelos,Galway,Oughterard,"Aughnanure, Oughterard, Co. Galway, H91 PX20",https://heritageireland.ie/places-to-visit/aughnanure-castle/,,,,,e96ede4d-b9b3-44fd-978e-8f5ec6ffdab0
+20935,ionad-culturtha-an-phiarsaigh-pearses-cottage,Ionad Cultúrtha an Phiarsaigh Conamara- Pearse’s Cottage and Visitor Centre,pt,Galway,,Patrimônio,Galway,Ros Muc,"An Turlach, Ros Muc, Connemara, Co. Galway, H91 DW9A",https://heritageireland.ie/places-to-visit/ionad-culturtha-an-phiarsaigh/,,,,,766481f6-1e09-4aaa-8139-4ecc0cc2693b
+20936,ballyhack-castle,Ballyhack Castle,pt,Wexford,,Castelos,Wexford,Arthurstown,"Ballyhack, Arthurstown, Co. Wexford, Y34 TN56",https://heritageireland.ie/places-to-visit/ballyhack-castle/,,,,,a13572f9-f9eb-48b3-861d-5be7ce21049f
+20937,doe-castle,Doe Castle,pt,Donegal,,Castelos,Donegal,Creeslough,"Sheephaven Bay, Co. Donegal, F92 Y9D2",https://heritageireland.ie/places-to-visit/doe-castle/,,,,,d5404065-8c89-4a98-8470-62ff0c350f09
+20938,glebe-house-and-gallery,Glebe Gallery and Garden – Derek Hill House,pt,Donegal,,Museus,Donegal,Churchill,"Glebe, Churchill, Letterkenny, Co. Donegal, F92 WP70",https://heritageireland.ie/places-to-visit/glebe-house-and-gallery/,,,,,0d5f2493-e0ea-4c10-b9d7-7c8b40cd614e
+20939,newmills-corn-and-flax-mills,Newmills Corn and Flax Mills,pt,Donegal,,Patrimônio,Donegal,Letterkenny,"Churchill Road, Letterkenny, Co. Donegal, F92 F205",https://heritageireland.ie/places-to-visit/newmills-corn-and-flax-mills/,,,,,04dd2874-73c5-428b-8109-ac7ab78ce5e7
+20940,dungarvan-castle,Dungarvan Castle,pt,Waterford,,Castelos,Waterford,Dungarvan,"Castle Street, Dungarvan, Co. Waterford, X35 DV58",https://heritageireland.ie/places-to-visit/dungarvan-castle/,,,,,71cb6646-cda1-4ee4-afbd-639282fe2de3
+20941,kells-priory,Kells Priory,pt,Kilkenny,,Patrimônio,Kilkenny,Kells,"Kells, Co. Kilkenny, R95 V184",https://heritageireland.ie/places-to-visit/kells-priory/,,,,,fce2d7f5-385d-47af-904b-5990976afd47
+20942,st-marys-church-gowran,St. Mary’s Church Gowran,pt,Kilkenny,,Patrimônio,Kilkenny,Gowran,"Gowran, Co. Kilkenny, R95 CV0Y",https://heritageireland.ie/places-to-visit/st-marys-church-gowran/,,,,,57cd42fd-955d-4fd7-8671-bb70bca41d11
+20943,famine-warhouse-1848,Famine Warhouse 1848,pt,Tipperary,,História,Tipperary,Ballingarry,"Ballingarry, Co. Tipperary, E41 XK23",https://heritageireland.ie/places-to-visit/famine-warhouse-1848/,,,,,47bfc6c9-0955-4602-9bcf-8ffbcb84adb5
+20944,the-main-guard,The Main Guard,pt,Tipperary,,Patrimônio,Tipperary,Clonmel,"Sarsfield Street, Clonmel, Co. Tipperary, E91 P7Y8",https://heritageireland.ie/places-to-visit/the-main-guard/,,,,,ab8a0e3b-2fb6-4ebb-b354-d33380a2a7a5
+20945,roscrea-heritage-centre-roscrea-castle-and-damer-house,"Roscrea Castle, Gardens and Damer House/Black Mills",pt,Tipperary,,Castelos,Tipperary,Roscrea,"Castle Street, Roscrea, Co. Tipperary, E53 F652",https://heritageireland.ie/places-to-visit/roscrea-heritage-centre-roscrea-castle-and-damer-house/,,,,,c015346a-1c4b-4395-8258-db7fa22b68d9
+20946,fore-abbey,Fore Abbey,pt,Westmeath,,Patrimônio,Westmeath,Fore,"Fore, Co. Westmeath, N91 TN92",https://heritageireland.ie/places-to-visit/fore-abbey/,,,,,fa6a5900-42e7-414a-88b7-bc7c73ac9bb0
+20947,national-botanic-gardens-kilmacurragh,National Botanic Garden of Ireland – Kilmacurragh,pt,Wicklow,,Jardins,Wicklow,Kilbride,"Kilbride, Co. Wicklow, A67 YR12",https://heritageireland.ie/places-to-visit/national-botanic-gardens-kilmacurragh/,,,,,d6bcad90-5198-4bec-a73e-0ee8869ed7dd
+20948,dwyer-mcallister-cottage,Dwyer McAllister Cottage,pt,Wicklow,Aughrim,Natureza,Wicklow,Donard,"Derrynamuck, Knockanarrigan, Co. Wicklow, W91 D273",https://heritageireland.ie/places-to-visit/dwyer-mcallister-cottage/,,,,,3f238f70-5b89-41c6-9ac4-54461ce04811
+22734,ph3c-test-lazer-alfa,[PH3C TEST] Lazer Alfa,pt,Teste Alfa (PH3C),,,,,,,,,,,
+22737,ph3c-test-lazer-sem-condado,[PH3C TEST] Lazer sem condado,pt,,,,,,,,,,,,
+22738,ph3c-test-lazer-zeta,[PH3C TEST] Lazer Zeta,pt,Teste Zeta (PH3C),,,,,,,,,,,
+22739,ph3c-test-lazer-externo,[PH3C TEST] Lazer externo,pt,Teste Alfa (PH3C),,,,Test Town,,https://example.invalid/test,,,,,
+115357,phoenix-park-en,Phoenix Park (synthetic),en,Dublin,Dublin,Nature,,,,,,,,,ci-fixture-0000-0000-4000-8000-000000000002

@@ -1,0 +1,3 @@
+  does-not-exist: UNRESOLVED [unresolved] — no leisure record for uuid= slug=does-not-exist title=Nope
+  Phoenix Park (ambiguous UUID, no slug): UNRESOLVED [uuid_ambiguous] — uuid=ci-fixture-0000-0000-4000-8000-000000000002 matches 2 leisure records (10150,115357) and the entry (slug=- lang=-) does not disambiguate them; nothing was written.
+summary: manifest_entries=2, populate_entries=2, preserve_entries=0, review_entries=0, planned=0, written=0, unchanged=0, conflicts=0, invalid=0, unresolved=2, owner_approved=0, provenance_repaired=0, provenance_planned=0, match_stable_id=0, match_stable_id_slug=0, match_stable_id_lang=0, match_slug=0, match_title=0, with_before=289, with_after=289, missing_after=5, gate=0, errors=2

@@ -402,10 +402,21 @@ Image fields:
 ## Import/Export Identifiers
 
 ### Lazer (stable UUID)
-- Meta key: `_lazer_uuid`
-- UUID is generated on export and used for deduplication on import.
+- Meta key: `_leisure_export_uuid` (constant
+  `Conexao_Lazer_Exporter::UUID_META_KEY`).
+- **It identifies the ATTRACTION, not the WordPress post.** A Portuguese master
+  and its linked Polylang English translation **share the same value on
+  purpose** — exactly one master plus at most one translation, never a third
+  record. Consumers must therefore expect a UUID lookup to return up to two
+  records and disambiguate them (the Lazer importer uses the import language;
+  `scripts/apply-leisure-coordinates.php` uses the manifest entry's slug, then
+  language, and fails safely when neither resolves it).
+- UUID is generated on export (only when a record has none) and used for
+  deduplication on import.
 - Matching order: UUID → slug → title.
 - Never uses WordPress post IDs as portable identifiers.
+- `_leisure_uuid` is a retired historical key written only by the pre-Stage-7
+  seeder; it carries no rows and is not a consumer contract.
 
 ### Events (source + source_id + export UUID)
 - `_event_source` (e.g. `laois_tourism`) + `_event_source_id` (external ID) form the primary deduplication key.
@@ -414,3 +425,4 @@ Image fields:
 _Last verified: 2026-09-26 by Stage O — Enable the Real English Blog Archive_
 
 _Last verified: 2026-10-08 by the Apoiadores single-page directory change (the `/apoiadores/` archive renders the whole ordered set on one page)_
+_Last verified: 2026-11-03 by the Phoenix Park UUID repair — Lazer `_leisure_export_uuid` per-attraction semantics documented_

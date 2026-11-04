@@ -184,6 +184,13 @@ To add, remove or re-classify a plugin: edit `plugins.json`, add its doc under
 | [reports/2026-10-27-halloween-mobile-experience-plan.md](reports/2026-10-27-halloween-mobile-experience-plan.md) | Plan for safe, occasional mobile Halloween appearances |
 | [reports/2026-10-27-halloween-mobile-experience-report.md](reports/2026-10-27-halloween-mobile-experience-report.md) | Implementation, timing, responsive browser evidence, tests, and limitations |
 | [reports/2026-11-03-commemorative-events-architecture-audit.md](reports/2026-11-03-commemorative-events-architecture-audit.md) | **Commemorative Events System — read-only architecture audit & redesign proposal** (CPT + engine + admin UX + presentation registry; 9-stage roadmap; reproduces the New Year year-boundary defect). No implementation performed |
+| [reports/2026-11-03-leisure-coordinate-research.md](reports/2026-11-03-leisure-coordinate-research.md) | **Lazer coordinate research and population** — the full `/lazer` inventory, the two-source (Wikipedia + OpenStreetMap) research method, the HIGH-confidence coordinates populated, the verification and the limitations |
+| [reports/2026-11-03-leisure-coordinate-research.csv](reports/2026-11-03-leisure-coordinate-research.csv) | The complete coordinate research manifest (one row per published attraction, with both sources and the action) |
+| [reports/2026-11-03-leisure-coordinate-owner-input.md](reports/2026-11-03-leisure-coordinate-owner-input.md) | The owner-input list: every attraction whose coordinates could not be established with HIGH confidence |
+| [plans/2026-11-03-leisure-coordinate-research.md](plans/2026-11-03-leisure-coordinate-research.md) | The plan for the Lazer coordinate research and population task |
+| [reports/2026-11-03-phoenix-park-uuid-investigation.md](reports/2026-11-03-phoenix-park-uuid-investigation.md) | **Read-only investigation** of the shared `_leisure_export_uuid` on the Phoenix Park PT/EN pair — writers, consumers, the per-attraction uniqueness contract, export/import and REST impact, and the recommended minimal repair. Finds the shared UUID is correct by design |
+| [reports/2026-11-03-phoenix-park-uuid-repair.md](reports/2026-11-03-phoenix-park-uuid-repair.md) | Implementation of the recommended repair: the coordinate resolver disambiguates a shared UUID by slug then language and fails safely; 29-assertion regression suite; `_lazer_uuid` drift fixed; zero database records changed |
+| [plans/2026-11-03-phoenix-park-uuid-repair.md](plans/2026-11-03-phoenix-park-uuid-repair.md) | The plan for the Phoenix Park UUID repair |
 | [events/](events/) | Events location-filters and copy reports |
 | [importers/](importers/) | Event/Lazer/IVVCC/Mondello import pipeline reports and plans |
 | [research/](research/) | Topic research notes (e.g. recruitment agencies, employment permits) |
@@ -226,3 +233,4 @@ _Last verified: 2026-10-27 by Halloween navigation continuity_
 _Last verified: 2026-10-27 by Halloween witch animation_
 _Last verified: 2026-10-27 by Halloween theme compatibility_
 _Last verified: 2026-10-27 by Halloween mobile spontaneous appearances_
+_Last verified: 2026-11-03 by the Lazer coordinate research and population task_

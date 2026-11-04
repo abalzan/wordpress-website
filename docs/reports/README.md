@@ -191,6 +191,26 @@ The authorised follow-up to the BLOCKED finding above. The empty archive was a
 |---|---|
 | [`2026-11-02-lazer-location-services.md`](2026-11-02-lazer-location-services.md) | Implementation of the approved location-services plan: leisure coordinate meta + validation + provenance + admin inventory column, one-shot browser geolocation on `/lazer/` + `/en/lazer/`, client-side Haversine distances, two read-only REST endpoints reusing the archive filter builder, global nearest-first ordering with proximity-aware infinite scroll, and PT/EN copy. `PASS WITH LIMITATION` — no attraction has coordinates yet, so the feature is inert until coordinate population (a separate editorial prerequisite); HTTP acceptance was BLOCKED by a pre-existing local port/DB mismatch. **0 production writes, 0 deployments.** |
 
+## Lazer coordinate research and population (2026-11-03)
+
+| Report | Content |
+|---|---|
+| [`2026-11-03-leisure-coordinate-research.md`](2026-11-03-leisure-coordinate-research.md) | Research and population of visitor coordinates for the published `/lazer` attractions, using two independent sources (Wikipedia article coordinates + OpenStreetMap Nominatim) with a strict agreement rule. Only HIGH-confidence coordinates were populated, through a new dry-run/apply script keyed on the portable `_leisure_export_uuid`. The report carries the inventory, the numbers, the verification and the limitations. |
+| [`2026-11-03-leisure-coordinate-research.csv`](2026-11-03-leisure-coordinate-research.csv) | The complete research manifest: one row per published attraction with both sources, the proposed pair, the confidence and the action. |
+| [`2026-11-03-leisure-coordinate-owner-input.md`](2026-11-03-leisure-coordinate-owner-input.md) | The owner-input list: every attraction whose coordinates could not be established with HIGH confidence, with the sources already investigated and the exact information needed. |
+
+## Phoenix Park UUID investigation (2026-11-03)
+
+| Report | Content |
+|---|---|
+| [`2026-11-03-phoenix-park-uuid-investigation.md`](2026-11-03-phoenix-park-uuid-investigation.md) | **Read-only investigation** of the shared `_leisure_export_uuid` on `phoenix-park` (10150) / `phoenix-park-en` (115357): every writer and consumer, the per-attraction uniqueness contract, the Polylang share-don't-differ rule, why the EN sibling cannot hold coordinates, the export/import and REST impact, and the recommended minimal repair with regression tests. Finds that the shared UUID is **correct by design** and that the earlier "identity defect" framing was wrong. No writes. |
+
+## Phoenix Park UUID repair (2026-11-03)
+
+| Report | Content |
+|---|---|
+| [`2026-11-03-phoenix-park-uuid-repair.md`](2026-11-03-phoenix-park-uuid-repair.md) | Implementation of Option A: the coordinate resolver disambiguates a shared `_leisure_export_uuid` by the manifest entry's slug then language, and fails safely (`uuid_ambiguous`) when it cannot. Adds a 29-assertion regression suite, fixes the `_lazer_uuid` documentation drift, and proves the repair changed **zero** database records. `PASS WITH LIMITATION` — mobile UUID consumption could not be verified (out of scope). |
+
 ## Related: `docs/audit/` (engineering audits), `docs/engineering-standard.md`
 (the normative standard these reports are measured against).
 
@@ -274,3 +294,4 @@ _Last verified: 2026-10-05 by G18 - automatic continuation of a resumable enumer
 _Last verified: 2026-10-27 by Halloween navigation continuity_
 _Last verified: 2026-10-27 by Halloween theme compatibility_
 _Last verified: 2026-10-27 by Halloween mobile spontaneous appearances_
+_Last verified: 2026-11-03 by the Lazer coordinate research and population task_
