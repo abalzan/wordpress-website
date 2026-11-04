@@ -75,10 +75,12 @@ function conexao_leisure_location_request_lang( WP_REST_Request $request ) {
 
 	$available = array();
 	if ( function_exists( 'pll_languages_list' ) ) {
-		$slugs = pll_languages_list( array( 'fields' => 'slug' ) );
-		if ( is_array( $slugs ) ) {
-			$available = array_map( 'strval', $slugs );
-		}
+		// `pll_languages_list( array( 'fields' => 'slug' ) )` is declared to
+		// return an array of slugs, so the `(array)` cast is a no-op in
+		// practice and only guards against an unexpected return. An
+		// `is_array()` check here is provably always true and would need a
+		// new `phpstan-baseline.neon` entry, which §1.6 forbids.
+		$available = array_map( 'strval', (array) pll_languages_list( array( 'fields' => 'slug' ) ) );
 	}
 
 	if ( '' !== $requested && in_array( $requested, $available, true ) ) {

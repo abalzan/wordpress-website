@@ -309,7 +309,7 @@ def load_archive(page, base_url):
     return page.goto(f"{base_url}/lazer/", wait_until="domcontentloaded")
 
 
-def assert_page_contract(page, base_url, totals):
+def assert_page_contract(page, totals):
     """Page + proximity JavaScript + coordinates endpoint are all healthy."""
     check(page.evaluate("() => document.readyState") in ("interactive", "complete"),
           "the /lazer/ page is loaded")
@@ -376,7 +376,7 @@ def scenario_granted(browser, base_url, expected_order, expected_distances, tota
     check(response is not None and response.status == 200,
           f"navigating to {base_url}/lazer/ returns HTTP 200")
 
-    assert_page_contract(page, base_url, totals)
+    assert_page_contract(page, totals)
 
     control_name = page.eval_on_selector_all(CONTROL_SELECTOR, "els => els.map(e => e.textContent.trim())")
     check(control_name == ["Mostrar distância de mim"],

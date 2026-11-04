@@ -217,6 +217,13 @@ The authorised follow-up to the BLOCKED finding above. The empty archive was a
 |---|---|
 | [`2026-11-03-leisure-location-cleanup.md`](2026-11-03-leisure-location-cleanup.md) | Repository maintenance only: the 75 one-line per-run stdout captures were consolidated **byte-for-byte** into `run-log-transcript.md` and removed (evidence directory 104 → 28 entries), two documentation-accuracy defects were fixed, the unindexed plan was added to the index, and every other artefact was deliberately retained with a stated reason. No code, data, schema or behaviour change; coordinates, provenance, UUIDs and translation relationships proven unchanged. |
 
+## Lazer distance opt-in and proximity verification (2026-11-04)
+
+| Report | Content |
+|---|---|
+| [`2026-11-04-leisure-distance-optin.md`](2026-11-04-leisure-distance-optin.md) | Making the `/lazer/` distance indicator visitor-activated: the audit that found the feature already existed, the four gaps closed (explicit opt-in, friendly failure + retry, the approved display table, `%s de você` wording), the privacy confirmation, and the limitations. |
+| [`2026-11-04-leisure-proximity-geolocation-e2e.md`](2026-11-04-leisure-proximity-geolocation-e2e.md) | **Read-only** end-to-end verification that browser geolocation reaches the `/lazer/` front end and that the ordering and distances are correct: five scenarios (granted/denied/`POSITION_UNAVAILABLE`/`TIMEOUT`/API-unsupported) in real Chromium against a simulated position, with the expected order and every distance recomputed independently in Python. 88 assertions passed; the database was provably unchanged. |
+
 ## Related: `docs/audit/` (engineering audits), `docs/engineering-standard.md`
 (the normative standard these reports are measured against).
 
@@ -301,3 +308,4 @@ _Last verified: 2026-10-27 by Halloween navigation continuity_
 _Last verified: 2026-10-27 by Halloween theme compatibility_
 _Last verified: 2026-10-27 by Halloween mobile spontaneous appearances_
 _Last verified: 2026-11-03 by the Lazer coordinate research and population task_
+_Last verified: 2026-11-04 by the Lazer proximity feature (the 2026-11-04 distance-opt-in and proximity-verification reports added to the index)_

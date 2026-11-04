@@ -20,13 +20,14 @@ credentials.
 Run from the repository root (the local stack must be up):
 
   python3 tests/browser/verify-lazer-proximity-browser.py \
-      --base-url http://localhost:8080 --connect 127.0.0.1:8081
+      --base-url http://localhost:8080
 
 `--connect` is optional and only needed when the local WordPress is reachable
 on a different address than `--base-url` claims (for example when the
-container's WordPress canonical URL differs from its published port). It is
-implemented with Chromium's --host-resolver-rules, so the request still
-carries the Host header WordPress expects.
+container's WordPress canonical URL differs from its published port). It takes
+`<host>:<port>` and is implemented with Chromium's --host-resolver-rules, so
+the request still carries the Host header WordPress expects. The canonical
+Compose stack publishes `localhost:8080`, so the flag is not needed there.
 """
 
 from __future__ import annotations
@@ -162,7 +163,7 @@ def distance_texts(page):
     )
 
 
-def scenario(page, base_url, expect_proximity, position_delay_ms=0):
+def scenario(page, base_url, expect_proximity):
     """Load /lazer/, prove NOTHING is requested automatically, then activate
     the explicit opt-in control and read the contract.
 

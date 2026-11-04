@@ -19,8 +19,10 @@ if ( ! defined( 'ABSPATH' ) ) {
  * The SINGLE interpretation of the Lazer filter dimensions (county /
  * category / attribute), shared by the main archive query and the
  * location-services endpoints so a filtered archive and its coordinate
- * dataset can never diverge. `$params` carries the raw request values in
- * the same shapes the filter bar produces:
+ * dataset can never diverge. `$params` carries the filter state in the
+ * shapes the filter bar produces — raw request values from the REST
+ * callers, already-sanitized slugs from the archive query; normalization
+ * is idempotent, so either is accepted:
  *
  *   - `county`    — a single county slug (string);
  *   - `categoria` — comma-separated string OR array of slugs (multi-select);
@@ -30,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * a multi-select dimension (tax_query IN), AND between dimensions. An
  * unknown slug simply never matches — no raw SQL, no second query system.
  *
- * @param array $params Raw filter state.
+ * @param array $params Filter state (raw or already-sanitized).
  * @return array tax_query clauses (with a 'relation' key when more than one).
  */
 function conexao_leisure_archive_tax_query( array $params = array() ) {
@@ -73,6 +75,18 @@ function conexao_leisure_archive_tax_query( array $params = array() ) {
 	return $tax_query;
 }
 
+/**
+ * Apply the per-post-type archive filters to the front-end main query.
+ *
+ * Runs on `pre_get_posts` for the main query only: it shapes the CPT
+ * archives (county/city/category/environment and the Blog category filter)
+ * with the language-scoped ordering rules, and applies the shared Lazer
+ * filter clause built by conexao_leisure_archive_tax_query(). Admin queries
+ * and non-main queries are left untouched.
+ *
+ * @param WP_Query $query Query object.
+ * @return void
+ */
 function conexao_content_archive_query( $query ) {
 	if ( is_admin() || ! $query->is_main_query() ) {
 		return;
@@ -298,14 +312,16 @@ function conexao_content_archive_query( $query ) {
 		// The Lazer filter clause is built by the SAME shared helper the
 		// location-services endpoints use, so the archive and the
 		// coordinate/card datasets can never disagree about which
-		// attractions match the active filters. The helper receives the raw
-		// request values; normalization (sanitize_title + the multi-slug
-		// rules) lives inside it, exactly as it did inline before.
+		// attractions match the active filters. The public archive filter
+		// params are read at the established boundary — the multi-select
+		// dimensions through the shared sanitizing helper the filter bar
+		// also uses, the county sanitized here — so the helper only ever
+		// receives clean slugs and its normalization stays idempotent.
 		$leisure_tax_query = conexao_leisure_archive_tax_query(
 			array(
-				'county'    => isset( $_GET['county'] ) ? wp_unslash( $_GET['county'] ) : '',
-				'categoria' => isset( $_GET['categoria'] ) ? wp_unslash( $_GET['categoria'] ) : '',
-				'atributo'  => isset( $_GET['atributo'] ) ? wp_unslash( $_GET['atributo'] ) : '',
+				'county'    => isset( $_GET['county'] ) ? sanitize_title( wp_unslash( $_GET['county'] ) ) : '',
+				'categoria' => conexao_leisure_query_slugs( 'categoria' ),
+				'atributo'  => conexao_leisure_query_slugs( 'atributo' ),
 			)
 		);
 
