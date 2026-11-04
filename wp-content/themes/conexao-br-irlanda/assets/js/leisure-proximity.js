@@ -8,7 +8,9 @@
  *
  * Responsibilities:
  *   - Haversine straight-line distance (metres) with full input validation;
- *   - locale-aware distance formatting (km to one decimal, metres below 1 km);
+ *   - locale-aware distance formatting following the approved display table
+ *     (metres below 1 km, one decimal from 1 to 10 km, whole kilometres from
+ *     10 km on);
  *   - global nearest-first ordering of the matching attraction catalogue,
  *     with a stable original-archive-order tie-break and attractions without
  *     coordinates appended last.
@@ -152,8 +154,12 @@
 	/**
 	 * Format a distance for display, WITHOUT the surrounding copy.
 	 *
-	 *  - 1 km or more → kilometres, one decimal place ("2,5 km" / "2.5 km");
-	 *  - below 1 km   → metres, rounded to the nearest 10 ("400 m").
+	 * The rounding follows the approved display table, so a shown value is
+	 * precise enough to be useful and never falsely precise:
+	 *
+	 *  - below 1 km       → metres, rounded to the nearest 10 ("850 m");
+	 *  - 1 km to 10 km    → kilometres, ONE decimal ("2,4 km" / "2.4 km");
+	 *  - 10 km and above  → whole kilometres ("24 km", "125 km").
 	 *
 	 * The unit symbols are identical in Portuguese and English; only the
 	 * number grouping/separator follows the locale.
@@ -172,18 +178,24 @@
 		// rather than rendering a four-digit metre figure).
 		var roundedMeters = Math.round( meters / 10 ) * 10;
 
-		if ( roundedMeters >= 1000 ) {
-			var kmFormatter = numberFormatter( locale, {
-				minimumFractionDigits: 1,
-				maximumFractionDigits: 1,
+		if ( roundedMeters < 1000 ) {
+			var meterFormatter = numberFormatter( locale, {
+				maximumFractionDigits: 0,
 			} );
-			return kmFormatter.format( roundedMeters / 1000 ) + ' km';
+			return meterFormatter.format( roundedMeters ) + ' m';
 		}
 
-		var meterFormatter = numberFormatter( locale, {
-			maximumFractionDigits: 0,
+		var kilometres = roundedMeters / 1000;
+
+		// One decimal below 10 km; from 10 km on a decimal is false precision
+		// for a straight-line estimate, so whole kilometres are shown.
+		var fractionDigits = kilometres < 10 ? 1 : 0;
+
+		var kmFormatter = numberFormatter( locale, {
+			minimumFractionDigits: fractionDigits,
+			maximumFractionDigits: fractionDigits,
 		} );
-		return meterFormatter.format( roundedMeters ) + ' m';
+		return kmFormatter.format( kilometres ) + ' km';
 	}
 
 	/**

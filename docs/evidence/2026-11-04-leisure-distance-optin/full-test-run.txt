@@ -1,0 +1,245 @@
+# Whole suite — ./scripts/run-tests.sh
+#
+# NOTE: the HTTP acceptance layer runs against http://localhost:8080, which in
+# this environment is a DIFFERENT (older) WordPress install than the Docker
+# Compose stack under test (see browser-verification.txt). That pre-existing
+# mismatch is why verify-event-occurrence-http.py fails here; it fails
+# identically in the recorded baseline.
+
+conexao test harness
+  repository:    /home/andrei/IdeaProjects/wordpress-website
+  php:           8.5.4
+  environment:   host (docker compose exec)
+  base url:      http://localhost:8080
+
+In-process PHP suites (serial, one process per suite)
+[PASS] plugin/conexao-admin-ux/test-leisure-coordinates.php — 29 passed, 0 failed
+[PASS] plugin/conexao-admin-ux/test-recurrence-admin.php — 60 passed, 0 failed
+[PASS] plugin/conexao-admin-ux/test-translation-state.php — 23 passed, 0 failed
+[PASS] plugin/conexao-en-translation/test-shared-slug-newsletter.php — 39 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-county-registry.php — 482 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-error-handling.php — 55 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-event-address.php — 76 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-event-cleanup-purge.php — 715 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-event-image-sync.php — 30 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-eventbrite-api-contract.php — 110 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-eventbrite-checkpoint.php — 77 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-eventbrite-importer.php — 68 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-eventbrite-rate-limit.php — 73 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-eventbrite-source-expansion.php — 65 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-eventbrite-token-retirement.php — 42 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-eventbrite-volatility.php — 77 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-export-language.php — 58 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-ics-occurrence-dates.php — 172 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-import-continuation.php — 272 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-import-log-run-correlation.php — 21 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-import-log.php — 55 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-ivvcc-importer.php — 46 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-language-identity.php — 29 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-mondello-park-importer.php — 142 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-motorsport-ireland-importer.php — 90 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-multi-file-import-ui.php — 41 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-multi-file-import.php — 149 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-past-event-filter.php — 29 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-reappearing-event-lifecycle.php — 5 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-request-budget.php — 33 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-request-retry-policy.php — 59 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-request-reuse.php — 53 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-source-county-hint.php — 18 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-source-fetch-failure.php — 138 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-source-not-found-reconciliation.php — 57 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-source-pagination-completeness.php — 24 passed, 0 failed
+[FAIL] plugin/conexao-event-importer/test-town-sanitization.php — 82 passed, 1 failed (exit 1)
+           FAIL: no Eircode-contaminated or non-town terms in conexao_town
+[PASS] plugin/conexao-event-runtime/test-event-language-gate.php — 18 passed, 0 failed
+[PASS] plugin/conexao-event-runtime/test-event-query.php — 41 passed, 0 failed
+[PASS] plugin/conexao-event-runtime/test-event-recurrence.php — 90 passed, 0 failed
+[PASS] plugin/conexao-leisure-migration/test-excerpt-en-roundtrip.php — 9 passed, 0 failed
+[PASS] plugin/conexao-leisure-migration/test-language-uuid.php — 16 passed, 0 failed
+[PASS] plugin/conexao-leisure-migration/test-leisure-coordinate-resolver.php — 29 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-admin-trigger.php — 109 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-apply-safety.php — 107 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-audit.php — 80 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-batch.php — 243 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-boundary.php — 147 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-change-detection.php — 108 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-lock.php — 51 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-model-a.php — 145 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-promotion.php — 17 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-provider-implementation.php — 144 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-provider-secrets.php — 17 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-provider.php — 222 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-secret-scan.php — 113 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-translation-plan.php — 157 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-transport-shape.php — 64 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-trigger.php — 99 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-manual-translation-workflow.php — 66 passed, 0 failed
+[PASS] plugin/conexao-translation-rollout/test-future-stage-smoke.php — 13 passed, 0 failed
+[PASS] plugin/conexao-translation-rollout/test-legacy-apply-endpoint-closure.php — 36 passed, 0 failed
+[PASS] plugin/conexao-translation-rollout/test-rollout-failure-proofs.php — 12 passed, 0 failed
+[PASS] plugin/conexao-translation-rollout/test-translation-rollout-engine.php — 36 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-blog-en-translation.php — 25 passed, 3 failed (exit 1)
+         [04-Nov-2026 12:54:38 UTC] PHP Warning:  preg_match(): Compilation failed: PCRE2 does not support \F, \L, \l, \N{name}, \U, or \u at offset 8 in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-blog-en-translation.php on line 156
+         Warning: preg_match(): Compilation failed: PCRE2 does not support \F, \L, \l, \N{name}, \U, or \u at offset 8 in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-blog-en-translation.php on line 156
+           FAIL: EN posts keep the PT publication date — sol-e-lua-equilibrando-consciencia-e-emocoesdurante-o-inverno-norte-europeu, o-inverno-do-ego-um-renascimento-poetico, o-sol-que-habita-em-nos, o-calor-que-nasce-do-inverno, preparando-o-corpo-para-o-inverno
+           FAIL: every category used by a blog post has a linked EN term assigned to the EN post — saude-e-bem-estar, saude-e-bem-estar, saude-e-bem-estar, lazer, saude-e-bem-estar
+           FAIL: every category term used by blog posts is linked to an EN term — linked=1 used=6
+[PASS] theme/conexao-br-irlanda/test-cache-language-scoping.php — 9 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-course-provider-card-excerpt-language.php — 45 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-cursos-infinite-scroll.php — 13 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-empregos-job-resources.php — 89 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-empregos-landing-cta.php — 11 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-en-archive-rewrite-guard.php — 17 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-en-course-provider-category-filter.php — 60 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-en-jobs-shared-slug.php — 35 passed, 4 failed (exit 1)
+           FAIL: the EN Jobs page is linked back to the PT Jobs page — 1 violation(s): {"en_id":22200,"pt_of_en":11086}
+           FAIL: an EN request for the shared slug resolves to the EN record — 1 violation(s): {"resolved":{"pagename":"empregos","lang":"en"},"expected_page_id":22200}
+           FAIL: the resolved EN request no longer carries the ambiguous pagename — 1 violation(s): {"vars":{"pagename":"empregos","lang":"en"}}
+           FAIL: the EN Jobs landing is a declared shared-slug pair — 1 violation(s): {"pairs":["blog","newsletter"]}
+[PASS] theme/conexao-br-irlanda/test-event-date-badge.php — 55 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-event-filter-cache.php — 17 passed, 5 failed (exit 1)
+         [04-Nov-2026 12:55:06 UTC] PHP Warning:  Attempt to read property "locale" on null in /var/www/html/wp-content/plugins/polylang/src/frontend/frontend-filters.php on line 60
+         [04-Nov-2026 12:55:06 UTC] PHP Warning:  Attempt to read property "locale" on null in /var/www/html/wp-content/plugins/polylang/src/frontend/frontend-filters.php on line 60
+         [04-Nov-2026 12:55:06 UTC] PHP Warning:  Attempt to read property "locale" on null in /var/www/html/wp-content/plugins/polylang/src/frontend/frontend-filters.php on line 60
+         [04-Nov-2026 12:55:06 UTC] PHP Warning:  Attempt to read property "locale" on null in /var/www/html/wp-content/plugins/polylang/src/frontend/frontend-filters.php on line 60
+           FAIL: Cold empty request unexpected results
+           FAIL: Warm hit did not return empty
+           FAIL: After county rename, cache missing renamed term
+           FAIL: Town scoping not working correctly
+         Warning: Attempt to read property "locale" on null in /var/www/html/wp-content/plugins/polylang/src/frontend/frontend-filters.php on line 60
+         Warning: Attempt to read property "locale" on null in /var/www/html/wp-content/plugins/polylang/src/frontend/frontend-filters.php on line 60
+[PASS] theme/conexao-br-irlanda/test-event-location-filters.php — 63 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-eventos-infinite-scroll.php — 9 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-filter-link-aria-semantics.php — 103 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-guide-breadcrumb-filter.php — 36 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-guide-en-translation.php — 667 passed, 7 failed (exit 1)
+           FAIL: eligible public PT guides missing EN = 0 — missing: ["carteira-motorista-brasileiros"]
+           FAIL: one EN translation per public PT guide — 54 pairs vs 55 PT guides
+           FAIL: inverno-irlanda-depressao-sazonal-saude-mental: EN guide uses the EN category term(s) — {"expected":[2998],"actual":[3001]}
+           FAIL: stage32-editorial-source: EN keeps the PT publication date
+           FAIL: stage32-editorial-source: EN meta description is set
+           FAIL: stage32-editorial-source: EN guide uses the EN category term(s) — {"expected":[],"actual":[]}
+           FAIL: violencia-domestica-irlanda-onde-encontrar-ajuda: EN guide uses the EN category term(s) — {"expected":[3034],"actual":[3037]}
+[PASS] theme/conexao-br-irlanda/test-header-cta-dark-mode.php — 31 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-header-menu-selection.php (pt) — 12 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-header-menu-selection.php (en) — 16 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-hero-preload-fallback.php — 33 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-homepage-content-type-label.php — 29 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-homepage-shortcut-consolidation.php — 33 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-i18n-foundation.php — 29 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-job-en-translation.php — 28 passed, 4 failed (exit 1)
+           FAIL: the Jobs page has an EN translation — en_id=22200
+           FAIL: the Jobs page pair is linked from both sides
+           FAIL: the PT Jobs page is still assigned to pt
+           FAIL: EN jobs keep the PT publication date — oportunidades
+[FAIL] theme/conexao-br-irlanda/test-jobs-en-language.php — 98 passed, 6 failed (exit 1)
+           FAIL: the Jobs page has an EN translation — en_id=22200
+           FAIL: the Jobs page pair is linked from both sides
+           FAIL: the EN Jobs body is the authored English body from the manifest (not a template hardcode)
+           FAIL: no Portuguese prose from the PT body survives on the EN Jobs page — As vagas mais recentes estão no nosso Instagram.Acompanhe nossas publicações para encontrar novas oportunidades de trabalho na Irlanda.
+           FAIL: the PT Jobs page content is unchanged (Portuguese source preserved)
+           FAIL: the EN request resolves a different jobs URL — http://localhost:8080/en/empregos/
+[PASS] theme/conexao-br-irlanda/test-language-switcher-flag.php — 60 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-leisure-attribute-normalization.php — 22 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-leisure-card-excerpt-language.php — 45 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-leisure-card-map-action.php — 47 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-leisure-location-services.php — 102 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-leisure-multiselect-filters.php — 64 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-leisure-related-events.php — 19 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-nav-language-context-logic.php — 49 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-nav-language-context.php — 16 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-nav-menu-regression.php — 41 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-polylang-foundation.php — 62 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-recurrence-i18n.php — 12 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-redirect-precedence.php — 15 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-seasonal-halloween-nav-effects.php — 102 passed, 5 failed (exit 1)
+           FAIL: Halloween occasion reports itself active
+           FAIL: The first surprise waits at least twenty seconds — 'var INITIAL_DELAY_MIN_MS = 20000;' not found in '/**
+           FAIL: The first surprise waits no longer than thirty seconds — 'var INITIAL_DELAY_MAX_MS = 30000;' not found in '/**
+           FAIL: Subsequent surprises wait at least twenty-five seconds — 'var INTERVAL_MIN_MS = 25000;' not found in '/**
+           FAIL: Subsequent surprises wait no longer than thirty-five seconds — 'var INTERVAL_MAX_MS = 35000;' not found in '/**
+[PASS] theme/conexao-br-irlanda/test-seasonal-halloween-presentation.php — 26 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-seasonal-occasion.php — 14 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-sponsor-archive-ordering.php — 15 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-sponsor-archive-single-page.php — 28 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-stage32-bilingual.php — 49 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-stage33-bilingual.php — 196 passed, 2 failed (exit 1)
+           FAIL: guide EN #22388: every category is the linked EN term of a master term (or the shared master term)
+           FAIL: guide EN #22387: every category is the linked EN term of a master term (or the shared master term)
+[PASS] theme/conexao-br-irlanda/test-stage41-rest-language.php — 222 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-stage45-pages.php — 364 passed, 2 failed (exit 1)
+           FAIL: empregos: EN→PT link points back at the right source
+           FAIL: no orphan EN page outside the stage manifests (4 found)
+[PASS] theme/conexao-br-irlanda/test-stage7-hero-sponsors.php — 10 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-taxonomy-policy.php — 18 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-translation-completeness.php — 21 passed, 2 failed (exit 1)
+           FAIL: guide: eligible public PT records missing a linked EN translation = 0 — 1 violation(s): {"eligible":55,"translated":54,"allowlisted":0,"sample":["carteira-motorista-brasileiros"]}
+           FAIL: page: every translation relationship is a bidirectional link to a PT master — 2 violation(s): {"sample":["en_without_pt:empregos-3","en_without_pt:empregos"]}
+[PASS] theme/conexao-br-irlanda/test-ui-convergence-t1.php — 43 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-ui-convergence-t2.php — 64 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-ui-polish-p3.php — 13 passed, 0 failed
+
+Script-contract suites (static, no WordPress, no network)
+[PASS] tests/scripts/verify-agent-governance.py
+[PASS] tests/scripts/verify-cache-key-scoping.py
+         2 passed, 0 failed
+[PASS] tests/scripts/verify-documentation-drift.py
+         14 passed, 0 failed
+[PASS] tests/scripts/verify-eventbrite-token-retirement.py
+[FAIL] tests/scripts/verify-i18n-freshness.py (exit 1)
+         FAIL: conexao-admin-ux: wp-content/plugins/conexao-admin-ux/languages/conexao-admin-ux.pot is older than wp-content/plugins/conexao-admin-ux/includes/class-fields.php by 1909737s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)
+[PASS] tests/scripts/verify-release-integrity.py
+         224 passed, 0 failed
+[PASS] tests/scripts/verify-script-conventions.py
+         753 passed, 0 failed
+[PASS] tests/scripts/verify-stage10-batch-boundary.py
+[PASS] tests/scripts/verify-stage13-commissioning-readiness.py
+         808 passed, 0 failed
+[PASS] tests/scripts/verify-stage14-secret-scan.py
+[PASS] tests/scripts/verify-stage17-retirement.py
+         110 passed, 0 failed
+[PASS] tests/scripts/verify-stage18-operator-runbook.py
+[PASS] tests/scripts/verify-stage2-promotion.py
+         28 passed, 0 failed
+[PASS] tests/scripts/verify-stage3-automation.py
+         172 passed, 0 failed
+[PASS] tests/scripts/verify-stage4-provider.py
+         148 passed, 0 failed
+[PASS] tests/scripts/verify-stage6-transport-trigger.py
+         49 passed, 0 failed
+[PASS] tests/scripts/verify-stage7-commissioning.py
+         71 passed, 0 failed
+[PASS] tests/scripts/verify-stage8-control-plane.py
+         147 passed, 0 failed
+[PASS] tests/scripts/verify-stage8-release-consistency.py
+         47 passed, 0 failed
+
+HTTP acceptance suites (base: http://localhost:8080)
+[FAIL] tests/acceptance/verify-event-occurrence-http.py (exit 1)
+           FAIL  exactly one weekly series is listed in the Laois archive  -- found 0
+           FAIL  exactly one multi-day event is listed in the Laois archive  -- found 2
+           FAIL  exactly one all-day event is listed in the Laois archive  -- found 0
+[PASS] tests/acceptance/verify-guides-en-http.py — 20 passed, 0 failed
+[PASS] tests/acceptance/verify-release-http.py — 44 passed, 0 failed
+[PASS] tests/acceptance/verify-routing-http.py — 120 passed, 0 failed
+
+----------------------------------------
+In-process PHP suites: 117 total, 106 passed, 11 failed
+Assertions: 9085 passed, 41 failed
+Script-contract suites: 19 total, 18 passed, 1 failed
+HTTP acceptance suites: 4 total, 3 passed, 1 failed
+----------------------------------------
+TESTS FAILED
+failing suites:
+  - plugin/conexao-event-importer/test-town-sanitization.php
+  - theme/conexao-br-irlanda/test-blog-en-translation.php
+  - theme/conexao-br-irlanda/test-en-jobs-shared-slug.php
+  - theme/conexao-br-irlanda/test-event-filter-cache.php
+  - theme/conexao-br-irlanda/test-guide-en-translation.php
+  - theme/conexao-br-irlanda/test-job-en-translation.php
+  - theme/conexao-br-irlanda/test-jobs-en-language.php
+  - theme/conexao-br-irlanda/test-seasonal-halloween-nav-effects.php
+  - theme/conexao-br-irlanda/test-stage33-bilingual.php
+  - theme/conexao-br-irlanda/test-stage45-pages.php
+  - theme/conexao-br-irlanda/test-translation-completeness.php
+full suite output kept in /tmp/tmp.CxANptKeA4

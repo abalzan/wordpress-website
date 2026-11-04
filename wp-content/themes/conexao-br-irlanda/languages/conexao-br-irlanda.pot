@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-03 08:17+0000\n"
+"POT-Creation-Date: 2026-11-04 12:24+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 
 
@@ -649,21 +649,32 @@ msgid "cursos"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/i18n.php:167
 msgid ""
-"Encontre atrações perto de si. Permita o acesso à sua localização para "
-"ordenar as atrações pela distância."
+"Permita o acesso à sua localização para calcular a distância aproximada até "
+"as atrações."
 msgstr ""
-#. translators: %s is a formatted distance, e.g. "2,5 km" or "400 m".
+#. translators: %s is a formatted distance, e.g. "2,4 km" or "850 m".
 #: wp-content/themes/conexao-br-irlanda/inc/i18n.php:169
 #, php-format
-msgid "A aproximadamente %s de si"
-msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:170
-msgid "Ordenado por proximidade"
+msgid "%s de você"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/i18n.php:171
+msgid "Mostrar distância de mim"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:173
+msgid "Obtendo sua localização…"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:175
+msgid ""
+"Não foi possível obter sua localização. Você pode continuar explorando as "
+"atrações normalmente."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:176
+msgid "Ordenado por proximidade"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:177
 msgid "Atrações ordenadas por proximidade."
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:292
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:298
 msgid "F j, Y"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php:37
@@ -768,7 +779,7 @@ msgstr ""
 msgid "Invalid attraction ID."
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/leisure-location.php:225
-#: wp-content/themes/conexao-br-irlanda/inc/leisure-location.php:356
+#: wp-content/themes/conexao-br-irlanda/inc/leisure-location.php:360
 msgid "Too many attractions requested in a single request."
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/leisure.php:209

@@ -87,21 +87,35 @@ ok( P.haversineMeters( '53.3498', '-6.2603', '51.8985', '-8.4756' ) > 0, 'numeri
 ok( P.haversineMeters( 0, 0, 0, 0 ) === 0, 'valid zero coordinates are accepted' );
 
 // ---------------------------------------------------------------------------
-section( 'formatDistanceValue — kilometres and metres, PT and EN' );
+section( 'formatDistanceValue — the approved display table (PT and EN)' );
 
-eq( P.formatDistanceValue( 2500, 'pt-BR' ), '2,5 km', 'PT: 2500 m → "2,5 km"' );
-eq( P.formatDistanceValue( 2500, 'en-US' ), '2.5 km', 'EN: 2500 m → "2.5 km"' );
-eq( P.formatDistanceValue( 1000, 'pt-BR' ), '1,0 km', 'PT: 1000 m → "1,0 km"' );
-eq( P.formatDistanceValue( 12500, 'en-US' ), '12.5 km', 'EN: 12500 m → "12.5 km"' );
+// Below 1 km → metres, rounded to the nearest 10.
+eq( P.formatDistanceValue( 850, 'pt-BR' ), '850 m', 'PT: 850 m → "850 m" (below 1 km)' );
 eq( P.formatDistanceValue( 400, 'pt-BR' ), '400 m', 'PT: 400 m → "400 m" (below 1 km)' );
 eq( P.formatDistanceValue( 400, 'en-US' ), '400 m', 'EN: 400 m → "400 m"' );
 eq( P.formatDistanceValue( 396, 'pt-BR' ), '400 m', 'PT: 396 m rounds to nearest 10 → "400 m"' );
 eq( P.formatDistanceValue( 394, 'en-US' ), '390 m', 'EN: 394 m rounds to nearest 10 → "390 m"' );
+eq( P.formatDistanceValue( 0, 'pt-BR' ), '0 m', 'PT: 0 m → "0 m"' );
+
+// 1–10 km → kilometres with ONE decimal place.
+eq( P.formatDistanceValue( 2500, 'pt-BR' ), '2,5 km', 'PT: 2500 m → "2,5 km"' );
+eq( P.formatDistanceValue( 2500, 'en-US' ), '2.5 km', 'EN: 2500 m → "2.5 km"' );
+eq( P.formatDistanceValue( 1000, 'pt-BR' ), '1,0 km', 'PT: 1000 m → "1,0 km"' );
 eq( P.formatDistanceValue( 999, 'en-US' ), '1.0 km', 'EN: 999 m rounds up across the km boundary → "1.0 km"' );
 eq( P.formatDistanceValue( 999, 'pt-BR' ), '1,0 km', 'PT: 999 m rounds up across the km boundary → "1,0 km"' );
-eq( P.formatDistanceValue( 0, 'pt-BR' ), '0 m', 'PT: 0 m → "0 m"' );
+eq( P.formatDistanceValue( 9500, 'pt-BR' ), '9,5 km', 'PT: 9500 m → "9,5 km" (one decimal is kept below 10 km)' );
+
+// 10 km and above → whole kilometres (a decimal would be false precision).
+eq( P.formatDistanceValue( 10000, 'pt-BR' ), '10 km', 'PT: 10000 m → "10 km" (the whole-kilometre boundary)' );
+eq( P.formatDistanceValue( 12500, 'en-US' ), '13 km', 'EN: 12500 m → "13 km" (whole kilometres from 10 km)' );
+eq( P.formatDistanceValue( 24000, 'pt-BR' ), '24 km', 'PT: 24000 m → "24 km"' );
+eq( P.formatDistanceValue( 125000, 'pt-BR' ), '125 km', 'PT: 125000 m → "125 km"' );
+eq( P.formatDistanceValue( 125000, 'en-US' ), '125 km', 'EN: 125000 m → "125 km"' );
+
+// Invalid input is never rendered as a distance.
 eq( P.formatDistanceValue( -5, 'pt-BR' ), '', 'negative distance → "" (invalid)' );
 eq( P.formatDistanceValue( NaN, 'pt-BR' ), '', 'NaN distance → "" (invalid)' );
+eq( P.formatDistanceValue( Infinity, 'pt-BR' ), '', 'Infinity distance → "" (invalid)' );
 eq( P.formatDistanceValue( '400', 'pt-BR' ), '', 'non-number distance → "" (invalid)' );
 
 // ---------------------------------------------------------------------------

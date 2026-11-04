@@ -163,14 +163,39 @@ def distance_texts(page):
 
 
 def scenario(page, base_url, expect_proximity, position_delay_ms=0):
-    """Load /lazer/ under the current geolocation mock and read the contract."""
+    """Load /lazer/, prove NOTHING is requested automatically, then activate
+    the explicit opt-in control and read the contract.
+
+    `__geoRequests` counts every navigator.geolocation.getCurrentPosition()
+    call, so "no automatic request before an explicit visitor action" is
+    provable rather than assumed.
+    """
+    page.add_init_script(
+        "window.__geoRequests = 0;"
+        "var _g = navigator.geolocation && navigator.geolocation.getCurrentPosition;"
+        "if (_g) {"
+        "  navigator.geolocation.getCurrentPosition = function () {"
+        "    window.__geoRequests++;"
+        "    return _g.apply(navigator.geolocation, arguments);"
+        "  };"
+        "}"
+    )
+
     page.goto(f"{base_url}/lazer/", wait_until="domcontentloaded")
 
-    # The explanation must be in the document before any position resolves.
+    # The explanation and the opt-in control must be in the document, and NO
+    # position request may have been made yet.
     page.wait_for_timeout(150)
     explanation_present = page.eval_on_selector_all(
         "[data-leisure-proximity='leisure-proximity-explanation']", "els => els.length"
     )
+    control_selector = "[data-leisure-proximity='leisure-proximity-control'] button"
+    control_present = page.eval_on_selector_all(control_selector, "els => els.length")
+    requests_before_click = page.evaluate("() => window.__geoRequests || 0")
+
+    # Explicit opt-in: the visitor activates the control.
+    if control_present:
+        page.click(control_selector)
 
     if expect_proximity:
         page.wait_for_selector("[data-leisure-proximity='leisure-proximity-note']", timeout=20000)
@@ -180,6 +205,20 @@ def scenario(page, base_url, expect_proximity, position_delay_ms=0):
 
     return {
         "explanation_present": explanation_present,
+        "control_present": control_present,
+        "requests_before_click": requests_before_click,
+        "requests_after_click": page.evaluate("() => window.__geoRequests || 0"),
+        "error_present": page.eval_on_selector_all(
+            "[data-leisure-proximity='leisure-proximity-error']", "els => els.length"
+        ),
+        "control_after": page.eval_on_selector_all(
+            "[data-leisure-proximity='leisure-proximity-control']", "els => els.length"
+        ),
+        "retry_label": (
+            page.eval_on_selector(control_selector, "el => el.textContent.trim()")
+            if page.eval_on_selector_all(control_selector, "els => els.length")
+            else ""
+        ),
         "note_count": page.eval_on_selector_all(
             "[data-leisure-proximity='leisure-proximity-note']", "els => els.length"
         ),
@@ -191,18 +230,40 @@ def scenario(page, base_url, expect_proximity, position_delay_ms=0):
     }
 
 
-def expected_proximity_order(items, lat, lng):
-    """Independently compute the expected global nearest-first order."""
+def haversine_meters(lat1, lng1, lat2, lng2):
+    """Great-circle distance in metres — an INDEPENDENT re-implementation of
+    the Haversine formula used by the browser feature."""
     import math
 
-    def haversine(a1, o1, a2, o2):
-        radius = 6371000.0
-        phi1, phi2 = math.radians(a1), math.radians(a2)
-        dphi = math.radians(a2 - a1)
-        dlambda = math.radians(o2 - o1)
-        a = math.sin(dphi / 2) ** 2 + math.cos(phi1) * math.cos(phi2) * math.sin(dlambda / 2) ** 2
-        return 2 * radius * math.asin(math.sqrt(min(1.0, max(0.0, a))))
+    radius = 6371000.0
+    phi1, phi2 = math.radians(lat1), math.radians(lat2)
+    dphi = math.radians(lat2 - lat1)
+    dlambda = math.radians(lng2 - lng1)
+    a = math.sin(dphi / 2) ** 2 + math.cos(phi1) * math.cos(phi2) * math.sin(dlambda / 2) ** 2
+    return 2 * radius * math.asin(math.sqrt(min(1.0, max(0.0, a))))
 
+
+def expected_distance_text(meters):
+    """Mirror of formatDistanceValue() in leisure-proximity.js for pt-BR.
+
+    The approved display table: metres below 1 km (nearest 10), one decimal
+    from 1 to 10 km, whole kilometres from 10 km on.
+    """
+    from decimal import Decimal, ROUND_HALF_UP
+
+    rounded = int((Decimal(meters) / 10).quantize(Decimal("1"), rounding=ROUND_HALF_UP)) * 10
+    if rounded < 1000:
+        return "%d m" % rounded
+
+    kilometres = Decimal(rounded) / 1000
+    digits = 1 if kilometres < 10 else 0
+    step = Decimal("0.1") if digits else Decimal("1")
+    value = kilometres.quantize(step, rounding=ROUND_HALF_UP)
+    return ("%.*f" % (digits, value)).replace(".", ",") + " km"
+
+
+def expected_proximity_order(items, lat, lng):
+    """Independently compute the expected global nearest-first order."""
     with_coords = []
     without_coords = []
     for item in items:
@@ -210,7 +271,9 @@ def expected_proximity_order(items, lat, lng):
         if item.get("lat") is None or item.get("lng") is None:
             without_coords.append((item.get("index", 0), card_id))
         else:
-            with_coords.append((haversine(lat, lng, item["lat"], item["lng"]), item.get("index", 0), card_id))
+            with_coords.append(
+                (haversine_meters(lat, lng, item["lat"], item["lng"]), item.get("index", 0), card_id)
+            )
 
     with_coords.sort(key=lambda row: (row[0], row[1]))
     without_coords.sort()
@@ -263,25 +326,68 @@ def main():
             result = scenario(page, base_url, expect_proximity=True)
 
             print("\n-- granted --")
-            check(result["explanation_present"] >= 1, "the pre-permission explanation is rendered before the request resolves")
-            check(result["explanation_after"] == 0, "the explanation is removed once the position resolves")
+            check(result["explanation_present"] >= 1, "the explanation is rendered before any request is made")
+            check(result["control_present"] == 1, "the explicit opt-in control is offered")
+            check(result["requests_before_click"] == 0, "NO geolocation request is made before the visitor activates the control")
+            check(result["requests_after_click"] == 1, "activating the control makes exactly one geolocation request")
+            check(result["explanation_after"] == 0, "the explanation is removed once the distances are shown")
+            check(result["control_after"] == 0, "the control is removed once the distances are shown")
+            check(result["error_present"] == 0, "no failure message on the success path")
             check(result["note_count"] == 1, "exactly one 'Ordenado por proximidade' note is shown")
-            check(
-                result["ids"][:4] == [
-                    f"post-{by_title['Here']}",
-                    f"post-{by_title['Near']}",
-                    f"post-{by_title['Cork']}",
-                    f"post-{by_title['NoCoords']}",
-                ],
-                f"cards are globally nearest-first with the coordinate-less attraction last: {result['ids'][:4]}",
+
+            # The database now carries real coordinates for hundreds of
+            # attractions, so every expectation is derived from the LIVE
+            # dataset instead of a hard-coded fixture order: the batch, the
+            # count of distances and the distance texts all follow from the
+            # dataset the page itself fetches.
+            dataset = page.evaluate(
+                "async () => { const r = await fetch('/wp-json/conexao/v1/leisure-coordinates',"
+                " {credentials:'same-origin'}); const j = await r.json(); return j.items; }"
             )
-            check(len(result["ids"]) == len(set(result["ids"])), "no duplicate cards after the proximity swap")
-            check(len(result["distances"]) == 3, f"exactly the three geolocated cards show a distance ({len(result['distances'])})")
-            check(any(" m de si" in t for t in result["distances"]), "a sub-kilometre distance is shown in metres")
-            check(any("km de si" in t for t in result["distances"]), "a multi-kilometre distance is shown in kilometres")
+            expected = expected_proximity_order(dataset, MOCK_POSITION["latitude"], MOCK_POSITION["longitude"])
+            rendered = result["ids"]
+
             check(
-                page.eval_on_selector_all(".leisure-card-distance[data-leisure-distance]", "els => els.length") == 3,
-                "each distance detail is bound to its attraction id",
+                rendered == expected[: len(rendered)],
+                "the first page is the global nearest-first order (coordinate-less attractions last)",
+            )
+            check(len(rendered) == len(set(rendered)), "no duplicate cards after the proximity swap")
+
+            by_id = {"post-" + str(item["id"]): item for item in dataset}
+            geolocated = [
+                card_id
+                for card_id in rendered
+                if by_id.get(card_id, {}).get("lat") is not None and by_id.get(card_id, {}).get("lng") is not None
+            ]
+            check(len(geolocated) > 0, f"the first page contains geolocated attractions ({len(geolocated)})")
+            check(
+                len(result["distances"]) == len(geolocated),
+                f"exactly the geolocated cards of the batch show a distance "
+                f"({len(result['distances'])} distances for {len(geolocated)} geolocated cards)",
+            )
+
+            expected_texts = []
+            for card_id in geolocated:
+                item = by_id[card_id]
+                meters = haversine_meters(
+                    MOCK_POSITION["latitude"], MOCK_POSITION["longitude"], item["lat"], item["lng"]
+                )
+                expected_texts.append(expected_distance_text(meters) + " de você")
+            check(
+                sorted(result["distances"]) == sorted(expected_texts),
+                "every distance matches the approved display table for its calculated straight-line distance",
+            )
+            check(
+                all(t.endswith(" de você") for t in result["distances"]),
+                "every distance uses the neutral 'de você' wording (never a driving label)",
+            )
+            check(
+                page.evaluate(
+                    "() => Array.from(document.querySelectorAll('.leisure-card-distance[data-leisure-distance]'))"
+                    ".every(el => { const card = el.closest('article[id]');"
+                    " return !!card && card.id === 'post-' + el.getAttribute('data-leisure-distance'); })"
+                ),
+                "each distance detail is bound to the id of the card it sits in",
             )
             check(errors == [], f"no console/page errors (granted): {errors[:3]}")
             check(endpoint_failures == [], f"every proximity endpoint call answered 200: {endpoint_failures[:3]}")
@@ -322,8 +428,14 @@ def main():
             page.wait_for_timeout(3500)
             filtered_ids = grid_ids(page)
             check(
-                page.eval_on_selector_all("[data-leisure-proximity='leisure-proximity-note']", "els => els.length") <= 1,
-                "a filtered page load re-runs the one-shot request without duplicating the note",
+                page.eval_on_selector_all("[data-leisure-proximity='leisure-proximity-note']", "els => els.length") == 0,
+                "a filtered page load shows no proximity note: nothing is requested automatically",
+            )
+            check(
+                page.eval_on_selector_all(
+                    "[data-leisure-proximity='leisure-proximity-control'] button", "els => els.length"
+                ) == 1,
+                "the opt-in control is offered again on the filtered page",
             )
             check(len(filtered_ids) == len(set(filtered_ids)), "the filtered page has no duplicate cards")
             browser.close()
@@ -345,11 +457,30 @@ def main():
 
             result = scenario(page, base_url, expect_proximity=False)
             print("\n-- denied --")
+            check(result["control_present"] == 1, "the opt-in control is offered before the request")
+            check(result["requests_before_click"] == 0, "nothing is requested before the visitor activates the control")
+            check(result["requests_after_click"] == 1, "activating the control makes exactly one request (which is denied)")
             check(result["note_count"] == 0, "no proximity note when permission is denied")
             check(result["distances"] == [], "no distance is shown when permission is denied")
             check(result["ids"][0] == f"post-{by_title['NoCoords']}", "the default (server) order is preserved when denied")
             check(result["explanation_after"] == 0, "the explanation is removed after a denial")
+            check(result["error_present"] == 1, "a friendly failure message is shown on denial")
+            check(result["control_after"] == 1, "the control stays available as a retry after a denial")
+            check(result["retry_label"] == "Tentar novamente", f"the control becomes a retry ({result['retry_label']!r})")
             check(errors == [], f"no console/page errors (denied): {errors[:3]}")
+
+            # The retry is wired: activating the control again issues a NEW
+            # geolocation request (and the failure message never stacks).
+            page.click("[data-leisure-proximity='leisure-proximity-control'] button")
+            page.wait_for_timeout(1500)
+            check(
+                page.evaluate("() => window.__geoRequests || 0") == 2,
+                "the retry issues a second geolocation request",
+            )
+            check(
+                page.eval_on_selector_all("[data-leisure-proximity='leisure-proximity-error']", "els => els.length") == 1,
+                "exactly one failure message after a retry (messages never stack)",
+            )
             print(f"   note: {len(asset_404s)} unrelated static-resource 404(s) on the page (pre-existing theme assets)")
             browser.close()
 
@@ -369,13 +500,21 @@ def main():
             check(result["note_count"] == 0, "no proximity note on a timeout")
             check(result["distances"] == [], "no distance on a timeout")
             check(result["ids"][0] == f"post-{by_title['NoCoords']}", "the default order is preserved on a timeout")
+            check(result["error_present"] == 1, "a friendly failure message is shown on a timeout")
+            check(result["control_after"] == 1, "the control stays available as a retry on a timeout")
             check(errors == [], f"no page errors (timeout): {errors[:3]}")
             browser.close()
 
             # --- 4. Geolocation API unavailable ------------------------------
             browser = launch(playwright.chromium, connect)
             context = browser.new_context()
-            context.add_init_script("delete navigator.geolocation;")
+            # `delete navigator.geolocation` is a no-op (the property lives on
+            # Navigator.prototype), so the API is genuinely removed with an
+            # own-property getter that returns undefined.
+            context.add_init_script(
+                "Object.defineProperty(navigator, 'geolocation',"
+                " { get: function () { return undefined; }, configurable: true });"
+            )
             page = context.new_page()
             errors = []
             page.on("pageerror", lambda e: errors.append(str(e)))
@@ -386,6 +525,9 @@ def main():
             check(result["distances"] == [], "no distance when the API is unavailable")
             check(result["ids"][0] == f"post-{by_title['NoCoords']}", "the default order is preserved when unsupported")
             check(result["explanation_after"] == 0, "the explanation is removed when the API is unavailable")
+            check(result["control_present"] == 0, "no control is offered when the browser cannot geolocate")
+            check(result["requests_after_click"] == 0, "no geolocation request is attempted when unsupported")
+            check(result["error_present"] == 0, "no failure message when the control was never offered")
             check(errors == [], f"no page errors (unsupported): {errors[:3]}")
             browser.close()
     finally:

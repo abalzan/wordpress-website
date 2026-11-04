@@ -1,0 +1,149 @@
+# Browser acceptance — Lazer distance opt-in (Playwright/Chromium)
+#
+# command:
+#   python3 tests/browser/verify-lazer-proximity-browser.py \
+#       --base-url http://localhost:8080 --connect 127.0.0.1:8081
+#
+# --connect is REQUIRED in this environment: port 8080 is served by a
+# DIFFERENT (older) WordPress install (Apache/2.4.68, PHP 8.3.35, 246
+# leisure posts, 0 coordinates). The Docker Compose stack under test
+# publishes 8081 (PHP 8.3.33, 293 published leisure posts, 289 with
+# coordinates) and answers Host: localhost:8080 correctly.
+
+===================================================================
+# RUN 1 — after the opt-in / failure / display-table changes
+===================================================================
+
+== Lazer proximity browser acceptance ==
+   base url: http://localhost:8080
+
+-- granted --
+  PASS  the explanation is rendered before any request is made
+  PASS  the explicit opt-in control is offered
+  PASS  NO geolocation request is made before the visitor activates the control
+  PASS  activating the control makes exactly one geolocation request
+  PASS  the explanation is removed once the distances are shown
+  PASS  the control is removed once the distances are shown
+  PASS  no failure message on the success path
+  PASS  exactly one 'Ordenado por proximidade' note is shown
+  PASS  the first page is the global nearest-first order (coordinate-less attractions last)
+  PASS  no duplicate cards after the proximity swap
+  PASS  the first page contains geolocated attractions (10)
+  PASS  exactly the geolocated cards of the batch show a distance (10 distances for 10 geolocated cards)
+  PASS  every distance matches the approved display table for its calculated straight-line distance
+  PASS  every distance uses the neutral 'de você' wording (never a driving label)
+  PASS  each distance detail is bound to the id of the card it sits in
+  PASS  no console/page errors (granted): []
+  PASS  every proximity endpoint call answered 200: []
+  PASS  infinite scroll appended further proximity batches (30 cards rendered)
+  PASS  the rendered cards across every batch match the globally sorted order exactly
+  PASS  no duplicate cards after loading several proximity batches
+  PASS  every proximity batch card keeps its post id
+  PASS  a filtered page load shows no proximity note: nothing is requested automatically
+  PASS  the opt-in control is offered again on the filtered page
+  PASS  the filtered page has no duplicate cards
+
+-- denied --
+  PASS  the opt-in control is offered before the request
+  PASS  nothing is requested before the visitor activates the control
+  PASS  activating the control makes exactly one request (which is denied)
+  PASS  no proximity note when permission is denied
+  PASS  no distance is shown when permission is denied
+  PASS  the default (server) order is preserved when denied
+  PASS  the explanation is removed after a denial
+  PASS  a friendly failure message is shown on denial
+  PASS  the control stays available as a retry after a denial
+  PASS  the control becomes a retry ('Tentar novamente')
+  PASS  no console/page errors (denied): []
+  PASS  the retry issues a second geolocation request
+  PASS  exactly one failure message after a retry (messages never stack)
+   note: 5 unrelated static-resource 404(s) on the page (pre-existing theme assets)
+
+-- timeout --
+  PASS  no proximity note on a timeout
+  PASS  no distance on a timeout
+  PASS  the default order is preserved on a timeout
+  PASS  a friendly failure message is shown on a timeout
+  PASS  the control stays available as a retry on a timeout
+  PASS  no page errors (timeout): []
+
+-- unsupported --
+  PASS  no proximity note when the API is unavailable
+  PASS  no distance when the API is unavailable
+  PASS  the default order is preserved when unsupported
+  PASS  the explanation is removed when the API is unavailable
+  PASS  no control is offered when the browser cannot geolocate
+  PASS  no geolocation request is attempted when unsupported
+  PASS  no failure message when the control was never offered
+  PASS  no page errors (unsupported): []
+
+51 passed, 0 failed
+
+===================================================================
+# RUN 2 (FINAL) — the frozen change set, re-run for confirmation
+===================================================================
+
+== Lazer proximity browser acceptance ==
+   base url: http://localhost:8080
+
+-- granted --
+  PASS  the explanation is rendered before any request is made
+  PASS  the explicit opt-in control is offered
+  PASS  NO geolocation request is made before the visitor activates the control
+  PASS  activating the control makes exactly one geolocation request
+  PASS  the explanation is removed once the distances are shown
+  PASS  the control is removed once the distances are shown
+  PASS  no failure message on the success path
+  PASS  exactly one 'Ordenado por proximidade' note is shown
+  PASS  the first page is the global nearest-first order (coordinate-less attractions last)
+  PASS  no duplicate cards after the proximity swap
+  PASS  the first page contains geolocated attractions (10)
+  PASS  exactly the geolocated cards of the batch show a distance (10 distances for 10 geolocated cards)
+  PASS  every distance matches the approved display table for its calculated straight-line distance
+  PASS  every distance uses the neutral 'de você' wording (never a driving label)
+  PASS  each distance detail is bound to the id of the card it sits in
+  PASS  no console/page errors (granted): []
+  PASS  every proximity endpoint call answered 200: []
+  PASS  infinite scroll appended further proximity batches (40 cards rendered)
+  PASS  the rendered cards across every batch match the globally sorted order exactly
+  PASS  no duplicate cards after loading several proximity batches
+  PASS  every proximity batch card keeps its post id
+  PASS  a filtered page load shows no proximity note: nothing is requested automatically
+  PASS  the opt-in control is offered again on the filtered page
+  PASS  the filtered page has no duplicate cards
+
+-- denied --
+  PASS  the opt-in control is offered before the request
+  PASS  nothing is requested before the visitor activates the control
+  PASS  activating the control makes exactly one request (which is denied)
+  PASS  no proximity note when permission is denied
+  PASS  no distance is shown when permission is denied
+  PASS  the default (server) order is preserved when denied
+  PASS  the explanation is removed after a denial
+  PASS  a friendly failure message is shown on denial
+  PASS  the control stays available as a retry after a denial
+  PASS  the control becomes a retry ('Tentar novamente')
+  PASS  no console/page errors (denied): []
+  PASS  the retry issues a second geolocation request
+  PASS  exactly one failure message after a retry (messages never stack)
+   note: 5 unrelated static-resource 404(s) on the page (pre-existing theme assets)
+
+-- timeout --
+  PASS  no proximity note on a timeout
+  PASS  no distance on a timeout
+  PASS  the default order is preserved on a timeout
+  PASS  a friendly failure message is shown on a timeout
+  PASS  the control stays available as a retry on a timeout
+  PASS  no page errors (timeout): []
+
+-- unsupported --
+  PASS  no proximity note when the API is unavailable
+  PASS  no distance when the API is unavailable
+  PASS  the default order is preserved when unsupported
+  PASS  the explanation is removed when the API is unavailable
+  PASS  no control is offered when the browser cannot geolocate
+  PASS  no geolocation request is attempted when unsupported
+  PASS  no failure message when the control was never offered
+  PASS  no page errors (unsupported): []
+
+51 passed, 0 failed

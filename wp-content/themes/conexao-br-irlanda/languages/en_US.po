@@ -1995,19 +1995,32 @@ msgstr "Business"
 msgid "até %1$d %2$s"
 msgstr "until %1$d %2$s"
 
-# Lazer location services (2026-11-02) — optional proximity ordering on
-# /lazer/. PT is the source string; these EN entries localize the
-# pre-permission explanation, the distance label, the "ordered by
-# proximity" note and its single screen-reader announcement.
+# Lazer location services (2026-11-02, updated 2026-11-04) — the optional
+# location feature on /lazer/. PT is the source string; these EN entries
+# localize the pre-permission explanation, the explicit opt-in control, the
+# loading state, the friendly failure message, the distance label and the
+# "ordered by proximity" note with its single screen-reader announcement.
 #: wp-content/themes/conexao-br-irlanda/inc/i18n.php
-msgid "Encontre atrações perto de si. Permita o acesso à sua localização para ordenar as atrações pela distância."
-msgstr "Find attractions near you. Allow location access to sort attractions by distance."
+msgid "Permita o acesso à sua localização para calcular a distância aproximada até as atrações."
+msgstr "Allow access to your location to calculate the approximate distance to each attraction."
 
-#. translators: %s is a formatted distance, e.g. "2,5 km" or "400 m".
+#. translators: %s is a formatted distance, e.g. "2,4 km" or "850 m".
 #: wp-content/themes/conexao-br-irlanda/inc/i18n.php
 #, php-format
-msgid "A aproximadamente %s de si"
-msgstr "Approximately %s away"
+msgid "%s de você"
+msgstr "%s away"
+
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php
+msgid "Mostrar distância de mim"
+msgstr "Show distance from me"
+
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php
+msgid "Obtendo sua localização…"
+msgstr "Getting your location…"
+
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php
+msgid "Não foi possível obter sua localização. Você pode continuar explorando as atrações normalmente."
+msgstr "We could not get your location. You can keep exploring the attractions as usual."
 
 #: wp-content/themes/conexao-br-irlanda/inc/i18n.php
 msgid "Ordenado por proximidade"

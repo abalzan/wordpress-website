@@ -2712,95 +2712,192 @@ function initHalloweenNavEffects() {
 			if (!freshGrid || freshGrid === grid) return;
 			grid = freshGrid;
 			try {
-				activate(visitorPosition);
+				activate(visitorPosition).catch(function() {
+					// Keep the swapped grid's default order on failure.
+				});
 			} catch (error) {
 				// Never let the enhancement break the swapped page.
 			}
 		};
 
-		// 1. Pre-permission explanation — inserted BEFORE any location request.
+		// 1. The opt-in control. The location request is NEVER automatic:
+		//    nothing is asked of the browser until the visitor activates
+		//    this control, so /lazer/ is fully usable without granting
+		//    location permission. The explanation says why access would be
+		//    requested, and it is a polite live region so the loading and
+		//    failure updates are announced without moving focus.
 		var explanation = createNote(
 			'leisure-proximity-explanation',
 			'leisureLocationExplanation',
-			'Encontre atrações perto de si. Permita o acesso à sua localização para ordenar as atrações pela distância.'
+			'Permita o acesso à sua localização para calcular a distância aproximada até as atrações.'
 		);
+		explanation.setAttribute('role', 'status');
+		explanation.setAttribute('aria-live', 'polite');
 		insertNearHeading(explanation);
 
-		// 2. One-shot geolocation. getCurrentPosition() only — never
-		//    watchPosition(), never a second request, never a retry.
+		// The friendly, non-technical failure message (one at a time).
+		var message = null;
+
+		// 2. Feature detection BEFORE the control is offered: a browser that
+		//    cannot geolocate — or an insecure context — is never shown a
+		//    control that could not work.
 		var support = proximity.classifyGeolocationSupport(
 			navigator,
 			typeof window.isSecureContext === 'boolean' ? window.isSecureContext : undefined
 		);
 		if (support !== 'available') {
-			// Unsupported API or insecure context: nothing to ask for.
 			removeNote(explanation);
 			return;
 		}
 
-		try {
-			navigator.geolocation.getCurrentPosition(onPosition, onPositionError, {
-				enableHighAccuracy: false,
-				timeout: 10000,
-				maximumAge: 0
-			});
-		} catch (error) {
-			removeNote(explanation);
+		var control = createControl();
+		insertNearHeading(control.wrapper);
+
+		function createControl() {
+			var wrapper = document.createElement('p');
+			wrapper.className = 'leisure-proximity-control';
+			wrapper.setAttribute('data-leisure-proximity', 'leisure-proximity-control');
+
+			var button = document.createElement('button');
+			button.type = 'button';
+			// Reuses the design-system secondary button (and its
+			// `:focus-visible` ring and 44 px minimum touch target)
+			// instead of inventing a new style.
+			button.className = 'btn btn-outline-dark leisure-proximity-toggle';
+			button.textContent = t('leisureDistanceControl', 'Mostrar distância de mim');
+			button.addEventListener('click', requestPosition);
+
+			wrapper.appendChild(button);
+			return { wrapper: wrapper, button: button };
+		}
+
+		// The control's three states. Its label is always the accessible
+		// name, so the control is never icon-only and never unlabelled.
+		function setControlState(state) {
+			var busy = 'busy' === state;
+			control.button.disabled = busy;
+
+			if (busy) {
+				control.button.setAttribute('aria-busy', 'true');
+			} else {
+				control.button.removeAttribute('aria-busy');
+			}
+
+			var labels = {
+				busy: ['leisureLocationLoading', 'Obtendo sua localização…'],
+				retry: ['retry', 'Tentar novamente'],
+				idle: ['leisureDistanceControl', 'Mostrar distância de mim']
+			};
+			var label = labels[state] || labels.idle;
+			control.button.textContent = t(label[0], label[1]);
+		}
+
+		// 3. One-shot geolocation, requested ONLY by activating the control.
+		//    getCurrentPosition() only — never watchPosition(), and never an
+		//    automatic second request. `enableHighAccuracy: false` asks for
+		//    an approximate fix, which is all a straight-line estimate
+		//    needs; `maximumAge: 0` guarantees a fresh fix, so a visitor who
+		//    has moved and retries gets a new position.
+		function requestPosition() {
+			setControlState('busy');
+			removeNote(message);
+			message = null;
+
+			// The loading state is visible and announced on every attempt,
+			// including a retry (a retry follows a failure, which removed
+			// the explanation, so it is re-attached above the control).
+			explanation.textContent = t('leisureLocationLoading', 'Obtendo sua localização…');
+			if (control.wrapper.parentNode) {
+				control.wrapper.parentNode.insertBefore(explanation, control.wrapper);
+			} else {
+				insertNearHeading(explanation);
+			}
+
+			try {
+				navigator.geolocation.getCurrentPosition(onPosition, onPositionError, {
+					enableHighAccuracy: false,
+					timeout: 10000,
+					maximumAge: 0
+				});
+			} catch (error) {
+				onPositionError();
+			}
 		}
 
 		function onPosition(position) {
-			removeNote(explanation);
-
 			var visitor = proximity.readPosition(position);
-			if (!visitor) return; // invalid coordinates → silent no-op
+			if (!visitor) {
+				onPositionError();
+				return;
+			}
 
 			visitorPosition = visitor;
 
 			try {
-				activate(visitor);
+				activate(visitor).then(onActivated, onPositionError);
 			} catch (error) {
 				// The enhancement must never break the page.
+				onPositionError();
 			}
 		}
 
-		function onPositionError() {
-			// Denied, previously denied, revoked, unavailable or timeout —
-			// every failure is a silent no-op: the default server order
-			// stays, no distance is shown, no error message, no retry. The
-			// explanation is removed because the decision is made.
+		function onActivated() {
+			// The list has been reordered and every distance is in place:
+			// the explanation and the control have done their job.
 			removeNote(explanation);
+			removeNote(message);
+			removeNote(control.wrapper);
+			message = null;
 		}
 
-		// 3. Fetch the complete coordinate dataset, sort it globally, load the
-		//    first proximity batch and only THEN swap the list.
+		function onPositionError() {
+			// Denied, previously denied, revoked, unavailable, timeout, or a
+			// failed dataset/card fetch — ONE friendly, non-technical message
+			// and the control stays available as a retry. The default server
+			// order, the filters, the pagination and every other page feature
+			// are untouched, so browsing never depends on the permission.
+			setControlState('retry');
+			removeNote(explanation);
+			removeNote(message);
+
+			message = createNote(
+				'leisure-proximity-error',
+				'leisureLocationUnavailable',
+				'Não foi possível obter sua localização. Você pode continuar explorando as atrações normalmente.'
+			);
+			message.setAttribute('role', 'status');
+			message.setAttribute('aria-live', 'polite');
+			insertNearHeading(message);
+		}
+
+		// 4. Fetch the complete coordinate dataset, sort it globally, load the
+		//    first proximity batch and only THEN swap the list. Returns a
+		//    promise that REJECTS when any step fails, so the caller can show
+		//    the friendly failure message instead of failing silently.
 		function activate(visitor) {
-			fetchCoordinates()
+			return fetchCoordinates()
 				.then(function(items) {
-					if (!items || !items.length) return null;
+					if (!items || !items.length) throw new Error('empty dataset');
 
 					var ordered = proximity.sortByProximity(items, visitor);
-					if (ordered.geolocated < 1) return null; // nothing to sort by
+					if (ordered.geolocated < 1) throw new Error('no geolocated attraction');
 
 					pageSize = grid.children.length;
-					if (pageSize < 1) return null;
+					if (pageSize < 1) throw new Error('empty grid');
 
 					var firstBatch = proximity.sliceBatch(ordered.ids, 0, pageSize);
-					if (!firstBatch.slice.length) return null;
+					if (!firstBatch.slice.length) throw new Error('empty batch');
 
 					return fetchCards(firstBatch.slice).then(function(payload) {
 						var fragment = buildFragment(payload, firstBatch.slice, ordered.distances);
-						if (!fragment.childNodes.length) return null;
+						if (!fragment.childNodes.length) throw new Error('empty fragment');
 						swapGrid(fragment, ordered, firstBatch);
 						return true;
 					});
-				})
-				.catch(function() {
-					// Coordinate-dataset or first-batch failure: keep the
-					// original cards and the default infinite scroll.
 				});
 		}
 
-		// 4. Proximity batch loading: globally sorted slices of IDs, rendered
+		// 5. Proximity batch loading: globally sorted slices of IDs, rendered
 		//    by the server, appended in the requested order, distances
 		//    re-applied from the ID-keyed Map.
 		function swapGrid(fragment, ordered, firstBatch) {
@@ -2867,7 +2964,7 @@ function initHalloweenNavEffects() {
 			});
 		}
 
-		// 5. Server round-trips. Visitor coordinates are never parameters.
+		// 6. Server round-trips. Visitor coordinates are never parameters.
 		function filterParams() {
 			var source = new URLSearchParams(window.location.search);
 			var params = new URLSearchParams();
@@ -2915,7 +3012,7 @@ function initHalloweenNavEffects() {
 			});
 		}
 
-		// 6. Build a detached fragment in the REQUESTED order and attach the
+		// 7. Build a detached fragment in the REQUESTED order and attach the
 		//    calculated distance to each card that has one.
 		function buildFragment(payload, ids, distances) {
 			var fragment = document.createDocumentFragment();
@@ -2954,11 +3051,13 @@ function initHalloweenNavEffects() {
 			span.className = 'leisure-card-detail leisure-card-distance';
 			span.setAttribute('data-leisure-distance', String(id));
 			// Visible text (never icon-only), localized through gettext.
-			span.textContent = t('leisureDistanceTemplate', 'A aproximadamente %s de si').replace('%s', value);
+			// The value is a straight-line estimate, so the wording stays
+			// neutral ("de você") and never implies road distance.
+			span.textContent = t('leisureDistanceTemplate', '%s de você').replace('%s', value);
 			details.appendChild(span);
 		}
 
-		// 7. Scroll/focus preservation + the single "ordered by proximity"
+		// 8. Scroll/focus preservation + the single "ordered by proximity"
 		//    announcement.
 		function captureAnchor() {
 			var cards = grid.children;
