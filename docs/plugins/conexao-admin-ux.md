@@ -47,12 +47,16 @@ value — used by the event recurrence toggle), `weekdays` (ISO weekday
 multi-checkbox group; options are ISO day numbers 1-7 mapped to short pt-BR
 labels, stored as a comma-separated ascending list — used by the event
 recurrence weekday selector), `static` (display-only text with a label,
-never saved — used for "Repetição: Semanal").
+never saved — used for "Repetição: Semanal"), `coordinate` (a geographic
+latitude or longitude: a native number input bounded by the configured
+`min`/`max`, validated and canonicalised to a dot-separated decimal string;
+an invalid submission never overwrites a previously valid stored value).
 
 List column renderers (config `columns`): `render => status` | `source` |
-`event_location` | `category` | `agency_active` (Ativa/Inativa badge derived
-from the publishing status — no separate active flag), or a default meta
-renderer with `format => featured` | `boolean` ("Sim" badge) | `date`.
+`event_location` | `category` | `coordinates` | `agency_active` (Ativa/Inativa
+badge derived from the publishing status — no separate active flag), or a
+default meta renderer with `format => featured` | `boolean` ("Sim" badge) |
+`date`.
 
 ### Recruitment agencies (Empregos)
 
@@ -298,6 +302,36 @@ and those URLs are displayed as labelled reference links; the flag is the only
 redirect/display decoupling signal. When the map link is empty, the internal
 page generates a deterministic "Ver localização no mapa" Google Maps search
 URL from title/town/county at render time (no API, no geocoding).
+
+### Leisure editor — Coordenadas
+
+The **Localização e contato** section also carries the geographic
+coordinates, which power the visitor-activated proximity ordering on
+`/lazer/`:
+
+| Field | Type | Meta key |
+|-------|------|----------|
+| Latitude | coordinate | `_leisure_lat` |
+| Longitude | coordinate | `_leisure_lng` |
+| Coordenadas verificadas | checkbox | `_leisure_coord_verified` |
+| Fonte das coordenadas | text | `_leisure_coord_source` |
+
+Validation is delegated to the `conexao-data-model` plugin
+(`Conexao_Data_Model_Meta::sanitize_coordinate()` and the
+`is_valid_latitude()` / `is_valid_longitude()` helpers), so the editor, the
+REST API and the front end share one rule. The editor additionally requires
+latitude and longitude to be filled **together** — half a pair is rejected
+with a clear message rather than silently stored.
+
+A latitude or longitude outside its geographic range, or a non-numeric value,
+is rejected. An invalid submission never wipes a previously valid stored
+coordinate; only an explicitly emptied field clears it.
+
+The **Coordenadas** column on the leisure list table is a read-only
+inventory: it reports `Verificadas`, `Por verificar`, `Inválidas` or
+`Sem coordenadas` per record so an administrator can see at a glance which
+attractions still need a confirmed coordinate. It never writes, never
+geocodes and never guesses a coordinate.
 
 ## Hooks
 

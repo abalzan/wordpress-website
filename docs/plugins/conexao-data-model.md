@@ -78,6 +78,39 @@ optional — empty values never affect existing records):
 Verification metadata applies to the practical notes only — never to stable
 taxonomy attributes. Opening hours are deliberately not modelled.
 
+#### Leisure coordinate meta
+
+Registered by `Conexao_Data_Model_Meta::register_leisure_coordinates()` (a
+separate method from `register_leisure_meta()`, so the coordinate rules have
+one owner):
+
+| Meta key | Meaning |
+|----------|---------|
+| `_leisure_lat` | Latitude, decimal degrees, `-90`..`90` (readable over REST) |
+| `_leisure_lng` | Longitude, decimal degrees, `-180`..`180` (readable over REST) |
+| `_leisure_coord_source` | How the coordinate was obtained (audit trail; server-only) |
+| `_leisure_coord_verified` | Boolean: the coordinate was confirmed on the map for the exact access point (server-only) |
+
+The two coordinate values carry a `sanitize_callback`, so
+`register_post_meta()` enforces the range on **every** write path — the REST
+API, the Admin UX editor's `update_post_meta()` and any importer. An
+out-of-range or malformed value is rejected rather than persisted, and a
+missing coordinate is stored as an empty value (never as `0`).
+
+The single authoritative rule lives in this plugin:
+
+| Method | Purpose |
+|--------|---------|
+| `sanitize_coordinate( $value, $min, $max )` | Validate and normalise one axis to a canonical decimal string |
+| `sanitize_latitude()` / `sanitize_longitude()` | The two axis-specific wrappers |
+| `is_valid_latitude()` / `is_valid_longitude()` | Range checks used by the editor's validation |
+| `get_coordinates( $post_id )` | Read the validated pair for one record |
+| `coordinate_status( $post_id )` | Classify a record as `verified` / `unverified` / `invalid` / missing |
+
+The Admin UX editor and the theme both call these helpers rather than
+re-implementing the rule, so the editor, the REST API and the front end can
+never disagree about what a valid coordinate is.
+
 ### Sponsor Contacts (`_sponsor_contacts`)
 
 `Conexao_Data_Model_Contacts` owns the structured multi-contact storage for
