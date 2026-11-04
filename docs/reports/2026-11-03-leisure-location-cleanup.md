@@ -8,6 +8,7 @@
 | **Branch** | `leisure-location` |
 | **Base** | merge-base with `master` = `5a318d2a82cb15686872035b5697d9c4e1a1bd3b` |
 | **Starting commit** | `031220eca3d513a249adc4e09f9ad26664c98aa5` ("Add self-test for leisure coordinate resolver with shared UUID handling") |
+| **Final commit** | `53a23c710f4d3077fdb318bc82821214b46130d6` ("Cleanup and consolidate leisure-coordinate research evidence") |
 | **Working tree at start** | **clean** — every artefact was already committed, so the audit ran against committed state |
 | **Skills followed** | `wp-repository`, `wp-update-docs`, `wp-testing` |
 | **Scope** | Documentation and evidence organisation only. No code, data, schema or behaviour change. |
@@ -24,9 +25,9 @@ Nothing else was removed. Every other artefact was inspected and **deliberately
 retained** with a stated reason (§Files retained), because consolidating it would
 have lost unique provenance.
 
-**Branch and final commit:** `leisure-location`; the cleanup is **uncommitted**
-(working tree dirty by design — see §Final review). No reset, rebase or
-force-push was performed at any point.
+**Branch and final commit:** `leisure-location`; the cleanup is committed as
+**`53a23c7`** ("Cleanup and consolidate leisure-coordinate research evidence").
+No reset, rebase or force-push was performed at any point.
 
 **Overall status: PASS WITH LIMITATION** — the cleanup is complete and verified,
 with two deliberately-deferred consolidation opportunities recorded in §Remaining
@@ -193,7 +194,8 @@ all pre-existing and were not touched.
 
 ## Final review
 
-- `git status` — **75 deletions, 4 modified files**, no untracked additions.
+- `git status` — **clean**; the change set is committed as `53a23c7`
+  (75 deletions, 5 modified/added documentation files).
 - `git diff --stat` — confined to `docs/`; **no `wp-content/`, `scripts/`, `tests/`,
   `.github/` or configuration file appears in the diff.**
 - Every removed file is accounted for and its content is verifiably preserved.
