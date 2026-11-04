@@ -1,1 +1,0 @@
-summary: manifest_entries=294, populate_entries=234, preserve_entries=0, review_entries=60, planned=0, written=4, unchanged=230, conflicts=0, invalid=0, unresolved=0, match_stable_id=234, match_slug=0, match_title=0, with_before=230, with_after=234, missing_after=60, gate=0, errors=0

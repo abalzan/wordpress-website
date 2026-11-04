@@ -1,1 +1,0 @@
-summary: manifest_entries=294, populate_entries=281, preserve_entries=0, review_entries=13, planned=0, written=0, unchanged=281, conflicts=0, invalid=0, unresolved=0, owner_approved=12, provenance_repaired=0, provenance_planned=0, match_stable_id=281, match_slug=0, match_title=0, with_before=281, with_after=281, missing_after=13, gate=0, errors=0

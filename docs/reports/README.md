@@ -211,6 +211,12 @@ The authorised follow-up to the BLOCKED finding above. The empty archive was a
 |---|---|
 | [`2026-11-03-phoenix-park-uuid-repair.md`](2026-11-03-phoenix-park-uuid-repair.md) | Implementation of Option A: the coordinate resolver disambiguates a shared `_leisure_export_uuid` by the manifest entry's slug then language, and fails safely (`uuid_ambiguous`) when it cannot. Adds a 29-assertion regression suite, fixes the `_lazer_uuid` documentation drift, and proves the repair changed **zero** database records. `PASS WITH LIMITATION` — mobile UUID consumption could not be verified (out of scope). |
 
+## Leisure-location cleanup and consolidation (2026-11-03)
+
+| Report | Content |
+|---|---|
+| [`2026-11-03-leisure-location-cleanup.md`](2026-11-03-leisure-location-cleanup.md) | Repository maintenance only: the 75 one-line per-run stdout captures were consolidated **byte-for-byte** into `run-log-transcript.md` and removed (evidence directory 104 → 28 entries), two documentation-accuracy defects were fixed, the unindexed plan was added to the index, and every other artefact was deliberately retained with a stated reason. No code, data, schema or behaviour change; coordinates, provenance, UUIDs and translation relationships proven unchanged. |
+
 ## Related: `docs/audit/` (engineering audits), `docs/engineering-standard.md`
 (the normative standard these reports are measured against).
 

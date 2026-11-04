@@ -648,9 +648,11 @@ Two fixes, both applied and verified:
    source that contradicts the point. The repair is idempotent: the following
    run reports `unchanged=259, provenance_repaired=0`.
 
-Evidence: `dry-run-provenance-repair.txt` (planned 192 repairs, `written=0`),
-`apply-run-30-provenance-repair.txt` (`provenance_repaired=192, unchanged=67`),
-`apply-run-31-provenance-idempotence.txt` (`unchanged=259`). Only
+Evidence: the `dry-run-provenance-repair.txt`, `apply-run-30-provenance-repair.txt`
+and `apply-run-31-provenance-idempotence.txt` blocks in
+`docs/evidence/2026-11-03-leisure-coordinate-research/run-log-transcript.md`
+(planned 192 repairs with `written=0`; `provenance_repaired=192, unchanged=67`;
+then `unchanged=259, provenance_repaired=0`). Only
 `_leisure_coord_source` was touched — the snapshot diff still shows **no
 non-coordinate field changed** and no coordinate value moved.
 
@@ -1158,78 +1160,7 @@ was modified by this task (`git status` shows none under `tests/`).
 | `inventory-published-leisure.csv` | The read-only inventory baseline: 294 published records with county, town, URLs and existing coordinates |
 | `pre-apply-snapshot.json` | The pre-write snapshot: 294 records, **0** with coordinates, 0 invalid |
 | `post-apply-snapshot.json` | The final post-write state, from which the before/after diff is computed |
-| `dry-run-owner-batch.txt` | The owner-batch dry run: `planned=76, written=0` — zero writes |
-| `dry-run-final.txt` | The current dry run: `populate_entries=143, written=0, unchanged=143, gate=0` |
-| `apply-run-4-owner-batch.txt` | The owner-batch apply: `written=76, unchanged=67, gate=0` |
-| `apply-run-5-owner-idempotence.txt` | The owner-batch re-run: `written=0, unchanged=143` |
-| `apply-run-6-batch3.txt` | The batch-3 apply: `written=1, unchanged=161, gate=0` |
-| `apply-run-7-batch3-idempotence.txt` | The batch-3 re-run: `written=0, unchanged=162` |
-| `verify-after-batch3.txt` | The `--verify` inventory: 294 published, **162** with coordinates, 132 missing, 0 invalid |
-| `dry-run-batch3.txt` | The batch-3 dry run: `planned=1, written=0` |
-| `apply-run-8-batch4.txt` | The batch-4 apply: `written=21, unchanged=162, gate=0` |
-| `apply-run-9-batch4-idempotence.txt` | The batch-4 re-run: `written=0, unchanged=183` |
-| `verify-after-batch4.txt` | The `--verify` inventory: 294 published, **183** with coordinates, 111 missing, 0 invalid |
-| `dry-run-batch4.txt` | The batch-4 dry run: `planned=21, written=0` |
-| `apply-run-10-batch5.txt` | The batch-5 apply: `written=20, unchanged=183, gate=0` |
-| `apply-run-11-batch5-idempotence.txt` | The batch-5 re-run: `written=0, unchanged=203` |
-| `verify-after-batch5.txt` | The `--verify` inventory: 294 published, **203** with coordinates, 91 missing, 0 invalid |
-| `dry-run-batch5.txt` | The batch-5 dry run: `planned=20, written=0` |
-| `apply-run-12-batch6.txt` | The batch-6 apply: `written=3, unchanged=203, gate=0` |
-| `apply-run-13-batch6-idempotence.txt` | The batch-6 re-run: `written=0, unchanged=206` |
-| `verify-after-batch6.txt` | The `--verify` inventory: 294 published, **206** with coordinates, 88 missing, 0 invalid |
-| `dry-run-batch6.txt` | The batch-6 dry run: `planned=3, written=0` |
-| `apply-run-14-batch7.txt` | The batch-7 apply: `written=4, unchanged=206, gate=0` |
-| `apply-run-15-batch7-idempotence.txt` | The batch-7 re-run: `written=0, unchanged=210` |
-| `verify-after-batch7.txt` | The `--verify` inventory: 294 published, **210** with coordinates, 84 missing, 0 invalid |
-| `dry-run-batch7.txt` | The batch-7 dry run: `planned=4, written=0` |
-| `apply-run-16-batch8.txt` | The batch-8 apply: `written=10, unchanged=210, gate=0` |
-| `apply-run-17-batch8-idempotence.txt` | The batch-8 re-run: `written=0, unchanged=220` |
-| `verify-after-batch8.txt` | The `--verify` inventory: 294 published, **220** with coordinates, 74 missing, 0 invalid |
-| `dry-run-batch8.txt` | The batch-8 dry run: `planned=10, written=0` |
-| `apply-run-18-batch9.txt` | The batch-9 apply: `written=10, unchanged=220, gate=0` |
-| `apply-run-19-batch9-idempotence.txt` | The batch-9 re-run: `written=0, unchanged=230` |
-| `verify-after-batch9.txt` | The `--verify` inventory: 294 published, **230** with coordinates, 64 missing, 0 invalid |
-| `dry-run-batch9.txt` | The batch-9 dry run: `planned=10, written=0` |
-| `apply-run-20-batch10.txt` | The batch-10 apply: `written=4, unchanged=230, gate=0` |
-| `apply-run-21-batch10-idempotence.txt` | The batch-10 re-run: `written=0, unchanged=234` |
-| `verify-after-batch10.txt` | The `--verify` inventory: 294 published, **234** with coordinates, 60 missing, 0 invalid |
-| `dry-run-batch10.txt` | The batch-10 dry run: `planned=4, written=0` |
-| `apply-run-22-batch11.txt` | The batch-11 apply: `written=7, unchanged=234, gate=0` |
-| `apply-run-23-batch11-idempotence.txt` | The batch-11 re-run: `written=0, unchanged=241` |
-| `verify-after-batch11.txt` | The `--verify` inventory: 294 published, **241** with coordinates, 53 missing, 0 invalid |
-| `dry-run-batch11.txt` | The batch-11 dry run: `planned=7, written=0` |
-| `apply-run-24-batch12.txt` | The batch-12 apply: `written=8, unchanged=241, gate=0` |
-| `apply-run-25-batch12-idempotence.txt` | The batch-12 re-run: `written=0, unchanged=249` |
-| `verify-after-batch12.txt` | The `--verify` inventory: 294 published, **249** with coordinates, 45 missing, 0 invalid |
-| `dry-run-batch12.txt` | The batch-12 dry run: `planned=8, written=0` |
-| `apply-run-26-batch13.txt` | The batch-13 apply: `written=4, unchanged=249, gate=0` |
-| `apply-run-27-batch13-idempotence.txt` | The batch-13 re-run: `written=0, unchanged=253` |
-| `verify-after-batch13.txt` | The `--verify` inventory: 294 published, **253** with coordinates, 41 missing, 0 invalid |
-| `dry-run-batch13.txt` | The batch-13 dry run: `planned=4, written=0` |
-| `apply-run-28-batch14.txt` | The batch-14 apply: `written=6, unchanged=253, owner_approved=1, gate=0` |
-| `apply-run-29-batch14-idempotence.txt` | The batch-14 re-run: `written=0, unchanged=259` |
-| `dry-run-provenance-repair.txt` | The dry run that planned the 192 provenance-text repairs (`written=0`) |
-| `apply-run-30-provenance-repair.txt` | The provenance repair: `provenance_repaired=192, unchanged=67, gate=0` |
-| `apply-run-31-provenance-idempotence.txt` | The post-repair re-run: `unchanged=259, provenance_repaired=0` |
-| `verify-after-batch14.txt` | The `--verify` inventory: 294 published, **259** with coordinates, 35 missing, 0 invalid |
-| `dry-run-batch14.txt` | The batch-14 dry run: `planned=6, written=0` |
-| `apply-run-32-batch15.txt` | The batch-15 apply: `written=6, unchanged=259, owner_approved=5, gate=0` |
-| `apply-run-33-batch15-idempotence.txt` | The batch-15 re-run: `written=0, unchanged=265` |
-| `verify-after-batch15.txt` | The `--verify` inventory: 294 published, **265** with coordinates, 29 missing, 0 invalid |
-| `dry-run-batch15.txt` | The batch-15 dry run: `planned=6, written=0` |
-| `apply-run-34-batch16.txt` | The batch-16 apply: `written=16, unchanged=265, owner_approved=12, gate=0` |
-| `apply-run-35-batch16-idempotence.txt` | The batch-16 re-run: `written=0, unchanged=281` |
-| `verify-after-batch16.txt` | The `--verify` inventory: 294 published, **281** with coordinates, 13 missing, 0 invalid |
-| `dry-run-batch16.txt` | The batch-16 dry run: `planned=16, written=0` |
-| `apply-run-36-batch17.txt` | The final apply: `written=5, unchanged=281, owner_approved=14, gate=0` |
-| `apply-run-37-batch17-idempotence.txt` | The final re-run: `written=0, unchanged=286` |
-| `verify-after-batch17.txt` | The final `--verify`: 294 published, **286** with coordinates, 8 missing, 0 invalid |
-| `dry-run-batch17.txt` | The batch-17 dry run: `planned=5, written=0` |
-| `apply-run-38-final.txt` | The FINAL apply: `written=3, unchanged=286, owner_approved=17, with_after=289, gate=0` |
-| `apply-run-39-final-idempotence.txt` | The final re-run: `written=0, unchanged=289` |
-| `verify-final.txt` | The final `--verify`: 294 published, **289** with coordinates, 5 missing, 0 invalid |
-| `dry-run-final.txt` | The final dry run: `planned=3, written=0` |
-| `run-log-transcript.md` | The exact `summary:` line of every run in this task, including the earlier pipeline-batch runs and the two negative-path proofs |
+| `run-log-transcript.md` | **The consolidated run log**: the byte-for-byte stdout of every run in this task — the two-source pipeline batch, the classification correction, all 18 owner batches, the provenance repair, the UUID repair and every idempotence and `--verify` re-run — each block headed by the filename it came from. This single file replaced ~80 individual `dry-run-*.txt` / `apply-run-*.txt` / `verify-after-*.txt` captures, whose one-line contents it reproduces exactly |
 | `full-test-run.txt` | The `./scripts/run-tests.sh` aggregate output |
 | `lint.txt`, `script-contract.txt` | The static-quality and script-contract outputs |
 

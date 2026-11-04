@@ -141,7 +141,8 @@ the bootstrap requires the acknowledgement for any apply.
 
 Plus the shared-UUID **self-test manifest** in
 `scripts/data/leisure-coordinates-selftest.json`, whose real-data ambiguity run is
-recorded in `dry-run-uuid-ambiguity-proof.txt`.
+recorded in the `dry-run-uuid-ambiguity-proof.txt` block of
+`docs/evidence/2026-11-03-leisure-coordinate-research/run-log-transcript.md`.
 
 ### Static analysis
 
@@ -203,12 +204,8 @@ was modified, and the failing-set diff attributable to this change is **empty**.
 
 | File | Proves |
 |---|---|
-| `dry-run-uuid-repair.txt` | the real manifest dry run: `planned=0, written=0, match_stable_id=288, match_stable_id_slug=1, gate=0` |
-| `dry-run-uuid-ambiguity-proof.txt` | the real Phoenix Park UUID failing safely with `uuid_ambiguous` and `written=0` |
-| `apply-run-40-uuid-repair.txt` | the real manifest apply: `written=0, unchanged=289, gate=0` |
-| `verify-after-uuid-repair.txt` | `--verify` after the repair: 289 with coordinates, 0 invalid, 0 verified |
+| `run-log-transcript.md` | **The consolidated run log**: the byte-for-byte stdout of every run in this task — the two-source pipeline batch, the classification correction, all 18 owner batches, the provenance repair, the UUID repair and every idempotence and `--verify` re-run — each block headed by the filename it came from. This single file replaced ~80 individual `dry-run-*.txt` / `apply-run-*.txt` / `verify-after-*.txt` captures, whose one-line contents it reproduces exactly |
 | `post-apply-snapshot.json` | the 294-record state used for the before/after diff (0 changed) |
-| `run-log-transcript.md` | every run's exact `summary:` line, including this repair |
 
 ## 15. Documentation updated
 

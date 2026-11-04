@@ -1,1 +1,0 @@
-summary: published_leisure=294, with_coordinates=241, verified_flag_set=0, missing_coordinates=53, invalid_coordinates=0, errors=0
