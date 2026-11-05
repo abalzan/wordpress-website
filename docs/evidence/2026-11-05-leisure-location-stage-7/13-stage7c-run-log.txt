@@ -1,0 +1,32 @@
+# Stage 7C — execution log (verbatim script output, no credential material)
+# invoke: python3 -u docs/evidence/2026-11-05-leisure-location-stage-7/stage7-rest-permission-test.py
+#         --apply --confirm-production --evidence .../11-stage7c-production-test.json
+# credentials: loaded into the process environment from the git-ignored .env; never printed
+# single process, single pass: pre-read -> write -> read-back -> restore -> verify -> gate
+# window between the test write and the restore: 2026-11-05T15:45:55 -> 2026-11-05T15:46:00 (5 s)
+# exit status: 0 (the PASS branch of the script is `self.dump("PASS"); return 0`;
+#              the backgrounded invocation did not surface `$?` to the caller, and the
+#              `result: "PASS"` document in 11-stage7c-production-test.json is only
+#              written on that branch)
+
+confirmed: production apply against https://conexaobr.ie (--confirm-production)
+Stage 7C controlled REST permission test
+  target : https://conexaobr.ie (id 10551, slug russborough-house)
+  scope  : meta._leisure_lat / meta._leisure_lng on ONE record
+  1 pre-read (auth)      HTTP 200 lat='' lng='' modified=2026-08-21T21:48:44
+  2 POST test values     HTTP 200 lat='1.2345' lng='-2.3456'
+  3 read-back (auth)     HTTP 200 lat='1.2345' lng='-2.3456'
+  4 POST restore         HTTP 200 lat='' lng=''
+  5 read-back (auth)     HTTP 200 lat='' lng=''
+  6 read-back (anon)     HTTP 200 lat='' lng=''
+  7 proximity endpoint   HTTP 200 item={'id': 10551, 'lat': None, 'lng': None, 'index': 228}
+  evidence written to docs/evidence/2026-11-05-leisure-location-stage-7/11-stage7c-production-test.json
+  RESULT: PASS — permitted, restored, independently verified
+
+# Readings:
+#   step 2 is the permission proof — a deployed plugin without the G19 auth_callback
+#   fix answers 403 rest_cannot_update here; it answered 200 and echoed both values.
+#   step 3 proves persistence (not just a response echo).
+#   step 4 restores, step 5/6 prove it authenticated AND anonymously, step 7 proves the
+#   public proximity dataset reports null/null again.
+#   No other record, term, user, option or post type was touched.

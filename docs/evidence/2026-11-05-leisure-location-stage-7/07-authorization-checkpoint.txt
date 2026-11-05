@@ -1,0 +1,141 @@
+# Stage 7 — AUTHORIZATION CHECKPOINT (production write test)
+
+**Status: STOPPED. Nothing below has been executed. No production write has been sent.**
+
+Prior deployment authorisation does **not** authorise this. This stage performs a
+production **write** and needs its own explicit approval.
+
+## 1. What is proposed
+
+| Item | Value |
+|---|---|
+| Production site | `https://conexaobr.ie` (WordPress.com Atomic, site ID `256777017`) |
+| Target record | post type `leisure`, **ID 10551**, slug **`russborough-house`**, status `publish` |
+| Endpoint | `POST https://conexaobr.ie/wp-json/wp/v2/leisure/10551` |
+| Method | HTTP `POST`, `Content-Type: application/json` |
+| Body (test) | `{"meta":{"_leisure_lat":"1.2345","_leisure_lng":"-2.3456"}}` |
+| Body (restore) | `{"meta":{"_leisure_lat":"","_leisure_lng":""}}` |
+| Authentication | HTTP Basic — administrator **WordPress Application Password**, read from `WP_USERNAME` / `WP_APPLICATION_PASSWORD`. Never printed, never in argv, never in evidence. |
+| Writes performed | **2** (one test write, one restore) on **one** record. |
+| Reads performed | 4 record reads (3 authenticated, 1 anonymous) + 1 public dataset read. |
+| Records/posts created | **0**. Terms, users, media, options: **0**. |
+
+**Why these test values:** both are inside the sanitizer's valid ranges
+(lat −90..90, lng −180..180) and canonicalise unchanged, so a `200` is a genuine
+accepted write rather than a value coerced to `""`. They are deliberately synthetic
+and far outside Ireland, so (a) they cannot be mistaken for real content if a
+restore ever failed, and (b) the record sorts *last* — not first — in the proximity
+ordering for real visitors during the seconds the value exists.
+
+## 2. Original values and why the restore is exact
+
+| Key | Original (production REST) |
+|---|---|
+| `_leisure_lat` | `""` |
+| `_leisure_lng` | `""` |
+
+The restore writes back exactly the value the original state exposes over REST.
+Two residuals are possible and are disclosed rather than hidden:
+
+1. If no `postmeta` row exists today, the restore leaves a row holding `""`. To
+   every consumer this is identical to absence: `get_coordinates()` returns `null`
+   for `""`, `coordinate_status()` reports `missing`, and the public dataset returns
+   `lat: null`. Row-level absence is **not observable** from outside (no DB access
+   on WordPress.com), so it can be neither proven nor removed over REST.
+2. `post_modified` / `post_modified_gmt` move and one **revision** is created. Both
+   are consequences of `wp_update_post()` inside the REST controller, outside the
+   two meta keys, and neither is revertible over REST (`modified` is read-only;
+   revisions are not deletable). They are measured before/after and reported.
+
+## 3. Sequence executed under `--apply` (single process, no manual steps)
+
+| # | Request | Expected |
+|---|---|---|
+| 1 | `GET /wp/v2/leisure/10551?context=edit&_fields=…` (auth) | 200, slug/status/lat/lng match the pinned original — otherwise **refuse, write nothing** (exit 4) |
+| 2 | `POST /wp/v2/leisure/10551` with the **test** values | 200 and the response echoes `1.2345` / `-2.3456` |
+| 3 | `GET` (auth) | 200, persisted test values |
+| 4 | `POST` with the **original** values (`""`, `""`) | 200 — issued even if step 3 disagreed |
+| 5 | `GET` (auth) | 200, values are `""` / `""` again |
+| 6 | `GET` **anonymous** | 200, values are `""` / `""` (what a visitor sees) |
+| 7 | `GET /conexao/v1/leisure-coordinates?lang=pt` (anonymous) | the item for 10551 is `lat:null, lng:null` again |
+
+Failure handling is built in and closed:
+
+| Failure | Behaviour |
+|---|---|
+| Step 2 returns 403 `rest_cannot_update` | **abort**: nothing was written; re-read proves the record is unchanged; exit 2 (this is also the signal that the deployed plugin is *not* 1.6.3) |
+| Step 2 succeeds but step 3 disagrees | the restore at step 4 still runs; exit 1 |
+| Step 4 fails | **INCIDENT**: exit 3, sanitized state printed, no retry, no migration |
+| Any 429 | retried with `Retry-After`, bounded |
+
+## 4. Exact commands (run only after approval)
+
+```bash
+# Credentials: environment only. Either export them in the shell that runs the
+# command, or place them in .local/production-rest.env (git-ignored via .local/),
+# chmod 600, and source it. Never paste them into the chat or any tracked file.
+umask 077
+printf 'WP_USERNAME=%s\nWP_APPLICATION_PASSWORD=%s\n' '<user>' '<app password>' \
+  > .local/production-rest.env
+
+set -a; . .local/production-rest.env; set +a
+
+# A) read-only deployed-version confirmation (the missing half of Stage 7A)
+python3 - <<'PY'
+import json, sys
+sys.path.insert(0, "scripts/lib")
+import rest
+c = rest.RestClient(base_url="https://conexaobr.ie", authenticated=True)
+url = "https://conexaobr.ie/wp-json/wp/v2/plugins/conexao-data-model?context=edit"
+try:
+    body = c.request("GET", url)
+    print(json.dumps({k: body.get(k) for k in ("plugin", "status", "version", "name")}, indent=1))
+except rest.RestError as e:
+    print("plugin inventory unavailable:", e)
+PY
+
+# B) the controlled test (write -> read-back -> restore -> verify)
+python3 docs/evidence/2026-11-05-leisure-location-stage-7/stage7-rest-permission-test.py \
+  --apply --confirm-production \
+  --evidence docs/evidence/2026-11-05-leisure-location-stage-7/10-stage7c-production-test.json
+
+# C) independent post-test read-only verification (no credentials)
+curl -sS 'https://conexaobr.ie/wp-json/wp/v2/leisure/10551?_fields=id,slug,status,modified,meta' \
+  | jq '{id,slug,status,modified,lat:.meta._leisure_lat,lng:.meta._leisure_lng}'
+curl -sS 'https://conexaobr.ie/wp-json/conexao/v1/leisure-coordinates?lang=pt' \
+  | jq '{count, with_lat:([.items[]|select(.lat!=null)]|length), target:(.items[]|select(.id==10551))}'
+```
+
+Both the script and the shared client are the repository's own tooling:
+`scripts/lib/rest.py` supplies authentication, URL handling and the production
+write gate (`assert_write_allowed(confirm_production=True)`). The script is
+read-only unless `--apply` is passed.
+
+## 5. Expected impact
+
+* The record's two coordinate keys change for the duration of steps 2–4 (seconds)
+  and are then restored to `""`.
+* During that window the public dataset would report a coordinate for 10551;
+  because the value is far outside Ireland it sorts last rather than "nearest".
+* `post_modified` moves to the test time and one revision is recorded (§2).
+* No page content, title, slug, status, taxonomy, translation or other meta changes.
+* No effect on any other one of the 289 leisure records.
+
+## 6. Rehearsal already performed (local Docker, not production)
+
+The exact script was run against `http://localhost:8080`:
+
+* **positive** — local CI fixture `22734` (`ph3c-test-lazer-alfa`, empty
+  coordinates): write 200, persisted, restored, verified authenticated + anonymous,
+  public dataset back to `null` → **exit 0**. `08-local-rehearsal.txt`
+* **negative** — local record `10551`, which already holds real coordinates, so the
+  pinned original does not match: **REFUSED, exit 4, zero writes**, coordinates
+  unchanged. `09-local-refusal-proof.txt`
+
+## 7. Not authorised / not performed here
+
+`scripts/migrate-leisure-location-rest.py --apply` (Stage 9), any dry run (Stage 8),
+coordinate population, attribute assignment, deployment, plugin/theme upload,
+commit or push — **none** run. This checkpoint covers the write test only.
+
+| Any other unexpected mutation | stop, report, no retry |

@@ -1,0 +1,103 @@
+# Stage 7C — independent post-test verification (read-only, GET only)
+# captured: 2026-11-05T15:47:05Z (UTC), ~65 s after the restore
+# performed by a SEPARATE process/script from the one that wrote, so the
+# "restored" claim does not rest on the writer's own bookkeeping.
+
+## 1. authenticated read of the target
+HTTP 200
+{
+  "id": 10551,
+  "slug": "russborough-house",
+  "status": "publish",
+  "type": "leisure",
+  "modified": "2026-11-05T15:46:00",
+  "lat": "",
+  "lng": ""
+}
+
+## 2. anonymous read of the target
+HTTP 200
+{
+  "id": 10551,
+  "slug": "russborough-house",
+  "status": "publish",
+  "type": null,
+  "modified": "2026-11-05T15:46:00",
+  "lat": "",
+  "lng": ""
+}
+# `type: null` is an artefact of the request: this anonymous call requested
+# `_fields=id,slug,status,modified,meta` and therefore did not ask for `type`.
+# It is NOT evidence that the post type changed (the authenticated read above
+# requested `type` and returned `leisure`).
+
+## 3. public leisure-coordinates endpoint
+HTTP 200
+{
+  "count": 289,
+  "items": 289,
+  "with_coordinate": 0,
+  "target": {"id": 10551, "lat": null, "lng": null, "index": 228}
+}
+
+## 4. scope sweep — every leisure record's modified stamp (3 pages x 100)
+records scanned: 289
+records whose modified stamp is 2026-11-05: 1
+[
+  {
+    "id": 10551,
+    "slug": "russborough-house",
+    "modified": "2026-11-05T15:46:00"
+  }
+]
+target present exactly once: 1
+distinct ids: 289
+
+# Reading of the sweep: all 289 records were read after the test, and EXACTLY ONE
+# carries a modified stamp from the day of the test — the authorized target. No
+# other leisure record was written. The dataset's `with_coordinate = 0` independently
+# confirms no coordinate was left behind anywhere.
+
+## 5. Accepted, non-reverted side effects (disclosed, not "restored")
+| Effect | Value |
+|---|---|
+| `post_modified` | `2026-08-21T21:48:44` → `2026-11-05T15:46:00` (permanent; `modified` is read-only over REST) |
+| WordPress revision | **exactly one** created by the `wp_update_post()` call — `{"id": 54275, "modified": "2026-11-05T15:45:55"}`; revisions are not deletable over REST |
+| `postmeta` rows for the two keys | may now hold `""` where previously absent — row-level absence is unobservable without database access, and `""` is indistinguishable to every consumer (`get_coordinates()` → `null`, `coordinate_status()` → `missing`, dataset → `null`) |
+
+## 6. Not performed
+Stage 8 dry run: **not run**. Stage 9 migration apply: **not run**. Coordinate
+population on any other record: **not attempted**. Attribute migration: **not
+attempted**. SQL / WP-CLI / filesystem / database access: **not used** (none of the
+three is available on WordPress.com anyway). Plugin/theme deploy or activation:
+**not attempted**. Commit or push: **not performed** (`HEAD` still
+`25749f7af8b63fe3ab12204964aa73a2b0db9d94`; 9 stash entries unchanged).
+
+## 7. The anonymous surface is CDN-cached — a finding worth recording
+
+A later anonymous re-read at `2026-11-05T15:53:50Z` (no cache-buster) returned
+`modified: 2026-08-21T21:48:44`, i.e. a **stale cached copy** from before the test.
+It is caching, not a rollback:
+
+| Probe | `modified` | lat / lng |
+|---|---|---|
+| anonymous, no cache-buster (15:53:50Z) | `2026-08-21T21:48:44` (**stale**) | `""` / `""` |
+| anonymous, cache-busted (`&cb=<epoch>`) | `2026-11-05T15:46:00` | `""` / `""` |
+| **authenticated `context=edit`** | `2026-11-05T15:46:00` (`modified_gmt` identical) | `""` / `""` |
+
+Response header on the identity probe: `x-ac: 19.gru _atomic_dfw MISS` — WordPress.com
+Atomic's CDN. **An anonymous REST read must be cache-busted (or use `context=edit`)
+before being treated as current.** The metadata values agreed in all three probes, so no
+safety conclusion depends on the cached copy; only the `modified` stamp did. Recorded so
+a future verifier who sees the old timestamp does not mistake it for a rollback.
+
+## 8. Revision corroboration of the accepted side effect
+
+GET /wp-json/wp/v2/leisure/10551/revisions?context=edit&per_page=100&_fields=id,modified
+
+  => revision count: **1**  `{"id": 54275, "modified": "2026-11-05T15:45:55"}`
+
+Two `POST`s produced one revision (the meta-only second call added no further one):
+read-only evidence that the side effect disclosed in advance is real, bounded and
+singular.
+

@@ -1,0 +1,10 @@
+# Stage 7C negative rehearsal — the precondition guard must REFUSE, and does
+# LOCAL Docker stack; local record 10551 already carries real coordinates,
+# so the pinned original ("") does not match and no write may be sent.
+
+Stage 7C controlled REST permission test
+  target : http://localhost:8080 (id 10551, slug russborough-house)
+  scope  : meta._leisure_lat / meta._leisure_lng on ONE record
+  1 pre-read (auth)      HTTP 200 lat='53.141559' lng='-6.569674' modified=2026-10-21T20:04:15
+  REFUSED: preconditions not met; nothing was written
+exit=4

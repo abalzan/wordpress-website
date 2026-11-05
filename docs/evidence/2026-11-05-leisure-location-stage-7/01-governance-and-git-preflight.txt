@@ -1,0 +1,57 @@
+# Stage 7 governance and git preflight
+# captured by the agent before any production request in this stage
+
+## Branch / HEAD
+  branch: leisure-location
+  HEAD:   25749f7af8b63fe3ab12204964aa73a2b0db9d94
+  subject:Add REST permission tests for leisure coordinate meta keys
+
+## Worktree
+  at the very start of this stage : git status --porcelain=v1 -> <empty>  (clean worktree)
+  after this stage's evidence dir : git status --porcelain=v1 -> ?? docs/evidence/2026-11-05-leisure-location-stage-7/
+  interpretation: nothing pre-existing was uncommitted, so no prior work had to be preserved;
+  the only new path is this stage's own evidence directory (and, later, its report).
+
+## Stashes (untouched)
+  stash@{0}: WIP on feat/christmas-easter-egg: ceb27a6 feat: add Christmas Easter egg feature with localization support
+  stash@{1}: WIP on master: a26fd7f Implement Stage 3.1 of English support architecture: B2 fallback rendering, SEO adjustments, and key static-page translations
+  stash@{2}: On master: tmp-all-revert
+  stash@{3}: WIP on master: 125688c feat: implement accent-insensitive search for Portuguese content by adjusting SQL collation handling
+  stash@{4}: WIP on master: 4fc999c Refactor sponsor image handling and update CSS for responsive design
+  stash@{5}: WIP on master: 9edf2d8 Add Import Logs functionality with admin interface for viewing, downloading, and clearing logs
+  stash@{6}: WIP on master: 6dc6ee3 feat: Add functions to create redirect pages and manage menu items; refactor footer and primary menu item handling
+  stash@{7}: WIP on master: 26f546f Add mobile search functionality and submenu toggle to header; enhance mobile menu styles
+  stash@{8}: WIP on master: fe758a3 Enhance theme header and navigation structure
+
+## Destructive commands: NOT RUN
+  - git reset: not run
+  - git clean: not run
+  - git checkout --: not run
+  - git restore: not run
+  - git stash push/pop/apply/drop: not run
+  - git commit: not run
+  - git push: not run
+
+## Governance documents read in this stage
+  - AGENTS.md
+  - docs/engineering-standard.md
+  - docs/reports/2026-11-05-leisure-location-production-audit.md
+  - docs/plans/2026-11-05-leisure-location-production-migration.md
+  - docs/reports/2026-11-05-leisure-coordinate-rest-permission-fix.md
+  - docs/releases.md (G19)
+  - docs/testing.md
+  - docs/deployment.md
+  - docs/evidence/2026-11-05-leisure-coordinate-rest-permission/
+  - docs/templates/report.md
+  - docs/evidence/README.md
+
+## Source-of-truth checks confirming the branch is the one that ships 1.6.3
+  plugin header   : * Version: 1.6.3
+  release record  : docs/releases.md G19 -> conexao-data-model 1.6.2 -> 1.6.3 (NOT deployed at the time of writing)
+  built artifact  : {"version":"1.6.3","file":"conexao-data-model.zip","file_count":6,"bytes":18340,"sha256":"c1a834406c39cdacab2b8553c6894aebadac393cd4e5376e0ac05b9f97863052"}
+
+## Preflight conclusions
+  1. Branch leisure-location at 25749f7 is a descendant of the G19 release preparation.
+  2. Nothing in the repository was modified by Stage 7 before the read-only audit.
+  3. The Flutter/mobile repository was not accessed.
+  4. No production credential was present in the environment at start (WP_USERNAME / WP_APPLICATION_PASSWORD absent).

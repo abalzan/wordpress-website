@@ -1,0 +1,177 @@
+{
+  "stage": "7C — controlled production REST write permission test",
+  "generated_at": "2026-11-05T15:46:29Z",
+  "target": {
+    "site": "https://conexaobr.ie",
+    "post_type": "leisure",
+    "id": 10551,
+    "slug": "russborough-house",
+    "endpoint": "https://conexaobr.ie/wp-json/wp/v2/leisure/10551",
+    "method": "POST",
+    "auth": "HTTP Basic, WordPress Application Password (value never recorded)"
+  },
+  "original_values": {
+    "_leisure_lat": "",
+    "_leisure_lng": ""
+  },
+  "test_values": {
+    "_leisure_lat": "1.2345",
+    "_leisure_lng": "-2.3456"
+  },
+  "steps": [
+    {
+      "step": "read-record",
+      "method": "GET",
+      "path": "/leisure/10551?_fields=id,slug,status,modified,modified_gmt,meta&context=edit",
+      "authenticated": true,
+      "http_status": 200,
+      "slug": "russborough-house",
+      "status_field": "publish",
+      "modified": "2026-08-21T21:48:44",
+      "lat": "",
+      "lng": "",
+      "at": "2026-11-05T15:45:54Z"
+    },
+    {
+      "step": "write-test-values",
+      "method": "POST",
+      "path": "/leisure/10551",
+      "authenticated": true,
+      "http_status": 200,
+      "slug": "russborough-house",
+      "status_field": "publish",
+      "modified": "2026-11-05T15:45:55",
+      "lat": "1.2345",
+      "lng": "-2.3456",
+      "at": "2026-11-05T15:45:56Z",
+      "payload_written": {
+        "_leisure_lat": "1.2345",
+        "_leisure_lng": "-2.3456"
+      }
+    },
+    {
+      "step": "read-record",
+      "method": "GET",
+      "path": "/leisure/10551?_fields=id,slug,status,modified,modified_gmt,meta&context=edit",
+      "authenticated": true,
+      "http_status": 200,
+      "slug": "russborough-house",
+      "status_field": "publish",
+      "modified": "2026-11-05T15:45:55",
+      "lat": "1.2345",
+      "lng": "-2.3456",
+      "at": "2026-11-05T15:45:58Z"
+    },
+    {
+      "step": "restore-original-values",
+      "method": "POST",
+      "path": "/leisure/10551",
+      "authenticated": true,
+      "http_status": 200,
+      "slug": "russborough-house",
+      "status_field": "publish",
+      "modified": "2026-11-05T15:46:00",
+      "lat": "",
+      "lng": "",
+      "at": "2026-11-05T15:46:00Z",
+      "payload_written": {
+        "_leisure_lat": "",
+        "_leisure_lng": ""
+      }
+    },
+    {
+      "step": "read-record",
+      "method": "GET",
+      "path": "/leisure/10551?_fields=id,slug,status,modified,modified_gmt,meta&context=edit",
+      "authenticated": true,
+      "http_status": 200,
+      "slug": "russborough-house",
+      "status_field": "publish",
+      "modified": "2026-11-05T15:46:00",
+      "lat": "",
+      "lng": "",
+      "at": "2026-11-05T15:46:02Z"
+    },
+    {
+      "step": "read-record-public",
+      "method": "GET",
+      "path": "/leisure/10551?_fields=id,slug,status,modified,modified_gmt,meta",
+      "authenticated": false,
+      "http_status": 200,
+      "slug": "russborough-house",
+      "status_field": "publish",
+      "modified": "2026-11-05T15:46:00",
+      "lat": "",
+      "lng": "",
+      "at": "2026-11-05T15:46:28Z"
+    },
+    {
+      "step": "read-proximity-endpoint",
+      "method": "GET",
+      "path": "/conexao/v1/leisure-coordinates?lang=pt",
+      "authenticated": false,
+      "http_status": 200,
+      "item_for_target": {
+        "id": 10551,
+        "lat": null,
+        "lng": null,
+        "index": 228
+      },
+      "at": "2026-11-05T15:46:29Z"
+    }
+  ],
+  "assertions": [
+    {
+      "assertion": "pre-state equals the pinned original ('' for both keys, published, correct slug)",
+      "ok": true,
+      "detail": "slug='russborough-house' status='publish' lat='' lng=''"
+    },
+    {
+      "assertion": "the coordinate write returned HTTP 200 (not 403 rest_cannot_update)",
+      "ok": true,
+      "detail": "http=200"
+    },
+    {
+      "assertion": "the REST response echoed the test latitude",
+      "ok": true,
+      "detail": "lat='1.2345'"
+    },
+    {
+      "assertion": "the REST response echoed the test longitude",
+      "ok": true,
+      "detail": "lng='-2.3456'"
+    },
+    {
+      "assertion": "the test values PERSISTED (independent authenticated re-read)",
+      "ok": true,
+      "detail": "lat='1.2345' lng='-2.3456'"
+    },
+    {
+      "assertion": "restoration verified: authenticated re-read equals the original values",
+      "ok": true,
+      "detail": "lat='' lng=''"
+    },
+    {
+      "assertion": "the record is still published after the restore",
+      "ok": true,
+      "detail": "status='publish'"
+    },
+    {
+      "assertion": "restoration verified anonymously (public REST agrees)",
+      "ok": true,
+      "detail": "lat='' lng=''"
+    },
+    {
+      "assertion": "the public leisure-coordinates item is null/null again",
+      "ok": true,
+      "detail": "item={'id': 10551, 'lat': None, 'lng': None, 'index': 228}"
+    }
+  ],
+  "side_effects": {
+    "post_modified_before": "2026-08-21T21:48:44",
+    "post_modified_after": "2026-11-05T15:46:00",
+    "changed": true,
+    "note": "A REST post update runs wp_update_post(), so post_modified/_gmt always move and a revision row is created. Both sit outside the two meta keys and cannot be reverted over REST ('modified' is read-only, revisions are not deletable). Disclosed, not restored."
+  },
+  "result": "PASS"
+}
