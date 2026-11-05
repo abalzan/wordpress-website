@@ -1,0 +1,27 @@
+{
+ "generated": "2026-11-05",
+ "local_published_leisure_total": 293,
+ "local_ci_only_records": [
+  "ph3c-test-lazer-alfa",
+  "ph3c-test-lazer-externo",
+  "ph3c-test-lazer-sem-condado",
+  "ph3c-test-lazer-zeta"
+ ],
+ "local_real_records": 289,
+ "production_published_leisure_total": 289,
+ "matched_by_slug": 289,
+ "only_local": [],
+ "only_production": [],
+ "local_with_coordinate": 289,
+ "production_with_coordinate": 0,
+ "local_with_uuid": 289,
+ "local_distinct_uuid": 289,
+ "local_duplicate_uuid_groups": {
+  "ci-fixture-0000-0000-4000-8000-000000000002": [
+   "phoenix-park",
+   "phoenix-park-en"
+  ]
+ },
+ "production_duplicate_slugs": [],
+ "local_duplicate_slugs": []
+}

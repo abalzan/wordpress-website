@@ -223,6 +223,7 @@ The authorised follow-up to the BLOCKED finding above. The empty archive was a
 |---|---|
 | [`2026-11-04-leisure-distance-optin.md`](2026-11-04-leisure-distance-optin.md) | Making the `/lazer/` distance indicator visitor-activated: the audit that found the feature already existed, the four gaps closed (explicit opt-in, friendly failure + retry, the approved display table, `%s de você` wording), the privacy confirmation, and the limitations. |
 | [`2026-11-04-leisure-proximity-geolocation-e2e.md`](2026-11-04-leisure-proximity-geolocation-e2e.md) | **Read-only** end-to-end verification that browser geolocation reaches the `/lazer/` front end and that the ordering and distances are correct: five scenarios (granted/denied/`POSITION_UNAVAILABLE`/`TIMEOUT`/API-unsupported) in real Chromium against a simulated position, with the expected order and every distance recomputed independently in Python. 88 assertions passed; the database was provably unchanged. |
+| [`2026-11-05-leisure-location-production-audit.md`](2026-11-05-leisure-location-production-audit.md) | **Read-only audit** of the Lazer location dataset against production, plus the prepared migration. Production holds **0/289** coordinates where the local database holds **289/289**, and misses **419** add-only attribute term assignments across **232** records (records themselves match **289/289 by slug**). Documents the blocking `auth_callback` finding that makes the coordinate meta REST-unwritable (`403 rest_cannot_update`), the standalone REST migration script with its dry-run/apply/verify contract, and a **58-assertion** loopback mock-API suite that provably discriminates. **No production write of any kind.** |
 
 ## Related: `docs/audit/` (engineering audits), `docs/engineering-standard.md`
 (the normative standard these reports are measured against).
@@ -309,3 +310,4 @@ _Last verified: 2026-10-27 by Halloween theme compatibility_
 _Last verified: 2026-10-27 by Halloween mobile spontaneous appearances_
 _Last verified: 2026-11-03 by the Lazer coordinate research and population task_
 _Last verified: 2026-11-04 by the Lazer proximity feature (the 2026-11-04 distance-opt-in and proximity-verification reports added to the index)_
+_Last verified: 2026-11-05 by the Lazer location production audit and migration preparation (the 2026-11-05 production audit report added to the index)_
