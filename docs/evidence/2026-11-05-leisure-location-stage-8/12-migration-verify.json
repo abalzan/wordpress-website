@@ -1,0 +1,12 @@
+{
+ "script": "migrate-leisure-location-rest.py",
+ "target": "https://conexaobr.ie",
+ "mode": "verify",
+ "summary": {
+  "records": 289,
+  "distinct_slugs": 289,
+  "with_coordinate": 0,
+  "without_coordinate": 289,
+  "half_filled": 0
+ }
+}
