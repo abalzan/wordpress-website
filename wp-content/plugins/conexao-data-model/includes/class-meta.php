@@ -61,6 +61,20 @@ final class Conexao_Data_Model_Meta {
 	 * out-of-range or malformed value can never be persisted through any of
 	 * them. The two coordinate values are readable through REST; the
 	 * provenance fields stay private to the server.
+	 *
+	 * Both coordinate keys are PROTECTED (underscore-prefixed), so REST write
+	 * permission must be declared explicitly: without an `auth_callback`,
+	 * `register_meta()` falls back to `__return_false` for protected keys and
+	 * every REST write fails with `403 rest_cannot_update` — even for an
+	 * administrator. The callback allows exactly what the wp-admin editor
+	 * allows: a user who can edit the leisure record. It is the same pattern
+	 * as the `_leisure_image_*` keys (conexao-data-model.php) and the
+	 * agency/permit-employer meta; it is deliberately NOT `__return_true`, so
+	 * an anonymous or unprivileged caller stays refused.
+	 *
+	 * `_leisure_coord_source` / `_leisure_coord_verified` are not writable over
+	 * REST at all (`show_in_rest => false`), so they declare no auth_callback
+	 * and the REST surface is unchanged by this permission fix.
 	 */
 	private function register_leisure_coordinates() {
 		register_post_meta(
@@ -71,6 +85,9 @@ final class Conexao_Data_Model_Meta {
 				'type'              => 'string',
 				'show_in_rest'      => true,
 				'sanitize_callback' => array( __CLASS__, 'sanitize_latitude' ),
+				'auth_callback'     => function ( $allowed, $meta_key, $object_id ) {
+					return current_user_can( 'edit_post', $object_id );
+				},
 			)
 		);
 
@@ -82,6 +99,9 @@ final class Conexao_Data_Model_Meta {
 				'type'              => 'string',
 				'show_in_rest'      => true,
 				'sanitize_callback' => array( __CLASS__, 'sanitize_longitude' ),
+				'auth_callback'     => function ( $allowed, $meta_key, $object_id ) {
+					return current_user_can( 'edit_post', $object_id );
+				},
 			)
 		);
 

@@ -12,7 +12,7 @@ Load order is the row order. Dependencies always precede their dependents.
 
 | # | Plugin | Class | Status | Production | Build | Mount | Dependencies | Version | Docs |
 |---|--------|-------|--------|------------|-------|-------|--------------|---------|------|
-| 1 | `conexao-data-model` | platform | active | yes | yes | yes | - | 1.6.2 | [conexao-data-model](./conexao-data-model.md) |
+| 1 | `conexao-data-model` | platform | active | yes | yes | yes | - | 1.6.3 | [conexao-data-model](./conexao-data-model.md) |
 | 2 | `conexao-content` | platform | active | yes | yes | yes | - | 1.0.1 | [conexao-content](./conexao-content.md) |
 | 3 | `conexao-admin-ux` | platform | active | yes | yes | yes | - | 1.0.8 | [conexao-admin-ux](./conexao-admin-ux.md) |
 | 4 | `conexao-event-runtime` | platform | active | yes | yes | yes | `conexao-data-model` | 1.2.3 | [conexao-event-runtime](./conexao-event-runtime.md) |

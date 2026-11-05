@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "release": {
+    "tag": "v2026.11.05",
+    "built_at": "2026-11-05T14:50:54Z",
+    "git": {
+      "available": true,
+      "sha": "dc79f26d17396d802ed01d701c7ecc58c047ffbd",
+      "short_sha": "dc79f26d1739",
+      "branch": "leisure-location",
+      "dirty": true,
+      "tag": null
+    }
+  },
+  "allowlist": {
+    "source": "plugins.json",
+    "artifacts": [
+      "conexao-data-model",
+      "conexao-content",
+      "conexao-admin-ux",
+      "conexao-event-runtime",
+      "conexao-event-importer",
+      "conexao-leisure-migration",
+      "conexao-sponsor-migration",
+      "conexao-translation-rollout",
+      "conexao-translation-automation",
+      "conexao-br-irlanda"
+    ],
+    "production_order": [
+      "conexao-data-model",
+      "conexao-content",
+      "conexao-admin-ux",
+      "conexao-event-runtime",
+      "conexao-translation-rollout",
+      "conexao-translation-automation"
+    ]
+  },
+  "artifacts": [
+    {
+      "slug": "conexao-data-model",

@@ -1,0 +1,23 @@
+# Static quality gate — ./scripts/lint.sh
+# command: ./scripts/lint.sh
+# result: FAILED on the PHPCS legacy-baseline gate ONLY; syntax clean, PHPStan clean
+# the PHPCS baseline drift is PRE-EXISTING — see phpcs-baseline-drift-proof.txt
+
+==> [1/3] PHP syntax check (php -l, 532 files)
+OK: no PHP parse errors.
+==> [2/3] PHPCS (WordPress-Extra + WordPress-Docs + PHPCompatibilityWP) + legacy baseline gate
+PHPCS legacy baseline: 2846 errors / 2255 warnings in 214 files (baseline: 3290 / 2672).
+NEW VIOLATIONS - sniffs not in the baseline:
+  + Universal.CodeAnalysis.NoDoubleNegative.FoundDouble (1 errors, 0 warnings)
+NEW VIOLATIONS - per-sniff counts grew:
+  + Generic.WhiteSpace.ScopeIndent.IncorrectExact 19/0 -> 21/0 (errors/warnings)
+  + Squiz.Commenting.VariableComment.Missing 5/0 -> 15/0 (errors/warnings)
+  + Universal.Files.SeparateFunctionsFromOO.Mixed 5/0 -> 6/0 (errors/warnings)
+  + WordPress.Files.FileName.InvalidClassFileName 74/0 -> 75/0 (errors/warnings)
+  + WordPress.WP.I18n.MissingTranslatorsComment 101/0 -> 102/0 (errors/warnings)
+FAILED: the PHPCS baseline grew. Fix the new violations, or pay down debt and regenerate the baseline deliberately.
+==> [3/3] PHPStan level 5 via composer analyse (phpstan.neon.dist + baseline)
+Note: Using configuration file /home/andrei/IdeaProjects/wordpress-website/phpstan.neon.dist.
+   0/215 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0% 215/215 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+ [OK] No errors                                                                 
+lint: FAILED (see the check output above)

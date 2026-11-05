@@ -331,10 +331,23 @@ registered by `Conexao_Data_Model_Meta::register_leisure_coordinates()`:
 
 | Meta key | Type | REST | Meaning |
 |---|---|---|---|
-| `_leisure_lat` | string (decimal) | readable (`show_in_rest: true`) | Latitude, −90..90 |
-| `_leisure_lng` | string (decimal) | readable (`show_in_rest: true`) | Longitude, −180..180 |
+| `_leisure_lat` | string (decimal) | readable **and writable** over REST for a user who can edit the leisure record | Latitude, −90..90 |
+| `_leisure_lng` | string (decimal) | readable **and writable** over REST for a user who can edit the leisure record | Longitude, −180..180 |
 | `_leisure_coord_source` | string | **not** exposed | Editorial provenance (how the coordinates were obtained) |
 | `_leisure_coord_verified` | boolean | **not** exposed | Whether an editor confirmed the coordinates on the map |
+
+Both coordinate keys are **protected** meta (underscore-prefixed), so their REST
+write permission is declared explicitly with an `auth_callback` that performs
+`current_user_can( 'edit_post', $object_id )` — the same rule the wp-admin editor
+enforces. Without it WordPress falls back to `__return_false` and every REST write
+fails with `403 rest_cannot_update`, even for an administrator. The callback is
+deliberately **not** `__return_true`: an anonymous or unprivileged caller is still
+refused (401 / 403), which is proven by
+`wp-content/plugins/conexao-data-model/tests/test-leisure-coordinate-rest-permissions.php`.
+This permission declaration is what lets the reviewed coordinate dataset reach a
+CLI-less production site (WordPress.com) through the REST API. The two provenance
+keys stay out of the REST surface entirely, so the permission fix does not widen
+what REST can read or write.
 
 Validation and storage rules (the single source of truth is
 `Conexao_Data_Model_Meta::sanitize_coordinate()`, applied by the registered
@@ -426,3 +439,4 @@ _Last verified: 2026-09-26 by Stage O — Enable the Real English Blog Archive_
 
 _Last verified: 2026-10-08 by the Apoiadores single-page directory change (the `/apoiadores/` archive renders the whole ordered set on one page)_
 _Last verified: 2026-11-03 by the Phoenix Park UUID repair — Lazer `_leisure_export_uuid` per-attraction semantics documented_
+_Last verified: 2026-11-05 by the Lazer coordinate REST permission fix — `_leisure_lat` / `_leisure_lng` REST write permission (`auth_callback` = `edit_post`) documented_

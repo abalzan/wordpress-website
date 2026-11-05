@@ -36,7 +36,7 @@ compose.yaml
 Generated from [`plugins.json`](../plugins.json) by `scripts/generate-registry-docs.php`.
 Plugins load in registry order, and dependencies always precede their dependents.
 
-1. **conexao-data-model** (`platform`, active) v1.6.2. **Required on production.**
+1. **conexao-data-model** (`platform`, active) v1.6.3. **Required on production.**
 2. **conexao-content** (`platform`, active) v1.0.1. **Required on production.**
 3. **conexao-admin-ux** (`platform`, active) v1.0.8. **Required on production.**
 4. **conexao-event-runtime** (`platform`, active) v1.2.3. **Required on production.** Declared dependencies (`Requires Plugins` header): `conexao-data-model`.

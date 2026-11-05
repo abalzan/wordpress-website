@@ -1,0 +1,20 @@
+# Proof that the PHPCS baseline failure is PRE-EXISTING (not caused by this change)
+# method: git archive HEAD (dc79f26) into /tmp/pristine — no working-tree file touched —
+#         then the SAME phpcs invocation and the SAME baseline gate.
+# command: git archive HEAD | tar -x -C /tmp/pristine && cd /tmp/pristine && vendor/bin/phpcs -q --report=json > /tmp/pristine-phpcs.json && php scripts/phpcs-baseline.php check /tmp/pristine-phpcs.json phpcs-baseline.json
+# baseline gate exit: 1  (identical sniff list and identical counts as the working tree)
+
+PHPCS legacy baseline: 2846 errors / 2255 warnings in 214 files (baseline: 3290 / 2672) [156 files when the baseline was generated 2026-09-25]
+NEW VIOLATIONS - sniffs not in the baseline:
+  + Universal.CodeAnalysis.NoDoubleNegative.FoundDouble (1 errors, 0 warnings)
+NEW VIOLATIONS - per-sniff counts grew:
+  + Generic.WhiteSpace.ScopeIndent.IncorrectExact 19/0 -> 21/0 (errors/warnings)
+  + Squiz.Commenting.VariableComment.Missing 5/0 -> 15/0 (errors/warnings)
+  + Universal.Files.SeparateFunctionsFromOO.Mixed 5/0 -> 6/0 (errors/warnings)
+  + WordPress.Files.FileName.InvalidClassFileName 74/0 -> 75/0 (errors/warnings)
+  + WordPress.WP.I18n.MissingTranslatorsComment 101/0 -> 102/0 (errors/warnings)
+FAILED: the PHPCS baseline grew.
+
+# The two files this change modified have IDENTICAL PHPCS profiles before and after:
+#   class-meta.php          HEAD 15 errors / 1 warning   |  working tree 15 errors / 1 warning
+#   conexao-data-model.php  HEAD 26 errors / 67 warnings |  working tree 26 errors / 67 warnings

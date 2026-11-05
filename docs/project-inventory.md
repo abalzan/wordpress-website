@@ -9,7 +9,7 @@ source. Do not hand-edit this table.
 
 | Slug | Version | Class | Status | Production | Build | Mount | Path |
 |------|---------|-------|--------|------------|-------|-------|------|
-| conexao-data-model | 1.6.2 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-data-model/` |
+| conexao-data-model | 1.6.3 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-data-model/` |
 | conexao-content | 1.0.1 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-content/` |
 | conexao-admin-ux | 1.0.8 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-admin-ux/` |
 | conexao-event-runtime | 1.2.3 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-event-runtime/` |
