@@ -1,0 +1,136 @@
+== Lazer proximity — read-only browser acceptance (simulated geolocation) ==
+   base url        : http://localhost:8080
+   simulated visitor: Portlaoise 53.0344, -7.2994
+   dataset          : 293 records, 289 with coordinates, 4 without
+  PASS  coordinate-less records are ordered last by the independent calculation ([22734, 22737, 22738, 22739])
+  PASS  every record with coordinates has an independent distance
+
+-- 1. geolocation GRANTED (simulated: Portlaoise 53.0344, -7.2994) --
+  PASS  navigating to http://localhost:8080/lazer/ returns HTTP 200
+  PASS  the /lazer/ page is loaded
+  PASS  the proximity JavaScript (leisure-proximity.js) is loaded
+  PASS  window.ConexaoLeisureProximity exposes the proximity helpers
+  PASS  the archive body carries the leisure-location scope class
+  PASS  window.ConexaoLeisureLocation carries coordinatesUrl + cardsUrl
+  PASS  the coordinates endpoint returns HTTP 200 (got 200)
+  PASS  the endpoint returns 293 records (got 293)
+  PASS  289 records carry a valid coordinate pair (got 289)
+  PASS  each record carries id/index/lat/lng (got ['id', 'index', 'lat', 'lng'])
+  PASS  the opt-in control is offered with its accessible name (got ['Mostrar distância de mim'])
+  PASS  the pre-permission explanation is shown before any request
+  PASS  no geolocation request is made automatically on page load
+  PASS  clicking the control issues exactly one geolocation request (got 1)
+  PASS  the 'ordered by proximity' note appears (got ['Ordenado por proximidade'])
+  PASS  the opt-in control is removed once proximity is active
+  PASS  the explanation is removed once proximity is active
+  PASS  no failure message is shown when geolocation succeeds
+  PASS  the proximity grid rendered 10 card(s)
+  PASS  the visible cards match the independent nearest-first order
+          expected ['post-10623', 'post-10629', 'post-10625', 'post-10631', 'post-10633', 'post-10627', 'post-10778', 'post-10643', 'post-10849', 'post-10641']
+          got      ['post-10623', 'post-10629', 'post-10625', 'post-10631', 'post-10633', 'post-10627', 'post-10778', 'post-10643', 'post-10849', 'post-10641']
+  PASS  the nearest attraction is the independently computed nearest (post-10623)
+  PASS  every geolocated visible card shows a distance (10 spans / 10 cards)
+  PASS  distance on post-10623 is finite and non-negative ('6,1 km de você')
+  PASS  distance on post-10629 is finite and non-negative ('10 km de você')
+  PASS  distance on post-10625 is finite and non-negative ('11 km de você')
+  PASS  distance on post-10631 is finite and non-negative ('13 km de você')
+  PASS  distance on post-10633 is finite and non-negative ('14 km de você')
+  PASS  distance on post-10627 is finite and non-negative ('17 km de você')
+  PASS  distance on post-10778 is finite and non-negative ('26 km de você')
+  PASS  distance on post-10643 is finite and non-negative ('28 km de você')
+  PASS  distance on post-10849 is finite and non-negative ('29 km de você')
+  PASS  distance on post-10641 is finite and non-negative ('29 km de você')
+  PASS  every displayed distance matches the independent calculation (10/10 exact, 10/10 within rounding)
+  PASS  the nearest attraction's distance matches the independent value (expected '6,1 km de você', got '6,1 km de você')
+  PASS  visible distances are sorted nearest-first: [6100, 10000, 11000, 13000, 14000, 17000, 26000, 28000, 29000, 29000]
+  diagnostics:
+    page exceptions        : 0
+    relevant console errors: []
+    relevant bad responses : []
+    relevant failed reqs   : []
+    ignorable (uploads 404): 40
+  PASS  no relevant JavaScript errors or network failures
+
+-- 2. geolocation DENIED --
+  PASS  the page still loads
+  PASS  the control is offered because the API exists (got ['Mostrar distância de mim'])
+  PASS  exactly one geolocation request is attempted (got 1)
+  PASS  exactly one friendly failure message is shown
+  PASS  the message is a meaningful location-unavailable state ('Não foi possível obter sua localização. Você pode continuar explorando as atrações normalmente.')
+  PASS  no 'ordered by proximity' note on failure
+  PASS  no distances are shown on failure
+  PASS  the default server order is preserved (no fake location substituted)
+  PASS  the explanation is replaced by the failure message
+  PASS  the control stays available as a retry (got ['Tentar novamente'])
+  PASS  the retry issues a second geolocation request
+  PASS  exactly one failure message after a retry (messages never stack)
+  diagnostics:
+    page exceptions        : 0
+    relevant console errors: []
+    relevant bad responses : []
+    relevant failed reqs   : []
+    ignorable (uploads 404): 18
+  PASS  no JavaScript exception: []
+  PASS  no relevant failed REST request: []
+  PASS  no relevant console error: []
+
+-- 3. geolocation POSITION_UNAVAILABLE (code 2) --
+  PASS  the page still loads
+  PASS  the control is offered because the API exists (got ['Mostrar distância de mim'])
+  PASS  exactly one geolocation request is attempted (got 1)
+  PASS  exactly one friendly failure message is shown
+  PASS  the message is a meaningful location-unavailable state ('Não foi possível obter sua localização. Você pode continuar explorando as atrações normalmente.')
+  PASS  no 'ordered by proximity' note on failure
+  PASS  no distances are shown on failure
+  PASS  the default server order is preserved (no fake location substituted)
+  PASS  the explanation is replaced by the failure message
+  PASS  the control stays available as a retry (got ['Tentar novamente'])
+  PASS  the retry issues a second geolocation request
+  PASS  exactly one failure message after a retry (messages never stack)
+  diagnostics:
+    page exceptions        : 0
+    relevant console errors: []
+    relevant bad responses : []
+    relevant failed reqs   : []
+    ignorable (uploads 404): 18
+  PASS  no JavaScript exception: []
+  PASS  no relevant failed REST request: []
+  PASS  no relevant console error: []
+
+-- 4. geolocation TIMEOUT (code 3) --
+  PASS  the page still loads
+  PASS  the control is offered because the API exists (got ['Mostrar distância de mim'])
+  PASS  exactly one geolocation request is attempted (got 1)
+  PASS  exactly one friendly failure message is shown
+  PASS  the message is a meaningful location-unavailable state ('Não foi possível obter sua localização. Você pode continuar explorando as atrações normalmente.')
+  PASS  no 'ordered by proximity' note on failure
+  PASS  no distances are shown on failure
+  PASS  the default server order is preserved (no fake location substituted)
+  PASS  the explanation is replaced by the failure message
+  PASS  the control stays available as a retry (got ['Tentar novamente'])
+  PASS  the retry issues a second geolocation request
+  PASS  exactly one failure message after a retry (messages never stack)
+  diagnostics:
+    page exceptions        : 0
+    relevant console errors: []
+    relevant bad responses : []
+    relevant failed reqs   : []
+    ignorable (uploads 404): 18
+  PASS  no JavaScript exception: []
+  PASS  no relevant failed REST request: []
+  PASS  no relevant console error: []
+
+-- 5. geolocation API UNSUPPORTED --
+  PASS  the page still loads
+  PASS  no opt-in control is offered when the browser cannot geolocate
+  PASS  the explanation is removed when the API is unavailable
+  PASS  no distances are shown when unsupported
+  diagnostics:
+    page exceptions        : 0
+    relevant console errors: []
+    relevant bad responses : []
+    relevant failed reqs   : []
+    ignorable (uploads 404): 14
+  PASS  no relevant JavaScript errors or network failures when unsupported
+
+88 passed, 0 failed

@@ -1,0 +1,92 @@
+# Stage 8 — proof that the dry-run invocation cannot write
+# captured (UTC): 2026-11-05T16:11:56Z
+
+## 1. Exact invocations used (credentials came from the environment; none printed)
+  dry-run 1 : python3 scripts/migrate-leisure-location-rest.py --target-url https://conexaobr.ie --dry-run --report <evidence>/dryrun-01-coordinates.json
+  dry-run 2 : python3 scripts/migrate-leisure-location-rest.py --target-url https://conexaobr.ie --source-url http://localhost:8080 --dry-run --include-attributes --report <evidence>/dryrun-02-coordinates-attributes.json
+  dry-run 3 : same as dry-run 2, report <evidence>/dryrun-03-repeat.json (discarded after cmp)
+
+  Flags NOT used, anywhere: --apply, --confirm-production, --overwrite, --no-resume.
+  Each run printed:  mode:   dry-run   and   (dry run — nothing written)
+
+## 2. The mode contract (scripts/migrate-leisure-location-rest.py:854-880)
+      # The mode contract: --dry-run and --apply are mutually exclusive, and
+      # --dry-run is the default so there is no accidental write mode.
+      if args.apply and args.dry_run:
+          fail("--apply and --dry-run are mutually exclusive", 2)
+      if args.verify and (args.apply or args.dry_run):
+          fail("--verify cannot be combined with --apply/--dry-run", 2)
+  
+      mode = "verify" if args.verify else ("apply" if args.apply else "dry-run")
+  
+      target = resolve_target_url(args)
+      scope = "leisure coordinate meta (_leisure_lat, _leisure_lng)"
+      if args.include_attributes:
+          scope += " + {} (add-only)".format(ATTRIBUTE_TAXONOMY)
+      kind = print_preflight(target, mode, scope)
+  
+      if mode == "apply" and kind == "production" and not args.confirm_production:
+          fail(
+              "refusing to write to a production target without --confirm-production. "
+              "Re-run with --confirm-production once you have confirmed {} is the "
+              "intended target.".format(target)
+          )
+      if kind == "unknown" and mode == "apply":
+          fail(
+              "refusing to write: the target could not be classified as local, staging "
+              "or production. Pass an explicit --target-url for a known site."
+          )
+  
+
+## 3. The only two write call sites, both inside `if mode == "apply"` (954-976)
+      planned_writes = counts.get("POPULATE", 0) + counts.get("UPDATE", 0)
+  
+      written = 0
+      attribute_written = 0
+      if mode == "apply":
+          for row in rows:
+              if row["action"] not in ("POPULATE", "UPDATE"):
+                  continue
+              write_coordinate(client, row, state, args.state_file)
+              written += 1
+              if args.request_delay:
+                  time.sleep(args.request_delay)
+          for row in attribute_rows:
+              write_attributes(client, row, state, args.state_file)
+              attribute_written += 1
+              if args.request_delay:
+                  time.sleep(args.request_delay)
+  
+      return _report(
+          args, mode, target, scope, client, rows, counts, eligible,
+          attribute_rows, written, attribute_written, planned_writes,
+          target_index, resumed, skipped_manifest,
+      )
+
+  grep -n "write_coordinate(\|write_attributes(" scripts/migrate-leisure-location-rest.py
+  783:def write_coordinate(client, row, state, state_path):
+  962:            write_coordinate(client, row, state, args.state_file)
+  967:            write_attributes(client, row, state, args.state_file)
+  979:def write_attributes(client, row, state, state_path):
+
+## 4. Journal untouched
+  ls: cannot access '.local': No such file or directory
+  -> the resume journal was never created, so no write path ran.
+
+## 5. Loopback mock suite (tests/scripts/verify-leisure-location-migration.py)
+  It records EVERY request the migration makes against a stubbed WordPress.
+    PASS: dry run performed ZERO writes
+    PASS: dry run sent ZERO write requests at all
+    PASS: nothing was written
+    PASS: nothing was written
+  58 passed, 0 failed
+
+## 6. Post-run production state (the measurement, not the claim)
+  verification-post.json write_proof:
+    records_before = 289
+    records_after  = 289
+    changed_records= 0
+    added_records  = 0
+    removed_records= 0
+    identical      = True
+    compared fields: id, slug, status, modified_gmt, _leisure_lat, _leisure_lng, attribute_ids, attribute_terms

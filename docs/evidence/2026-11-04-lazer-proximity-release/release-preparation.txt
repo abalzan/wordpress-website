@@ -1,0 +1,73 @@
+# Lazer proximity — release preparation evidence
+
+Branch: leisure-location
+Base commit: 59ffce2abe813d12a85673b776be11b3c8139e29
+Release commit: 6a04869aaa1e
+Generated: 2026-11-04
+
+## 1. Artifacts that changed (runtime files, tests and .pot excluded)
+
+```
+conexao-data-model               runtime-changed-files=2
+conexao-admin-ux                 runtime-changed-files=4
+theme conexao-br-irlanda         runtime-changed-files=12
+conexao-content                  runtime-changed-files=0
+conexao-event-runtime            runtime-changed-files=0
+conexao-event-importer           runtime-changed-files=0
+conexao-leisure-migration        runtime-changed-files=0  (test file only; tests/ excluded from the ZIP)
+conexao-sponsor-migration        runtime-changed-files=0
+conexao-translation-rollout      runtime-changed-files=0
+conexao-translation-automation   runtime-changed-files=0
+```
+
+## 2. Release manifest (scripts/release-manifest.py --verify)
+
+```
+release:  v2026.11.04  (built 2026-11-04T21:45:27Z)
+commit:   6a04869aaa1e on leisure-location
+tag:      v2026.11.04
+record:   /home/andrei/IdeaProjects/wordpress-website/dist/release.json
+
+allowlist (plugins.json): 10 artifact(s)
+built:          10/10 artifact(s), 249 file(s), 6563573 byte(s)
+
+  artifact                         kind     version     files  sha256
+  conexao-data-model               plugin   1.6.2           6  63a1ff79d9896e43
+  conexao-content                  plugin   1.0.1           5  94248376f18a8750
+  conexao-admin-ux                 plugin   1.0.8          14  cc66299ee35cf1f7
+  conexao-event-runtime            plugin   1.2.3           8  66e9883e0e249ff1
+  conexao-event-importer           plugin   1.9.0          50  997959e51ef804f0
+  conexao-leisure-migration        plugin   2.1.0           7  fde05ca3de6b096d
+  conexao-sponsor-migration        plugin   1.1.0           6  2c0a8f40e5ebe73c
+  conexao-translation-rollout      plugin   1.2.0           4  c4da17e98d8c27f7
+  conexao-translation-automation   plugin   0.6.0          29  770e16b2fa6f315b
+  conexao-br-irlanda               theme    1.0.2         120  f3554f8f4157ca55
+
+summary: release=v2026.11.04 artifacts=10 built=10
+```
+
+## 3. Registry drift gate (0 writes)
+
+```
+registry OK: 10 plugins validated, 19 generated regions current (zero writes).
+```
+
+## 4. Stage L permanent invariant gates
+
+```
+[PASS   ] taxonomy                   taxonomy_policy          exit=0 18 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] cache_scoping              cache_scoping            exit=0 9 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] cache_scoping              cache_scoping_static     exit=0 2 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] redirect_precedence        redirect_precedence      exit=0 15 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] documentation_drift        documentation_drift      exit=0 14 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] i18n_freshness             i18n_freshness           exit=0 3 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+Gates: 7 total, 6 passed, 1 failed, 0 blocked
+Assertions: 82 passed, 2 failed
+Violations: 3 (1 pre-existing, 2 new)
+AGGREGATE: FAIL
+```
+
+i18n_freshness flipped from FAIL to PASS after regenerating the theme
+catalogue with scripts/i18n-make-pot.sh. The remaining
+translation_completeness failure is pre-existing local DB state:
+it reproduces identically with master's code against the same database.

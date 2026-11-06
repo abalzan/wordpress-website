@@ -1,0 +1,10 @@
+# Environment
+date: 2026-11-04T16:57:10Z
+docker context: desktop-linux
+docker version: Docker version 29.0.0, build 3d4129b
+playwright: Version 1.62.0
+python: Python 3.14.4
+chromium build: chromium-1234 (chrome-linux64)
+base url: http://localhost:8080
+git branch: leisure-location
+git HEAD: 5fb0bb3537d3ec2cccbd741691560ad0ff1a6935

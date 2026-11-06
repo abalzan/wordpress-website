@@ -1,0 +1,590 @@
+script: migrate-leisure-location-rest.py
+target: https://conexaobr.ie (production)
+mode:   dry-run
+scope:  leisure coordinate meta (_leisure_lat, _leisure_lng) + conexao_leisure_attribute (add-only)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!  PRODUCTION TARGET — every write below changes the live site.
+!!  Target: https://conexaobr.ie
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  POPULATE     trinity-college-book-of-kells                        target has no coordinate
+  POPULATE     dublin-castle                                        target has no coordinate
+  POPULATE     kilmainham-gaol                                      target has no coordinate
+  POPULATE     guinness-storehouse                                  target has no coordinate
+  POPULATE     phoenix-park                                         target has no coordinate
+  POPULATE     dublin-zoo                                           target has no coordinate
+  POPULATE     howth-cliff-walk                                     target has no coordinate
+  POPULATE     malahide-castle-gardens                              target has no coordinate
+  POPULATE     wicklow-mountains-national-park                      target has no coordinate
+  POPULATE     glendalough                                          target has no coordinate
+  POPULATE     powerscourt-estate                                   target has no coordinate
+  POPULATE     powerscourt-waterfall                                target has no coordinate
+  POPULATE     bray-head                                            target has no coordinate
+  POPULATE     great-sugar-loaf                                     target has no coordinate
+  POPULATE     sally-gap                                            target has no coordinate
+  POPULATE     avondale-forest-park                                 target has no coordinate
+  POPULATE     newgrange                                            target has no coordinate
+  POPULATE     knowth                                               target has no coordinate
+  POPULATE     hill-of-tara                                         target has no coordinate
+  POPULATE     trim-castle                                          target has no coordinate
+  POPULATE     slane-castle                                         target has no coordinate
+  POPULATE     loughcrew                                            target has no coordinate
+  POPULATE     battle-of-the-boyne-visitor-centre                   target has no coordinate
+  POPULATE     kylemore-abbey                                       target has no coordinate
+  POPULATE     connemara-national-park                              target has no coordinate
+  POPULATE     salthill                                             target has no coordinate
+  POPULATE     sky-road                                             target has no coordinate
+  POPULATE     aran-islands                                         target has no coordinate
+  POPULATE     dun-aonghasa                                         target has no coordinate
+  POPULATE     diamond-hill                                         target has no coordinate
+  POPULATE     galway-atlantaquaria                                 target has no coordinate
+  POPULATE     cliffs-of-moher                                      target has no coordinate
+  POPULATE     burren-national-park                                 target has no coordinate
+  POPULATE     bunratty-castle-folk-park                            target has no coordinate
+  POPULATE     aillwee-caves                                        target has no coordinate
+  POPULATE     doolin-cave                                          target has no coordinate
+  POPULATE     loop-head                                            target has no coordinate
+  POPULATE     lahinch-beach                                        target has no coordinate
+  POPULATE     kilkee-cliffs                                        target has no coordinate
+  POPULATE     blarney-castle                                       target has no coordinate
+  POPULATE     cobh                                                 target has no coordinate
+  POPULATE     titanic-experience-cobh                              target has no coordinate
+  POPULATE     fota-wildlife-park                                   target has no coordinate
+  POPULATE     jameson-distillery-midleton                          target has no coordinate
+  POPULATE     kinsale                                              target has no coordinate
+  POPULATE     charles-fort                                         target has no coordinate
+  POPULATE     mizen-head                                           target has no coordinate
+  POPULATE     killarney-national-park                              target has no coordinate
+  POPULATE     muckross-house                                       target has no coordinate
+  POPULATE     ross-castle                                          target has no coordinate
+  POPULATE     torc-waterfall                                       target has no coordinate
+  POPULATE     gap-of-dunloe                                        target has no coordinate
+  POPULATE     ring-of-kerry                                        target has no coordinate
+  POPULATE     dingle-peninsula                                     target has no coordinate
+  POPULATE     inch-beach                                           target has no coordinate
+  POPULATE     national-museum-archaeology                          target has no coordinate
+  POPULATE     epic-irish-emigration-museum                         target has no coordinate
+  POPULATE     national-botanic-gardens-dublin                      target has no coordinate
+  POPULATE     glasnevin-cemetery-museum                            target has no coordinate
+  POPULATE     dun-laoghaire-east-pier                              target has no coordinate
+  POPULATE     portmarnock-beach                                    target has no coordinate
+  POPULATE     russborough-house                                    target has no coordinate
+  POPULATE     wicklow-historic-gaol                                target has no coordinate
+  POPULATE     brittas-bay-beach                                    target has no coordinate
+  POPULATE     killruddery-house-gardens                            target has no coordinate
+  POPULATE     mount-usher-gardens                                  target has no coordinate
+  POPULATE     wicklow-way                                          target has no coordinate
+  POPULATE     emerald-park                                         target has no coordinate
+  POPULATE     bective-abbey                                        target has no coordinate
+  POPULATE     kells-historic-town                                  target has no coordinate
+  POPULATE     sonairte-ecology-centre                              target has no coordinate
+  POPULATE     dowth                                                target has no coordinate
+  POPULATE     spanish-arch-long-walk                               target has no coordinate
+  POPULATE     galway-city-museum                                   target has no coordinate
+  POPULATE     brigits-garden                                       target has no coordinate
+  POPULATE     coole-park                                           target has no coordinate
+  POPULATE     portumna-castle-gardens                              target has no coordinate
+  POPULATE     thoor-ballylee                                       target has no coordinate
+  POPULATE     ennis-friary                                         target has no coordinate
+  POPULATE     scattery-island                                      target has no coordinate
+  POPULATE     holy-island-inis-cealtra                             target has no coordinate
+  POPULATE     spanish-point-beach                                  target has no coordinate
+  POPULATE     craggaunowen                                         target has no coordinate
+  POPULATE     vandeleur-walled-garden                              target has no coordinate
+  POPULATE     english-market-cork                                  target has no coordinate
+  POPULATE     cork-city-gaol                                       target has no coordinate
+  POPULATE     blackrock-castle-observatory                         target has no coordinate
+  POPULATE     garnish-island                                       target has no coordinate
+  POPULATE     spike-island-cork                                    target has no coordinate
+  POPULATE     doneraile-park                                       target has no coordinate
+  POPULATE     skellig-michael                                      target has no coordinate
+  POPULATE     valentia-island                                      target has no coordinate
+  POPULATE     kerry-cliffs                                         target has no coordinate
+  POPULATE     derrynane-house                                      target has no coordinate
+  POPULATE     gallarus-oratory                                     target has no coordinate
+  POPULATE     muckross-abbey                                       target has no coordinate
+  POPULATE     banna-strand                                         target has no coordinate
+  POPULATE     rock-of-dunamase                                     target has no coordinate
+  POPULATE     emo-court                                            target has no coordinate
+  POPULATE     heywood-gardens                                      target has no coordinate
+  POPULATE     timahoe-round-tower                                  target has no coordinate
+  POPULATE     abbeyleix-heritage-house                             target has no coordinate
+  POPULATE     slieve-bloom-mountains                               target has no coordinate
+  POPULATE     clonmacnoise                                         target has no coordinate
+  POPULATE     birr-castle-demesne                                  target has no coordinate
+  POPULATE     lough-boora-discovery-park                           target has no coordinate
+  POPULATE     charleville-forest-castle                            target has no coordinate
+  POPULATE     tullamore-dew-experience                             target has no coordinate
+  POPULATE     belvedere-house-gardens                              target has no coordinate
+  POPULATE     athlone-castle                                       target has no coordinate
+  POPULATE     kilbeggan-distillery                                 target has no coordinate
+  POPULATE     mullaghmeen-forest                                   target has no coordinate
+  POPULATE     glendeer-pet-farm                                    target has no coordinate
+  POPULATE     corlea-trackway                                      target has no coordinate
+  POPULATE     ardagh-heritage-village                              target has no coordinate
+  POPULATE     granard-motte-bailey                                 target has no coordinate
+  POPULATE     royal-canal-greenway                                 target has no coordinate
+  POPULATE     newcastle-wood                                       target has no coordinate
+  POPULATE     lough-ree                                            target has no coordinate
+  POPULATE     rathcroghan                                          target has no coordinate
+  POPULATE     boyle-abbey                                          target has no coordinate
+  POPULATE     strokestown-park-famine-museum                       target has no coordinate
+  POPULATE     arigna-mining-experience                             target has no coordinate
+  POPULATE     lough-key-forest-park                                target has no coordinate
+  POPULATE     roscommon-castle                                     target has no coordinate
+  POPULATE     glencar-waterfall                                    target has no coordinate
+  POPULATE     parkes-castle                                        target has no coordinate
+  POPULATE     acres-lake-floating-boardwalk                        target has no coordinate
+  POPULATE     lough-allen                                          target has no coordinate
+  POPULATE     lough-rynn-castle-gardens                            target has no coordinate
+  POPULATE     sean-mac-diarmada-cottage                            target has no coordinate
+  POPULATE     cavan-burren-park                                    target has no coordinate
+  POPULATE     killykeen-forest-park                                target has no coordinate
+  POPULATE     dun-a-ri-forest-park                                 target has no coordinate
+  POPULATE     shannon-pot                                          target has no coordinate
+  POPULATE     cavan-county-museum                                  target has no coordinate
+  POPULATE     belturbet-railway-station                            target has no coordinate
+  POPULATE     castle-leslie-estate                                 target has no coordinate
+  POPULATE     rossmore-forest-park                                 target has no coordinate
+  POPULATE     monaghan-county-museum                               target has no coordinate
+  POPULATE     carrickmacross-lace-gallery                          target has no coordinate
+  POPULATE     patrick-kavanagh-centre                              target has no coordinate
+  POPULATE     sliabh-beagh                                         target has no coordinate
+  POPULATE     glenveagh-national-park                              target has no coordinate
+  POPULATE     sliabh-liag                                          target has no coordinate
+  POPULATE     donegal-castle                                       target has no coordinate
+  POPULATE     malin-head                                           target has no coordinate
+  POPULATE     fanad-head-lighthouse                                target has no coordinate
+  POPULATE     grianan-of-aileach                                   target has no coordinate
+  POPULATE     errigal                                              target has no coordinate
+  POPULATE     ards-forest-park                                     target has no coordinate
+  POPULATE     benbulben                                            target has no coordinate
+  POPULATE     strandhill-beach                                     target has no coordinate
+  POPULATE     carrowmore-megalithic-cemetery                       target has no coordinate
+  POPULATE     queen-maeves-trail-knocknarea                        target has no coordinate
+  POPULATE     sligo-abbey                                          target has no coordinate
+  POPULATE     lissadell-house                                      target has no coordinate
+  POPULATE     drumcliffe                                           target has no coordinate
+  POPULATE     eagles-flying                                        target has no coordinate
+  POPULATE     croagh-patrick                                       target has no coordinate
+  POPULATE     achill-island                                        target has no coordinate
+  POPULATE     keem-bay                                             target has no coordinate
+  POPULATE     westport-house                                       target has no coordinate
+  POPULATE     national-museum-country-life                         target has no coordinate
+  POPULATE     downpatrick-head                                     target has no coordinate
+  POPULATE     ceide-fields                                         target has no coordinate
+  POPULATE     great-western-greenway                               target has no coordinate
+  POPULATE     wild-nephin-ballycroy-national-park                  target has no coordinate
+  POPULATE     clare-island                                         target has no coordinate
+  POPULATE     kilkenny-castle                                      target has no coordinate
+  POPULATE     medieval-mile-museum                                 target has no coordinate
+  POPULATE     jerpoint-abbey                                       target has no coordinate
+  POPULATE     rothe-house-garden                                   target has no coordinate
+  POPULATE     smithwicks-experience                                target has no coordinate
+  POPULATE     dunmore-cave                                         target has no coordinate
+  POPULATE     castlecomer-discovery-park                           target has no coordinate
+  POPULATE     jerpoint-park                                        target has no coordinate
+  POPULATE     woodstock-gardens                                    target has no coordinate
+  POPULATE     house-of-waterford-crystal                           target has no coordinate
+  POPULATE     waterford-treasures                                  target has no coordinate
+  POPULATE     reginals-tower                                       target has no coordinate
+  POPULATE     waterford-greenway                                   target has no coordinate
+  POPULATE     copper-coast-geopark                                 target has no coordinate
+  POPULATE     mount-congreve-gardens                               target has no coordinate
+  POPULATE     lismore-castle-gardens                               target has no coordinate
+  POPULATE     ardmore-round-tower                                  target has no coordinate
+  POPULATE     coumshingaun-loop                                    target has no coordinate
+  POPULATE     irish-national-heritage-park                         target has no coordinate
+  POPULATE     johnstown-castle                                     target has no coordinate
+  POPULATE     hook-lighthouse                                      target has no coordinate
+  POPULATE     dunbrody-famine-ship                                 target has no coordinate
+  POPULATE     saltee-islands                                       target has no coordinate
+  POPULATE     curracloe-beach                                      target has no coordinate
+  POPULATE     wexford-wildfowl-reserve                             target has no coordinate
+  POPULATE     ferns-castle                                         target has no coordinate
+  POPULATE     tintern-abbey-wexford                                target has no coordinate
+  POPULATE     rock-of-cashel                                       target has no coordinate
+  POPULATE     cahir-castle                                         target has no coordinate
+  POPULATE     swiss-cottage                                        target has no coordinate
+  POPULATE     glen-of-aherlow                                      target has no coordinate
+  POPULATE     the-vee-bay-lough                                    target has no coordinate
+  POPULATE     ormond-castle                                        target has no coordinate
+  POPULATE     mitchelstown-cave                                    target has no coordinate
+  POPULATE     holy-cross-abbey                                     target has no coordinate
+  POPULATE     king-johns-castle-limerick                           target has no coordinate
+  POPULATE     hunt-museum                                          target has no coordinate
+  POPULATE     st-marys-cathedral-limerick                          target has no coordinate
+  POPULATE     adare-village                                        target has no coordinate
+  POPULATE     foynes-flying-boat-museum                            target has no coordinate
+  POPULATE     lough-gur                                            target has no coordinate
+  POPULATE     curraghchase-forest-park                             target has no coordinate
+  POPULATE     irish-national-stud-japanese-gardens                 target has no coordinate
+  POPULATE     castletown-house                                     target has no coordinate
+  POPULATE     bog-of-allen-nature-centre                           target has no coordinate
+  POPULATE     pollardstown-fen                                     target has no coordinate
+  POPULATE     maynooth-castle                                      target has no coordinate
+  POPULATE     donadea-forest-park                                  target has no coordinate
+  POPULATE     lullymore-heritage-park                              target has no coordinate
+  POPULATE     mondello-park                                        target has no coordinate
+  POPULATE     carlingford                                          target has no coordinate
+  POPULATE     proleek-dolmen                                       target has no coordinate
+  POPULATE     monasterboice                                        target has no coordinate
+  POPULATE     mellifont-abbey                                      target has no coordinate
+  POPULATE     carlingford-lough-greenway                           target has no coordinate
+  POPULATE     millmount-fort-museum                                target has no coordinate
+  POPULATE     brownshill-dolmen                                    target has no coordinate
+  POPULATE     altamont-gardens                                     target has no coordinate
+  POPULATE     ducketts-grove                                       target has no coordinate
+  POPULATE     huntington-castle-gardens                            target has no coordinate
+  POPULATE     borris-house                                         target has no coordinate
+  POPULATE     oak-park-forest-park                                 target has no coordinate
+  POPULATE     mount-leinster-nine-stones                           target has no coordinate
+  POPULATE     king-johns-castle-carlingford                        target has no coordinate
+  POPULATE     chester-beatty                                       target has no coordinate
+  POPULATE     forty-foot                                           target has no coordinate
+  POPULATE     derrigimlagh                                         target has no coordinate
+  POPULATE     joyce-tower-museum                                   target has no coordinate
+  POPULATE     the-model                                            target has no coordinate
+  POPULATE     doagh-famine-village                                 target has no coordinate
+  POPULATE     dursey-island                                        target has no coordinate
+  POPULATE     old-head-of-kinsale                                  target has no coordinate
+  POPULATE     lough-muckno-leisure-park                            target has no coordinate
+  POPULATE     jfk-arboretum                                        target has no coordinate
+  POPULATE     cavan-cathedral                                      target has no coordinate
+  POPULATE     national-design-craft-gallery                        target has no coordinate
+  POPULATE     annes-grove-gardens                                  target has no coordinate
+  POPULATE     barryscourt-castle                                   target has no coordinate
+  POPULATE     desmond-castle-kinsale                               target has no coordinate
+  POPULATE     fota-arboretum-and-gardens                           target has no coordinate
+  POPULATE     arbour-hill-cemetery                                 target has no coordinate
+  POPULATE     casino-marino                                        target has no coordinate
+  POPULATE     custom-house-visitor-centre                          target has no coordinate
+  POPULATE     farmleigh-house-and-estate                           target has no coordinate
+  POPULATE     garden-of-remembrance                                target has no coordinate
+  POPULATE     government-buildings                                 target has no coordinate
+  POPULATE     grangegorman-military-cemetery                       target has no coordinate
+  POPULATE     irish-national-war-memorial-gardens                  target has no coordinate
+  POPULATE     iveagh-gardens                                       target has no coordinate
+  POPULATE     pearse-museum-st-endas-park                          target has no coordinate
+  POPULATE     phoenix-park-visitor-centre-ashtown-castle           target has no coordinate
+  POPULATE     phoenix-park-peoples-flower-gardens                  target has no coordinate
+  POPULATE     rathfarnham-castle                                   target has no coordinate
+  POPULATE     royal-hospital-kilmainham                            target has no coordinate
+  POPULATE     st-marys-abbey-chapter-house                         target has no coordinate
+  POPULATE     st-audens-church                                     target has no coordinate
+  POPULATE     st-stephens-green                                    target has no coordinate
+  POPULATE     aras-an-uachtarain                                   target has no coordinate
+  POPULATE     ardfert-cathedral                                    target has no coordinate
+  POPULATE     listowel-castle                                      target has no coordinate
+  POPULATE     blasket-centre-ionad-an-bhlascaoid                   target has no coordinate
+  POPULATE     askeaton-castle                                      target has no coordinate
+  POPULATE     desmond-castle-adare                                 target has no coordinate
+  POPULATE     desmond-castle-newcastlewest                         target has no coordinate
+  POPULATE     athenry-castle                                       target has no coordinate
+  POPULATE     aughnanure-castle                                    target has no coordinate
+  POPULATE     ionad-culturtha-an-phiarsaigh-pearses-cottage        target has no coordinate
+  POPULATE     ballyhack-castle                                     target has no coordinate
+  POPULATE     doe-castle                                           target has no coordinate
+  POPULATE     glebe-house-and-gallery                              target has no coordinate
+  POPULATE     newmills-corn-and-flax-mills                         target has no coordinate
+  POPULATE     dungarvan-castle                                     target has no coordinate
+  POPULATE     kells-priory                                         target has no coordinate
+  POPULATE     st-marys-church-gowran                               target has no coordinate
+  POPULATE     famine-warhouse-1848                                 target has no coordinate
+  POPULATE     the-main-guard                                       target has no coordinate
+  POPULATE     roscrea-heritage-centre-roscrea-castle-and-damer-house target has no coordinate
+  POPULATE     fore-abbey                                           target has no coordinate
+  POPULATE     national-botanic-gardens-kilmacurragh                target has no coordinate
+  POPULATE     dwyer-mcallister-cottage                             target has no coordinate
+attributes: reading the source taxonomy from http://localhost:8080
+  ATTRIBUTES   dwyer-mcallister-cottage                             +estacionamento,gratuito,interior,necessita-reserva
+  ATTRIBUTES   national-botanic-gardens-kilmacurragh                +exterior,familias,gratuito
+  ATTRIBUTES   fore-abbey                                           +estacionamento,exterior
+  ATTRIBUTES   roscrea-heritage-centre-roscrea-castle-and-damer-house +estacionamento,familias,interior-exterior,pago
+  ATTRIBUTES   the-main-guard                                       +gratuito,interior
+  ATTRIBUTES   famine-warhouse-1848                                 +estacionamento,gratuito,interior,necessita-reserva
+  ATTRIBUTES   st-marys-church-gowran                               +gratuito,interior
+  ATTRIBUTES   kells-priory                                         +exterior,gratuito
+  ATTRIBUTES   dungarvan-castle                                     +gratuito,interior-exterior
+  ATTRIBUTES   newmills-corn-and-flax-mills                         +estacionamento,gratuito,interior-exterior
+  ATTRIBUTES   glebe-house-and-gallery                              +estacionamento,familias,gratuito-em-determinadas-condicoes,interior-exterior
+  ATTRIBUTES   doe-castle                                           +estacionamento,exterior,gratuito
+  ATTRIBUTES   ballyhack-castle                                     +exterior,gratuito
+  ATTRIBUTES   ionad-culturtha-an-phiarsaigh-pearses-cottage        +estacionamento,familias,interior-exterior,pago
+  ATTRIBUTES   aughnanure-castle                                    +estacionamento,interior-exterior,pago
+  ATTRIBUTES   athenry-castle                                       +estacionamento,familias,interior-exterior,pago
+  ATTRIBUTES   desmond-castle-newcastlewest                         +exterior,gratuito
+  ATTRIBUTES   desmond-castle-adare                                 +estacionamento,interior-exterior,necessita-reserva
+  ATTRIBUTES   askeaton-castle                                      +exterior
+  ATTRIBUTES   blasket-centre-ionad-an-bhlascaoid                   +interior,necessita-reserva,pago
+  ATTRIBUTES   listowel-castle                                      +exterior,gratuito
+  ATTRIBUTES   ardfert-cathedral                                    +estacionamento,interior-exterior,pago
+  ATTRIBUTES   aras-an-uachtarain                                   +gratuito,interior
+  ATTRIBUTES   st-stephens-green                                    +exterior,familias,gratuito
+  ATTRIBUTES   st-audens-church                                     +gratuito,interior
+  ATTRIBUTES   st-marys-abbey-chapter-house                         +gratuito,interior,necessita-reserva
+  ATTRIBUTES   royal-hospital-kilmainham                            +estacionamento,gratuito-em-determinadas-condicoes,interior-exterior
+  ATTRIBUTES   rathfarnham-castle                                   +estacionamento,familias,interior-exterior,pago
+  ATTRIBUTES   phoenix-park-peoples-flower-gardens                  +exterior,familias,gratuito
+  ATTRIBUTES   phoenix-park-visitor-centre-ashtown-castle           +estacionamento,familias,gratuito,interior-exterior
+  ATTRIBUTES   pearse-museum-st-endas-park                          +estacionamento,familias,gratuito,interior-exterior
+  ATTRIBUTES   iveagh-gardens                                       +exterior,familias,gratuito
+  ATTRIBUTES   irish-national-war-memorial-gardens                  +estacionamento,exterior,gratuito
+  ATTRIBUTES   grangegorman-military-cemetery                       +exterior,gratuito
+  ATTRIBUTES   government-buildings                                 +gratuito,interior
+  ATTRIBUTES   garden-of-remembrance                                +exterior,gratuito
+  ATTRIBUTES   farmleigh-house-and-estate                           +estacionamento,familias,gratuito-em-determinadas-condicoes,interior-exterior
+  ATTRIBUTES   custom-house-visitor-centre                          +interior,necessita-reserva,pago
+  ATTRIBUTES   casino-marino                                        +estacionamento,interior,pago
+  ATTRIBUTES   arbour-hill-cemetery                                 +exterior,gratuito
+  ATTRIBUTES   fota-arboretum-and-gardens                           +estacionamento,exterior,familias,gratuito
+  ATTRIBUTES   desmond-castle-kinsale                               +exterior,pago
+  ATTRIBUTES   barryscourt-castle                                   +estacionamento,interior-exterior,pago
+  ATTRIBUTES   annes-grove-gardens                                  +estacionamento,exterior,familias,pago
+  ATTRIBUTES   national-design-craft-gallery                        +gratuito,interior
+  ATTRIBUTES   cavan-cathedral                                      +gratuito,interior
+  ATTRIBUTES   jfk-arboretum                                        +estacionamento,exterior,familias,gratuito-em-determinadas-condicoes,pet-friendly
+  ATTRIBUTES   lough-muckno-leisure-park                            +estacionamento,exterior,familias,gratuito,pet-friendly
+  ATTRIBUTES   old-head-of-kinsale                                  +estacionamento,exterior,gratuito-em-determinadas-condicoes
+  ATTRIBUTES   dursey-island                                        +exterior,familias,gratuito-em-determinadas-condicoes
+  ATTRIBUTES   doagh-famine-village                                 +estacionamento,familias,interior-exterior,pago,pet-friendly
+  ATTRIBUTES   the-model                                            +acessivel,familias,gratuito,interior
+  ATTRIBUTES   joyce-tower-museum                                   +acesso-de-transporte-publico,gratuito,interior
+  ATTRIBUTES   derrigimlagh                                         +bicicleta,exterior,gratuito
+  ATTRIBUTES   forty-foot                                           +acesso-de-transporte-publico,estacionamento,exterior,gratuito
+  ATTRIBUTES   chester-beatty                                       +acessivel,acesso-de-transporte-publico,gratuito,interior-exterior
+  ATTRIBUTES   king-johns-castle-carlingford                        +exterior
+  ATTRIBUTES   mount-leinster-nine-stones                           +exterior,gratuito
+  ATTRIBUTES   oak-park-forest-park                                 +exterior,familias,gratuito
+  ATTRIBUTES   borris-house                                         +interior-exterior
+  ATTRIBUTES   huntington-castle-gardens                            +interior-exterior
+  ATTRIBUTES   ducketts-grove                                       +exterior,gratuito
+  ATTRIBUTES   altamont-gardens                                     +exterior,gratuito
+  ATTRIBUTES   brownshill-dolmen                                    +exterior,gratuito
+  ATTRIBUTES   millmount-fort-museum                                +interior-exterior
+  ATTRIBUTES   carlingford-lough-greenway                           +exterior,familias,gratuito
+  ATTRIBUTES   mellifont-abbey                                      +exterior,gratuito
+  ATTRIBUTES   monasterboice                                        +exterior,gratuito
+  ATTRIBUTES   proleek-dolmen                                       +exterior,gratuito
+  ATTRIBUTES   carlingford                                          +exterior,gratuito
+  ATTRIBUTES   mondello-park                                        +exterior,familias
+  ATTRIBUTES   lullymore-heritage-park                              +exterior,familias
+  ATTRIBUTES   donadea-forest-park                                  +exterior,familias,gratuito
+  ATTRIBUTES   maynooth-castle                                      +exterior,gratuito
+  ATTRIBUTES   pollardstown-fen                                     +exterior,gratuito
+  ATTRIBUTES   bog-of-allen-nature-centre                           +familias,interior-exterior
+  ATTRIBUTES   castletown-house                                     +interior-exterior
+  ATTRIBUTES   irish-national-stud-japanese-gardens                 +exterior,familias
+  ATTRIBUTES   curraghchase-forest-park                             +exterior,gratuito
+  ATTRIBUTES   lough-gur                                            +exterior,familias
+  ATTRIBUTES   foynes-flying-boat-museum                            +familias,interior
+  ATTRIBUTES   adare-village                                        +exterior,gratuito
+  ATTRIBUTES   st-marys-cathedral-limerick                          +interior
+  ATTRIBUTES   hunt-museum                                          +interior
+  ATTRIBUTES   king-johns-castle-limerick                           +familias,interior-exterior
+  ATTRIBUTES   holy-cross-abbey                                     +gratuito,interior
+  ATTRIBUTES   mitchelstown-cave                                    +familias,interior
+  ATTRIBUTES   ormond-castle                                        +interior
+  ATTRIBUTES   the-vee-bay-lough                                    +exterior,gratuito
+  ATTRIBUTES   glen-of-aherlow                                      +exterior,gratuito
+  ATTRIBUTES   swiss-cottage                                        +interior
+  ATTRIBUTES   cahir-castle                                         +exterior,familias
+  ATTRIBUTES   rock-of-cashel                                       +exterior
+  ATTRIBUTES   tintern-abbey-wexford                                +exterior
+  ATTRIBUTES   ferns-castle                                         +exterior,gratuito
+  ATTRIBUTES   wexford-wildfowl-reserve                             +exterior,gratuito
+  ATTRIBUTES   curracloe-beach                                      +exterior,familias,gratuito
+  ATTRIBUTES   saltee-islands                                       +exterior
+  ATTRIBUTES   dunbrody-famine-ship                                 +interior
+  ATTRIBUTES   hook-lighthouse                                      +familias,interior-exterior
+  ATTRIBUTES   johnstown-castle                                     +exterior,familias
+  ATTRIBUTES   irish-national-heritage-park                         +exterior,familias
+  ATTRIBUTES   coumshingaun-loop                                    +exterior,gratuito
+  ATTRIBUTES   ardmore-round-tower                                  +exterior,gratuito
+  ATTRIBUTES   lismore-castle-gardens                               +exterior
+  ATTRIBUTES   mount-congreve-gardens                               +exterior,familias
+  ATTRIBUTES   copper-coast-geopark                                 +exterior,gratuito
+  ATTRIBUTES   waterford-greenway                                   +exterior,familias,gratuito
+  ATTRIBUTES   reginals-tower                                       +interior
+  ATTRIBUTES   waterford-treasures                                  +interior
+  ATTRIBUTES   house-of-waterford-crystal                           +interior,necessita-reserva
+  ATTRIBUTES   woodstock-gardens                                    +exterior,gratuito
+  ATTRIBUTES   jerpoint-park                                        +exterior,necessita-reserva
+  ATTRIBUTES   castlecomer-discovery-park                           +exterior,familias
+  ATTRIBUTES   dunmore-cave                                         +interior
+  ATTRIBUTES   smithwicks-experience                                +interior,necessita-reserva
+  ATTRIBUTES   rothe-house-garden                                   +interior-exterior
+  ATTRIBUTES   jerpoint-abbey                                       +exterior
+  ATTRIBUTES   medieval-mile-museum                                 +interior
+  ATTRIBUTES   kilkenny-castle                                      +familias,interior-exterior
+  ATTRIBUTES   clare-island                                         +exterior
+  ATTRIBUTES   wild-nephin-ballycroy-national-park                  +exterior,gratuito
+  ATTRIBUTES   great-western-greenway                               +exterior,familias,gratuito
+  ATTRIBUTES   ceide-fields                                         +interior-exterior
+  ATTRIBUTES   downpatrick-head                                     +exterior,gratuito
+  ATTRIBUTES   national-museum-country-life                         +gratuito,interior
+  ATTRIBUTES   westport-house                                       +exterior,familias
+  ATTRIBUTES   keem-bay                                             +exterior,gratuito
+  ATTRIBUTES   achill-island                                        +exterior,gratuito
+  ATTRIBUTES   croagh-patrick                                       +exterior,gratuito
+  ATTRIBUTES   eagles-flying                                        +exterior,familias
+  ATTRIBUTES   drumcliffe                                           +exterior,gratuito
+  ATTRIBUTES   lissadell-house                                      +interior-exterior
+  ATTRIBUTES   sligo-abbey                                          +interior-exterior
+  ATTRIBUTES   queen-maeves-trail-knocknarea                        +estacionamento,exterior,gratuito
+  ATTRIBUTES   carrowmore-megalithic-cemetery                       +exterior
+  ATTRIBUTES   strandhill-beach                                     +exterior,familias,gratuito
+  ATTRIBUTES   benbulben                                            +exterior,gratuito
+  ATTRIBUTES   ards-forest-park                                     +exterior,familias,gratuito
+  ATTRIBUTES   errigal                                              +exterior,gratuito
+  ATTRIBUTES   grianan-of-aileach                                   +exterior,gratuito
+  ATTRIBUTES   fanad-head-lighthouse                                +exterior
+  ATTRIBUTES   malin-head                                           +exterior,gratuito
+  ATTRIBUTES   donegal-castle                                       +interior
+  ATTRIBUTES   sliabh-liag                                          +exterior,gratuito
+  ATTRIBUTES   glenveagh-national-park                              +exterior,familias
+  ATTRIBUTES   sliabh-beagh                                         +exterior,gratuito
+  ATTRIBUTES   patrick-kavanagh-centre                              +interior
+  ATTRIBUTES   carrickmacross-lace-gallery                          +interior
+  ATTRIBUTES   monaghan-county-museum                               +gratuito,interior
+  ATTRIBUTES   rossmore-forest-park                                 +exterior,familias,gratuito
+  ATTRIBUTES   castle-leslie-estate                                 +exterior,familias
+  ATTRIBUTES   belturbet-railway-station                            +interior
+  ATTRIBUTES   cavan-county-museum                                  +interior-exterior
+  ATTRIBUTES   shannon-pot                                          +exterior,gratuito
+  ATTRIBUTES   dun-a-ri-forest-park                                 +exterior,familias,gratuito
+  ATTRIBUTES   killykeen-forest-park                                +exterior,gratuito
+  ATTRIBUTES   cavan-burren-park                                    +exterior,familias,gratuito
+  ATTRIBUTES   sean-mac-diarmada-cottage                            +exterior
+  ATTRIBUTES   lough-rynn-castle-gardens                            +exterior,familias
+  ATTRIBUTES   lough-allen                                          +exterior,gratuito
+  ATTRIBUTES   acres-lake-floating-boardwalk                        +exterior,familias,gratuito
+  ATTRIBUTES   parkes-castle                                        +exterior
+  ATTRIBUTES   glencar-waterfall                                    +exterior,familias,gratuito
+  ATTRIBUTES   roscommon-castle                                     +exterior,gratuito
+  ATTRIBUTES   lough-key-forest-park                                +exterior,familias
+  ATTRIBUTES   arigna-mining-experience                             +interior,necessita-reserva
+  ATTRIBUTES   strokestown-park-famine-museum                       +interior-exterior
+  ATTRIBUTES   boyle-abbey                                          +exterior
+  ATTRIBUTES   rathcroghan                                          +interior-exterior
+  ATTRIBUTES   lough-ree                                            +exterior,gratuito
+  ATTRIBUTES   newcastle-wood                                       +exterior,gratuito
+  ATTRIBUTES   royal-canal-greenway                                 +exterior,gratuito
+  ATTRIBUTES   granard-motte-bailey                                 +exterior,gratuito
+  ATTRIBUTES   ardagh-heritage-village                              +exterior,gratuito
+  ATTRIBUTES   corlea-trackway                                      +interior
+  ATTRIBUTES   glendeer-pet-farm                                    +exterior,familias
+  ATTRIBUTES   mullaghmeen-forest                                   +exterior,gratuito
+  ATTRIBUTES   kilbeggan-distillery                                 +interior
+  ATTRIBUTES   athlone-castle                                       +familias,interior
+  ATTRIBUTES   belvedere-house-gardens                              +exterior,familias
+  ATTRIBUTES   tullamore-dew-experience                             +interior
+  ATTRIBUTES   charleville-forest-castle                            +exterior
+  ATTRIBUTES   lough-boora-discovery-park                           +exterior,familias,gratuito
+  ATTRIBUTES   birr-castle-demesne                                  +exterior,familias
+  ATTRIBUTES   clonmacnoise                                         +exterior
+  ATTRIBUTES   slieve-bloom-mountains                               +exterior,gratuito
+  ATTRIBUTES   abbeyleix-heritage-house                             +interior
+  ATTRIBUTES   timahoe-round-tower                                  +exterior,gratuito
+  ATTRIBUTES   heywood-gardens                                      +exterior,gratuito
+  ATTRIBUTES   emo-court                                            +exterior,gratuito
+  ATTRIBUTES   rock-of-dunamase                                     +exterior,gratuito
+  ATTRIBUTES   banna-strand                                         +exterior,familias,gratuito
+  ATTRIBUTES   muckross-abbey                                       +exterior,gratuito
+  ATTRIBUTES   gallarus-oratory                                     +exterior
+  ATTRIBUTES   derrynane-house                                      +exterior
+  ATTRIBUTES   kerry-cliffs                                         +exterior
+  ATTRIBUTES   valentia-island                                      +exterior,familias
+  ATTRIBUTES   skellig-michael                                      +exterior,necessita-reserva
+  ATTRIBUTES   doneraile-park                                       +exterior,familias,gratuito
+  ATTRIBUTES   spike-island-cork                                    +exterior,necessita-reserva
+  ATTRIBUTES   garnish-island                                       +exterior,necessita-reserva
+  ATTRIBUTES   blackrock-castle-observatory                         +familias,interior
+  ATTRIBUTES   cork-city-gaol                                       +familias,interior
+  ATTRIBUTES   english-market-cork                                  +gratuito,interior
+  ATTRIBUTES   vandeleur-walled-garden                              +exterior,familias
+  ATTRIBUTES   craggaunowen                                         +exterior,familias
+  ATTRIBUTES   spanish-point-beach                                  +exterior,familias,gratuito
+  ATTRIBUTES   holy-island-inis-cealtra                             +exterior
+  ATTRIBUTES   scattery-island                                      +exterior
+  ATTRIBUTES   ennis-friary                                         +interior
+  ATTRIBUTES   thoor-ballylee                                       +exterior
+  ATTRIBUTES   portumna-castle-gardens                              +exterior
+  ATTRIBUTES   coole-park                                           +exterior,gratuito
+  ATTRIBUTES   brigits-garden                                       +exterior,familias
+  ATTRIBUTES   galway-city-museum                                   +gratuito,interior
+  ATTRIBUTES   spanish-arch-long-walk                               +exterior,gratuito
+  ATTRIBUTES   dowth                                                +exterior,necessita-reserva
+  ATTRIBUTES   sonairte-ecology-centre                              +exterior,familias
+  ATTRIBUTES   kells-historic-town                                  +exterior,gratuito
+  ATTRIBUTES   bective-abbey                                        +exterior,gratuito
+  ATTRIBUTES   emerald-park                                         +exterior,familias,necessita-reserva
+  ATTRIBUTES   wicklow-way                                          +exterior,gratuito
+  ATTRIBUTES   mount-usher-gardens                                  +exterior,familias
+  ATTRIBUTES   killruddery-house-gardens                            +exterior,familias
+  ATTRIBUTES   brittas-bay-beach                                    +exterior,gratuito
+  ATTRIBUTES   wicklow-historic-gaol                                +familias,interior
+  ATTRIBUTES   russborough-house                                    +exterior,familias
+  ATTRIBUTES   portmarnock-beach                                    +exterior,gratuito
+  ATTRIBUTES   dun-laoghaire-east-pier                              +exterior,gratuito
+  ATTRIBUTES   glasnevin-cemetery-museum                            +interior
+  ATTRIBUTES   national-botanic-gardens-dublin                      +exterior,familias,gratuito
+  ATTRIBUTES   epic-irish-emigration-museum                         +interior
+  ATTRIBUTES   national-museum-archaeology                          +gratuito,interior
+  ATTRIBUTES   inch-beach                                           +exterior
+  ATTRIBUTES   dingle-peninsula                                     +exterior
+  ATTRIBUTES   ring-of-kerry                                        +exterior
+  ATTRIBUTES   gap-of-dunloe                                        +exterior
+  ATTRIBUTES   torc-waterfall                                       +exterior
+  ATTRIBUTES   ross-castle                                          +exterior
+  ATTRIBUTES   muckross-house                                       +estacionamento,interior-exterior
+  ATTRIBUTES   killarney-national-park                              +estacionamento,exterior,familias
+  ATTRIBUTES   mizen-head                                           +estacionamento,exterior
+  ATTRIBUTES   charles-fort                                         +exterior
+  ATTRIBUTES   kinsale                                              +exterior
+  ATTRIBUTES   jameson-distillery-midleton                          +interior,necessita-reserva
+  ATTRIBUTES   fota-wildlife-park                                   +estacionamento,exterior,familias
+  ATTRIBUTES   titanic-experience-cobh                              +interior
+  ATTRIBUTES   cobh                                                 +exterior
+  ATTRIBUTES   blarney-castle                                       +estacionamento,exterior,familias
+  ATTRIBUTES   kilkee-cliffs                                        +exterior
+  ATTRIBUTES   lahinch-beach                                        +exterior,familias
+  ATTRIBUTES   loop-head                                            +exterior
+  ATTRIBUTES   doolin-cave                                          +interior
+  ATTRIBUTES   aillwee-caves                                        +estacionamento,familias,interior-exterior
+  ATTRIBUTES   bunratty-castle-folk-park                            +estacionamento,familias,interior-exterior
+  ATTRIBUTES   burren-national-park                                 +exterior
+  ATTRIBUTES   cliffs-of-moher                                      +estacionamento,exterior,familias
+  ATTRIBUTES   galway-atlantaquaria                                 +estacionamento,familias,interior
+  ATTRIBUTES   diamond-hill                                         +exterior
+  ATTRIBUTES   dun-aonghasa                                         +exterior
+  ATTRIBUTES   aran-islands                                         +exterior
+  ATTRIBUTES   sky-road                                             +exterior
+  ATTRIBUTES   salthill                                             +exterior,familias
+  ATTRIBUTES   connemara-national-park                              +estacionamento,exterior,familias
+  ATTRIBUTES   kylemore-abbey                                       +estacionamento,exterior,familias
+  ATTRIBUTES   battle-of-the-boyne-visitor-centre                   +interior
+  ATTRIBUTES   loughcrew                                            +exterior
+  ATTRIBUTES   slane-castle                                         +exterior
+  ATTRIBUTES   trim-castle                                          +exterior
+  ATTRIBUTES   hill-of-tara                                         +exterior
+  ATTRIBUTES   knowth                                               +exterior,necessita-reserva
+  ATTRIBUTES   newgrange                                            +exterior,necessita-reserva
+  ATTRIBUTES   avondale-forest-park                                 +estacionamento,exterior,familias
+  ATTRIBUTES   sally-gap                                            +exterior
+  ATTRIBUTES   great-sugar-loaf                                     +exterior
+  ATTRIBUTES   bray-head                                            +exterior
+  ATTRIBUTES   powerscourt-waterfall                                +estacionamento,exterior,familias
+  ATTRIBUTES   powerscourt-estate                                   +estacionamento,exterior,familias
+  ATTRIBUTES   glendalough                                          +estacionamento,exterior,familias
+  ATTRIBUTES   wicklow-mountains-national-park                      +exterior,familias
+  ATTRIBUTES   malahide-castle-gardens                              +estacionamento,familias,necessita-reserva
+  ATTRIBUTES   howth-cliff-walk                                     +exterior
+  ATTRIBUTES   dublin-zoo                                           +estacionamento,exterior,familias
+  ATTRIBUTES   phoenix-park                                         +exterior,familias
+  ATTRIBUTES   guinness-storehouse                                  +interior,necessita-reserva
+  ATTRIBUTES   kilmainham-gaol                                      +familias,interior,necessita-reserva
+  ATTRIBUTES   dublin-castle                                        +interior
+  ATTRIBUTES   trinity-college-book-of-kells                        +interior,necessita-reserva
+summary: manifest_entries=289, eligible_entries=289, target_records=289, populate=289, update=0, already_set=0, conflicts=0, unresolved=0, resumed=0, planned_writes=289, written=0, attributes_planned=289, attributes_written=0, with_before=0, with_after=0, gate=0, api_requests=7, api_retries=0, manifest_skipped={'OWNER_INPUT_REQUIRED:NOT_FOUND': 4, 'REVIEW:MEDIUM': 1}
+(dry run — nothing written)
+report: docs/evidence/2026-11-05-leisure-location-stage-9/dryrun-04-preapply-recheck.json

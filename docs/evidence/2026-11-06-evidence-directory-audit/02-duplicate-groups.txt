@@ -1,0 +1,280 @@
+734c70797c02689d    621059B x3
+    2026-09-30-en-deleted-source-exclusion/03-repository-stage-manifests.json tracked
+    2026-09-30-pt-trash-restoration/08-repository-stage-manifests.json tracked
+    2026-09-30-pt-trash-restoration/12-repository-stage-manifests-run2.json tracked
+
+82d66b41d8b580df    479920B x4
+    2026-09-30-en-rollout-phase-3-apply/02-mutation-snapshot.json tracked
+    2026-09-30-en-rollout-phase-3-apply/10-mutation-snapshot-phase3r2.json tracked
+    2026-09-30-pt-trash-restoration/11-mutation-snapshot.json tracked
+    2026-09-30-pt-trash-restoration/15-mutation-snapshot-run2.json tracked
+
+58ca84e7b7300c2d    474488B x2
+    2026-09-30-en-deleted-source-exclusion/07-mutation-snapshot.json tracked
+    2026-09-30-en-rollout-blocker-resolution/03-mutation-snapshot.json tracked
+
+83de2f1ce82b3e7c    143103B x4
+    2026-11-05-leisure-location-stage-8/dryrun-02-coordinates-attributes.json tracked
+    2026-11-05-leisure-location-stage-9/dryrun-02-coordinates-attributes.json UNTRACKED
+    2026-11-05-leisure-location-stage-9/dryrun-03-repeat.json UNTRACKED
+    2026-11-05-leisure-location-stage-9/dryrun-04-preapply-recheck.json UNTRACKED
+
+8a3f99856778ae61    123033B x3
+    2026-11-05-leisure-location-stage-8/coordinate-plan-pre.json tracked
+    2026-11-05-leisure-location-stage-9/coordinate-plan-post.json UNTRACKED
+    2026-11-05-leisure-location-stage-9/coordinate-plan-pre.json UNTRACKED
+
+c20d247453430469     97364B x3
+    2026-11-05-leisure-location-stage-8/attribute-plan-pre.json tracked
+    2026-11-05-leisure-location-stage-9/attribute-plan-post.json UNTRACKED
+    2026-11-05-leisure-location-stage-9/attribute-plan-pre.json UNTRACKED
+
+a48b286bf0891d77     94874B x2
+    2026-11-05-leisure-location-stage-8/dryrun-01-coordinates.json tracked
+    2026-11-05-leisure-location-stage-9/dryrun-01-coordinates.json UNTRACKED
+
+1b7280090bca6a90     76470B x2
+    2026-09-27-en-course-provider-descriptions/http-cursos-after.html tracked
+    2026-09-27-en-course-provider-descriptions/http-cursos-before.html tracked
+
+ac1dcbc4ce6e98f7     76470B x2
+    2026-09-27-en-cursos-category-filter/http-cursos-after.html tracked
+    2026-09-27-en-cursos-category-filter/http-cursos-before.html tracked
+
+612fb16bff32d725     70511B x2
+    2026-09-27-en-homepage-label-leak/http-pt-homepage-after.html tracked
+    2026-09-27-en-homepage-label-leak/http-pt-homepage-before.html tracked
+
+04087ea619d10f9b     45426B x2
+    2026-09-30-en-rollout-blocker-resolution/en-dry-run.py tracked
+    2026-09-30-phase-3-translation-verification/en-dry-run.py tracked
+
+dc6963c4e2531ccc     43824B x2
+    2026-09-27-a11y-filter-option-role/after/lazer.html tracked
+    2026-09-27-a11y-filter-option-role/before/lazer.html tracked
+
+4a558203770c9d7b     43454B x2
+    2026-09-27-a11y-filter-option-role/after/eventos.html tracked
+    2026-09-27-a11y-filter-option-role/before/eventos.html tracked
+
+232126a135e34718     38291B x2
+    2026-09-30-en-rollout-blocker-resolution/en-translation-inventory.py tracked
+    2026-09-30-phase-3-translation-verification/en-translation-inventory.py tracked
+
+f23af0d1fbf2d309     28948B x2
+    2026-11-05-leisure-location-stage-8/stage8-dry-run-verify.py tracked
+    2026-11-05-leisure-location-stage-9/stage9-pre-migration-verify.py tracked
+
+bcf94b5484240a6d     23763B x2
+    2026-10-12-empregos-cta-dark-mode/harness-after-light.png tracked
+    2026-10-12-empregos-cta-dark-mode/harness-before-light.png tracked
+
+787062fd67968965     10801B x2
+    2026-09-26-stage-f/http-after.txt tracked
+    2026-09-26-stage-f/http-before.txt tracked
+
+ca461bda6f9cd826     10447B x2
+    2026-09-27-en-cursos-category-filter/pt-snapshot-after.json tracked
+    2026-09-27-en-cursos-category-filter/pt-snapshot-before.json tracked
+
+c875ab01f5b7a77a     10317B x2
+    2026-09-27-en-course-provider-descriptions/pt-snapshot-after.json tracked
+    2026-09-27-en-course-provider-descriptions/pt-snapshot-before.json tracked
+
+88806ce3c15605cc      9703B x2
+    2026-10-02-stage-22/run5-clean-run-tests.txt tracked
+    2026-10-02-stage-22/run6-clean-run-tests.txt tracked
+
+6d84b11f7ae8ebbd      6790B x2
+    2026-09-29-stage-p/run-1-tests.txt tracked
+    2026-09-29-stage-p/run-2-tests.txt tracked
+
+d9826d1bdf12c9ae      5780B x2
+    2026-11-05-lazer-proximity-button-removal/21-autostart-granted-denied.txt UNTRACKED
+    2026-11-05-lazer-proximity-button-removal/27-autostart-final-rerun.txt UNTRACKED
+
+b325c218533605aa      5174B x2
+    2026-10-02-stage-17-retirement/05-stage13-readiness-gate.txt tracked
+    2026-10-02-stage-21/stage13-commissioning-readiness.txt tracked
+
+9dff710d7be3457c      3906B x2
+    2026-10-01-stage-13-commissioning-readiness/04-permanent-gate-stage13.txt tracked
+    2026-10-01-stage-14-secret-hardening-production-canary/06-stage13-readiness-gate.txt tracked
+
+d77bcab431a83856      3896B x2
+    2026-11-05-leisure-location-stage-9/03-independent-reconciliation-pre.txt UNTRACKED
+    2026-11-05-leisure-location-stage-9/21-preapply-recheck-reconcile.txt UNTRACKED
+
+f5ff96f781012eed      3797B x2
+    2026-10-03-event-import-fixes-g1-g3/verification-scripts/focused-run.php tracked
+    2026-10-03-event-import-g4/verification-scripts/focused-run.php tracked
+
+cf111369d54b409c      3622B x2
+    2026-11-05-leisure-location-production-audit/mock-api-validation.txt tracked
+    2026-11-05-leisure-location-stage-9/09-mock-suite.txt UNTRACKED
+
+3099e7488e355f83      2992B x2
+    2026-09-30-phase-3-translation-verification/14-idempotence-summary.txt tracked
+    2026-09-30-phase-3-translation-verification/14-idempotence.log UNTRACKED
+
+2f6e54c53bfb892d      2736B x2
+    2026-10-03-event-import-fixes-g1-g3/verification-scripts/full-run.php tracked
+    2026-10-03-event-import-g4/verification-scripts/full-run.php tracked
+
+a2dd9145e6c1aee6      2340B x2
+    2026-09-27-a11y-filter-option-role/permanent-gates-after.json tracked
+    2026-09-27-en-homepage-label-leak/permanent-gates.txt tracked
+
+da064a6edd907552      2024B x2
+    2026-10-03-ui-convergence-t1/failing-suites-after.txt tracked
+    2026-10-03-ui-convergence-t1/failing-suites-before.txt tracked
+
+ce3f82c65babeedc      1938B x4
+    2026-11-05-lazer-proximity-button-removal/09-script-contract-gate.log UNTRACKED
+    2026-11-05-lazer-proximity-button-removal/20-final-script-contract-gate.log UNTRACKED
+    2026-11-05-lazer-proximity-button-removal/26-final-script-contract-after-followup.log UNTRACKED
+    2026-11-05-leisure-location-production-audit/script-contract-layer.txt tracked
+
+b9a4e5b689bc4f4c      1854B x3
+    2026-09-28-en-guides-archive/baseline-permanent-gates.log UNTRACKED
+    2026-09-28-en-guides-archive/permanent-gates-final.log UNTRACKED
+    2026-09-28-en-page-restore/permanent-gates-after.txt tracked
+
+60207a3945ce517c      1683B x3
+    2026-09-29-post-admin-i18n-verification/16-permanent-gates.log UNTRACKED
+    2026-09-29-post-admin-i18n-verification/round2-after-operator-correction/16-permanent-gates.log UNTRACKED
+    2026-09-29-post-assignment-verification/10-permanent-gates.log UNTRACKED
+
+a05b41b020a8725f      1683B x3
+    2026-09-30-en-rollout-phase-3-apply/05-permanent-gates.log UNTRACKED
+    2026-09-30-en-rollout-phase-3-apply/13-permanent-gates-phase3r2.log UNTRACKED
+    2026-09-30-phase-3-translation-verification/07-permanent-gates.log UNTRACKED
+
+536b0bf6117a458d      1683B x3
+    2026-10-02-stage-22/run1-clean-permanent-gates.txt tracked
+    2026-10-02-stage-22/run2-clean-permanent-gates.txt tracked
+    2026-10-02-stage-22/run3-clean-permanent-gates.txt tracked
+
+bb92d3c092a420cc      1490B x2
+    2026-10-02-stage-22/run5-clean-permanent-gates.txt tracked
+    2026-10-02-stage-22/run6-clean-permanent-gates.txt tracked
+
+4646aadf21ea0ac4      1488B x2
+    2026-10-03-stage-20-hero-preload-fallback/chromium-AFTER.json tracked
+    2026-10-03-stage-20-hero-preload-fallback/chromium-BEFORE.json tracked
+
+53ce5f941addd20f      1389B x2
+    2026-09-29-i18n-production-foundation/14-release-manifest-verify.log UNTRACKED
+    2026-09-29-release-identity/release-manifest-verify.log UNTRACKED
+
+0f37d6372e50633c      1389B x2
+    2026-09-29-post-admin-i18n-verification/round2-after-operator-correction/17-release-manifest-verify.log UNTRACKED
+    2026-09-29-production-pt-language-assignment/04b-release-manifest.log UNTRACKED
+
+c40bd8fb30acccc8      1280B x2
+    2026-10-03-event-import-fixes-g1-g3/verification-scripts/cavan-check.php tracked
+    2026-10-03-event-import-g4/verification-scripts/cavan-check.php tracked
+
+f5400447bccef3c2      1165B x2
+    2026-10-03-event-import-fixes-g1-g3/verification-scripts/prove-cap.php tracked
+    2026-10-03-event-import-g4/verification-scripts/prove-cap.php tracked
+
+d8b79d9f9aaac0da      1103B x2
+    2026-10-03-event-import-fixes-g1-g3/verification-scripts/history-facts.php tracked
+    2026-10-03-event-import-g4/verification-scripts/history-facts.php tracked
+
+53214d1cce936801      1101B x2
+    2026-10-03-event-import-fixes-g1-g3/verification-scripts/status-count.php tracked
+    2026-10-03-event-import-g4/verification-scripts/status-count.php tracked
+
+780d021c1067700e       957B x6
+    2026-09-29-i18n-production-foundation/13-lint.log UNTRACKED
+    2026-09-29-post-admin-i18n-verification/15-lint.log UNTRACKED
+    2026-09-29-post-admin-i18n-verification/round2-after-operator-correction/15-lint.log UNTRACKED
+    2026-09-29-production-deployment-audit/lint.log UNTRACKED
+    2026-09-29-production-pt-language-assignment/03-lint.log UNTRACKED
+    2026-09-29-stage-p/lint.txt tracked
+
+773c94d4ce7d84fe       957B x2
+    2026-10-01-stage-14-secret-hardening-production-canary/03-lint.txt tracked
+    2026-10-01-stage-15-personal-production-commissioning-model-a-canary/06-lint.txt tracked
+
+e388d6fa36cdbc69       862B x2
+    2026-10-03-event-import-fixes-g1-g3/verification-scripts/cavan-five.php tracked
+    2026-10-03-event-import-g4/verification-scripts/cavan-five.php tracked
+
+bd797ecb18863f86       800B x2
+    2026-10-03-event-import-fixes-g1-g3/verification-scripts/wicklow-why.php tracked
+    2026-10-03-event-import-g4/verification-scripts/wicklow-why.php tracked
+
+3e1a6e69bf65e5c1       573B x2
+    2026-10-03-event-import-fixes-g1-g3/verification-scripts/seed-live-log.php tracked
+    2026-10-03-event-import-g4/verification-scripts/seed-live-log.php tracked
+
+959bc7e3d2781e52       566B x2
+    2026-10-03-event-import-fixes-g1-g3/verification-scripts/trace-stats.php tracked
+    2026-10-03-event-import-g4/verification-scripts/trace-stats.php tracked
+
+1ae78fd993b61e2d       478B x2
+    2026-09-30-stage-2-engine-promotion-lock-safety/engine-digest-after.txt tracked
+    2026-09-30-stage-2-engine-promotion-lock-safety/engine-digest-before.txt tracked
+
+8a6d48a867e0d5b8       469B x2
+    2026-10-19-ui-ux-improvement-5/implementation-report.md tracked
+    2026-10-19-ui-ux-improvement-5/implementation-report.md.bak tracked
+
+5afe8fa9da246e4f       333B x2
+    2026-10-02-stage-21/ics-state-after-two-runs.tsv tracked
+    2026-10-02-stage-21/ics-state-before.tsv tracked
+
+4e19007213e7eda9       240B x2
+    2026-10-03-event-import-fixes-g1-g3/verification-scripts/count-live-log.php tracked
+    2026-10-03-event-import-g4/verification-scripts/count-live-log.php tracked
+
+56e340ef0791ecd9       236B x2
+    2026-11-05-leisure-location-stage-8/12-migration-verify.json tracked
+    2026-11-05-leisure-location-stage-9/08-migration-verify.json UNTRACKED
+
+7db8dfd2ad1d7afd       174B x2
+    2026-10-16-eventos-filter-cache/baseline-curl.txt tracked
+    2026-10-16-eventos-perf/baseline-curl.txt tracked
+
+a1cb86fcb584fa67        79B x3
+    2026-09-29-i18n-production-foundation/15-registry-check.log UNTRACKED
+    2026-09-29-post-admin-i18n-verification/18-registry-check.log UNTRACKED
+    2026-09-29-post-admin-i18n-verification/round2-after-operator-correction/18-registry-check.log UNTRACKED
+
+f0a994574e0ee751        79B x2
+    2026-09-30-stage-2-engine-promotion-lock-safety/registry-check.txt tracked
+    2026-09-30-stage-3-change-detection-provider-trigger/07-registry-check.txt tracked
+
+7c263f06bfce2480        79B x5
+    2026-10-02-stage-22/run1-clean-ics-events.tsv tracked
+    2026-10-02-stage-22/run2-clean-ics-events.tsv tracked
+    2026-10-02-stage-22/run3-clean-ics-events.tsv tracked
+    2026-10-02-stage-22/run5-clean-ics-events.tsv tracked
+    2026-10-02-stage-22/run6-clean-ics-events.tsv tracked
+
+7fbd6cd000d04241        79B x2
+    2026-10-03-ui-convergence-t1/registry-check.log UNTRACKED
+    2026-10-03-ui-convergence-t2/registry-check.log UNTRACKED
+
+75463bda16fba0f0        50B x3
+    2026-10-05-eventbrite-g17/05-fixture-state-before.txt tracked
+    2026-10-05-eventbrite-g17/07-state-after-run-a.txt tracked
+    2026-10-05-eventbrite-g17/09-state-after-run-b.txt tracked
+
+91fb48e4403727e8        18B x3
+    2026-10-02-stage-22/run1-clean-exit-code.txt tracked
+    2026-10-02-stage-22/run2-clean-exit-code.txt tracked
+    2026-10-02-stage-22/run3-clean-exit-code.txt tracked
+
+94dc2e4422981d3d        18B x2
+    2026-10-02-stage-22/run5-clean-exit-code.txt tracked
+    2026-10-02-stage-22/run6-clean-exit-code.txt tracked
+
+e3b0c44298fc1c14         0B x3
+    2026-09-27-a11y-filter-option-role/after/en-empregos.html tracked
+    2026-09-30-stage-3-change-detection-provider-trigger/05-stage2-promotion-gate.txt tracked
+    2026-10-03-ui-convergence-t1/failing-suites-diff.txt tracked
+

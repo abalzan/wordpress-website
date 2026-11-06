@@ -1,0 +1,15 @@
+# Local HTTP proof — REST coordinate write permission after the auth_callback fix
+# command: docker compose cp /tmp/lcperm-http-proof.php wordpress:/tmp/ && docker compose exec -T wordpress php /tmp/lcperm-http-proof.php
+# authentication: real loopback HTTP + a WordPress Application Password created for the run and revoked at the end (secret never printed)
+# target: LOCAL WordPress container (site URL http://localhost:8080), never production
+
+
+
+endpoint: http://127.0.0.1/wp-json/wp/v2/leisure/123183
+authentication: HTTP Basic, WordPress Application Password for user id 283039560 (secret never printed)
+1. GET  context=edit         -> HTTP 200 | _leisure_lat='' _leisure_lng=''
+2. POST authorised           -> HTTP 200 | code='' | _leisure_lat='53.3498' _leisure_lng='-6.2603'
+3. POST anonymous            -> HTTP 401 | code='rest_cannot_edit'
+4. GET  context=edit (after) -> HTTP 200 | _leisure_lat='53.3498' _leisure_lng='-6.2603'
+5. POST authorised clear     -> HTTP 200 | _leisure_lat='' _leisure_lng=''
+cleanup: temporary post deleted, temporary application password revoked

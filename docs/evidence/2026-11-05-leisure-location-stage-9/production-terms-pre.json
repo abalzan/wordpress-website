@@ -1,0 +1,34 @@
+{
+ "base_url": "https://conexaobr.ie",
+ "captured": "2026-11-05T18:44:52Z",
+ "terms_by_id": {
+  "1465": "familias",
+  "1466": "exterior",
+  "1467": "interior",
+  "1468": "interior-exterior",
+  "1469": "gratuito",
+  "1470": "pet-friendly",
+  "1471": "acessivel",
+  "1472": "estacionamento",
+  "1473": "necessita-reserva",
+  "1474": "pago",
+  "1475": "gratuito-em-determinadas-condicoes",
+  "1476": "acesso-de-transporte-publico",
+  "1477": "bicicleta"
+ },
+ "terms_by_slug": {
+  "acessivel": 1471,
+  "acesso-de-transporte-publico": 1476,
+  "bicicleta": 1477,
+  "estacionamento": 1472,
+  "exterior": 1466,
+  "familias": 1465,
+  "gratuito": 1469,
+  "gratuito-em-determinadas-condicoes": 1475,
+  "interior": 1467,
+  "interior-exterior": 1468,
+  "necessita-reserva": 1473,
+  "pago": 1474,
+  "pet-friendly": 1470
+ }
+}

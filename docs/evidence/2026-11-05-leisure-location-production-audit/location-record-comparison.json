@@ -1,0 +1,4644 @@
+{
+ "generated": "2026-11-05",
+ "common_records": 289,
+ "records": [
+  {
+   "slug": "abbeyleix-heritage-house",
+   "local_uuid": "d79d1cd4-f003-4831-9721-9fd6cc0e732f",
+   "target_id": 10631,
+   "local_lat": "52.917287",
+   "local_lng": "-7.34612",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "achill-island",
+   "local_uuid": "2a237607-e089-405c-9871-9b8db397f31d",
+   "target_id": 10748,
+   "local_lat": "53.92617",
+   "local_lng": "-9.93669",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "acres-lake-floating-boardwalk",
+   "local_uuid": "59f9ce7e-6175-410a-9e2f-27609c160032",
+   "target_id": 10682,
+   "local_lat": "54.04157",
+   "local_lng": "-8.048706",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "adare-village",
+   "local_uuid": "97578a8e-be2f-4c2e-aa40-7710a6dbba73",
+   "target_id": 10841,
+   "local_lat": "52.56456",
+   "local_lng": "-8.789674",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "aillwee-caves",
+   "local_uuid": "0acc9f75-c7fd-4a5c-91e0-05db796465d8",
+   "target_id": 10180,
+   "local_lat": "53.08918",
+   "local_lng": "-9.143677",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Famílias",
+    "Interior + exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "altamont-gardens",
+   "local_uuid": "fa065f7d-71e6-43e6-919e-7f692958d299",
+   "target_id": 10879,
+   "local_lat": "52.735567",
+   "local_lng": "-6.720599",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "annes-grove-gardens",
+   "local_uuid": "6578eef6-e9b5-4305-9771-e0353c8bf17d",
+   "target_id": 21154,
+   "local_lat": "52.19462",
+   "local_lng": "-8.46596",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Exterior",
+    "Famílias",
+    "Pago"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "aran-islands",
+   "local_uuid": "72097b85-5292-4d82-8cc5-cf815156685a",
+   "target_id": 10173,
+   "local_lat": "53.26598",
+   "local_lng": "-9.5641",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "aras-an-uachtarain",
+   "local_uuid": "ee12d33f-d88e-4262-a4cb-c7abd6c234f0",
+   "target_id": 21175,
+   "local_lat": "53.36605",
+   "local_lng": "-6.33093",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Gratuito",
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "arbour-hill-cemetery",
+   "local_uuid": "b4c67db8-7ad1-4fc6-a7da-d9d41f4dc7d5",
+   "target_id": 21158,
+   "local_lat": "53.350325",
+   "local_lng": "-6.286782",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "ardagh-heritage-village",
+   "local_uuid": "53769cc1-e58c-4595-9d39-e008df75ad85",
+   "target_id": 10656,
+   "local_lat": "53.6643",
+   "local_lng": "-7.6787",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "ardfert-cathedral",
+   "local_uuid": "b79f923b-5ffe-4206-a07b-e0aac735c165",
+   "target_id": 21176,
+   "local_lat": "52.328719",
+   "local_lng": "-9.78172",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Interior + exterior",
+    "Pago"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "ardmore-round-tower",
+   "local_uuid": "885f4fc7-9dc1-4203-89cb-b88ef1f1b6fe",
+   "target_id": 10797,
+   "local_lat": "51.943662",
+   "local_lng": "-7.734172",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "ards-forest-park",
+   "local_uuid": "0abc0e1f-f0bd-4560-8716-693de13e4515",
+   "target_id": 10728,
+   "local_lat": "55.158",
+   "local_lng": "-7.8925",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "arigna-mining-experience",
+   "local_uuid": "c4da8419-9adf-4841-a4cf-c1c8cb5b8bab",
+   "target_id": 10672,
+   "local_lat": "54.076949",
+   "local_lng": "-8.119236",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior",
+    "Necessita reserva"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "askeaton-castle",
+   "local_uuid": "2e4e7734-bf1a-49f0-88b6-b8cf10b5a720",
+   "target_id": 21179,
+   "local_lat": "52.600449",
+   "local_lng": "-8.973985",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "athenry-castle",
+   "local_uuid": "181c5d21-0ca5-45e1-95da-710c11243257",
+   "target_id": 21182,
+   "local_lat": "53.300073",
+   "local_lng": "-8.744482",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Famílias",
+    "Interior + exterior",
+    "Pago"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "athlone-castle",
+   "local_uuid": "a7411cfc-06d5-45da-b4b8-97b579b68f4f",
+   "target_id": 10647,
+   "local_lat": "53.422827",
+   "local_lng": "-7.942676",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Famílias",
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "aughnanure-castle",
+   "local_uuid": "e96ede4d-b9b3-44fd-978e-8f5ec6ffdab0",
+   "target_id": 21183,
+   "local_lat": "53.418755",
+   "local_lng": "-9.275722",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Interior + exterior",
+    "Pago"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "avondale-forest-park",
+   "local_uuid": "ff08f4fa-0c92-4ec5-8e1c-58ce68c01c24",
+   "target_id": 10161,
+   "local_lat": "52.911583",
+   "local_lng": "-6.219361",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "ballyhack-castle",
+   "local_uuid": "a13572f9-f9eb-48b3-861d-5be7ce21049f",
+   "target_id": 21185,
+   "local_lat": "52.24585",
+   "local_lng": "-6.967226",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "banna-strand",
+   "local_uuid": "4759d6b0-3204-4306-a639-ef5f17282f0f",
+   "target_id": 10621,
+   "local_lat": "52.338745",
+   "local_lng": "-9.835651",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "barryscourt-castle",
+   "local_uuid": "25ade0ed-b26e-41ae-896a-d4bf3d572f04",
+   "target_id": 21155,
+   "local_lat": "51.904637",
+   "local_lng": "-8.259317",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Interior + exterior",
+    "Pago"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "battle-of-the-boyne-visitor-centre",
+   "local_uuid": "e7dffca6-1abd-4d15-a1b7-cadfc2518cc4",
+   "target_id": 10168,
+   "local_lat": "53.723223",
+   "local_lng": "-6.423496",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "bective-abbey",
+   "local_uuid": "c957d7aa-5dd0-4128-bb3e-b673a2712fe9",
+   "target_id": 10565,
+   "local_lat": "53.582558",
+   "local_lng": "-6.70274",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "belturbet-railway-station",
+   "local_uuid": "6edceeaf-bc4d-44a8-9f76-fea8a44b355e",
+   "target_id": 10700,
+   "local_lat": "54.097752",
+   "local_lng": "-7.442228",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "belvedere-house-gardens",
+   "local_uuid": "7a77fa2d-4995-48c3-a748-99528b61f844",
+   "target_id": 10645,
+   "local_lat": "53.4756",
+   "local_lng": "-7.36733",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "benbulben",
+   "local_uuid": "f8e7679b-bf29-4581-805e-4ed674fbe16e",
+   "target_id": 10730,
+   "local_lat": "54.361492",
+   "local_lng": "-8.501434",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "birr-castle-demesne",
+   "local_uuid": "fdd1615c-af6b-4388-9a0c-616cb76d4368",
+   "target_id": 10637,
+   "local_lat": "53.096704",
+   "local_lng": "-7.91432",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "blackrock-castle-observatory",
+   "local_uuid": "1ebfa407-2ef7-4a85-94b1-6ab4fb1a7be8",
+   "target_id": 10601,
+   "local_lat": "51.89988",
+   "local_lng": "-8.40287",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Famílias",
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "blarney-castle",
+   "local_uuid": "78094161-3268-4693-b1d3-5b995e33da85",
+   "target_id": 10185,
+   "local_lat": "51.928999",
+   "local_lng": "-8.570843",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "blasket-centre-ionad-an-bhlascaoid",
+   "local_uuid": "9cb80f72-bead-4d5f-ac24-30d3c5e34a14",
+   "target_id": 21178,
+   "local_lat": "52.132286",
+   "local_lng": "-10.461605",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior",
+    "Necessita reserva",
+    "Pago"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "bog-of-allen-nature-centre",
+   "local_uuid": "1b3be6e9-18dc-48fd-acfb-d7cc0bd6001c",
+   "target_id": 10853,
+   "local_lat": "53.27861",
+   "local_lng": "-6.94256",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Famílias",
+    "Interior + exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "borris-house",
+   "local_uuid": "69ff66be-a467-43f9-ab5b-ce2f4178b7e0",
+   "target_id": 10885,
+   "local_lat": "52.598486",
+   "local_lng": "-6.926565",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior + exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "boyle-abbey",
+   "local_uuid": "d0bc5915-7830-4e1c-96a2-98fc0b6a25e9",
+   "target_id": 10668,
+   "local_lat": "53.973501",
+   "local_lng": "-8.296862",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "bray-head",
+   "local_uuid": "6ccb1cc8-fcf0-434e-b0df-7c22bee10975",
+   "target_id": 10158,
+   "local_lat": "53.18717",
+   "local_lng": "-6.09917",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "brigits-garden",
+   "local_uuid": "717b064d-9197-4972-aa8b-cf643004099b",
+   "target_id": 10577,
+   "local_lat": "53.385304",
+   "local_lng": "-9.21248",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "brittas-bay-beach",
+   "local_uuid": "c17c4d8e-2e45-4e69-8bd1-369a88123624",
+   "target_id": 10555,
+   "local_lat": "52.877419",
+   "local_lng": "-6.061707",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "brownshill-dolmen",
+   "local_uuid": "286d5248-7f1c-4285-b8e6-f11a56190075",
+   "target_id": 10877,
+   "local_lat": "52.837441",
+   "local_lng": "-6.881061",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "bunratty-castle-folk-park",
+   "local_uuid": "a6e9a793-cb6a-4a13-9722-b8d348fed983",
+   "target_id": 10179,
+   "local_lat": "52.6953",
+   "local_lng": "-8.8139",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Famílias",
+    "Interior + exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "burren-national-park",
+   "local_uuid": "68aefeeb-b10c-4f3a-ba8c-b2b6d0ad3f25",
+   "target_id": 10178,
+   "local_lat": "52.944953",
+   "local_lng": "-9.063026",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "cahir-castle",
+   "local_uuid": "ce674848-f0f0-4c4e-a20d-a337d143728d",
+   "target_id": 10821,
+   "local_lat": "52.374446",
+   "local_lng": "-7.927166",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "carlingford",
+   "local_uuid": "2b43c2dc-a5bd-4adc-87c4-4827768ff75a",
+   "target_id": 10865,
+   "local_lat": "54.04201",
+   "local_lng": "-6.186298",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "carlingford-lough-greenway",
+   "local_uuid": "60c18aaf-95db-4f0d-84f5-67339e1c55c4",
+   "target_id": 10873,
+   "local_lat": "54.050161",
+   "local_lng": "-6.191342",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "carrickmacross-lace-gallery",
+   "local_uuid": "aed54b27-dbfd-4ca8-8026-790ff8edf6fc",
+   "target_id": 10708,
+   "local_lat": "53.978",
+   "local_lng": "-6.719",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "carrowmore-megalithic-cemetery",
+   "local_uuid": "319ef218-bc55-415c-9dd6-e5dc1abb0d1a",
+   "target_id": 10734,
+   "local_lat": "54.2509",
+   "local_lng": "-8.5193",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "casino-marino",
+   "local_uuid": "4281cd7b-5810-487d-8e2d-cd71a0d4af1a",
+   "target_id": 21159,
+   "local_lat": "53.37132",
+   "local_lng": "-6.22704",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Interior",
+    "Pago"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "castle-leslie-estate",
+   "local_uuid": "9eb31d3a-a0a9-4932-9664-a9cc9f4b938b",
+   "target_id": 10702,
+   "local_lat": "54.31821",
+   "local_lng": "-6.89582",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "castlecomer-discovery-park",
+   "local_uuid": "ca40b2d5-6ea6-4659-b59c-d6098e125226",
+   "target_id": 10778,
+   "local_lat": "52.80708",
+   "local_lng": "-7.20214",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "castletown-house",
+   "local_uuid": "e1e13b06-6ff9-4ca1-b4ff-6edc75a4a82c",
+   "target_id": 10851,
+   "local_lat": "53.34903",
+   "local_lng": "-6.530488",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior + exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "cavan-burren-park",
+   "local_uuid": "a7520736-fdf0-414d-a009-12f413c4eacc",
+   "target_id": 10690,
+   "local_lat": "54.264734",
+   "local_lng": "-7.888553",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "cavan-cathedral",
+   "local_uuid": "3fff8153-eecf-4fc6-a0ff-a71b3248c6cb",
+   "target_id": 11723,
+   "local_lat": "53.9984",
+   "local_lng": "-7.361",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Gratuito",
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "cavan-county-museum",
+   "local_uuid": "147237ba-15d9-4fbe-9061-278500d41813",
+   "target_id": 10698,
+   "local_lat": "53.865225",
+   "local_lng": "-7.20088",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior + exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "ceide-fields",
+   "local_uuid": "73238b6e-71ee-44da-bb8a-8380558517b6",
+   "target_id": 10758,
+   "local_lat": "54.306733",
+   "local_lng": "-9.457337",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior + exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "charles-fort",
+   "local_uuid": "000bb239-f0d1-436b-a431-2fd998b60c1b",
+   "target_id": 10191,
+   "local_lat": "51.696431",
+   "local_lng": "-8.498955",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "charleville-forest-castle",
+   "local_uuid": "0f355f43-5950-4e0f-978d-cafe256af286",
+   "target_id": 10641,
+   "local_lat": "53.26046",
+   "local_lng": "-7.52792",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "chester-beatty",
+   "local_uuid": "76f6df2e-47e2-4d7b-a2db-2616b266fb7f",
+   "target_id": 11713,
+   "local_lat": "53.3422",
+   "local_lng": "-6.26745",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Acessível",
+    "Acesso de transporte público",
+    "Gratuito",
+    "Interior + exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "clare-island",
+   "local_uuid": "a1ad52f6-1047-4ad8-a7a2-3df90da39db3",
+   "target_id": 10764,
+   "local_lat": "53.761803",
+   "local_lng": "-9.904518",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "cliffs-of-moher",
+   "local_uuid": "d1aceaf4-6ceb-41ec-9cdb-33898caebac2",
+   "target_id": 10177,
+   "local_lat": "52.97201",
+   "local_lng": "-9.42592",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": true
+  },
+  {
+   "slug": "clonmacnoise",
+   "local_uuid": "7022d563-ddcd-4cff-be5a-667695a2fcdc",
+   "target_id": 10635,
+   "local_lat": "53.32593",
+   "local_lng": "-7.98697",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "cobh",
+   "local_uuid": "60aeca55-07e8-4246-832a-0e8386b40180",
+   "target_id": 10186,
+   "local_lat": "51.850614",
+   "local_lng": "-8.295882",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "connemara-national-park",
+   "local_uuid": "6ec71170-3955-4be2-a72b-73d39930612f",
+   "target_id": 10170,
+   "local_lat": "53.550845",
+   "local_lng": "-9.94503",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "coole-park",
+   "local_uuid": "48ddda5e-d58c-448c-8c3d-0b1b60342341",
+   "target_id": 10579,
+   "local_lat": "53.09279",
+   "local_lng": "-8.837889",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "copper-coast-geopark",
+   "local_uuid": "16828ddc-378c-4299-bfbe-aa2bece11542",
+   "target_id": 10791,
+   "local_lat": "52.142309",
+   "local_lng": "-7.365009",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "cork-city-gaol",
+   "local_uuid": "01928600-8ea1-4612-9156-6d2e26f9dea9",
+   "target_id": 10599,
+   "local_lat": "51.899505",
+   "local_lng": "-8.499008",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Famílias",
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "corlea-trackway",
+   "local_uuid": "8438b8a3-0dda-4a22-8a60-b45975f4abd3",
+   "target_id": 10654,
+   "local_lat": "53.61226",
+   "local_lng": "-7.844691",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "coumshingaun-loop",
+   "local_uuid": "3318ea1e-b58c-4921-a57c-6c112472ae55",
+   "target_id": 10799,
+   "local_lat": "52.23923",
+   "local_lng": "-7.50234",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "craggaunowen",
+   "local_uuid": "7a7c684a-20a4-4990-9dcb-646b2f1387f7",
+   "target_id": 10593,
+   "local_lat": "52.810643",
+   "local_lng": "-8.793926",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "croagh-patrick",
+   "local_uuid": "7a64a58c-792b-459b-a737-4031dc660562",
+   "target_id": 10746,
+   "local_lat": "53.77811",
+   "local_lng": "-9.639078",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "curracloe-beach",
+   "local_uuid": "46897e47-b235-40af-9235-4f4a1abfdd87",
+   "target_id": 10811,
+   "local_lat": "52.38835",
+   "local_lng": "-6.36558",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "curraghchase-forest-park",
+   "local_uuid": "6c22fc88-9626-4815-8ad5-d8b5a8ec385d",
+   "target_id": 10847,
+   "local_lat": "52.59252",
+   "local_lng": "-8.867855",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "custom-house-visitor-centre",
+   "local_uuid": "400c911f-1adf-47c3-b790-66f66db2bced",
+   "target_id": 21160,
+   "local_lat": "53.34866",
+   "local_lng": "-6.25317",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior",
+    "Necessita reserva",
+    "Pago"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "derrigimlagh",
+   "local_uuid": "e237cccb-1e94-4378-a644-6eb60185620c",
+   "target_id": 11715,
+   "local_lat": "53.461723",
+   "local_lng": "-10.023524",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Bicicleta",
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "derrynane-house",
+   "local_uuid": "b27b366d-1f02-433c-af46-35bb5a4dfa84",
+   "target_id": 10615,
+   "local_lat": "51.763449",
+   "local_lng": "-10.128605",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "desmond-castle-adare",
+   "local_uuid": "ff5441ae-3dcd-4fb3-a0fd-9fb111618b8e",
+   "target_id": 21180,
+   "local_lat": "52.5647",
+   "local_lng": "-8.79",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Interior + exterior",
+    "Necessita reserva"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "desmond-castle-kinsale",
+   "local_uuid": "e3cc2e57-b223-4cb3-8e6b-8931dd7f7894",
+   "target_id": 21156,
+   "local_lat": "51.707257",
+   "local_lng": "-8.524692",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Pago"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "desmond-castle-newcastlewest",
+   "local_uuid": "11bf591e-8afb-4e67-a488-63244fd1f5c9",
+   "target_id": 21181,
+   "local_lat": "52.450434",
+   "local_lng": "-9.061211",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "diamond-hill",
+   "local_uuid": "b4a15533-660b-4608-8244-2925192e1bd5",
+   "target_id": 10175,
+   "local_lat": "53.550845",
+   "local_lng": "-9.94503",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "dingle-peninsula",
+   "local_uuid": "94121a1a-29d9-4793-9ff7-11f0a183ead2",
+   "target_id": 10199,
+   "local_lat": "52.139153",
+   "local_lng": "-10.274592",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "doagh-famine-village",
+   "local_uuid": "582f80be-c0a8-495a-a96a-495dabdbae4c",
+   "target_id": 11718,
+   "local_lat": "55.30902",
+   "local_lng": "-7.33563",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Famílias",
+    "Interior + exterior",
+    "Pago",
+    "Pet friendly"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "doe-castle",
+   "local_uuid": "d5404065-8c89-4a98-8470-62ff0c350f09",
+   "target_id": 21186,
+   "local_lat": "55.135049",
+   "local_lng": "-7.864075",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "donadea-forest-park",
+   "local_uuid": "a41c16e8-38f2-4826-a77a-c81a1854ecb4",
+   "target_id": 10859,
+   "local_lat": "53.340049",
+   "local_lng": "-6.745716",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "donegal-castle",
+   "local_uuid": "b04a7665-ba57-49a0-bfaa-709d6b2d90a4",
+   "target_id": 10718,
+   "local_lat": "54.655023",
+   "local_lng": "-8.1108",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "doneraile-park",
+   "local_uuid": "42dd2427-1d23-4bba-ac40-90691a53347b",
+   "target_id": 10607,
+   "local_lat": "52.219069",
+   "local_lng": "-8.580318",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "doolin-cave",
+   "local_uuid": "6b74f1be-1648-4c97-8b8b-018dc6dd4fac",
+   "target_id": 10181,
+   "local_lat": "53.0419",
+   "local_lng": "-9.345",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "downpatrick-head",
+   "local_uuid": "9e48439d-9f55-4e56-b7d0-13564403f8eb",
+   "target_id": 10756,
+   "local_lat": "54.322668",
+   "local_lng": "-9.345669",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "dowth",
+   "local_uuid": "42c57da2-b56d-4d7e-81e7-1c481ce358d3",
+   "target_id": 10571,
+   "local_lat": "53.703644",
+   "local_lng": "-6.45027",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Necessita reserva"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "drumcliffe",
+   "local_uuid": "504eb4db-18f9-4ccf-8891-0de35b1eb238",
+   "target_id": 10742,
+   "local_lat": "54.3264",
+   "local_lng": "-8.4936",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "dublin-castle",
+   "local_uuid": "75dbd826-8c18-4ab3-94ea-28bd4c44e5d1",
+   "target_id": 10147,
+   "local_lat": "53.342781",
+   "local_lng": "-6.267252",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "dublin-zoo",
+   "local_uuid": "d0ec7752-cd9a-42d8-845e-fbb112f070b1",
+   "target_id": 10151,
+   "local_lat": "53.352833",
+   "local_lng": "-6.304694",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "ducketts-grove",
+   "local_uuid": "ba4c5bea-5d8c-436a-a888-526fd8a2ecae",
+   "target_id": 10881,
+   "local_lat": "52.857455",
+   "local_lng": "-6.813212",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "dun-a-ri-forest-park",
+   "local_uuid": "4d769e30-7c9b-49e8-a426-531923f01ce0",
+   "target_id": 10694,
+   "local_lat": "53.91982",
+   "local_lng": "-6.793",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "dun-aonghasa",
+   "local_uuid": "371b9a05-13ee-4ae3-82f6-4fb0e26be048",
+   "target_id": 10174,
+   "local_lat": "53.12993",
+   "local_lng": "-9.75736",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "dun-laoghaire-east-pier",
+   "local_uuid": "90507016-04d1-476e-a996-d7f7f07ce864",
+   "target_id": 10547,
+   "local_lat": "53.29433",
+   "local_lng": "-6.12857",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "dunbrody-famine-ship",
+   "local_uuid": "d451062f-d2fa-4823-90e2-2c0a2df14d04",
+   "target_id": 10807,
+   "local_lat": "52.3936",
+   "local_lng": "-6.9476",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "dungarvan-castle",
+   "local_uuid": "71cb6646-cda1-4ee4-afbd-639282fe2de3",
+   "target_id": 21189,
+   "local_lat": "52.088981",
+   "local_lng": "-7.616245",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Gratuito",
+    "Interior + exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "dunmore-cave",
+   "local_uuid": "c1f2fc3f-85af-4877-8f9a-bf149eea48ac",
+   "target_id": 10776,
+   "local_lat": "52.733932",
+   "local_lng": "-7.246799",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "dursey-island",
+   "local_uuid": "fddcf86a-655c-4f3b-b3f2-5b03cd9c7a55",
+   "target_id": 11719,
+   "local_lat": "51.60777",
+   "local_lng": "-10.15831",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias",
+    "Gratuito em determinadas condições"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "dwyer-mcallister-cottage",
+   "local_uuid": "3f238f70-5b89-41c6-9ac4-54461ce04811",
+   "target_id": 21197,
+   "local_lat": "52.961976",
+   "local_lng": "-6.564829",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Gratuito",
+    "Interior",
+    "Necessita reserva"
+   ],
+   "local_ci_overwritten": true
+  },
+  {
+   "slug": "eagles-flying",
+   "local_uuid": "14a9cc15-7306-4153-850f-bae58a65e19d",
+   "target_id": 10744,
+   "local_lat": "54.10345",
+   "local_lng": "-8.56755",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "emerald-park",
+   "local_uuid": "3d9a6806-716d-4a70-b057-13843785d4b5",
+   "target_id": 10563,
+   "local_lat": "53.545918",
+   "local_lng": "-6.45806",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias",
+    "Necessita reserva"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "emo-court",
+   "local_uuid": "90c3d415-87fc-42dd-a4a7-4e4a9b721c16",
+   "target_id": 10625,
+   "local_lat": "53.107187",
+   "local_lng": "-7.196871",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "english-market-cork",
+   "local_uuid": "5b56bcb0-fcc8-4554-b982-92aa8ff0f801",
+   "target_id": 10597,
+   "local_lat": "51.89787",
+   "local_lng": "-8.474242",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Gratuito",
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "ennis-friary",
+   "local_uuid": "3c9b0b22-e8a9-436e-ae23-827ee93285a4",
+   "target_id": 10585,
+   "local_lat": "52.845978",
+   "local_lng": "-8.981586",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "epic-irish-emigration-museum",
+   "local_uuid": "eb5f5e49-ccff-46ff-8488-81a03a55c1aa",
+   "target_id": 10541,
+   "local_lat": "53.348133",
+   "local_lng": "-6.247989",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "errigal",
+   "local_uuid": "006299dc-d2e3-48a7-af50-bebc8bc7dbc0",
+   "target_id": 10726,
+   "local_lat": "55.025047",
+   "local_lng": "-8.089997",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "famine-warhouse-1848",
+   "local_uuid": "47bfc6c9-0955-4602-9bcf-8ffbcb84adb5",
+   "target_id": 21192,
+   "local_lat": "52.619266",
+   "local_lng": "-7.522708",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Gratuito",
+    "Interior",
+    "Necessita reserva"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "fanad-head-lighthouse",
+   "local_uuid": "fefb34ca-6fc0-4538-a151-a05dcf9fe2a8",
+   "target_id": 10722,
+   "local_lat": "55.27658",
+   "local_lng": "-7.63629",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "farmleigh-house-and-estate",
+   "local_uuid": "165b5fb9-77fa-4aa7-81b8-beada1e535ba",
+   "target_id": 21161,
+   "local_lat": "53.3661",
+   "local_lng": "-6.3516",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Famílias",
+    "Gratuito em determinadas condições",
+    "Interior + exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "ferns-castle",
+   "local_uuid": "3f32e306-b8bc-47f3-ad67-1c888c9730b5",
+   "target_id": 10815,
+   "local_lat": "52.5905",
+   "local_lng": "-6.4992",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "fore-abbey",
+   "local_uuid": "fa6a5900-42e7-414a-88b7-bc7c73ac9bb0",
+   "target_id": 21195,
+   "local_lat": "53.683937",
+   "local_lng": "-7.227534",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "forty-foot",
+   "local_uuid": "4094e853-12ad-4d7a-bb6b-9cfffd2f7b39",
+   "target_id": 11714,
+   "local_lat": "53.28949",
+   "local_lng": "-6.1137",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Acesso de transporte público",
+    "Estacionamento",
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "fota-arboretum-and-gardens",
+   "local_uuid": "070a5962-c0f9-4c18-bb3e-42ef97a2da63",
+   "target_id": 21157,
+   "local_lat": "51.893461",
+   "local_lng": "-8.302749",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Exterior",
+    "Famílias",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "fota-wildlife-park",
+   "local_uuid": "f73e8857-3546-4fb9-95f4-965a1b70f8e0",
+   "target_id": 10188,
+   "local_lat": "51.8906",
+   "local_lng": "-8.30772",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": true
+  },
+  {
+   "slug": "foynes-flying-boat-museum",
+   "local_uuid": "52716bb7-44b2-498f-aa55-7f8938b9d743",
+   "target_id": 10843,
+   "local_lat": "52.611581",
+   "local_lng": "-9.109658",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Famílias",
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "gallarus-oratory",
+   "local_uuid": "f3289b7d-c297-41f2-a565-e7397b620af1",
+   "target_id": 10617,
+   "local_lat": "52.1726",
+   "local_lng": "-10.349401",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "galway-atlantaquaria",
+   "local_uuid": "0594222a-924a-4ccb-9120-b0a00d435564",
+   "target_id": 10176,
+   "local_lat": "53.259807",
+   "local_lng": "-9.074272",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Famílias",
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "galway-city-museum",
+   "local_uuid": "ef080f77-3d68-4848-9a3f-43a675430400",
+   "target_id": 10575,
+   "local_lat": "53.269832",
+   "local_lng": "-9.053629",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Gratuito",
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "gap-of-dunloe",
+   "local_uuid": "d1af0c21-6d1c-4001-b155-190045595e1c",
+   "target_id": 10197,
+   "local_lat": "52.040799",
+   "local_lng": "-9.63152",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "garden-of-remembrance",
+   "local_uuid": "d0ac9919-8670-4183-936f-1a858c98faac",
+   "target_id": 21162,
+   "local_lat": "53.353987",
+   "local_lng": "-6.263853",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "garnish-island",
+   "local_uuid": "be3f360a-5dc7-427e-8d63-6703e7be8931",
+   "target_id": 10603,
+   "local_lat": "51.748777",
+   "local_lng": "-9.548521",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Necessita reserva"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "glasnevin-cemetery-museum",
+   "local_uuid": "1af418e9-aeb1-4ecc-a648-d17dfefec879",
+   "target_id": 10545,
+   "local_lat": "53.372614",
+   "local_lng": "-6.276813",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "glebe-house-and-gallery",
+   "local_uuid": "0d5f2493-e0ea-4c10-b9d7-7c8b40cd614e",
+   "target_id": 21187,
+   "local_lat": "55.004383",
+   "local_lng": "-7.903299",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Famílias",
+    "Gratuito em determinadas condições",
+    "Interior + exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "glen-of-aherlow",
+   "local_uuid": "983e824a-e914-47fd-8b3a-ff4ced65da9a",
+   "target_id": 10825,
+   "local_lat": "52.42925",
+   "local_lng": "-8.16767",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "glencar-waterfall",
+   "local_uuid": "8c169009-8e89-41f1-bb16-a5ad17729ad7",
+   "target_id": 10678,
+   "local_lat": "54.3405",
+   "local_lng": "-8.3677",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "glendalough",
+   "local_uuid": "3aa07d9e-9b08-4ae6-990f-598d50e48844",
+   "target_id": 10155,
+   "local_lat": "53.010446",
+   "local_lng": "-6.323834",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "glendeer-pet-farm",
+   "local_uuid": "b33f1813-e5d6-4fc0-b2dc-75e40f84f18f",
+   "target_id": 10653,
+   "local_lat": "53.758454",
+   "local_lng": "-8.091431",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "glenveagh-national-park",
+   "local_uuid": "f3fec26c-2db2-4eaa-bf46-f79a0d8c0a3b",
+   "target_id": 10714,
+   "local_lat": "55.05649",
+   "local_lng": "-7.93686",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "government-buildings",
+   "local_uuid": "65f7e258-db2b-4563-8ac5-2824970e79a4",
+   "target_id": 21163,
+   "local_lat": "53.339211",
+   "local_lng": "-6.253563",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Gratuito",
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "granard-motte-bailey",
+   "local_uuid": "58f73767-81b3-4d0c-9a6a-054cfe91965b",
+   "target_id": 10658,
+   "local_lat": "53.77537",
+   "local_lng": "-7.50061",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "grangegorman-military-cemetery",
+   "local_uuid": "81afcda5-1068-4a9c-81ec-30bc68016abf",
+   "target_id": 21164,
+   "local_lat": "53.36036",
+   "local_lng": "-6.3057",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "great-sugar-loaf",
+   "local_uuid": "d104ea5f-72ba-4022-8fce-3063d0fea4ec",
+   "target_id": 10159,
+   "local_lat": "53.144956",
+   "local_lng": "-6.155013",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "great-western-greenway",
+   "local_uuid": "57f4488d-8ef4-49c4-844d-d54bdfcda67a",
+   "target_id": 10760,
+   "local_lat": "53.801034",
+   "local_lng": "-9.521637",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "grianan-of-aileach",
+   "local_uuid": "b27baa48-dffb-4f2c-92c9-ffe75ed5d673",
+   "target_id": 10724,
+   "local_lat": "55.023813",
+   "local_lng": "-7.427523",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "guinness-storehouse",
+   "local_uuid": "8d0a05e9-f806-48ed-bb5b-57e420e23603",
+   "target_id": 10149,
+   "local_lat": "53.341903",
+   "local_lng": "-6.28672",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior",
+    "Necessita reserva"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "heywood-gardens",
+   "local_uuid": "8bca33d9-75c0-4bd1-89c4-148dce35e7fe",
+   "target_id": 10627,
+   "local_lat": "52.885278",
+   "local_lng": "-7.296",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "hill-of-tara",
+   "local_uuid": "245f6b35-d6ef-44ee-be83-ac1c2387a188",
+   "target_id": 10164,
+   "local_lat": "53.5813",
+   "local_lng": "-6.60963",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "holy-cross-abbey",
+   "local_uuid": "bc52d731-f9da-495d-b18e-075cb4c46894",
+   "target_id": 10833,
+   "local_lat": "52.639856",
+   "local_lng": "-7.868282",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Gratuito",
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "holy-island-inis-cealtra",
+   "local_uuid": "57210cbd-cd39-496c-8390-b5202f1165d1",
+   "target_id": 10589,
+   "local_lat": "52.929491",
+   "local_lng": "-8.429379",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "hook-lighthouse",
+   "local_uuid": "a150eba7-7cf3-48b1-9a8b-44edb00d1fa3",
+   "target_id": 10805,
+   "local_lat": "52.213542",
+   "local_lng": "-6.951708",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Famílias",
+    "Interior + exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "house-of-waterford-crystal",
+   "local_uuid": "c3a0f87b-96fe-4d2d-8cb2-2daa90d9e811",
+   "target_id": 10783,
+   "local_lat": "52.259326",
+   "local_lng": "-7.106593",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior",
+    "Necessita reserva"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "howth-cliff-walk",
+   "local_uuid": "6a06df2d-4fe7-439d-ad92-21c781584b43",
+   "target_id": 10152,
+   "local_lat": "53.38882",
+   "local_lng": "-6.07422",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "hunt-museum",
+   "local_uuid": "bca282ce-64c3-4506-b945-783d2fdb6836",
+   "target_id": 10837,
+   "local_lat": "52.666325",
+   "local_lng": "-8.624458",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "huntington-castle-gardens",
+   "local_uuid": "d57ef577-2c06-48d3-b015-87a9bae3f574",
+   "target_id": 10883,
+   "local_lat": "52.692097",
+   "local_lng": "-6.646664",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior + exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "inch-beach",
+   "local_uuid": "08d38f81-aedc-4777-8c01-5e6ecee8c062",
+   "target_id": 10200,
+   "local_lat": "52.142225",
+   "local_lng": "-9.981935",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "ionad-culturtha-an-phiarsaigh-pearses-cottage",
+   "local_uuid": "766481f6-1e09-4aaa-8139-4ecc0cc2693b",
+   "target_id": 21184,
+   "local_lat": "53.3885",
+   "local_lng": "-9.617917",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Famílias",
+    "Interior + exterior",
+    "Pago"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "irish-national-heritage-park",
+   "local_uuid": "034f6009-2ec5-4055-8556-0922a32cbc65",
+   "target_id": 10801,
+   "local_lat": "52.347966",
+   "local_lng": "-6.516899",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "irish-national-stud-japanese-gardens",
+   "local_uuid": "d1f3434d-2b30-4a78-9b19-a0312e450d29",
+   "target_id": 10849,
+   "local_lat": "53.1442",
+   "local_lng": "-6.9029",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "irish-national-war-memorial-gardens",
+   "local_uuid": "ce97b54a-7b59-491e-bebe-8ccf05b6aa99",
+   "target_id": 21165,
+   "local_lat": "53.344745",
+   "local_lng": "-6.308281",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "iveagh-gardens",
+   "local_uuid": "96930e89-fddc-436d-aedc-54652551b8c6",
+   "target_id": 21166,
+   "local_lat": "53.336",
+   "local_lng": "-6.262",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "jameson-distillery-midleton",
+   "local_uuid": "b508455a-993f-4aa3-b9d6-9b988e8dbd80",
+   "target_id": 10189,
+   "local_lat": "51.913819",
+   "local_lng": "-8.168309",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior",
+    "Necessita reserva"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "jerpoint-abbey",
+   "local_uuid": "9f34f60b-5e7b-4979-9f5e-aed43480664f",
+   "target_id": 10770,
+   "local_lat": "52.510894",
+   "local_lng": "-7.157818",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "jerpoint-park",
+   "local_uuid": "e5eab2ed-9e8c-4e4c-997a-475bc176d627",
+   "target_id": 10779,
+   "local_lat": "52.512267",
+   "local_lng": "-7.166894",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Necessita reserva"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "jfk-arboretum",
+   "local_uuid": "61067e86-76d3-401b-8dc9-809b2a6cd255",
+   "target_id": 11722,
+   "local_lat": "52.321047",
+   "local_lng": "-6.933696",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Exterior",
+    "Famílias",
+    "Gratuito em determinadas condições",
+    "Pet friendly"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "johnstown-castle",
+   "local_uuid": "dec2c8a1-9899-4fa2-af5f-c25ac2ebd760",
+   "target_id": 10803,
+   "local_lat": "52.294063",
+   "local_lng": "-6.50548",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "joyce-tower-museum",
+   "local_uuid": "dd0cf46a-8d00-4487-a5d7-2960dc54d4e2",
+   "target_id": 11716,
+   "local_lat": "53.28865",
+   "local_lng": "-6.11364",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Acesso de transporte público",
+    "Gratuito",
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "keem-bay",
+   "local_uuid": "fba622dd-b64b-40b8-af59-c9465d666585",
+   "target_id": 10750,
+   "local_lat": "53.9679",
+   "local_lng": "-10.1942",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "kells-historic-town",
+   "local_uuid": "813f6525-06d0-4fcd-9e6f-ec57cb8be651",
+   "target_id": 10567,
+   "local_lat": "53.7264",
+   "local_lng": "-6.87097",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "kells-priory",
+   "local_uuid": "fce2d7f5-385d-47af-904b-5990976afd47",
+   "target_id": 21190,
+   "local_lat": "52.5368",
+   "local_lng": "-7.268",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "kerry-cliffs",
+   "local_uuid": "7b3e4544-9e71-422a-975b-96fa342e3796",
+   "target_id": 10613,
+   "local_lat": "51.868605",
+   "local_lng": "-10.385583",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "kilbeggan-distillery",
+   "local_uuid": "682343e7-24da-4bdc-8fe5-368cbb3630df",
+   "target_id": 10649,
+   "local_lat": "53.36948",
+   "local_lng": "-7.50267",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "kilkee-cliffs",
+   "local_uuid": "34bf43f0-8bb1-4421-b2e7-d4ed62636f28",
+   "target_id": 10184,
+   "local_lat": "52.68178",
+   "local_lng": "-9.66503",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "kilkenny-castle",
+   "local_uuid": "23763013-3b9c-453f-a166-9b7690b7c5e3",
+   "target_id": 10766,
+   "local_lat": "52.650283",
+   "local_lng": "-7.249348",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Famílias",
+    "Interior + exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "killarney-national-park",
+   "local_uuid": "dd17d092-e991-43d3-b2fe-ea7e12585272",
+   "target_id": 10193,
+   "local_lat": "52.056831",
+   "local_lng": "-9.508254",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "killruddery-house-gardens",
+   "local_uuid": "fa47bb0d-3c03-4184-a45a-8f2ef4d4d1d7",
+   "target_id": 10557,
+   "local_lat": "53.181692",
+   "local_lng": "-6.102061",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "killykeen-forest-park",
+   "local_uuid": "7490b7fc-81c9-484f-92a1-44cab7941b9a",
+   "target_id": 10692,
+   "local_lat": "54.0067",
+   "local_lng": "-7.468134",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "kilmainham-gaol",
+   "local_uuid": "8de44ca1-d0a8-4492-b0fe-4ed3bbb43587",
+   "target_id": 10148,
+   "local_lat": "53.341679",
+   "local_lng": "-6.309505",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Famílias",
+    "Interior",
+    "Necessita reserva"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "king-johns-castle-carlingford",
+   "local_uuid": "1362c48c-a927-415f-94ef-ad3096045c2c",
+   "target_id": 10891,
+   "local_lat": "54.043177",
+   "local_lng": "-6.18683",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "king-johns-castle-limerick",
+   "local_uuid": "27d35a15-ba9f-4502-9989-7dfbeee4d6af",
+   "target_id": 10835,
+   "local_lat": "52.669671",
+   "local_lng": "-8.625577",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Famílias",
+    "Interior + exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "kinsale",
+   "local_uuid": "a57fb284-a17a-437f-acc3-c5c35e17581d",
+   "target_id": 10190,
+   "local_lat": "51.705646",
+   "local_lng": "-8.522602",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "knowth",
+   "local_uuid": "ebd1a273-cb9c-4822-8eb3-c31cebe5d414",
+   "target_id": 10163,
+   "local_lat": "53.701435",
+   "local_lng": "-6.491534",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Necessita reserva"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "kylemore-abbey",
+   "local_uuid": "3a372e10-13a9-4b7f-ab6c-d1bdcc8bdfb9",
+   "target_id": 10169,
+   "local_lat": "53.561725",
+   "local_lng": "-9.889423",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "lahinch-beach",
+   "local_uuid": "37db3e02-a331-4335-b79d-6056a6bb14f1",
+   "target_id": 10183,
+   "local_lat": "52.9343",
+   "local_lng": "-9.3486",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "lismore-castle-gardens",
+   "local_uuid": "761fc042-50d7-4102-ad9f-9e5ef95e9ec5",
+   "target_id": 10795,
+   "local_lat": "52.13824",
+   "local_lng": "-7.933187",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "lissadell-house",
+   "local_uuid": "c709c0c9-5d96-4454-9405-2fe0ccf92106",
+   "target_id": 10740,
+   "local_lat": "54.346936",
+   "local_lng": "-8.580878",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior + exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "listowel-castle",
+   "local_uuid": "01784d59-c04d-474e-bf10-128ce7716cad",
+   "target_id": 21177,
+   "local_lat": "52.444869",
+   "local_lng": "-9.486404",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "loop-head",
+   "local_uuid": "0d6072c4-a646-4c61-9581-66db253d41c6",
+   "target_id": 10182,
+   "local_lat": "52.563",
+   "local_lng": "-9.9205",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "lough-allen",
+   "local_uuid": "f5cf7b52-6050-428a-b309-dc18c9442103",
+   "target_id": 10684,
+   "local_lat": "54.04157",
+   "local_lng": "-8.048706",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "lough-boora-discovery-park",
+   "local_uuid": "b56bd6e7-b859-44f0-bfff-8487a6c5d382",
+   "target_id": 10639,
+   "local_lat": "53.223583",
+   "local_lng": "-7.729028",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "lough-gur",
+   "local_uuid": "6a1942ba-ff22-4a93-8d4e-6d3fa2b55f8d",
+   "target_id": 10845,
+   "local_lat": "52.523106",
+   "local_lng": "-8.52038",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "lough-key-forest-park",
+   "local_uuid": "8247d0df-7392-47ac-a82f-9e3366820e55",
+   "target_id": 10674,
+   "local_lat": "53.982051",
+   "local_lng": "-8.245974",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "lough-muckno-leisure-park",
+   "local_uuid": "8c190be6-248a-440d-ad30-2e8abb776d81",
+   "target_id": 11721,
+   "local_lat": "54.11912",
+   "local_lng": "-6.72454",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Exterior",
+    "Famílias",
+    "Gratuito",
+    "Pet friendly"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "lough-ree",
+   "local_uuid": "3c8b25d4-47e2-4b5c-a91b-a265ca8e9f7b",
+   "target_id": 10664,
+   "local_lat": "53.46719",
+   "local_lng": "-7.98719",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "lough-rynn-castle-gardens",
+   "local_uuid": "ab365713-a4d0-4fb8-836a-9421cf0dec4b",
+   "target_id": 10686,
+   "local_lat": "53.90316",
+   "local_lng": "-7.85542",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "loughcrew",
+   "local_uuid": "0e2e1a93-f2f5-412b-91ce-2d39522db980",
+   "target_id": 10167,
+   "local_lat": "53.7441",
+   "local_lng": "-7.1188",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "lullymore-heritage-park",
+   "local_uuid": "9de04b62-cf15-4273-8022-6d96493424fe",
+   "target_id": 10861,
+   "local_lat": "53.270363",
+   "local_lng": "-6.949394",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "malahide-castle-gardens",
+   "local_uuid": "d27f453e-1872-44b3-b65a-f43f6b8db07c",
+   "target_id": 10153,
+   "local_lat": "53.444829",
+   "local_lng": "-6.163631",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Famílias",
+    "Necessita reserva"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "malin-head",
+   "local_uuid": "7593dc50-48ba-48a3-8341-c9072ccf749b",
+   "target_id": 10720,
+   "local_lat": "55.380948",
+   "local_lng": "-7.373576",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "maynooth-castle",
+   "local_uuid": "9e6d30ed-7fca-447b-8121-f3e0924439db",
+   "target_id": 10857,
+   "local_lat": "53.381055",
+   "local_lng": "-6.594154",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "medieval-mile-museum",
+   "local_uuid": "59dd3f39-bf7f-4afa-853a-4ef5849bf967",
+   "target_id": 10768,
+   "local_lat": "52.651811",
+   "local_lng": "-7.252209",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "mellifont-abbey",
+   "local_uuid": "21a20a30-7686-4113-a6a9-08c02cc7b398",
+   "target_id": 10871,
+   "local_lat": "53.74229",
+   "local_lng": "-6.466527",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "millmount-fort-museum",
+   "local_uuid": "d6d34f79-c43e-4e48-8005-254c3dcaa62e",
+   "target_id": 10875,
+   "local_lat": "53.7119",
+   "local_lng": "-6.35024",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior + exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "mitchelstown-cave",
+   "local_uuid": "d8733e1f-50c0-4e95-826f-2e648731bee7",
+   "target_id": 10831,
+   "local_lat": "52.30576",
+   "local_lng": "-8.1045",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Famílias",
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "mizen-head",
+   "local_uuid": "9b00618e-39e1-4d36-b968-6beea2ebd3b5",
+   "target_id": 10192,
+   "local_lat": "51.4516",
+   "local_lng": "-9.811097",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "monaghan-county-museum",
+   "local_uuid": "489f119a-6a72-4828-be1f-32f8c7153815",
+   "target_id": 10706,
+   "local_lat": "54.251823",
+   "local_lng": "-6.969879",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Gratuito",
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "monasterboice",
+   "local_uuid": "4d6b1bd8-77c7-467f-af3f-fd9451e506f1",
+   "target_id": 10869,
+   "local_lat": "53.777761",
+   "local_lng": "-6.417839",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "mondello-park",
+   "local_uuid": "df1b63a8-7ec5-48d4-a5a4-a003e8409ac3",
+   "target_id": 10863,
+   "local_lat": "53.2575",
+   "local_lng": "-6.745",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "mount-congreve-gardens",
+   "local_uuid": "d7c23a06-5fbc-4b06-8c2a-49aaa3f4aa68",
+   "target_id": 10793,
+   "local_lat": "52.2409",
+   "local_lng": "-7.214",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "mount-leinster-nine-stones",
+   "local_uuid": "370f8e87-d21f-4c3d-b38f-70c68eb4f2cb",
+   "target_id": 10889,
+   "local_lat": "52.636843",
+   "local_lng": "-6.793677",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "mount-usher-gardens",
+   "local_uuid": "1a724ee5-21d4-4a11-8dd9-d9cd23162b8a",
+   "target_id": 10559,
+   "local_lat": "53.008345",
+   "local_lng": "-6.105598",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "muckross-abbey",
+   "local_uuid": "2089e866-0ae6-48ec-89f0-e09177a1b6d5",
+   "target_id": 10619,
+   "local_lat": "52.026128",
+   "local_lng": "-9.495194",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "muckross-house",
+   "local_uuid": "2c0ae3fb-d182-43a3-9876-732a861853d0",
+   "target_id": 10194,
+   "local_lat": "52.018016",
+   "local_lng": "-9.502822",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Interior + exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "mullaghmeen-forest",
+   "local_uuid": "0f3aad67-8642-4acd-9322-a54449977258",
+   "target_id": 10651,
+   "local_lat": "53.748869",
+   "local_lng": "-7.273165",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "national-botanic-gardens-dublin",
+   "local_uuid": "ad0360da-bc6c-428a-b861-0201140f2b54",
+   "target_id": 10543,
+   "local_lat": "53.3717",
+   "local_lng": "-6.2696",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "national-botanic-gardens-kilmacurragh",
+   "local_uuid": "d6bcad90-5198-4bec-a73e-0ee8869ed7dd",
+   "target_id": 21196,
+   "local_lat": "52.9341",
+   "local_lng": "-6.1529",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "national-design-craft-gallery",
+   "local_uuid": "6f74d452-d691-4fc7-b236-d8b897a15ad9",
+   "target_id": 11724,
+   "local_lat": "52.64956",
+   "local_lng": "-7.24991",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Gratuito",
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "national-museum-archaeology",
+   "local_uuid": "89ab7de5-0ce0-48b7-a776-994858fd6cf7",
+   "target_id": 10539,
+   "local_lat": "53.340257",
+   "local_lng": "-6.254982",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Gratuito",
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "national-museum-country-life",
+   "local_uuid": "14bf5181-0d18-40d5-bd78-6d4532552b06",
+   "target_id": 10754,
+   "local_lat": "53.883986",
+   "local_lng": "-9.212476",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Gratuito",
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "newcastle-wood",
+   "local_uuid": "9f247400-2a4a-4a9a-8ccf-34c1bf164411",
+   "target_id": 10662,
+   "local_lat": "53.5667",
+   "local_lng": "-7.7667",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "newgrange",
+   "local_uuid": "d32ac3fa-0e97-4238-9ce1-a63216961cd2",
+   "target_id": 10162,
+   "local_lat": "53.694567",
+   "local_lng": "-6.4463",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Necessita reserva"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "newmills-corn-and-flax-mills",
+   "local_uuid": "04dd2874-73c5-428b-8109-ac7ab78ce5e7",
+   "target_id": 21188,
+   "local_lat": "54.92907",
+   "local_lng": "-7.80844",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Gratuito",
+    "Interior + exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "oak-park-forest-park",
+   "local_uuid": "e0d5ec06-99bb-41c7-808f-5ddd6e615d0d",
+   "target_id": 10887,
+   "local_lat": "52.865393",
+   "local_lng": "-6.89796",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "old-head-of-kinsale",
+   "local_uuid": "9d8e89db-db9d-43d7-b26a-011696cb79a9",
+   "target_id": 11720,
+   "local_lat": "51.62007",
+   "local_lng": "-8.54263",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Exterior",
+    "Gratuito em determinadas condições"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "ormond-castle",
+   "local_uuid": "d48e9415-f375-4a59-9a89-5b9ff1dcb9df",
+   "target_id": 10829,
+   "local_lat": "52.34528",
+   "local_lng": "-7.407136",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "parkes-castle",
+   "local_uuid": "f2ed3e8f-1a8f-4420-b10c-a262a96a4a62",
+   "target_id": 10680,
+   "local_lat": "54.264639",
+   "local_lng": "-8.334046",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "patrick-kavanagh-centre",
+   "local_uuid": "70aafa06-e160-42f4-b33f-20599c40acbd",
+   "target_id": 10710,
+   "local_lat": "54.002924",
+   "local_lng": "-6.58094",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "pearse-museum-st-endas-park",
+   "local_uuid": "b3f990d2-5632-401f-bd45-c4c127613774",
+   "target_id": 21167,
+   "local_lat": "53.283004",
+   "local_lng": "-6.281551",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Famílias",
+    "Gratuito",
+    "Interior + exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "phoenix-park",
+   "local_uuid": "ci-fixture-0000-0000-4000-8000-000000000002",
+   "target_id": 10150,
+   "local_lat": "53.36605",
+   "local_lng": "-6.33093",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": true
+  },
+  {
+   "slug": "phoenix-park-peoples-flower-gardens",
+   "local_uuid": "5c3faa0c-ecc1-4fe4-8bc4-744a2e6babe5",
+   "target_id": 21169,
+   "local_lat": "53.352192",
+   "local_lng": "-6.299305",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "phoenix-park-visitor-centre-ashtown-castle",
+   "local_uuid": "3d3c9cdf-d957-4b03-a971-e7b7d7f08d40",
+   "target_id": 21168,
+   "local_lat": "53.36605",
+   "local_lng": "-6.33093",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Famílias",
+    "Gratuito",
+    "Interior + exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "pollardstown-fen",
+   "local_uuid": "60c293ae-2e73-41df-b4e4-f9785619da58",
+   "target_id": 10855,
+   "local_lat": "53.183591",
+   "local_lng": "-6.845753",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "portmarnock-beach",
+   "local_uuid": "d5b7510c-c9b1-4e45-ba37-0a03ba70aff0",
+   "target_id": 10549,
+   "local_lat": "53.416",
+   "local_lng": "-6.128",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "portumna-castle-gardens",
+   "local_uuid": "1601adff-456e-4658-830f-3e6e999e2619",
+   "target_id": 10581,
+   "local_lat": "53.08832",
+   "local_lng": "-8.219873",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "powerscourt-estate",
+   "local_uuid": "a0700cc7-2faa-48be-bff5-b39d04772b09",
+   "target_id": 10156,
+   "local_lat": "53.184912",
+   "local_lng": "-6.187038",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "powerscourt-waterfall",
+   "local_uuid": "4465ef5f-3844-49e0-9f7f-97afbbb253b9",
+   "target_id": 10157,
+   "local_lat": "53.1467",
+   "local_lng": "-6.2105",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "proleek-dolmen",
+   "local_uuid": "77bbc4c4-9b18-4e10-b2c8-34bfd50c410a",
+   "target_id": 10867,
+   "local_lat": "54.037195",
+   "local_lng": "-6.348259",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "queen-maeves-trail-knocknarea",
+   "local_uuid": "4125e1c9-93e0-43a8-96b2-eed0ae50f101",
+   "target_id": 10736,
+   "local_lat": "54.2532",
+   "local_lng": "-8.55783",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "rathcroghan",
+   "local_uuid": "8faa7266-b83e-4306-9f11-6d8245766850",
+   "target_id": 10666,
+   "local_lat": "53.802144",
+   "local_lng": "-8.304081",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior + exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "rathfarnham-castle",
+   "local_uuid": "1192daa6-7f67-4054-bd69-13443faeee6c",
+   "target_id": 21170,
+   "local_lat": "53.298079",
+   "local_lng": "-6.283608",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Famílias",
+    "Interior + exterior",
+    "Pago"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "reginals-tower",
+   "local_uuid": "c36a5da4-0039-42b6-938d-ace0e642ddf0",
+   "target_id": 10787,
+   "local_lat": "52.260443",
+   "local_lng": "-7.10541",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "ring-of-kerry",
+   "local_uuid": "e631ec3b-771a-4d4b-8078-19b650078166",
+   "target_id": 10198,
+   "local_lat": "52.056831",
+   "local_lng": "-9.508254",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "rock-of-cashel",
+   "local_uuid": "caaff7b7-5aa8-466c-954c-11ba9663e572",
+   "target_id": 10819,
+   "local_lat": "52.520091",
+   "local_lng": "-7.890319",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "rock-of-dunamase",
+   "local_uuid": "fe17d99c-3c76-45dc-a384-49af326156e1",
+   "target_id": 10623,
+   "local_lat": "53.0324",
+   "local_lng": "-7.208",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "roscommon-castle",
+   "local_uuid": "b1ef4bdd-56cf-44a0-8073-0edd824dcff3",
+   "target_id": 10676,
+   "local_lat": "53.635378",
+   "local_lng": "-8.194071",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "roscrea-heritage-centre-roscrea-castle-and-damer-house",
+   "local_uuid": "c015346a-1c4b-4395-8258-db7fa22b68d9",
+   "target_id": 21194,
+   "local_lat": "52.95495",
+   "local_lng": "-7.79805",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Famílias",
+    "Interior + exterior",
+    "Pago"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "ross-castle",
+   "local_uuid": "adc78c7c-68bc-4e04-8726-390b2d0a5efb",
+   "target_id": 10195,
+   "local_lat": "52.041085",
+   "local_lng": "-9.531247",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "rossmore-forest-park",
+   "local_uuid": "5e0b9680-2264-4ffe-a564-1206f69fe053",
+   "target_id": 10704,
+   "local_lat": "54.227745",
+   "local_lng": "-6.996775",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "rothe-house-garden",
+   "local_uuid": "431bf8c5-5d0d-4490-aea7-32d9e3df38c8",
+   "target_id": 10772,
+   "local_lat": "52.654129",
+   "local_lng": "-7.255176",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior + exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "royal-canal-greenway",
+   "local_uuid": "ef88406c-c896-4c35-be8e-aff979945eb1",
+   "target_id": 10660,
+   "local_lat": "53.72252",
+   "local_lng": "-7.79766",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "royal-hospital-kilmainham",
+   "local_uuid": "2895d9b9-55be-4947-add6-5d481dfe3a5c",
+   "target_id": 21171,
+   "local_lat": "53.34346",
+   "local_lng": "-6.30255",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Estacionamento",
+    "Gratuito em determinadas condições",
+    "Interior + exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "russborough-house",
+   "local_uuid": "aa7996db-cb71-433a-9062-27481a108fcc",
+   "target_id": 10551,
+   "local_lat": "53.141559",
+   "local_lng": "-6.569674",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "sally-gap",
+   "local_uuid": "8f7fae17-8b50-4309-8678-bad39ddfbaea",
+   "target_id": 10160,
+   "local_lat": "53.137792",
+   "local_lng": "-6.312171",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "saltee-islands",
+   "local_uuid": "df4de7fb-b113-4a89-8301-b51cb8cecc68",
+   "target_id": 10809,
+   "local_lat": "52.171024",
+   "local_lng": "-6.588825",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "salthill",
+   "local_uuid": "97c10bdb-ca52-436a-803c-1f4d267e47a5",
+   "target_id": 10171,
+   "local_lat": "53.261513",
+   "local_lng": "-9.074841",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "scattery-island",
+   "local_uuid": "b8b80937-a074-4aec-b016-dd6e1712edbd",
+   "target_id": 10587,
+   "local_lat": "52.63503",
+   "local_lng": "-9.4948",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "sean-mac-diarmada-cottage",
+   "local_uuid": "53580764-8f52-46e2-84d4-8d51857d4d01",
+   "target_id": 10688,
+   "local_lat": "54.3232",
+   "local_lng": "-8.0151",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "shannon-pot",
+   "local_uuid": "5d6223e4-d6f0-4edc-b468-8dc7720f58fe",
+   "target_id": 10696,
+   "local_lat": "54.234734",
+   "local_lng": "-7.918979",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "skellig-michael",
+   "local_uuid": "25097520-d4f3-4b7c-952f-ac717ebbcebc",
+   "target_id": 10609,
+   "local_lat": "51.8864",
+   "local_lng": "-10.3656",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Necessita reserva"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "sky-road",
+   "local_uuid": "b0b62fc6-79dd-48de-97f1-0baf848af7df",
+   "target_id": 10172,
+   "local_lat": "53.500679",
+   "local_lng": "-10.096485",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "slane-castle",
+   "local_uuid": "f8b097ea-667f-45e4-aa26-740ee5e4dfa1",
+   "target_id": 10166,
+   "local_lat": "53.7098",
+   "local_lng": "-6.56143",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "sliabh-beagh",
+   "local_uuid": "6552cf9c-096a-4352-9ac9-018712daba3a",
+   "target_id": 10712,
+   "local_lat": "54.32373",
+   "local_lng": "-7.10128",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "sliabh-liag",
+   "local_uuid": "7b90e413-2968-431f-b18d-5628c9fd725e",
+   "target_id": 10716,
+   "local_lat": "54.6356",
+   "local_lng": "-8.6453",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "slieve-bloom-mountains",
+   "local_uuid": "31e1c53c-ab59-4806-8bd2-1bc0a9343641",
+   "target_id": 10633,
+   "local_lat": "53.12272",
+   "local_lng": "-7.45026",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "sligo-abbey",
+   "local_uuid": "a22d96e9-655a-45d5-ac84-04920c823c77",
+   "target_id": 10738,
+   "local_lat": "54.270908",
+   "local_lng": "-8.470054",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior + exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "smithwicks-experience",
+   "local_uuid": "2d41ba78-11ff-49c5-809f-0a6cf328a12b",
+   "target_id": 10774,
+   "local_lat": "52.654334",
+   "local_lng": "-7.25424",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior",
+    "Necessita reserva"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "sonairte-ecology-centre",
+   "local_uuid": "0feed24b-a5bc-41f6-b55d-a59adfca1983",
+   "target_id": 10569,
+   "local_lat": "53.678268",
+   "local_lng": "-6.256799",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "spanish-arch-long-walk",
+   "local_uuid": "d5416858-d613-4174-b1bc-c459785bab02",
+   "target_id": 10573,
+   "local_lat": "53.26979",
+   "local_lng": "-9.05405",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "spanish-point-beach",
+   "local_uuid": "06c14a51-ffbc-4c93-a6fa-36027bcd85fd",
+   "target_id": 10591,
+   "local_lat": "52.843178",
+   "local_lng": "-9.432872",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "spike-island-cork",
+   "local_uuid": "e356b661-39ea-4475-a10c-e400567f3791",
+   "target_id": 10605,
+   "local_lat": "51.849874",
+   "local_lng": "-8.293713",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Necessita reserva"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "st-audens-church",
+   "local_uuid": "f7f5d649-b207-473b-aea9-9286431ec169",
+   "target_id": 21173,
+   "local_lat": "53.343721",
+   "local_lng": "-6.274203",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Gratuito",
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "st-marys-abbey-chapter-house",
+   "local_uuid": "38cdd1b5-233a-4eaa-9130-a40aa32438db",
+   "target_id": 21172,
+   "local_lat": "53.347474",
+   "local_lng": "-6.269293",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Gratuito",
+    "Interior",
+    "Necessita reserva"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "st-marys-cathedral-limerick",
+   "local_uuid": "8ad80201-f4c9-4050-9a8d-c9f8797bad98",
+   "target_id": 10839,
+   "local_lat": "52.6686",
+   "local_lng": "-8.6233",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "st-marys-church-gowran",
+   "local_uuid": "57cd42fd-955d-4fd7-8671-bb70bca41d11",
+   "target_id": 21191,
+   "local_lat": "52.628983",
+   "local_lng": "-7.06471",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Gratuito",
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "st-stephens-green",
+   "local_uuid": "8489d271-6f18-4a04-823f-05eff3dce87d",
+   "target_id": 21174,
+   "local_lat": "53.3381",
+   "local_lng": "-6.25917",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "strandhill-beach",
+   "local_uuid": "61353024-e366-41ce-a24b-50e252aabc51",
+   "target_id": 10732,
+   "local_lat": "54.2704",
+   "local_lng": "-8.60275",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "strokestown-park-famine-museum",
+   "local_uuid": "b67650fb-8318-4867-905d-86c536a3b0cd",
+   "target_id": 10670,
+   "local_lat": "53.77794",
+   "local_lng": "-8.097939",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior + exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "swiss-cottage",
+   "local_uuid": "5838fa3f-9b14-4103-b0aa-5b292b516871",
+   "target_id": 10823,
+   "local_lat": "52.357305",
+   "local_lng": "-7.923365",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "the-main-guard",
+   "local_uuid": "ab8a0e3b-2fb6-4ebb-b354-d33380a2a7a5",
+   "target_id": 21193,
+   "local_lat": "52.352945",
+   "local_lng": "-7.701398",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Gratuito",
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "the-model",
+   "local_uuid": "20c845d9-1683-4c4f-846d-980683c0f7a8",
+   "target_id": 11717,
+   "local_lat": "54.27304",
+   "local_lng": "-8.46842",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Acessível",
+    "Famílias",
+    "Gratuito",
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "the-vee-bay-lough",
+   "local_uuid": "e4e4e595-14b3-4c25-a039-428c0fee0548",
+   "target_id": 10827,
+   "local_lat": "52.2422",
+   "local_lng": "-7.95681",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "thoor-ballylee",
+   "local_uuid": "766cff77-39fd-4ce1-a36a-ca6c63b10e46",
+   "target_id": 10583,
+   "local_lat": "53.103152",
+   "local_lng": "-8.774948",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "timahoe-round-tower",
+   "local_uuid": "1e6ba67f-7ee4-42bc-acb8-5f749c074609",
+   "target_id": 10629,
+   "local_lat": "52.960389",
+   "local_lng": "-7.203389",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "tintern-abbey-wexford",
+   "local_uuid": "02df0233-4939-4646-af5e-01c8c45c0b42",
+   "target_id": 10817,
+   "local_lat": "52.236959",
+   "local_lng": "-6.837966",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "titanic-experience-cobh",
+   "local_uuid": "bfd3a006-ae8e-49ed-a8fe-3f6be372bbe6",
+   "target_id": 10187,
+   "local_lat": "51.850285",
+   "local_lng": "-8.294663",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "torc-waterfall",
+   "local_uuid": "598cc913-74c5-4560-9a60-83c5fcc0e2c7",
+   "target_id": 10196,
+   "local_lat": "52.005938",
+   "local_lng": "-9.50636",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "trim-castle",
+   "local_uuid": "af959254-53ae-4961-83f2-ee96b5db4f84",
+   "target_id": 10165,
+   "local_lat": "53.554643",
+   "local_lng": "-6.789738",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "trinity-college-book-of-kells",
+   "local_uuid": "e975270c-6e3c-4e5c-b021-5696150f6b60",
+   "target_id": 10146,
+   "local_lat": "53.34394",
+   "local_lng": "-6.2568",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior",
+    "Necessita reserva"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "tullamore-dew-experience",
+   "local_uuid": "9b84cf42-6324-47ee-afb2-e296f8dbf19f",
+   "target_id": 10643,
+   "local_lat": "53.25334",
+   "local_lng": "-7.50088",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "valentia-island",
+   "local_uuid": "33950d53-97e5-455c-b38d-9de5920aaafd",
+   "target_id": 10611,
+   "local_lat": "51.92548",
+   "local_lng": "-10.2861",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "vandeleur-walled-garden",
+   "local_uuid": "8157744a-db49-466f-b8ff-f13ddcdf7355",
+   "target_id": 10595,
+   "local_lat": "52.631415",
+   "local_lng": "-9.476517",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "waterford-greenway",
+   "local_uuid": "f978e545-e65e-461d-bfc4-eaf5ade3ccfc",
+   "target_id": 10789,
+   "local_lat": "52.264343",
+   "local_lng": "-7.122586",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "waterford-treasures",
+   "local_uuid": "16e68f52-de4b-4198-8917-9037d4224d40",
+   "target_id": 10785,
+   "local_lat": "52.2599",
+   "local_lng": "-7.1069",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "westport-house",
+   "local_uuid": "1c9660c1-6ecd-4c5c-90aa-88ddab034889",
+   "target_id": 10752,
+   "local_lat": "53.80027",
+   "local_lng": "-9.546854",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "wexford-wildfowl-reserve",
+   "local_uuid": "e27c41a2-6142-411e-86a1-ef4192988345",
+   "target_id": 10813,
+   "local_lat": "52.35625",
+   "local_lng": "-6.4217",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "wicklow-historic-gaol",
+   "local_uuid": "e333ce20-fb93-4923-9450-b05c115369e6",
+   "target_id": 10553,
+   "local_lat": "52.97915",
+   "local_lng": "-6.03785",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Famílias",
+    "Interior"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "wicklow-mountains-national-park",
+   "local_uuid": "ee378751-c439-4bbe-920b-a677df76d73c",
+   "target_id": 10154,
+   "local_lat": "53.005028",
+   "local_lng": "-6.345286",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Famílias"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "wicklow-way",
+   "local_uuid": "60ce37ee-3396-4cf4-9707-65832a64564f",
+   "target_id": 10561,
+   "local_lat": "53.27715",
+   "local_lng": "-6.26829",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "wild-nephin-ballycroy-national-park",
+   "local_uuid": "6ea3c33a-8b5f-4dc6-913d-b20b2527c270",
+   "target_id": 10762,
+   "local_lat": "54.024505",
+   "local_lng": "-9.823505",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  },
+  {
+   "slug": "woodstock-gardens",
+   "local_uuid": "e8249bfa-12b6-44a0-9341-fb878800571d",
+   "target_id": 10781,
+   "local_lat": "52.47554",
+   "local_lng": "-7.0578",
+   "local_coord_source_present": true,
+   "target_lat": "",
+   "target_lng": "",
+   "target_has_coordinate": false,
+   "local_attributes": [
+    "Exterior",
+    "Gratuito"
+   ],
+   "local_ci_overwritten": false
+  }
+ ]
+}

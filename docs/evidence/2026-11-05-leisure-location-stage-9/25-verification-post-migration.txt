@@ -1,0 +1,9 @@
+  HTTP 429 on wp/v2/leisure; waiting 3s and retrying [1/6]
+phase:       post
+captured:    2026-11-05T19:22:43Z
+production:  289 records, 289 distinct ids, 289 distinct slugs, 289 with coordinates, 289 with attributes (592 assignments, 13 terms)
+local:       294 records, 289 with coordinates, 289 with attributes (592 assignments, 14 terms)
+matching:    289 matched by slug, local_only=['ph3c-test-lazer-alfa', 'ph3c-test-lazer-externo', 'ph3c-test-lazer-sem-condado', 'ph3c-test-lazer-zeta', 'phoenix-park-en'], production_only=[]
+coordinates: manifest=294 eligible=289 actions={'ALREADY_SET': 289} manifest/local mismatches=0
+attributes:  local=592 production=592 missing=0 production_only=0 records_changing=0 plan_records=289 planned_assignments=592 unresolved=[]
+PASS: every Stage 8 check holds

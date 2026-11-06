@@ -1,0 +1,128 @@
+Stage 9A preflight — 2026-11-05T18:24:48Z
+== 1. Repository state ==
+branch: leisure-location
+HEAD:   2aef58f8f5a52b0cbe4b805c81ad5bf100eb1006
+HEAD subject: Add report for Stage 7: production REST permission verification for leisure coordinates
+upstream: none
+
+== 2. Worktree / index (porcelain v1) ==
+ M docs/README.md
+ M docs/reports/README.md
+?? docs/evidence/2026-11-05-leisure-location-stage-8/
+?? docs/evidence/2026-11-05-leisure-location-stage-9/
+?? docs/reports/2026-11-05-leisure-location-production-migration-dry-run.md
+
+== 2a. staged (diff --cached --stat) ==
+(end)
+
+== 2b. unstaged (diff --stat) ==
+ docs/README.md         | 2 ++
+ docs/reports/README.md | 2 ++
+ 2 files changed, 4 insertions(+)
+(end)
+
+== 2c. untracked ==
+docs/evidence/2026-11-05-leisure-location-stage-8/01-preflight.txt
+docs/evidence/2026-11-05-leisure-location-stage-8/02-inventory-pre.txt
+docs/evidence/2026-11-05-leisure-location-stage-8/07-dryrun-safety.txt
+docs/evidence/2026-11-05-leisure-location-stage-8/08-determinism.txt
+docs/evidence/2026-11-05-leisure-location-stage-8/11-endpoint-probe.txt
+docs/evidence/2026-11-05-leisure-location-stage-8/12-migration-verify.json
+docs/evidence/2026-11-05-leisure-location-stage-8/attribute-plan-pre.json
+docs/evidence/2026-11-05-leisure-location-stage-8/coordinate-plan-pre.json
+docs/evidence/2026-11-05-leisure-location-stage-8/dryrun-01-coordinates.json
+docs/evidence/2026-11-05-leisure-location-stage-8/dryrun-02-coordinates-attributes.json
+docs/evidence/2026-11-05-leisure-location-stage-8/local-inventory.json
+docs/evidence/2026-11-05-leisure-location-stage-8/production-inventory-post.json
+docs/evidence/2026-11-05-leisure-location-stage-8/production-inventory-pre.json
+docs/evidence/2026-11-05-leisure-location-stage-8/stage8-dry-run-verify.py
+docs/evidence/2026-11-05-leisure-location-stage-8/verification-post.json
+docs/evidence/2026-11-05-leisure-location-stage-8/verification-pre.json
+docs/evidence/2026-11-05-leisure-location-stage-9/01-preflight.txt
+docs/reports/2026-11-05-leisure-location-production-migration-dry-run.md
+(end)
+== 3. Stash state (recorded, NOT modified) ==
+stash@{0}: WIP on feat/christmas-easter-egg: ceb27a6 feat: add Christmas Easter egg feature with localization support
+stash@{1}: WIP on master: a26fd7f Implement Stage 3.1 of English support architecture: B2 fallback rendering, SEO adjustments, and key static-page translations
+stash@{2}: On master: tmp-all-revert
+stash@{3}: WIP on master: 125688c feat: implement accent-insensitive search for Portuguese content by adjusting SQL collation handling
+stash@{4}: WIP on master: 4fc999c Refactor sponsor image handling and update CSS for responsive design
+stash@{5}: WIP on master: 9edf2d8 Add Import Logs functionality with admin interface for viewing, downloading, and clearing logs
+stash@{6}: WIP on master: 6dc6ee3 feat: Add functions to create redirect pages and manage menu items; refactor footer and primary menu item handling
+stash@{7}: WIP on master: 26f546f Add mobile search functionality and submenu toggle to header; enhance mobile menu styles
+stash@{8}: WIP on master: fe758a3 Enhance theme header and navigation structure
+stash entries: 9
+
+== 4. Migration artifacts vs HEAD ==
+-- sha256 --
+f07e5cca6656eed1efb19bf3ecb44a20f61f483dd301b9d49521cbbfd29ded9c  scripts/migrate-leisure-location-rest.py
+ef67c35f8ee18978269abae28d9ce4c37283677b72d1b6ac5fc1c144c3dec13f  scripts/lib/rest.py
+26ceedbb96c79dcb87c65be2516c5edb279cbb53221f1bd10af704af75dc9f6b  tests/scripts/verify-leisure-location-migration.py
+9214e0305a3ba7a7fed4c08262ce694761e75430a31e38cc36fe733ab36adb37  scripts/data/leisure-coordinates-2026-11-03.json
+dcc5a8e8c873759466f4e8ff8029dabf85eca499fbc1897a8170c9c6781e5392  docs/plans/2026-11-05-leisure-location-production-migration.md
+-- git diff HEAD -- scripts/ tests/ (empty = unchanged) --
+(end)
+-- git status of scripts/ tests/ --
+(end)
+
+== 5. Stage 7/8 artefacts present ==
+docs/reports/2026-11-05-leisure-location-production-migration-dry-run.md
+docs/reports/2026-11-05-leisure-location-production-rest-permission-verification.md
+
+docs/evidence/2026-11-05-leisure-location-stage-7/:
+01-governance-and-git-preflight.txt
+02-plugin-version-verification.txt
+03-production-leisure-endpoint.txt
+04-production-leisure-inventory-slim.json
+05-target-record-selection.txt
+06-target-record-pre-test.json
+07-authorization-checkpoint.txt
+08-local-rehearsal.txt
+09-local-refusal-proof.txt
+10-post-stage-production-state.txt
+11-stage7c-production-test.json
+12-stage7c-deployment-and-credential-preflight.txt
+13-stage7c-run-log.txt
+14-stage7c-independent-verification.txt
+stage7-rest-permission-test.py
+
+docs/evidence/2026-11-05-leisure-location-stage-8/:
+01-preflight.txt
+02-inventory-pre.txt
+03-dryrun-01-coordinates.log
+04-dryrun-02-attributes.log
+05-dryrun-03-repeat.log
+06-inventory-post.log
+07-dryrun-safety.txt
+08-determinism.txt
+09-mock-suite.log
+10-script-contract-suite.log
+11-endpoint-probe.txt
+12-migration-verify.json
+attribute-plan-pre.json
+coordinate-plan-pre.json
+dryrun-01-coordinates.json
+dryrun-02-coordinates-attributes.json
+local-inventory.json
+production-inventory-post.json
+production-inventory-pre.json
+stage8-dry-run-verify.py
+verification-post.json
+verification-pre.json
+
+== 6. Local WordPress environment ==
+db Up 5 days (healthy) 3306/tcp, 33060/tcp
+wordpress Up 28 hours 0.0.0.0:8080->80/tcp, [::]:8080->80/tcp
+-- GET http://localhost:8080/wp-json (read-only) --
+name: Conexão BR
+home: http://localhost:8080
+site_icon_url: False
+
+== 7. Migration journal (resume state) ==
+state file ABSENT (.local/leisure-location-migration-state.json) -> fresh run, no previously applied record
+ls: cannot access '.local': No such file or directory
+
+== 8. Credential availability (variable NAMES only, values never read out) ==
+WP_USERNAME: present in .env (value not printed)
+WP_APPLICATION_PASSWORD: present in .env (value not printed)
+git ls-files .env -> 0 tracked file(s) (must be 0)

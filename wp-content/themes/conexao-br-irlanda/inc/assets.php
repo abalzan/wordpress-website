@@ -67,7 +67,17 @@ function conexao_enqueue_scripts() {
 	wp_enqueue_style( 'conexao-dark-mode', CONEXAO_THEME_URI . '/assets/css/dark-mode.css', array( $dark_mode_dep ), conexao_asset_version( 'assets/css/dark-mode.css' ) );
 
 	// Load main.js with defer to avoid render-blocking.
-	wp_enqueue_script( 'conexao-main', CONEXAO_THEME_URI . '/assets/js/main.js', array(), conexao_asset_version( 'assets/js/main.js' ), array( 'in_footer' => true, 'strategy' => 'defer' ) );
+	//
+	// Lazer location services (optional proximity ordering): the pure
+	// proximity helpers load ONLY on the leisure archive and main.js declares
+	// them as a dependency, so the execution order can never be wrong and no
+	// other page pays for the script.
+	$main_deps = array();
+	if ( is_post_type_archive( 'leisure' ) ) {
+		wp_enqueue_script( 'conexao-leisure-proximity', CONEXAO_THEME_URI . '/assets/js/leisure-proximity.js', array(), conexao_asset_version( 'assets/js/leisure-proximity.js' ), array( 'in_footer' => true, 'strategy' => 'defer' ) );
+		$main_deps[] = 'conexao-leisure-proximity';
+	}
+	wp_enqueue_script( 'conexao-main', CONEXAO_THEME_URI . '/assets/js/main.js', $main_deps, conexao_asset_version( 'assets/js/main.js' ), array( 'in_footer' => true, 'strategy' => 'defer' ) );
 
 	/*
 	 * Inject the localized UI strings for main.js (Stage 1 i18n foundation).
@@ -80,6 +90,19 @@ function conexao_enqueue_scripts() {
 		'window.ConexaoI18n = ' . wp_json_encode( conexao_js_i18n_strings() ) . ';',
 		'before'
 	);
+
+	/*
+	 * Lazer location services config (leisure archive only). main.js reads
+	 * `window.ConexaoLeisureLocation`; without it the feature is inert, so a
+	 * stripped inline script can never break an unrelated page.
+	 */
+	if ( is_post_type_archive( 'leisure' ) && function_exists( 'conexao_leisure_location_js_config' ) ) {
+		wp_add_inline_script(
+			'conexao-main',
+			'window.ConexaoLeisureLocation = ' . wp_json_encode( conexao_leisure_location_js_config() ) . ';',
+			'before'
+		);
+	}
 
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );

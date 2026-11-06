@@ -8,7 +8,7 @@ inventories) — see `docs/engineering-standard.md` §9.1.
 
 | Location | Status | Rule |
 |---|---|---|
-| `docs/evidence/<date>-<stage>/` | **Tracked, permanent** | Small, curated proof cited by a report in `docs/reports/`. Keep the rows that demonstrate the gate; drop raw dumps. |
+| `docs/evidence/<date>-<stage>/` | **Tracked, permanent** | Curated proof for one stage or feature — cited by a report in `docs/reports/`, or self-documenting with its own `README.md`. Keep the artefact that demonstrates the result; distil raw dumps into the report. Never pruned for age — see **Retention** below. |
 | `stage*-work/`, `*-work/` | **Git-ignored, disposable** | Scratch work trees (probe output, HTTP captures, caches). Never commit them; regenerate on demand. |
 | `*.body`, `*.log`, `.local/` | **Git-ignored, disposable** | Generated responses, run logs, local toolchains. Never commit. |
 | `content-inventory/` | **Tracked** | Curated migration payloads (Wix inventory CSVs). |
@@ -17,7 +17,74 @@ inventories) — see `docs/engineering-standard.md` §9.1.
 The ignore rules enforcing this live in the root `.gitignore`
 (engineering standard §1.3).
 
-## Current contents
+## How evidence is named, and how it relates to a report
+
+A folder is `docs/evidence/<YYYY-MM-DD>-<topic>/`. The same `<YYYY-MM-DD>-<topic>`
+prefix identifies its report: `docs/reports/<YYYY-MM-DD>-<topic>.md`, or under
+`docs/reports/site/` for repository-engineering stages. Folder and report are
+two halves of one record — the report is the narrative, the folder is the
+machine output it cites — and neither is a copy of the other. When a folder has
+no sibling report, the folder's own `README.md` or `*.md` **is** the record
+(the automation-era stages below work that way).
+
+Inside a folder, files are numbered (`01-`, `02-`, …) in the order the report
+presents them, so a reader can follow the report against the directory. Pairs
+named `*-before` / `*-after` are deliberate: when they are byte-identical that
+is the *proof of invariance* (nothing changed), not a duplicate to remove.
+
+## Index — every evidence folder
+
+One row per date; the folders for that date follow the row. 140 folders,
+1,445 files (1,215 tracked). Regenerate the inspection at any time with:
+
+```bash
+find docs/evidence -mindepth 1 -maxdepth 1 -type d | sort
+git ls-files docs/evidence | wc -l
+```
+
+| Date | Folders (`docs/evidence/…`) |
+|---|---|
+| 2026-09-10 | `retire-eventbrite-windows` |
+| 2026-09-25 | `stage-e` |
+| 2026-09-26 | `stage-f` · `stage-h` · `stage-i` · `stage-j` · `stage-k` · `stage-l` · `stage-m` · `stage-n` · `stage-o` · `stage-p` · `stage7` |
+| 2026-09-27 | `a11y-filter-option-role` · `baseline-recovery` · `baseline-recovery-implementation` · `en-artigo-label-leak` · `en-course-provider-descriptions` · `en-cursos-category-filter` · `en-homepage-label-leak` · `en-leisure-descriptions` · `event-importer-pot` · `i18n-catalogue-freshness` · `lazer-en-archive-perf` · `recovery-closeout` |
+| 2026-09-28 | `b1-en-guides` · `ci-integration-fixture` · `ci-static-quality` · `en-archive-404-fix` · `en-archive-route-404` · `en-guides-archive` · `en-jobs-empregos` · `en-page-restore` · `language-switcher-flag` |
+| 2026-09-29 | `i18n-production-foundation` · `polylang-production-audit` · `post-admin-i18n-verification` · `post-assignment-verification` · `production-deployment-audit` · `production-pt-language-assignment` · `pt-assignment-diagnosis` · `release-identity` · `stage-p` |
+| 2026-09-30 | `agent-skills-documentation-migration` · `ci-regression-fix` · `en-deleted-source-exclusion` · `en-pt-source-reconciliation` · `en-rollout-blocker-resolution` · `en-rollout-phase-3-apply` · `en-translation-dry-run` · `en-translation-inventory` · `phase-3-translation-verification` · `pt-trash-restoration` · `stage-0-auto-translation-architecture` · `stage-1-auto-translation-plugin-boundary` · `stage-2-engine-promotion-lock-safety` · `stage-3-change-detection-provider-trigger` · `stage-4-provider-and-translation-plan` · `stage-5-production-commissioning-canary` · `temporary-en-translation-plugins` |
+| 2026-10-01 | `stage-6-transport-trigger-commissioning` · `stage-7-production-commissioning-canary` · `stage-8-legacy-apply-endpoint-closure` · `stage-9-production-commissioning` · `stage-10-bounded-expansion` · `stage-11-model-a-scope-contract-and-batch-control` · `stage-12-production-commissioning-model-a-canary` · `stage-13-commissioning-readiness` · `stage-14-secret-hardening-production-canary` · `stage-15-final-production-commissioning-canary` · `stage-15-personal-production-commissioning-model-a-canary` |
+| 2026-10-02 | `ci-fixture-translation-regression` · `event-source-restoration` · `stage-17-retirement` · `stage-18-operator-runbook` · `stage-19` · `stage-20` · `stage-21` · `stage-22` |
+| 2026-10-03 | `event-import-diagnosis` · `event-import-fixes-g1-g3` · `event-import-g4` · `stage-20-hero-preload-fallback` · `ui-audit` · `ui-convergence-t1` · `ui-convergence-t2` |
+| 2026-10-04 | `eventbrite-api-g6` · `eventbrite-api-retirement` · `eventbrite-g8-source-expansion` · `eventbrite-g9-operational-hardening` · `eventbrite-g10-checkpoint` · `eventbrite-rate-limit-strategy` |
+| 2026-10-05 | `enable-all-event-sources` · `eventbrite-g16` · `eventbrite-g17` · `import-continuation` · `multi-file-import` · `multi-file-import-browser` |
+| 2026-10-08 | `apoiadores-single-page` · `carousel-mobile` |
+| 2026-10-10 | `ui-polish` |
+| 2026-10-12 | `empregos-cta-dark-mode` · `empregos-job-resources` · `eventos-stale-results` |
+| 2026-10-13 | `header-cta-dark-mode` |
+| 2026-10-15 | `event-cleanup-purge` |
+| 2026-10-16 | `event-cleanup-purge` · `eventos-filter-cache` · `eventos-perf` |
+| 2026-10-17 | `eventos-infinite-scroll` |
+| 2026-10-19 | `cursos-infinite-scroll` · `event-date-badge` · `ui-ux-improvement-5` |
+| 2026-10-21 | `homepage-shortcut-consolidation` · `ui-ux-improvement-6-dead-end` |
+| 2026-10-26 | `halloween-homepage` |
+| 2026-10-27 | `halloween-mobile-experience` · `halloween-nav-effects` · `halloween-theme-compatibility` · `halloween-witch` |
+| 2026-11-02 | `lazer-location-services` |
+| 2026-11-03 | `leisure-coordinate-research` |
+| 2026-11-04 | `lazer-proximity-release` · `leisure-distance-optin` · `leisure-proximity-geolocation` |
+| 2026-11-05 | `lazer-proximity-button-removal` · `leisure-coordinate-rest-permission` · `leisure-location-production-audit` · `leisure-location-stage-7` · `leisure-location-stage-8` · `leisure-location-stage-9` |
+| 2026-11-06 | `evidence-directory-audit` |
+| undated | `lazer-wikimedia-image-seed` · `stage-4-1-rest-matrix` |
+
+Two dated pairs are easy to confuse and are **different records**:
+`2026-10-15-event-cleanup-purge` (the fix + its suites) and
+`2026-10-16-event-cleanup-purge` (the applied purge, its pre-purge database
+snapshot and the aggregate run); `2026-10-16-eventos-perf` (one baseline
+capture) and `2026-10-16-eventos-filter-cache` (the cache work that baseline
+belongs to).
+
+## Selected records — where to start
+
+The index above is complete but flat. The rows below are the ones most often
+opened; each names the report it belongs to.
 
 | Directory | Proof for | Source |
 |---|---|---|
@@ -42,6 +109,76 @@ The ignore rules enforcing this live in the root `.gitignore`
 Historical note: the raw `stage*-work/` trees behind the Stage 1–9 reports
 were removed from Git in Stage B. Their curated narrative is the report set
 in `docs/reports/`; everything else was regenerable probe output.
+
+## Retention — what stays, forever
+
+There is **no age-based expiry**. Evidence is not deleted because it is old; it
+is deleted only when its information is provably preserved elsewhere or is
+provably regenerable. The classifications the directory is audited against:
+
+| Class | Meaning | Retention |
+|---|---|---|
+| **A** | The only record of a production action or an important decision: migration inventories, pre/post production snapshots, approval checkpoints, write results, reconciliation, security and permission proofs, release verification, proof a destructive operation did *not* happen | **Mandatory — never delete** |
+| **B** | Supporting proof of a claim: test output, CI output, gate aggregates, regression comparison, failure proofs, API samples, deployment verification | **Default — keep**; consolidate only if every byte of information survives and every reference is updated |
+| **C** | Regenerable intermediate output: scratch probes, repeat captures, request/response dumps with no independent historical value | Cleanup candidate, **only** after showing it is reproducible and its conclusions are already in a report |
+| **D** | Byte-identical duplicate of a file that is still present | Deduplicate, keeping one authoritative copy, **only** after checking references and context |
+| **E** | Purpose not established | **Keep** until it is established |
+
+Two rules that override the table, because they are the ones most often got
+wrong:
+
+1. **An identical `*-before` / `*-after` pair is Class A/B, not Class D.** The
+   byte-equality *is* the result ("PT unchanged", "engine unmodified",
+   "rendering unchanged"). Same for deliberately repeated runs
+   (`run1…run6`, `*-run2`): identical output across independent runs is the
+   determinism / idempotence proof.
+2. **When uncertain, keep it.** A missing file cannot be recomputed if the
+   environment that produced it no longer exists.
+
+Files that merely *look* removable and are not: anything under
+`2026-09-26-stage-l/` (`gate.json` is consumed by CI), the Stage 9 migration
+record, the leisure production audit and permission-fix records, the Stage 7/8
+production records, and
+`2026-10-16-event-cleanup-purge/local-db-before-cleanup.sql` (the only
+pre-purge database snapshot).
+
+The audit that produced these classifications, with numbers and per-file
+verdicts, is
+[`docs/reports/evidence-directory-audit-and-cleanup.md`](../reports/evidence-directory-audit-and-cleanup.md).
+
+## What must never be committed here
+
+- **No credential of any kind**: application passwords, provider keys, nonces,
+  cookies, `Authorization` headers, `.env` files, tokens. Presence flags are
+  recorded **by name only** — never the value. (The secret-scan gate
+  `tests/scripts/verify-stage14-secret-scan.py` enforces the shapes it knows.)
+- **No local-path or `localhost` URL in production-derived data.** Local
+  read-only probes record the fact of a `localhost` request, not a URL meant to
+  be reused.
+- **No `*.log`, `*.body`, `*.pyc`, `__pycache__/` or `*-work/` output.** These
+  are git-ignored by construction; if a log is genuinely the evidence, distil
+  it into a numbered `.txt` and commit that.
+- **No generated work tree as the only copy** of a curated input.
+- **No bulk database dump** unless it is the sole restore point of a destructive
+  operation that actually ran — and then say so in a sibling file. The one such
+  file that exists is listed in **Retention** above; do not add another.
+
+## Adding evidence for new work
+
+1. Create `docs/evidence/<YYYY-MM-DD>-<topic>/` — the same prefix as the report
+   you are about to write in `docs/reports/`.
+2. Number the files in the order the report cites them, and give each a name
+   that says what it proves (`04-dryrun-02-attributes`, not `out2`).
+3. Keep the *proof*, not the dump: the gate aggregate, the plan digest, the
+   before/after pair, the numeric result. Distil the rest into the report.
+4. If the folder is a bundle someone must be able to read cold, add a `README.md`
+   saying, per file, what it proves — that is the accepted shape for the
+   automation-era stages below.
+5. Add the folder to the **Index** above and the report to
+   [`docs/reports/README.md`](../reports/README.md).
+6. Never write to production from this repository to produce evidence. Evidence
+   of a production action is captured *after* an authorised action, by the
+   operator, and moved here.
 
 _Last verified: 2026-09-25 by repository hygiene (Stage B)_
 
@@ -406,3 +543,5 @@ _Last verified: 2026-10-01 by Stage 15 — Personal production commissioning and
 
 
 _Last verified: 2026-10-01 by Stage 14 — secret-scan hardening and production commissioning (Gate A `PASS`; Gate B `NOT PERFORMED`; commissioning readiness `BLOCKED` 18/18, production writes 0)_
+
+_Last verified: 2026-11-06 by the evidence-directory audit and cleanup (complete index of all folders, retention policy, commit prohibitions, add-evidence procedure; one byte-identical `.bak` removed, 8 empty directories removed)_

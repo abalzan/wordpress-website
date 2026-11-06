@@ -1,0 +1,5992 @@
+{
+ "phase": "post",
+ "captured": "2026-11-05T19:22:43Z",
+ "get_requests": {
+  "production": 5,
+  "local": 4
+ },
+ "production": {
+  "base_url": "https://conexaobr.ie",
+  "pages": [
+   {
+    "page": 1,
+    "status": 200,
+    "returned": 100,
+    "x_wp_total": "289",
+    "x_wp_total_pages": "3"
+   },
+   {
+    "page": 2,
+    "status": 200,
+    "returned": 100,
+    "x_wp_total": "289",
+    "x_wp_total_pages": "3"
+   },
+   {
+    "page": 3,
+    "status": 200,
+    "returned": 89,
+    "x_wp_total": "289",
+    "x_wp_total_pages": "3"
+   }
+  ],
+  "records": 289,
+  "distinct_ids": 289,
+  "distinct_slugs": 289,
+  "with_both_coordinates": 289,
+  "half_filled": 0,
+  "statuses": [
+   "publish"
+  ],
+  "attribute_terms": {
+   "count": 13,
+   "slugs": [
+    "acessivel",
+    "acesso-de-transporte-publico",
+    "bicicleta",
+    "estacionamento",
+    "exterior",
+    "familias",
+    "gratuito",
+    "gratuito-em-determinadas-condicoes",
+    "interior",
+    "interior-exterior",
+    "necessita-reserva",
+    "pago",
+    "pet-friendly"
+   ]
+  },
+  "attribute_assignments": 592,
+  "records_with_attributes": 289
+ },
+ "local": {
+  "base_url": "http://localhost:8080",
+  "pages": [
+   {
+    "page": 1,
+    "status": 200,
+    "returned": 100,
+    "x_wp_total": "294",
+    "x_wp_total_pages": "3"
+   },
+   {
+    "page": 2,
+    "status": 200,
+    "returned": 100,
+    "x_wp_total": "294",
+    "x_wp_total_pages": "3"
+   },
+   {
+    "page": 3,
+    "status": 200,
+    "returned": 94,
+    "x_wp_total": "294",
+    "x_wp_total_pages": "3"
+   }
+  ],
+  "records": 294,
+  "distinct_ids": 294,
+  "distinct_slugs": 294,
+  "with_both_coordinates": 289,
+  "attribute_terms": {
+   "count": 14,
+   "slugs": [
+    "acessivel",
+    "acesso-de-transporte-publico",
+    "bicicleta",
+    "estacionamento",
+    "exterior",
+    "familias",
+    "gratuito",
+    "gratuito-em-determinadas-condicoes",
+    "interior",
+    "interior-exterior",
+    "lls-test-attribute",
+    "necessita-reserva",
+    "pago",
+    "pet-friendly"
+   ]
+  },
+  "attribute_assignments": 592,
+  "records_with_attributes": 289
+ },
+ "matching": {
+  "local_only": [
+   "ph3c-test-lazer-alfa",
+   "ph3c-test-lazer-externo",
+   "ph3c-test-lazer-sem-condado",
+   "ph3c-test-lazer-zeta",
+   "phoenix-park-en"
+  ],
+  "production_only": [],
+  "matched_by_slug": 289
+ },
+ "coordinates": {
+  "manifest_entries": 294,
+  "eligible_entries": 289,
+  "eligible_skipped_by_reason": {
+   "OWNER_INPUT_REQUIRED:NOT_FOUND": 4,
+   "REVIEW:MEDIUM": 1
+  },
+  "actions": {
+   "ALREADY_SET": 289
+  },
+  "manifest_vs_local_mismatches": [],
+  "local_missing_coordinate": []
+ },
+ "attributes": {
+  "local_assignments": 592,
+  "production_assignments": 592,
+  "missing_in_production": 0,
+  "production_only_assignments": 0,
+  "records_with_changes": 0,
+  "records_in_plan": 289,
+  "planned_assignments": 592,
+  "unresolved_local_terms": [],
+  "resolved_local_term_slugs": [
+   "acessivel",
+   "acesso-de-transporte-publico",
+   "bicicleta",
+   "estacionamento",
+   "exterior",
+   "familias",
+   "gratuito",
+   "gratuito-em-determinadas-condicoes",
+   "interior",
+   "interior-exterior",
+   "necessita-reserva",
+   "pago",
+   "pet-friendly"
+  ]
+ },
+ "report_cross_check": {
+  "checked": false
+ },
+ "write_proof": {
+  "checked": false
+ },
+ "per_record": [
+  {
+   "slug": "abbeyleix-heritage-house",
+   "production_id": 10631,
+   "local_terms": [
+    "interior"
+   ],
+   "production_terms": [
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467
+   ],
+   "changes": false
+  },
+  {
+   "slug": "achill-island",
+   "production_id": 10748,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "acres-lake-floating-boardwalk",
+   "production_id": 10682,
+   "local_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "adare-village",
+   "production_id": 10841,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "aillwee-caves",
+   "production_id": 10180,
+   "local_terms": [
+    "estacionamento",
+    "familias",
+    "interior-exterior"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "familias",
+    "interior-exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1468,
+    1472
+   ],
+   "changes": false
+  },
+  {
+   "slug": "altamont-gardens",
+   "production_id": 10879,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "annes-grove-gardens",
+   "production_id": 21154,
+   "local_terms": [
+    "estacionamento",
+    "exterior",
+    "familias",
+    "pago"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "exterior",
+    "familias",
+    "pago"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1472,
+    1474
+   ],
+   "changes": false
+  },
+  {
+   "slug": "aran-islands",
+   "production_id": 10173,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "aras-an-uachtarain",
+   "production_id": 21175,
+   "local_terms": [
+    "gratuito",
+    "interior"
+   ],
+   "production_terms": [
+    "gratuito",
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "arbour-hill-cemetery",
+   "production_id": 21158,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "ardagh-heritage-village",
+   "production_id": 10656,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "ardfert-cathedral",
+   "production_id": 21176,
+   "local_terms": [
+    "estacionamento",
+    "interior-exterior",
+    "pago"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "interior-exterior",
+    "pago"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1468,
+    1472,
+    1474
+   ],
+   "changes": false
+  },
+  {
+   "slug": "ardmore-round-tower",
+   "production_id": 10797,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "ards-forest-park",
+   "production_id": 10728,
+   "local_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "arigna-mining-experience",
+   "production_id": 10672,
+   "local_terms": [
+    "interior",
+    "necessita-reserva"
+   ],
+   "production_terms": [
+    "interior",
+    "necessita-reserva"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467,
+    1473
+   ],
+   "changes": false
+  },
+  {
+   "slug": "askeaton-castle",
+   "production_id": 21179,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "athenry-castle",
+   "production_id": 21182,
+   "local_terms": [
+    "estacionamento",
+    "familias",
+    "interior-exterior",
+    "pago"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "familias",
+    "interior-exterior",
+    "pago"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1468,
+    1472,
+    1474
+   ],
+   "changes": false
+  },
+  {
+   "slug": "athlone-castle",
+   "production_id": 10647,
+   "local_terms": [
+    "familias",
+    "interior"
+   ],
+   "production_terms": [
+    "familias",
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1467
+   ],
+   "changes": false
+  },
+  {
+   "slug": "aughnanure-castle",
+   "production_id": 21183,
+   "local_terms": [
+    "estacionamento",
+    "interior-exterior",
+    "pago"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "interior-exterior",
+    "pago"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1468,
+    1472,
+    1474
+   ],
+   "changes": false
+  },
+  {
+   "slug": "avondale-forest-park",
+   "production_id": 10161,
+   "local_terms": [
+    "estacionamento",
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1472
+   ],
+   "changes": false
+  },
+  {
+   "slug": "ballyhack-castle",
+   "production_id": 21185,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "banna-strand",
+   "production_id": 10621,
+   "local_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "barryscourt-castle",
+   "production_id": 21155,
+   "local_terms": [
+    "estacionamento",
+    "interior-exterior",
+    "pago"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "interior-exterior",
+    "pago"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1468,
+    1472,
+    1474
+   ],
+   "changes": false
+  },
+  {
+   "slug": "battle-of-the-boyne-visitor-centre",
+   "production_id": 10168,
+   "local_terms": [
+    "interior"
+   ],
+   "production_terms": [
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467
+   ],
+   "changes": false
+  },
+  {
+   "slug": "bective-abbey",
+   "production_id": 10565,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "belturbet-railway-station",
+   "production_id": 10700,
+   "local_terms": [
+    "interior"
+   ],
+   "production_terms": [
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467
+   ],
+   "changes": false
+  },
+  {
+   "slug": "belvedere-house-gardens",
+   "production_id": 10645,
+   "local_terms": [
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "benbulben",
+   "production_id": 10730,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "birr-castle-demesne",
+   "production_id": 10637,
+   "local_terms": [
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "blackrock-castle-observatory",
+   "production_id": 10601,
+   "local_terms": [
+    "familias",
+    "interior"
+   ],
+   "production_terms": [
+    "familias",
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1467
+   ],
+   "changes": false
+  },
+  {
+   "slug": "blarney-castle",
+   "production_id": 10185,
+   "local_terms": [
+    "estacionamento",
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1472
+   ],
+   "changes": false
+  },
+  {
+   "slug": "blasket-centre-ionad-an-bhlascaoid",
+   "production_id": 21178,
+   "local_terms": [
+    "interior",
+    "necessita-reserva",
+    "pago"
+   ],
+   "production_terms": [
+    "interior",
+    "necessita-reserva",
+    "pago"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467,
+    1473,
+    1474
+   ],
+   "changes": false
+  },
+  {
+   "slug": "bog-of-allen-nature-centre",
+   "production_id": 10853,
+   "local_terms": [
+    "familias",
+    "interior-exterior"
+   ],
+   "production_terms": [
+    "familias",
+    "interior-exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1468
+   ],
+   "changes": false
+  },
+  {
+   "slug": "borris-house",
+   "production_id": 10885,
+   "local_terms": [
+    "interior-exterior"
+   ],
+   "production_terms": [
+    "interior-exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1468
+   ],
+   "changes": false
+  },
+  {
+   "slug": "boyle-abbey",
+   "production_id": 10668,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "bray-head",
+   "production_id": 10158,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "brigits-garden",
+   "production_id": 10577,
+   "local_terms": [
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "brittas-bay-beach",
+   "production_id": 10555,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "brownshill-dolmen",
+   "production_id": 10877,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "bunratty-castle-folk-park",
+   "production_id": 10179,
+   "local_terms": [
+    "estacionamento",
+    "familias",
+    "interior-exterior"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "familias",
+    "interior-exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1468,
+    1472
+   ],
+   "changes": false
+  },
+  {
+   "slug": "burren-national-park",
+   "production_id": 10178,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "cahir-castle",
+   "production_id": 10821,
+   "local_terms": [
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "carlingford",
+   "production_id": 10865,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "carlingford-lough-greenway",
+   "production_id": 10873,
+   "local_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "carrickmacross-lace-gallery",
+   "production_id": 10708,
+   "local_terms": [
+    "interior"
+   ],
+   "production_terms": [
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467
+   ],
+   "changes": false
+  },
+  {
+   "slug": "carrowmore-megalithic-cemetery",
+   "production_id": 10734,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "casino-marino",
+   "production_id": 21159,
+   "local_terms": [
+    "estacionamento",
+    "interior",
+    "pago"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "interior",
+    "pago"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467,
+    1472,
+    1474
+   ],
+   "changes": false
+  },
+  {
+   "slug": "castle-leslie-estate",
+   "production_id": 10702,
+   "local_terms": [
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "castlecomer-discovery-park",
+   "production_id": 10778,
+   "local_terms": [
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "castletown-house",
+   "production_id": 10851,
+   "local_terms": [
+    "interior-exterior"
+   ],
+   "production_terms": [
+    "interior-exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1468
+   ],
+   "changes": false
+  },
+  {
+   "slug": "cavan-burren-park",
+   "production_id": 10690,
+   "local_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "cavan-cathedral",
+   "production_id": 11723,
+   "local_terms": [
+    "gratuito",
+    "interior"
+   ],
+   "production_terms": [
+    "gratuito",
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "cavan-county-museum",
+   "production_id": 10698,
+   "local_terms": [
+    "interior-exterior"
+   ],
+   "production_terms": [
+    "interior-exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1468
+   ],
+   "changes": false
+  },
+  {
+   "slug": "ceide-fields",
+   "production_id": 10758,
+   "local_terms": [
+    "interior-exterior"
+   ],
+   "production_terms": [
+    "interior-exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1468
+   ],
+   "changes": false
+  },
+  {
+   "slug": "charles-fort",
+   "production_id": 10191,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "charleville-forest-castle",
+   "production_id": 10641,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "chester-beatty",
+   "production_id": 11713,
+   "local_terms": [
+    "acessivel",
+    "acesso-de-transporte-publico",
+    "gratuito",
+    "interior-exterior"
+   ],
+   "production_terms": [
+    "acessivel",
+    "acesso-de-transporte-publico",
+    "gratuito",
+    "interior-exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1468,
+    1469,
+    1471,
+    1476
+   ],
+   "changes": false
+  },
+  {
+   "slug": "clare-island",
+   "production_id": 10764,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "cliffs-of-moher",
+   "production_id": 10177,
+   "local_terms": [
+    "estacionamento",
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1472
+   ],
+   "changes": false
+  },
+  {
+   "slug": "clonmacnoise",
+   "production_id": 10635,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "cobh",
+   "production_id": 10186,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "connemara-national-park",
+   "production_id": 10170,
+   "local_terms": [
+    "estacionamento",
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1472
+   ],
+   "changes": false
+  },
+  {
+   "slug": "coole-park",
+   "production_id": 10579,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "copper-coast-geopark",
+   "production_id": 10791,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "cork-city-gaol",
+   "production_id": 10599,
+   "local_terms": [
+    "familias",
+    "interior"
+   ],
+   "production_terms": [
+    "familias",
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1467
+   ],
+   "changes": false
+  },
+  {
+   "slug": "corlea-trackway",
+   "production_id": 10654,
+   "local_terms": [
+    "interior"
+   ],
+   "production_terms": [
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467
+   ],
+   "changes": false
+  },
+  {
+   "slug": "coumshingaun-loop",
+   "production_id": 10799,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "craggaunowen",
+   "production_id": 10593,
+   "local_terms": [
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "croagh-patrick",
+   "production_id": 10746,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "curracloe-beach",
+   "production_id": 10811,
+   "local_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "curraghchase-forest-park",
+   "production_id": 10847,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "custom-house-visitor-centre",
+   "production_id": 21160,
+   "local_terms": [
+    "interior",
+    "necessita-reserva",
+    "pago"
+   ],
+   "production_terms": [
+    "interior",
+    "necessita-reserva",
+    "pago"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467,
+    1473,
+    1474
+   ],
+   "changes": false
+  },
+  {
+   "slug": "derrigimlagh",
+   "production_id": 11715,
+   "local_terms": [
+    "bicicleta",
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "bicicleta",
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469,
+    1477
+   ],
+   "changes": false
+  },
+  {
+   "slug": "derrynane-house",
+   "production_id": 10615,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "desmond-castle-adare",
+   "production_id": 21180,
+   "local_terms": [
+    "estacionamento",
+    "interior-exterior",
+    "necessita-reserva"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "interior-exterior",
+    "necessita-reserva"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1468,
+    1472,
+    1473
+   ],
+   "changes": false
+  },
+  {
+   "slug": "desmond-castle-kinsale",
+   "production_id": 21156,
+   "local_terms": [
+    "exterior",
+    "pago"
+   ],
+   "production_terms": [
+    "exterior",
+    "pago"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1474
+   ],
+   "changes": false
+  },
+  {
+   "slug": "desmond-castle-newcastlewest",
+   "production_id": 21181,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "diamond-hill",
+   "production_id": 10175,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "dingle-peninsula",
+   "production_id": 10199,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "doagh-famine-village",
+   "production_id": 11718,
+   "local_terms": [
+    "estacionamento",
+    "familias",
+    "interior-exterior",
+    "pago",
+    "pet-friendly"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "familias",
+    "interior-exterior",
+    "pago",
+    "pet-friendly"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1468,
+    1470,
+    1472,
+    1474
+   ],
+   "changes": false
+  },
+  {
+   "slug": "doe-castle",
+   "production_id": 21186,
+   "local_terms": [
+    "estacionamento",
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469,
+    1472
+   ],
+   "changes": false
+  },
+  {
+   "slug": "donadea-forest-park",
+   "production_id": 10859,
+   "local_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "donegal-castle",
+   "production_id": 10718,
+   "local_terms": [
+    "interior"
+   ],
+   "production_terms": [
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467
+   ],
+   "changes": false
+  },
+  {
+   "slug": "doneraile-park",
+   "production_id": 10607,
+   "local_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "doolin-cave",
+   "production_id": 10181,
+   "local_terms": [
+    "interior"
+   ],
+   "production_terms": [
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467
+   ],
+   "changes": false
+  },
+  {
+   "slug": "downpatrick-head",
+   "production_id": 10756,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "dowth",
+   "production_id": 10571,
+   "local_terms": [
+    "exterior",
+    "necessita-reserva"
+   ],
+   "production_terms": [
+    "exterior",
+    "necessita-reserva"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1473
+   ],
+   "changes": false
+  },
+  {
+   "slug": "drumcliffe",
+   "production_id": 10742,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "dublin-castle",
+   "production_id": 10147,
+   "local_terms": [
+    "interior"
+   ],
+   "production_terms": [
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467
+   ],
+   "changes": false
+  },
+  {
+   "slug": "dublin-zoo",
+   "production_id": 10151,
+   "local_terms": [
+    "estacionamento",
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1472
+   ],
+   "changes": false
+  },
+  {
+   "slug": "ducketts-grove",
+   "production_id": 10881,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "dun-a-ri-forest-park",
+   "production_id": 10694,
+   "local_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "dun-aonghasa",
+   "production_id": 10174,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "dun-laoghaire-east-pier",
+   "production_id": 10547,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "dunbrody-famine-ship",
+   "production_id": 10807,
+   "local_terms": [
+    "interior"
+   ],
+   "production_terms": [
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467
+   ],
+   "changes": false
+  },
+  {
+   "slug": "dungarvan-castle",
+   "production_id": 21189,
+   "local_terms": [
+    "gratuito",
+    "interior-exterior"
+   ],
+   "production_terms": [
+    "gratuito",
+    "interior-exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1468,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "dunmore-cave",
+   "production_id": 10776,
+   "local_terms": [
+    "interior"
+   ],
+   "production_terms": [
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467
+   ],
+   "changes": false
+  },
+  {
+   "slug": "dursey-island",
+   "production_id": 11719,
+   "local_terms": [
+    "exterior",
+    "familias",
+    "gratuito-em-determinadas-condicoes"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias",
+    "gratuito-em-determinadas-condicoes"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1475
+   ],
+   "changes": false
+  },
+  {
+   "slug": "dwyer-mcallister-cottage",
+   "production_id": 21197,
+   "local_terms": [
+    "estacionamento",
+    "gratuito",
+    "interior",
+    "necessita-reserva"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "gratuito",
+    "interior",
+    "necessita-reserva"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467,
+    1469,
+    1472,
+    1473
+   ],
+   "changes": false
+  },
+  {
+   "slug": "eagles-flying",
+   "production_id": 10744,
+   "local_terms": [
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "emerald-park",
+   "production_id": 10563,
+   "local_terms": [
+    "exterior",
+    "familias",
+    "necessita-reserva"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias",
+    "necessita-reserva"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1473
+   ],
+   "changes": false
+  },
+  {
+   "slug": "emo-court",
+   "production_id": 10625,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "english-market-cork",
+   "production_id": 10597,
+   "local_terms": [
+    "gratuito",
+    "interior"
+   ],
+   "production_terms": [
+    "gratuito",
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "ennis-friary",
+   "production_id": 10585,
+   "local_terms": [
+    "interior"
+   ],
+   "production_terms": [
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467
+   ],
+   "changes": false
+  },
+  {
+   "slug": "epic-irish-emigration-museum",
+   "production_id": 10541,
+   "local_terms": [
+    "interior"
+   ],
+   "production_terms": [
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467
+   ],
+   "changes": false
+  },
+  {
+   "slug": "errigal",
+   "production_id": 10726,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "famine-warhouse-1848",
+   "production_id": 21192,
+   "local_terms": [
+    "estacionamento",
+    "gratuito",
+    "interior",
+    "necessita-reserva"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "gratuito",
+    "interior",
+    "necessita-reserva"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467,
+    1469,
+    1472,
+    1473
+   ],
+   "changes": false
+  },
+  {
+   "slug": "fanad-head-lighthouse",
+   "production_id": 10722,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "farmleigh-house-and-estate",
+   "production_id": 21161,
+   "local_terms": [
+    "estacionamento",
+    "familias",
+    "gratuito-em-determinadas-condicoes",
+    "interior-exterior"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "familias",
+    "gratuito-em-determinadas-condicoes",
+    "interior-exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1468,
+    1472,
+    1475
+   ],
+   "changes": false
+  },
+  {
+   "slug": "ferns-castle",
+   "production_id": 10815,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "fore-abbey",
+   "production_id": 21195,
+   "local_terms": [
+    "estacionamento",
+    "exterior"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1472
+   ],
+   "changes": false
+  },
+  {
+   "slug": "forty-foot",
+   "production_id": 11714,
+   "local_terms": [
+    "acesso-de-transporte-publico",
+    "estacionamento",
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "acesso-de-transporte-publico",
+    "estacionamento",
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469,
+    1472,
+    1476
+   ],
+   "changes": false
+  },
+  {
+   "slug": "fota-arboretum-and-gardens",
+   "production_id": 21157,
+   "local_terms": [
+    "estacionamento",
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1469,
+    1472
+   ],
+   "changes": false
+  },
+  {
+   "slug": "fota-wildlife-park",
+   "production_id": 10188,
+   "local_terms": [
+    "estacionamento",
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1472
+   ],
+   "changes": false
+  },
+  {
+   "slug": "foynes-flying-boat-museum",
+   "production_id": 10843,
+   "local_terms": [
+    "familias",
+    "interior"
+   ],
+   "production_terms": [
+    "familias",
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1467
+   ],
+   "changes": false
+  },
+  {
+   "slug": "gallarus-oratory",
+   "production_id": 10617,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "galway-atlantaquaria",
+   "production_id": 10176,
+   "local_terms": [
+    "estacionamento",
+    "familias",
+    "interior"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "familias",
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1467,
+    1472
+   ],
+   "changes": false
+  },
+  {
+   "slug": "galway-city-museum",
+   "production_id": 10575,
+   "local_terms": [
+    "gratuito",
+    "interior"
+   ],
+   "production_terms": [
+    "gratuito",
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "gap-of-dunloe",
+   "production_id": 10197,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "garden-of-remembrance",
+   "production_id": 21162,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "garnish-island",
+   "production_id": 10603,
+   "local_terms": [
+    "exterior",
+    "necessita-reserva"
+   ],
+   "production_terms": [
+    "exterior",
+    "necessita-reserva"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1473
+   ],
+   "changes": false
+  },
+  {
+   "slug": "glasnevin-cemetery-museum",
+   "production_id": 10545,
+   "local_terms": [
+    "interior"
+   ],
+   "production_terms": [
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467
+   ],
+   "changes": false
+  },
+  {
+   "slug": "glebe-house-and-gallery",
+   "production_id": 21187,
+   "local_terms": [
+    "estacionamento",
+    "familias",
+    "gratuito-em-determinadas-condicoes",
+    "interior-exterior"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "familias",
+    "gratuito-em-determinadas-condicoes",
+    "interior-exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1468,
+    1472,
+    1475
+   ],
+   "changes": false
+  },
+  {
+   "slug": "glen-of-aherlow",
+   "production_id": 10825,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "glencar-waterfall",
+   "production_id": 10678,
+   "local_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "glendalough",
+   "production_id": 10155,
+   "local_terms": [
+    "estacionamento",
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1472
+   ],
+   "changes": false
+  },
+  {
+   "slug": "glendeer-pet-farm",
+   "production_id": 10653,
+   "local_terms": [
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "glenveagh-national-park",
+   "production_id": 10714,
+   "local_terms": [
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "government-buildings",
+   "production_id": 21163,
+   "local_terms": [
+    "gratuito",
+    "interior"
+   ],
+   "production_terms": [
+    "gratuito",
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "granard-motte-bailey",
+   "production_id": 10658,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "grangegorman-military-cemetery",
+   "production_id": 21164,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "great-sugar-loaf",
+   "production_id": 10159,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "great-western-greenway",
+   "production_id": 10760,
+   "local_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "grianan-of-aileach",
+   "production_id": 10724,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "guinness-storehouse",
+   "production_id": 10149,
+   "local_terms": [
+    "interior",
+    "necessita-reserva"
+   ],
+   "production_terms": [
+    "interior",
+    "necessita-reserva"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467,
+    1473
+   ],
+   "changes": false
+  },
+  {
+   "slug": "heywood-gardens",
+   "production_id": 10627,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "hill-of-tara",
+   "production_id": 10164,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "holy-cross-abbey",
+   "production_id": 10833,
+   "local_terms": [
+    "gratuito",
+    "interior"
+   ],
+   "production_terms": [
+    "gratuito",
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "holy-island-inis-cealtra",
+   "production_id": 10589,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "hook-lighthouse",
+   "production_id": 10805,
+   "local_terms": [
+    "familias",
+    "interior-exterior"
+   ],
+   "production_terms": [
+    "familias",
+    "interior-exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1468
+   ],
+   "changes": false
+  },
+  {
+   "slug": "house-of-waterford-crystal",
+   "production_id": 10783,
+   "local_terms": [
+    "interior",
+    "necessita-reserva"
+   ],
+   "production_terms": [
+    "interior",
+    "necessita-reserva"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467,
+    1473
+   ],
+   "changes": false
+  },
+  {
+   "slug": "howth-cliff-walk",
+   "production_id": 10152,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "hunt-museum",
+   "production_id": 10837,
+   "local_terms": [
+    "interior"
+   ],
+   "production_terms": [
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467
+   ],
+   "changes": false
+  },
+  {
+   "slug": "huntington-castle-gardens",
+   "production_id": 10883,
+   "local_terms": [
+    "interior-exterior"
+   ],
+   "production_terms": [
+    "interior-exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1468
+   ],
+   "changes": false
+  },
+  {
+   "slug": "inch-beach",
+   "production_id": 10200,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "ionad-culturtha-an-phiarsaigh-pearses-cottage",
+   "production_id": 21184,
+   "local_terms": [
+    "estacionamento",
+    "familias",
+    "interior-exterior",
+    "pago"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "familias",
+    "interior-exterior",
+    "pago"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1468,
+    1472,
+    1474
+   ],
+   "changes": false
+  },
+  {
+   "slug": "irish-national-heritage-park",
+   "production_id": 10801,
+   "local_terms": [
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "irish-national-stud-japanese-gardens",
+   "production_id": 10849,
+   "local_terms": [
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "irish-national-war-memorial-gardens",
+   "production_id": 21165,
+   "local_terms": [
+    "estacionamento",
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469,
+    1472
+   ],
+   "changes": false
+  },
+  {
+   "slug": "iveagh-gardens",
+   "production_id": 21166,
+   "local_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "jameson-distillery-midleton",
+   "production_id": 10189,
+   "local_terms": [
+    "interior",
+    "necessita-reserva"
+   ],
+   "production_terms": [
+    "interior",
+    "necessita-reserva"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467,
+    1473
+   ],
+   "changes": false
+  },
+  {
+   "slug": "jerpoint-abbey",
+   "production_id": 10770,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "jerpoint-park",
+   "production_id": 10779,
+   "local_terms": [
+    "exterior",
+    "necessita-reserva"
+   ],
+   "production_terms": [
+    "exterior",
+    "necessita-reserva"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1473
+   ],
+   "changes": false
+  },
+  {
+   "slug": "jfk-arboretum",
+   "production_id": 11722,
+   "local_terms": [
+    "estacionamento",
+    "exterior",
+    "familias",
+    "gratuito-em-determinadas-condicoes",
+    "pet-friendly"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "exterior",
+    "familias",
+    "gratuito-em-determinadas-condicoes",
+    "pet-friendly"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1470,
+    1472,
+    1475
+   ],
+   "changes": false
+  },
+  {
+   "slug": "johnstown-castle",
+   "production_id": 10803,
+   "local_terms": [
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "joyce-tower-museum",
+   "production_id": 11716,
+   "local_terms": [
+    "acesso-de-transporte-publico",
+    "gratuito",
+    "interior"
+   ],
+   "production_terms": [
+    "acesso-de-transporte-publico",
+    "gratuito",
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467,
+    1469,
+    1476
+   ],
+   "changes": false
+  },
+  {
+   "slug": "keem-bay",
+   "production_id": 10750,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "kells-historic-town",
+   "production_id": 10567,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "kells-priory",
+   "production_id": 21190,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "kerry-cliffs",
+   "production_id": 10613,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "kilbeggan-distillery",
+   "production_id": 10649,
+   "local_terms": [
+    "interior"
+   ],
+   "production_terms": [
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467
+   ],
+   "changes": false
+  },
+  {
+   "slug": "kilkee-cliffs",
+   "production_id": 10184,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "kilkenny-castle",
+   "production_id": 10766,
+   "local_terms": [
+    "familias",
+    "interior-exterior"
+   ],
+   "production_terms": [
+    "familias",
+    "interior-exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1468
+   ],
+   "changes": false
+  },
+  {
+   "slug": "killarney-national-park",
+   "production_id": 10193,
+   "local_terms": [
+    "estacionamento",
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1472
+   ],
+   "changes": false
+  },
+  {
+   "slug": "killruddery-house-gardens",
+   "production_id": 10557,
+   "local_terms": [
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "killykeen-forest-park",
+   "production_id": 10692,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "kilmainham-gaol",
+   "production_id": 10148,
+   "local_terms": [
+    "familias",
+    "interior",
+    "necessita-reserva"
+   ],
+   "production_terms": [
+    "familias",
+    "interior",
+    "necessita-reserva"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1467,
+    1473
+   ],
+   "changes": false
+  },
+  {
+   "slug": "king-johns-castle-carlingford",
+   "production_id": 10891,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "king-johns-castle-limerick",
+   "production_id": 10835,
+   "local_terms": [
+    "familias",
+    "interior-exterior"
+   ],
+   "production_terms": [
+    "familias",
+    "interior-exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1468
+   ],
+   "changes": false
+  },
+  {
+   "slug": "kinsale",
+   "production_id": 10190,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "knowth",
+   "production_id": 10163,
+   "local_terms": [
+    "exterior",
+    "necessita-reserva"
+   ],
+   "production_terms": [
+    "exterior",
+    "necessita-reserva"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1473
+   ],
+   "changes": false
+  },
+  {
+   "slug": "kylemore-abbey",
+   "production_id": 10169,
+   "local_terms": [
+    "estacionamento",
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1472
+   ],
+   "changes": false
+  },
+  {
+   "slug": "lahinch-beach",
+   "production_id": 10183,
+   "local_terms": [
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "lismore-castle-gardens",
+   "production_id": 10795,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "lissadell-house",
+   "production_id": 10740,
+   "local_terms": [
+    "interior-exterior"
+   ],
+   "production_terms": [
+    "interior-exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1468
+   ],
+   "changes": false
+  },
+  {
+   "slug": "listowel-castle",
+   "production_id": 21177,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "loop-head",
+   "production_id": 10182,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "lough-allen",
+   "production_id": 10684,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "lough-boora-discovery-park",
+   "production_id": 10639,
+   "local_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "lough-gur",
+   "production_id": 10845,
+   "local_terms": [
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "lough-key-forest-park",
+   "production_id": 10674,
+   "local_terms": [
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "lough-muckno-leisure-park",
+   "production_id": 11721,
+   "local_terms": [
+    "estacionamento",
+    "exterior",
+    "familias",
+    "gratuito",
+    "pet-friendly"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "exterior",
+    "familias",
+    "gratuito",
+    "pet-friendly"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1469,
+    1470,
+    1472
+   ],
+   "changes": false
+  },
+  {
+   "slug": "lough-ree",
+   "production_id": 10664,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "lough-rynn-castle-gardens",
+   "production_id": 10686,
+   "local_terms": [
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "loughcrew",
+   "production_id": 10167,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "lullymore-heritage-park",
+   "production_id": 10861,
+   "local_terms": [
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "malahide-castle-gardens",
+   "production_id": 10153,
+   "local_terms": [
+    "estacionamento",
+    "familias",
+    "necessita-reserva"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "familias",
+    "necessita-reserva"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1472,
+    1473
+   ],
+   "changes": false
+  },
+  {
+   "slug": "malin-head",
+   "production_id": 10720,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "maynooth-castle",
+   "production_id": 10857,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "medieval-mile-museum",
+   "production_id": 10768,
+   "local_terms": [
+    "interior"
+   ],
+   "production_terms": [
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467
+   ],
+   "changes": false
+  },
+  {
+   "slug": "mellifont-abbey",
+   "production_id": 10871,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "millmount-fort-museum",
+   "production_id": 10875,
+   "local_terms": [
+    "interior-exterior"
+   ],
+   "production_terms": [
+    "interior-exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1468
+   ],
+   "changes": false
+  },
+  {
+   "slug": "mitchelstown-cave",
+   "production_id": 10831,
+   "local_terms": [
+    "familias",
+    "interior"
+   ],
+   "production_terms": [
+    "familias",
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1467
+   ],
+   "changes": false
+  },
+  {
+   "slug": "mizen-head",
+   "production_id": 10192,
+   "local_terms": [
+    "estacionamento",
+    "exterior"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1472
+   ],
+   "changes": false
+  },
+  {
+   "slug": "monaghan-county-museum",
+   "production_id": 10706,
+   "local_terms": [
+    "gratuito",
+    "interior"
+   ],
+   "production_terms": [
+    "gratuito",
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "monasterboice",
+   "production_id": 10869,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "mondello-park",
+   "production_id": 10863,
+   "local_terms": [
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "mount-congreve-gardens",
+   "production_id": 10793,
+   "local_terms": [
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "mount-leinster-nine-stones",
+   "production_id": 10889,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "mount-usher-gardens",
+   "production_id": 10559,
+   "local_terms": [
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "muckross-abbey",
+   "production_id": 10619,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "muckross-house",
+   "production_id": 10194,
+   "local_terms": [
+    "estacionamento",
+    "interior-exterior"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "interior-exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1468,
+    1472
+   ],
+   "changes": false
+  },
+  {
+   "slug": "mullaghmeen-forest",
+   "production_id": 10651,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "national-botanic-gardens-dublin",
+   "production_id": 10543,
+   "local_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "national-botanic-gardens-kilmacurragh",
+   "production_id": 21196,
+   "local_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "national-design-craft-gallery",
+   "production_id": 11724,
+   "local_terms": [
+    "gratuito",
+    "interior"
+   ],
+   "production_terms": [
+    "gratuito",
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "national-museum-archaeology",
+   "production_id": 10539,
+   "local_terms": [
+    "gratuito",
+    "interior"
+   ],
+   "production_terms": [
+    "gratuito",
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "national-museum-country-life",
+   "production_id": 10754,
+   "local_terms": [
+    "gratuito",
+    "interior"
+   ],
+   "production_terms": [
+    "gratuito",
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "newcastle-wood",
+   "production_id": 10662,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "newgrange",
+   "production_id": 10162,
+   "local_terms": [
+    "exterior",
+    "necessita-reserva"
+   ],
+   "production_terms": [
+    "exterior",
+    "necessita-reserva"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1473
+   ],
+   "changes": false
+  },
+  {
+   "slug": "newmills-corn-and-flax-mills",
+   "production_id": 21188,
+   "local_terms": [
+    "estacionamento",
+    "gratuito",
+    "interior-exterior"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "gratuito",
+    "interior-exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1468,
+    1469,
+    1472
+   ],
+   "changes": false
+  },
+  {
+   "slug": "oak-park-forest-park",
+   "production_id": 10887,
+   "local_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "old-head-of-kinsale",
+   "production_id": 11720,
+   "local_terms": [
+    "estacionamento",
+    "exterior",
+    "gratuito-em-determinadas-condicoes"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "exterior",
+    "gratuito-em-determinadas-condicoes"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1472,
+    1475
+   ],
+   "changes": false
+  },
+  {
+   "slug": "ormond-castle",
+   "production_id": 10829,
+   "local_terms": [
+    "interior"
+   ],
+   "production_terms": [
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467
+   ],
+   "changes": false
+  },
+  {
+   "slug": "parkes-castle",
+   "production_id": 10680,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "patrick-kavanagh-centre",
+   "production_id": 10710,
+   "local_terms": [
+    "interior"
+   ],
+   "production_terms": [
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467
+   ],
+   "changes": false
+  },
+  {
+   "slug": "pearse-museum-st-endas-park",
+   "production_id": 21167,
+   "local_terms": [
+    "estacionamento",
+    "familias",
+    "gratuito",
+    "interior-exterior"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "familias",
+    "gratuito",
+    "interior-exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1468,
+    1469,
+    1472
+   ],
+   "changes": false
+  },
+  {
+   "slug": "phoenix-park",
+   "production_id": 10150,
+   "local_terms": [
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "phoenix-park-peoples-flower-gardens",
+   "production_id": 21169,
+   "local_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "phoenix-park-visitor-centre-ashtown-castle",
+   "production_id": 21168,
+   "local_terms": [
+    "estacionamento",
+    "familias",
+    "gratuito",
+    "interior-exterior"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "familias",
+    "gratuito",
+    "interior-exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1468,
+    1469,
+    1472
+   ],
+   "changes": false
+  },
+  {
+   "slug": "pollardstown-fen",
+   "production_id": 10855,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "portmarnock-beach",
+   "production_id": 10549,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "portumna-castle-gardens",
+   "production_id": 10581,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "powerscourt-estate",
+   "production_id": 10156,
+   "local_terms": [
+    "estacionamento",
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1472
+   ],
+   "changes": false
+  },
+  {
+   "slug": "powerscourt-waterfall",
+   "production_id": 10157,
+   "local_terms": [
+    "estacionamento",
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1472
+   ],
+   "changes": false
+  },
+  {
+   "slug": "proleek-dolmen",
+   "production_id": 10867,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "queen-maeves-trail-knocknarea",
+   "production_id": 10736,
+   "local_terms": [
+    "estacionamento",
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469,
+    1472
+   ],
+   "changes": false
+  },
+  {
+   "slug": "rathcroghan",
+   "production_id": 10666,
+   "local_terms": [
+    "interior-exterior"
+   ],
+   "production_terms": [
+    "interior-exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1468
+   ],
+   "changes": false
+  },
+  {
+   "slug": "rathfarnham-castle",
+   "production_id": 21170,
+   "local_terms": [
+    "estacionamento",
+    "familias",
+    "interior-exterior",
+    "pago"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "familias",
+    "interior-exterior",
+    "pago"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1468,
+    1472,
+    1474
+   ],
+   "changes": false
+  },
+  {
+   "slug": "reginals-tower",
+   "production_id": 10787,
+   "local_terms": [
+    "interior"
+   ],
+   "production_terms": [
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467
+   ],
+   "changes": false
+  },
+  {
+   "slug": "ring-of-kerry",
+   "production_id": 10198,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "rock-of-cashel",
+   "production_id": 10819,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "rock-of-dunamase",
+   "production_id": 10623,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "roscommon-castle",
+   "production_id": 10676,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "roscrea-heritage-centre-roscrea-castle-and-damer-house",
+   "production_id": 21194,
+   "local_terms": [
+    "estacionamento",
+    "familias",
+    "interior-exterior",
+    "pago"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "familias",
+    "interior-exterior",
+    "pago"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1468,
+    1472,
+    1474
+   ],
+   "changes": false
+  },
+  {
+   "slug": "ross-castle",
+   "production_id": 10195,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "rossmore-forest-park",
+   "production_id": 10704,
+   "local_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "rothe-house-garden",
+   "production_id": 10772,
+   "local_terms": [
+    "interior-exterior"
+   ],
+   "production_terms": [
+    "interior-exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1468
+   ],
+   "changes": false
+  },
+  {
+   "slug": "royal-canal-greenway",
+   "production_id": 10660,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "royal-hospital-kilmainham",
+   "production_id": 21171,
+   "local_terms": [
+    "estacionamento",
+    "gratuito-em-determinadas-condicoes",
+    "interior-exterior"
+   ],
+   "production_terms": [
+    "estacionamento",
+    "gratuito-em-determinadas-condicoes",
+    "interior-exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1468,
+    1472,
+    1475
+   ],
+   "changes": false
+  },
+  {
+   "slug": "russborough-house",
+   "production_id": 10551,
+   "local_terms": [
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "sally-gap",
+   "production_id": 10160,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "saltee-islands",
+   "production_id": 10809,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "salthill",
+   "production_id": 10171,
+   "local_terms": [
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "scattery-island",
+   "production_id": 10587,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "sean-mac-diarmada-cottage",
+   "production_id": 10688,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "shannon-pot",
+   "production_id": 10696,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "skellig-michael",
+   "production_id": 10609,
+   "local_terms": [
+    "exterior",
+    "necessita-reserva"
+   ],
+   "production_terms": [
+    "exterior",
+    "necessita-reserva"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1473
+   ],
+   "changes": false
+  },
+  {
+   "slug": "sky-road",
+   "production_id": 10172,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "slane-castle",
+   "production_id": 10166,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "sliabh-beagh",
+   "production_id": 10712,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "sliabh-liag",
+   "production_id": 10716,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "slieve-bloom-mountains",
+   "production_id": 10633,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "sligo-abbey",
+   "production_id": 10738,
+   "local_terms": [
+    "interior-exterior"
+   ],
+   "production_terms": [
+    "interior-exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1468
+   ],
+   "changes": false
+  },
+  {
+   "slug": "smithwicks-experience",
+   "production_id": 10774,
+   "local_terms": [
+    "interior",
+    "necessita-reserva"
+   ],
+   "production_terms": [
+    "interior",
+    "necessita-reserva"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467,
+    1473
+   ],
+   "changes": false
+  },
+  {
+   "slug": "sonairte-ecology-centre",
+   "production_id": 10569,
+   "local_terms": [
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "spanish-arch-long-walk",
+   "production_id": 10573,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "spanish-point-beach",
+   "production_id": 10591,
+   "local_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "spike-island-cork",
+   "production_id": 10605,
+   "local_terms": [
+    "exterior",
+    "necessita-reserva"
+   ],
+   "production_terms": [
+    "exterior",
+    "necessita-reserva"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1473
+   ],
+   "changes": false
+  },
+  {
+   "slug": "st-audens-church",
+   "production_id": 21173,
+   "local_terms": [
+    "gratuito",
+    "interior"
+   ],
+   "production_terms": [
+    "gratuito",
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "st-marys-abbey-chapter-house",
+   "production_id": 21172,
+   "local_terms": [
+    "gratuito",
+    "interior",
+    "necessita-reserva"
+   ],
+   "production_terms": [
+    "gratuito",
+    "interior",
+    "necessita-reserva"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467,
+    1469,
+    1473
+   ],
+   "changes": false
+  },
+  {
+   "slug": "st-marys-cathedral-limerick",
+   "production_id": 10839,
+   "local_terms": [
+    "interior"
+   ],
+   "production_terms": [
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467
+   ],
+   "changes": false
+  },
+  {
+   "slug": "st-marys-church-gowran",
+   "production_id": 21191,
+   "local_terms": [
+    "gratuito",
+    "interior"
+   ],
+   "production_terms": [
+    "gratuito",
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "st-stephens-green",
+   "production_id": 21174,
+   "local_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "strandhill-beach",
+   "production_id": 10732,
+   "local_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "strokestown-park-famine-museum",
+   "production_id": 10670,
+   "local_terms": [
+    "interior-exterior"
+   ],
+   "production_terms": [
+    "interior-exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1468
+   ],
+   "changes": false
+  },
+  {
+   "slug": "swiss-cottage",
+   "production_id": 10823,
+   "local_terms": [
+    "interior"
+   ],
+   "production_terms": [
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467
+   ],
+   "changes": false
+  },
+  {
+   "slug": "the-main-guard",
+   "production_id": 21193,
+   "local_terms": [
+    "gratuito",
+    "interior"
+   ],
+   "production_terms": [
+    "gratuito",
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "the-model",
+   "production_id": 11717,
+   "local_terms": [
+    "acessivel",
+    "familias",
+    "gratuito",
+    "interior"
+   ],
+   "production_terms": [
+    "acessivel",
+    "familias",
+    "gratuito",
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1467,
+    1469,
+    1471
+   ],
+   "changes": false
+  },
+  {
+   "slug": "the-vee-bay-lough",
+   "production_id": 10827,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "thoor-ballylee",
+   "production_id": 10583,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "timahoe-round-tower",
+   "production_id": 10629,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "tintern-abbey-wexford",
+   "production_id": 10817,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "titanic-experience-cobh",
+   "production_id": 10187,
+   "local_terms": [
+    "interior"
+   ],
+   "production_terms": [
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467
+   ],
+   "changes": false
+  },
+  {
+   "slug": "torc-waterfall",
+   "production_id": 10196,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "trim-castle",
+   "production_id": 10165,
+   "local_terms": [
+    "exterior"
+   ],
+   "production_terms": [
+    "exterior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "trinity-college-book-of-kells",
+   "production_id": 10146,
+   "local_terms": [
+    "interior",
+    "necessita-reserva"
+   ],
+   "production_terms": [
+    "interior",
+    "necessita-reserva"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467,
+    1473
+   ],
+   "changes": false
+  },
+  {
+   "slug": "tullamore-dew-experience",
+   "production_id": 10643,
+   "local_terms": [
+    "interior"
+   ],
+   "production_terms": [
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467
+   ],
+   "changes": false
+  },
+  {
+   "slug": "valentia-island",
+   "production_id": 10611,
+   "local_terms": [
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "vandeleur-walled-garden",
+   "production_id": 10595,
+   "local_terms": [
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "waterford-greenway",
+   "production_id": 10789,
+   "local_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "waterford-treasures",
+   "production_id": 10785,
+   "local_terms": [
+    "interior"
+   ],
+   "production_terms": [
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1467
+   ],
+   "changes": false
+  },
+  {
+   "slug": "westport-house",
+   "production_id": 10752,
+   "local_terms": [
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "wexford-wildfowl-reserve",
+   "production_id": 10813,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "wicklow-historic-gaol",
+   "production_id": 10553,
+   "local_terms": [
+    "familias",
+    "interior"
+   ],
+   "production_terms": [
+    "familias",
+    "interior"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1467
+   ],
+   "changes": false
+  },
+  {
+   "slug": "wicklow-mountains-national-park",
+   "production_id": 10154,
+   "local_terms": [
+    "exterior",
+    "familias"
+   ],
+   "production_terms": [
+    "exterior",
+    "familias"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1465,
+    1466
+   ],
+   "changes": false
+  },
+  {
+   "slug": "wicklow-way",
+   "production_id": 10561,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "wild-nephin-ballycroy-national-park",
+   "production_id": 10762,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  },
+  {
+   "slug": "woodstock-gardens",
+   "production_id": 10781,
+   "local_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "production_terms": [
+    "exterior",
+    "gratuito"
+   ],
+   "missing_in_production": [],
+   "production_only": [],
+   "unresolved_local_terms": [],
+   "planned_term_ids": [
+    1466,
+    1469
+   ],
+   "changes": false
+  }
+ ]
+}

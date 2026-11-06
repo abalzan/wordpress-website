@@ -1,0 +1,107 @@
+# Stage 8 — preflight (read-only). No credential value appears here.
+# captured (UTC): 2026-11-05T16:03:34Z
+
+## 1. Repository state
+branch:      leisure-location
+HEAD:        2aef58f8f5a52b0cbe4b805c81ad5bf100eb1006  Add report for Stage 7: production REST permission verification for leisure coordinates
+worktree:    1 changed paths
+  ?? docs/evidence/2026-11-05-leisure-location-stage-8/
+staged:      0 files
+stash count: 9 (unchanged: no stash was created, applied, dropped or modified)
+tracked HEAD-1 at session start: 25749f7af8b63fe3ab12204964aa73a2b0db9d94
+NOTE: between the first observation and this capture the local repository
+gained commit 2aef58f ("Add report for Stage 7 ...") and the worktree became
+clean. That commit was NOT created by this Stage 8 session (no commit, push,
+stash or reset was run here). Recorded as an observed state change.
+
+## 2. Artifact digests
+  f07e5cca6656eed1efb19bf3ecb44a20f61f483dd301b9d49521cbbfd29ded9c  scripts/migrate-leisure-location-rest.py
+  ef67c35f8ee18978269abae28d9ce4c37283677b72d1b6ac5fc1c144c3dec13f  scripts/lib/rest.py
+  9214e0305a3ba7a7fed4c08262ce694761e75430a31e38cc36fe733ab36adb37  scripts/data/leisure-coordinates-2026-11-03.json
+  c73e0c739bdca007f61d7d686075d6bd18b73b3508f418667a734a3244b0187f  docs/evidence/2026-11-05-leisure-location-stage-8/stage8-dry-run-verify.py
+
+## 3. Credential availability (names only, no values)
+  repository .env:  .gitignore:2:.env	.env
+  .env tracked by git: 0 files
+  variables present (names only):
+    WP_USERNAME=
+    WP_APPLICATION_PASSWORD=
+    CONEXAO_SITE_URL=
+  NO value, prefix, length or hash of any credential is recorded in this evidence.
+
+## 4. Migration journal (resume state)
+  absent (.local/ does not contain a journal)
+
+## 5. Local stack
+db Up 5 days (healthy) 3306/tcp, 33060/tcp
+wordpress Up 25 hours 0.0.0.0:8080->80/tcp, [::]:8080->80/tcp
+
+## 6. Migration script CLI (dry-run contract)
+--- python3 scripts/migrate-leisure-location-rest.py --help ---
+usage: migrate-leisure-location-rest.py [-h] [--target-url TARGET_URL]
+                                        [--source-url SOURCE_URL]
+                                        [--manifest MANIFEST]
+                                        [--include-attributes] [--overwrite]
+                                        [--state-file STATE_FILE]
+                                        [--no-resume]
+                                        [--request-delay REQUEST_DELAY]
+                                        [--report REPORT]
+                                        [--confirm-production] [--apply]
+                                        [--dry-run] [--verify]
+
+Migrate the Lazer location dataset (coordinates, and optionally the practical-attribute taxonomy) to a WordPress target over the REST API. Dry run by default.
+
+options:
+  -h, --help            show this help message and exit
+  --target-url TARGET_URL
+                        The WordPress site to migrate INTO (e.g. the
+                        production site). REQUIRED for --apply and --verify;
+                        there is deliberately no default.
+  --source-url SOURCE_URL
+                        Optional local site to READ attribute taxonomy from.
+                        Defaults to the manifest only (coordinates need no
+                        live source).
+  --manifest MANIFEST   Reviewed coordinate manifest (default:
+                        scripts/data/leisure-coordinates-2026-11-03.json).
+  --include-attributes  Also ADD missing conexao_leisure_attribute terms,
+                        resolved by slug. Add-only; target terms are never
+                        removed and never created.
+  --overwrite           Allow an existing DIFFERING target coordinate to be
+                        replaced. Off by default.
+  --state-file STATE_FILE
+                        Resume journal path (default: .local/leisure-location-
+                        migration-state.json).
+  --no-resume           Ignore the resume journal and consider every record
+                        fresh.
+  --request-delay REQUEST_DELAY
+                        Seconds to wait between writes (default 0.25; protects
+                        the rate limit).
+  --report REPORT       Write the machine-readable JSON report to this path
+                        (never contains credentials).
+  --confirm-production  Acknowledge a write against a production target.
+                        Required for a production --apply.
+  --apply               Perform the plan (writes).
+  --dry-run             Plan only (the default).
+  --verify              Read-only coverage report.
+
+Safety
+  * Dry run is the DEFAULT and writes nothing. --apply is the only write mode.
+  * --target-url has no default: the target is always named explicitly, and a
+    production target additionally requires --confirm-production.
+  * Credentials come from WP_USERNAME / WP_APPLICATION_PASSWORD only. They are
+    never printed, logged, or written into the report.
+  * Records are matched by SLUG, never by local post ID (IDs are not portable).
+  * Additive only: an existing differing target coordinate is reported as a
+    CONFLICT and skipped unless --overwrite is given. Nothing is deleted, no
+    record is created, no status, title, taxonomy (other than the opt-in
+    attribute taxonomy) or translation relationship is touched.
+  * Rate-limit aware: HTTP 429 is honoured via Retry-After with bounded backoff.
+  * Resumable: applied records are journaled, so an interrupted run continues.
+
+Modes
+  --dry-run             (default) print the plan and write nothing.
+  --apply               perform the plan. Requires --target-url (and
+                        --confirm-production when the target is production).
+  --verify              read-only: report target coverage and exit.
+  --help                print this message and exit 0.
+exit=0

@@ -122,6 +122,10 @@ final class Conexao_Admin_Ux_List {
 				$this->render_category( $post_id );
 				return;
 
+			case 'coordinates':
+				$this->render_coordinates( $post_id );
+				return;
+
 		}
 
 		// No custom render callback — fall back to the default renderer.
@@ -246,6 +250,62 @@ final class Conexao_Admin_Ux_List {
 			echo esc_html( $terms[0]->name );
 		} else {
 			echo '<span class="conexao-muted">—</span>';
+		}
+	}
+
+	/**
+	 * Render the leisure coordinate inventory column.
+	 *
+	 * Read-only inventory: it tells an administrator, at a glance, which
+	 * attractions have no coordinates yet, which have coordinates that have
+	 * not been confirmed on the map, which are confirmed, and which hold a
+	 * stored value that is malformed or out of range. It never writes, never
+	 * geocodes and never guesses a coordinate.
+	 *
+	 * @param int $post_id Post ID.
+	 */
+	private function render_coordinates( $post_id ) {
+		if ( ! class_exists( 'Conexao_Data_Model_Meta' ) ) {
+			echo '<span class="conexao-muted">—</span>';
+			return;
+		}
+
+		$state = Conexao_Data_Model_Meta::coordinate_status( $post_id );
+
+		switch ( $state['status'] ) {
+			case 'verified':
+				$label = __( 'Verificadas', 'conexao-admin-ux' );
+				$badge = 'published';
+				break;
+
+			case 'unverified':
+				$label = __( 'Por verificar', 'conexao-admin-ux' );
+				$badge = 'review';
+				break;
+
+			case 'invalid':
+				$label = __( 'Inválidas', 'conexao-admin-ux' );
+				$badge = 'warning';
+				break;
+
+			default:
+				$label = __( 'Sem coordenadas', 'conexao-admin-ux' );
+				$badge = 'draft';
+				break;
+		}
+
+		printf(
+			'<span class="conexao-status-badge conexao-status-badge--%1$s"><span class="conexao-status-dot" aria-hidden="true">●</span> %2$s</span>',
+			esc_attr( $badge ),
+			esc_html( $label )
+		);
+
+		if ( 'missing' !== $state['status'] && '' !== $state['lat'] && '' !== $state['lng'] ) {
+			printf(
+				'<br><span class="conexao-muted">%s, %s</span>',
+				esc_html( $state['lat'] ),
+				esc_html( $state['lng'] )
+			);
 		}
 	}
 

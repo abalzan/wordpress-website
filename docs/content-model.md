@@ -323,6 +323,63 @@ Opening hours are intentionally NOT modelled (high-maintenance without a
 verification workflow; the official website CTA remains the authoritative
 source for current hours).
 
+#### Leisure coordinates (Lazer location services)
+
+Optional geographic coordinates power the proximity ordering and distance
+estimates on `/lazer/` and `/en/lazer/`. They are ordinary leisure post meta,
+registered by `Conexao_Data_Model_Meta::register_leisure_coordinates()`:
+
+| Meta key | Type | REST | Meaning |
+|---|---|---|---|
+| `_leisure_lat` | string (decimal) | readable **and writable** over REST for a user who can edit the leisure record | Latitude, −90..90 |
+| `_leisure_lng` | string (decimal) | readable **and writable** over REST for a user who can edit the leisure record | Longitude, −180..180 |
+| `_leisure_coord_source` | string | **not** exposed | Editorial provenance (how the coordinates were obtained) |
+| `_leisure_coord_verified` | boolean | **not** exposed | Whether an editor confirmed the coordinates on the map |
+
+Both coordinate keys are **protected** meta (underscore-prefixed), so their REST
+write permission is declared explicitly with an `auth_callback` that performs
+`current_user_can( 'edit_post', $object_id )` — the same rule the wp-admin editor
+enforces. Without it WordPress falls back to `__return_false` and every REST write
+fails with `403 rest_cannot_update`, even for an administrator. The callback is
+deliberately **not** `__return_true`: an anonymous or unprivileged caller is still
+refused (401 / 403), which is proven by
+`wp-content/plugins/conexao-data-model/tests/test-leisure-coordinate-rest-permissions.php`.
+This permission declaration is what lets the reviewed coordinate dataset reach a
+CLI-less production site (WordPress.com) through the REST API. The two provenance
+keys stay out of the REST surface entirely, so the permission fix does not widen
+what REST can read or write.
+
+Validation and storage rules (the single source of truth is
+`Conexao_Data_Model_Meta::sanitize_coordinate()`, applied by the registered
+`sanitize_callback` on **every** write path — REST, the admin editor, any
+importer):
+
+- an empty / null value is **missing**, never `0`;
+- a legitimate `0` (or `0.0`) is stored as `0` and is a valid coordinate;
+- values outside the geographic range are **rejected** (sanitised to empty);
+- non-numeric, malformed and exponent-notation values are rejected;
+- a comma decimal separator (`53,5`) is normalised to `53.5`; a leading `+`
+  is accepted;
+- stored values are canonical dot-separated decimals with at most 6 decimal
+  places (≈0.11 m), so identical input always yields identical storage.
+
+Latitude and longitude must be supplied **as a pair**: the admin editor
+reports "Informe a latitude e a longitude em conjunto" when only one is
+provided, and an invalid submission never overwrites a previously valid
+value.
+
+Editorial provenance is deliberately **not** part of the public coordinate
+dataset. Administrators distinguish four inventory states, surfaced by the
+leisure list's "Coordenadas" column
+(`Conexao_Data_Model_Meta::coordinate_status()`): `missing` (Sem
+coordenadas), `unverified` (Por verificar), `verified` (Verificadas) and
+`invalid` (Inválidas).
+
+Coordinates are **never** guessed, geocoded or inferred from an address by the
+code. Populating them for existing attractions is an editorial content change
+that must follow the repository's six-step content-change contract — the
+implementation itself writes no production coordinates.
+
 Related events + SEO (Phase 3C): on INTERNAL single pages only, county is the
 single reliable relationship used to surface a \"Próximos eventos\" section —
 the destination's `conexao_county` term intersects the SHARED cached
@@ -358,10 +415,21 @@ Image fields:
 ## Import/Export Identifiers
 
 ### Lazer (stable UUID)
-- Meta key: `_lazer_uuid`
-- UUID is generated on export and used for deduplication on import.
+- Meta key: `_leisure_export_uuid` (constant
+  `Conexao_Lazer_Exporter::UUID_META_KEY`).
+- **It identifies the ATTRACTION, not the WordPress post.** A Portuguese master
+  and its linked Polylang English translation **share the same value on
+  purpose** — exactly one master plus at most one translation, never a third
+  record. Consumers must therefore expect a UUID lookup to return up to two
+  records and disambiguate them (the Lazer importer uses the import language;
+  `scripts/apply-leisure-coordinates.php` uses the manifest entry's slug, then
+  language, and fails safely when neither resolves it).
+- UUID is generated on export (only when a record has none) and used for
+  deduplication on import.
 - Matching order: UUID → slug → title.
 - Never uses WordPress post IDs as portable identifiers.
+- `_leisure_uuid` is a retired historical key written only by the pre-Stage-7
+  seeder; it carries no rows and is not a consumer contract.
 
 ### Events (source + source_id + export UUID)
 - `_event_source` (e.g. `laois_tourism`) + `_event_source_id` (external ID) form the primary deduplication key.
@@ -370,3 +438,5 @@ Image fields:
 _Last verified: 2026-09-26 by Stage O — Enable the Real English Blog Archive_
 
 _Last verified: 2026-10-08 by the Apoiadores single-page directory change (the `/apoiadores/` archive renders the whole ordered set on one page)_
+_Last verified: 2026-11-03 by the Phoenix Park UUID repair — Lazer `_leisure_export_uuid` per-attraction semantics documented_
+_Last verified: 2026-11-05 by the Lazer coordinate REST permission fix — `_leisure_lat` / `_leisure_lng` REST write permission (`auth_callback` = `edit_post`) documented_

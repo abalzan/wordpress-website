@@ -1,0 +1,589 @@
+script: migrate-leisure-location-rest.py
+target: https://conexaobr.ie (production)
+mode:   apply
+scope:  leisure coordinate meta (_leisure_lat, _leisure_lng) + conexao_leisure_attribute (add-only)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!  PRODUCTION TARGET — every write below changes the live site.
+!!  Target: https://conexaobr.ie
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  ALREADY_SET  trinity-college-book-of-kells                        target already carries this exact coordinate
+  ALREADY_SET  dublin-castle                                        target already carries this exact coordinate
+  ALREADY_SET  kilmainham-gaol                                      target already carries this exact coordinate
+  ALREADY_SET  guinness-storehouse                                  target already carries this exact coordinate
+  ALREADY_SET  phoenix-park                                         target already carries this exact coordinate
+  ALREADY_SET  dublin-zoo                                           target already carries this exact coordinate
+  ALREADY_SET  howth-cliff-walk                                     target already carries this exact coordinate
+  ALREADY_SET  malahide-castle-gardens                              target already carries this exact coordinate
+  ALREADY_SET  wicklow-mountains-national-park                      target already carries this exact coordinate
+  ALREADY_SET  glendalough                                          target already carries this exact coordinate
+  ALREADY_SET  powerscourt-estate                                   target already carries this exact coordinate
+  ALREADY_SET  powerscourt-waterfall                                target already carries this exact coordinate
+  ALREADY_SET  bray-head                                            target already carries this exact coordinate
+  ALREADY_SET  great-sugar-loaf                                     target already carries this exact coordinate
+  ALREADY_SET  sally-gap                                            target already carries this exact coordinate
+  ALREADY_SET  avondale-forest-park                                 target already carries this exact coordinate
+  ALREADY_SET  newgrange                                            target already carries this exact coordinate
+  ALREADY_SET  knowth                                               target already carries this exact coordinate
+  ALREADY_SET  hill-of-tara                                         target already carries this exact coordinate
+  ALREADY_SET  trim-castle                                          target already carries this exact coordinate
+  ALREADY_SET  slane-castle                                         target already carries this exact coordinate
+  ALREADY_SET  loughcrew                                            target already carries this exact coordinate
+  ALREADY_SET  battle-of-the-boyne-visitor-centre                   target already carries this exact coordinate
+  ALREADY_SET  kylemore-abbey                                       target already carries this exact coordinate
+  ALREADY_SET  connemara-national-park                              target already carries this exact coordinate
+  ALREADY_SET  salthill                                             target already carries this exact coordinate
+  ALREADY_SET  sky-road                                             target already carries this exact coordinate
+  ALREADY_SET  aran-islands                                         target already carries this exact coordinate
+  ALREADY_SET  dun-aonghasa                                         target already carries this exact coordinate
+  ALREADY_SET  diamond-hill                                         target already carries this exact coordinate
+  ALREADY_SET  galway-atlantaquaria                                 target already carries this exact coordinate
+  ALREADY_SET  cliffs-of-moher                                      target already carries this exact coordinate
+  ALREADY_SET  burren-national-park                                 target already carries this exact coordinate
+  ALREADY_SET  bunratty-castle-folk-park                            target already carries this exact coordinate
+  ALREADY_SET  aillwee-caves                                        target already carries this exact coordinate
+  ALREADY_SET  doolin-cave                                          target already carries this exact coordinate
+  ALREADY_SET  loop-head                                            target already carries this exact coordinate
+  ALREADY_SET  lahinch-beach                                        target already carries this exact coordinate
+  ALREADY_SET  kilkee-cliffs                                        target already carries this exact coordinate
+  ALREADY_SET  blarney-castle                                       target already carries this exact coordinate
+  ALREADY_SET  cobh                                                 target already carries this exact coordinate
+  ALREADY_SET  titanic-experience-cobh                              target already carries this exact coordinate
+  ALREADY_SET  fota-wildlife-park                                   target already carries this exact coordinate
+  ALREADY_SET  jameson-distillery-midleton                          target already carries this exact coordinate
+  ALREADY_SET  kinsale                                              target already carries this exact coordinate
+  ALREADY_SET  charles-fort                                         target already carries this exact coordinate
+  ALREADY_SET  mizen-head                                           target already carries this exact coordinate
+  ALREADY_SET  killarney-national-park                              target already carries this exact coordinate
+  ALREADY_SET  muckross-house                                       target already carries this exact coordinate
+  ALREADY_SET  ross-castle                                          target already carries this exact coordinate
+  ALREADY_SET  torc-waterfall                                       target already carries this exact coordinate
+  ALREADY_SET  gap-of-dunloe                                        target already carries this exact coordinate
+  ALREADY_SET  ring-of-kerry                                        target already carries this exact coordinate
+  ALREADY_SET  dingle-peninsula                                     target already carries this exact coordinate
+  ALREADY_SET  inch-beach                                           target already carries this exact coordinate
+  ALREADY_SET  national-museum-archaeology                          target already carries this exact coordinate
+  ALREADY_SET  epic-irish-emigration-museum                         target already carries this exact coordinate
+  ALREADY_SET  national-botanic-gardens-dublin                      target already carries this exact coordinate
+  ALREADY_SET  glasnevin-cemetery-museum                            target already carries this exact coordinate
+  ALREADY_SET  dun-laoghaire-east-pier                              target already carries this exact coordinate
+  ALREADY_SET  portmarnock-beach                                    target already carries this exact coordinate
+  ALREADY_SET  russborough-house                                    target already carries this exact coordinate
+  ALREADY_SET  wicklow-historic-gaol                                target already carries this exact coordinate
+  ALREADY_SET  brittas-bay-beach                                    target already carries this exact coordinate
+  ALREADY_SET  killruddery-house-gardens                            target already carries this exact coordinate
+  ALREADY_SET  mount-usher-gardens                                  target already carries this exact coordinate
+  ALREADY_SET  wicklow-way                                          target already carries this exact coordinate
+  ALREADY_SET  emerald-park                                         target already carries this exact coordinate
+  ALREADY_SET  bective-abbey                                        target already carries this exact coordinate
+  ALREADY_SET  kells-historic-town                                  target already carries this exact coordinate
+  ALREADY_SET  sonairte-ecology-centre                              target already carries this exact coordinate
+  ALREADY_SET  dowth                                                target already carries this exact coordinate
+  ALREADY_SET  spanish-arch-long-walk                               target already carries this exact coordinate
+  ALREADY_SET  galway-city-museum                                   target already carries this exact coordinate
+  ALREADY_SET  brigits-garden                                       target already carries this exact coordinate
+  ALREADY_SET  coole-park                                           target already carries this exact coordinate
+  ALREADY_SET  portumna-castle-gardens                              target already carries this exact coordinate
+  ALREADY_SET  thoor-ballylee                                       target already carries this exact coordinate
+  ALREADY_SET  ennis-friary                                         target already carries this exact coordinate
+  ALREADY_SET  scattery-island                                      target already carries this exact coordinate
+  ALREADY_SET  holy-island-inis-cealtra                             target already carries this exact coordinate
+  ALREADY_SET  spanish-point-beach                                  target already carries this exact coordinate
+  ALREADY_SET  craggaunowen                                         target already carries this exact coordinate
+  ALREADY_SET  vandeleur-walled-garden                              target already carries this exact coordinate
+  ALREADY_SET  english-market-cork                                  target already carries this exact coordinate
+  ALREADY_SET  cork-city-gaol                                       target already carries this exact coordinate
+  ALREADY_SET  blackrock-castle-observatory                         target already carries this exact coordinate
+  ALREADY_SET  garnish-island                                       target already carries this exact coordinate
+  ALREADY_SET  spike-island-cork                                    target already carries this exact coordinate
+  ALREADY_SET  doneraile-park                                       target already carries this exact coordinate
+  ALREADY_SET  skellig-michael                                      target already carries this exact coordinate
+  ALREADY_SET  valentia-island                                      target already carries this exact coordinate
+  ALREADY_SET  kerry-cliffs                                         target already carries this exact coordinate
+  ALREADY_SET  derrynane-house                                      target already carries this exact coordinate
+  ALREADY_SET  gallarus-oratory                                     target already carries this exact coordinate
+  ALREADY_SET  muckross-abbey                                       target already carries this exact coordinate
+  ALREADY_SET  banna-strand                                         target already carries this exact coordinate
+  ALREADY_SET  rock-of-dunamase                                     target already carries this exact coordinate
+  ALREADY_SET  emo-court                                            target already carries this exact coordinate
+  ALREADY_SET  heywood-gardens                                      target already carries this exact coordinate
+  ALREADY_SET  timahoe-round-tower                                  target already carries this exact coordinate
+  ALREADY_SET  abbeyleix-heritage-house                             target already carries this exact coordinate
+  ALREADY_SET  slieve-bloom-mountains                               target already carries this exact coordinate
+  ALREADY_SET  clonmacnoise                                         target already carries this exact coordinate
+  ALREADY_SET  birr-castle-demesne                                  target already carries this exact coordinate
+  ALREADY_SET  lough-boora-discovery-park                           target already carries this exact coordinate
+  ALREADY_SET  charleville-forest-castle                            target already carries this exact coordinate
+  ALREADY_SET  tullamore-dew-experience                             target already carries this exact coordinate
+  ALREADY_SET  belvedere-house-gardens                              target already carries this exact coordinate
+  ALREADY_SET  athlone-castle                                       target already carries this exact coordinate
+  ALREADY_SET  kilbeggan-distillery                                 target already carries this exact coordinate
+  ALREADY_SET  mullaghmeen-forest                                   target already carries this exact coordinate
+  ALREADY_SET  glendeer-pet-farm                                    target already carries this exact coordinate
+  ALREADY_SET  corlea-trackway                                      target already carries this exact coordinate
+  ALREADY_SET  ardagh-heritage-village                              target already carries this exact coordinate
+  ALREADY_SET  granard-motte-bailey                                 target already carries this exact coordinate
+  ALREADY_SET  royal-canal-greenway                                 target already carries this exact coordinate
+  ALREADY_SET  newcastle-wood                                       target already carries this exact coordinate
+  ALREADY_SET  lough-ree                                            target already carries this exact coordinate
+  ALREADY_SET  rathcroghan                                          target already carries this exact coordinate
+  ALREADY_SET  boyle-abbey                                          target already carries this exact coordinate
+  ALREADY_SET  strokestown-park-famine-museum                       target already carries this exact coordinate
+  ALREADY_SET  arigna-mining-experience                             target already carries this exact coordinate
+  ALREADY_SET  lough-key-forest-park                                target already carries this exact coordinate
+  ALREADY_SET  roscommon-castle                                     target already carries this exact coordinate
+  ALREADY_SET  glencar-waterfall                                    target already carries this exact coordinate
+  ALREADY_SET  parkes-castle                                        target already carries this exact coordinate
+  ALREADY_SET  acres-lake-floating-boardwalk                        target already carries this exact coordinate
+  ALREADY_SET  lough-allen                                          target already carries this exact coordinate
+  ALREADY_SET  lough-rynn-castle-gardens                            target already carries this exact coordinate
+  ALREADY_SET  sean-mac-diarmada-cottage                            target already carries this exact coordinate
+  ALREADY_SET  cavan-burren-park                                    target already carries this exact coordinate
+  ALREADY_SET  killykeen-forest-park                                target already carries this exact coordinate
+  ALREADY_SET  dun-a-ri-forest-park                                 target already carries this exact coordinate
+  ALREADY_SET  shannon-pot                                          target already carries this exact coordinate
+  ALREADY_SET  cavan-county-museum                                  target already carries this exact coordinate
+  ALREADY_SET  belturbet-railway-station                            target already carries this exact coordinate
+  ALREADY_SET  castle-leslie-estate                                 target already carries this exact coordinate
+  ALREADY_SET  rossmore-forest-park                                 target already carries this exact coordinate
+  ALREADY_SET  monaghan-county-museum                               target already carries this exact coordinate
+  ALREADY_SET  carrickmacross-lace-gallery                          target already carries this exact coordinate
+  ALREADY_SET  patrick-kavanagh-centre                              target already carries this exact coordinate
+  ALREADY_SET  sliabh-beagh                                         target already carries this exact coordinate
+  ALREADY_SET  glenveagh-national-park                              target already carries this exact coordinate
+  ALREADY_SET  sliabh-liag                                          target already carries this exact coordinate
+  ALREADY_SET  donegal-castle                                       target already carries this exact coordinate
+  ALREADY_SET  malin-head                                           target already carries this exact coordinate
+  ALREADY_SET  fanad-head-lighthouse                                target already carries this exact coordinate
+  ALREADY_SET  grianan-of-aileach                                   target already carries this exact coordinate
+  ALREADY_SET  errigal                                              target already carries this exact coordinate
+  ALREADY_SET  ards-forest-park                                     target already carries this exact coordinate
+  ALREADY_SET  benbulben                                            target already carries this exact coordinate
+  ALREADY_SET  strandhill-beach                                     target already carries this exact coordinate
+  ALREADY_SET  carrowmore-megalithic-cemetery                       target already carries this exact coordinate
+  ALREADY_SET  queen-maeves-trail-knocknarea                        target already carries this exact coordinate
+  ALREADY_SET  sligo-abbey                                          target already carries this exact coordinate
+  ALREADY_SET  lissadell-house                                      target already carries this exact coordinate
+  ALREADY_SET  drumcliffe                                           target already carries this exact coordinate
+  ALREADY_SET  eagles-flying                                        target already carries this exact coordinate
+  ALREADY_SET  croagh-patrick                                       target already carries this exact coordinate
+  ALREADY_SET  achill-island                                        target already carries this exact coordinate
+  ALREADY_SET  keem-bay                                             target already carries this exact coordinate
+  ALREADY_SET  westport-house                                       target already carries this exact coordinate
+  ALREADY_SET  national-museum-country-life                         target already carries this exact coordinate
+  ALREADY_SET  downpatrick-head                                     target already carries this exact coordinate
+  ALREADY_SET  ceide-fields                                         target already carries this exact coordinate
+  ALREADY_SET  great-western-greenway                               target already carries this exact coordinate
+  ALREADY_SET  wild-nephin-ballycroy-national-park                  target already carries this exact coordinate
+  ALREADY_SET  clare-island                                         target already carries this exact coordinate
+  ALREADY_SET  kilkenny-castle                                      target already carries this exact coordinate
+  ALREADY_SET  medieval-mile-museum                                 target already carries this exact coordinate
+  ALREADY_SET  jerpoint-abbey                                       target already carries this exact coordinate
+  ALREADY_SET  rothe-house-garden                                   target already carries this exact coordinate
+  ALREADY_SET  smithwicks-experience                                target already carries this exact coordinate
+  ALREADY_SET  dunmore-cave                                         target already carries this exact coordinate
+  ALREADY_SET  castlecomer-discovery-park                           target already carries this exact coordinate
+  ALREADY_SET  jerpoint-park                                        target already carries this exact coordinate
+  ALREADY_SET  woodstock-gardens                                    target already carries this exact coordinate
+  ALREADY_SET  house-of-waterford-crystal                           target already carries this exact coordinate
+  ALREADY_SET  waterford-treasures                                  target already carries this exact coordinate
+  ALREADY_SET  reginals-tower                                       target already carries this exact coordinate
+  ALREADY_SET  waterford-greenway                                   target already carries this exact coordinate
+  ALREADY_SET  copper-coast-geopark                                 target already carries this exact coordinate
+  ALREADY_SET  mount-congreve-gardens                               target already carries this exact coordinate
+  ALREADY_SET  lismore-castle-gardens                               target already carries this exact coordinate
+  ALREADY_SET  ardmore-round-tower                                  target already carries this exact coordinate
+  ALREADY_SET  coumshingaun-loop                                    target already carries this exact coordinate
+  ALREADY_SET  irish-national-heritage-park                         target already carries this exact coordinate
+  ALREADY_SET  johnstown-castle                                     target already carries this exact coordinate
+  ALREADY_SET  hook-lighthouse                                      target already carries this exact coordinate
+  ALREADY_SET  dunbrody-famine-ship                                 target already carries this exact coordinate
+  ALREADY_SET  saltee-islands                                       target already carries this exact coordinate
+  ALREADY_SET  curracloe-beach                                      target already carries this exact coordinate
+  ALREADY_SET  wexford-wildfowl-reserve                             target already carries this exact coordinate
+  ALREADY_SET  ferns-castle                                         target already carries this exact coordinate
+  ALREADY_SET  tintern-abbey-wexford                                target already carries this exact coordinate
+  ALREADY_SET  rock-of-cashel                                       target already carries this exact coordinate
+  ALREADY_SET  cahir-castle                                         target already carries this exact coordinate
+  ALREADY_SET  swiss-cottage                                        target already carries this exact coordinate
+  ALREADY_SET  glen-of-aherlow                                      target already carries this exact coordinate
+  ALREADY_SET  the-vee-bay-lough                                    target already carries this exact coordinate
+  ALREADY_SET  ormond-castle                                        target already carries this exact coordinate
+  ALREADY_SET  mitchelstown-cave                                    target already carries this exact coordinate
+  ALREADY_SET  holy-cross-abbey                                     target already carries this exact coordinate
+  ALREADY_SET  king-johns-castle-limerick                           target already carries this exact coordinate
+  ALREADY_SET  hunt-museum                                          target already carries this exact coordinate
+  ALREADY_SET  st-marys-cathedral-limerick                          target already carries this exact coordinate
+  ALREADY_SET  adare-village                                        target already carries this exact coordinate
+  ALREADY_SET  foynes-flying-boat-museum                            target already carries this exact coordinate
+  ALREADY_SET  lough-gur                                            target already carries this exact coordinate
+  ALREADY_SET  curraghchase-forest-park                             target already carries this exact coordinate
+  ALREADY_SET  irish-national-stud-japanese-gardens                 target already carries this exact coordinate
+  ALREADY_SET  castletown-house                                     target already carries this exact coordinate
+  ALREADY_SET  bog-of-allen-nature-centre                           target already carries this exact coordinate
+  ALREADY_SET  pollardstown-fen                                     target already carries this exact coordinate
+  ALREADY_SET  maynooth-castle                                      target already carries this exact coordinate
+  ALREADY_SET  donadea-forest-park                                  target already carries this exact coordinate
+  ALREADY_SET  lullymore-heritage-park                              target already carries this exact coordinate
+  ALREADY_SET  mondello-park                                        target already carries this exact coordinate
+  ALREADY_SET  carlingford                                          target already carries this exact coordinate
+  ALREADY_SET  proleek-dolmen                                       target already carries this exact coordinate
+  ALREADY_SET  monasterboice                                        target already carries this exact coordinate
+  ALREADY_SET  mellifont-abbey                                      target already carries this exact coordinate
+  ALREADY_SET  carlingford-lough-greenway                           target already carries this exact coordinate
+  ALREADY_SET  millmount-fort-museum                                target already carries this exact coordinate
+  ALREADY_SET  brownshill-dolmen                                    target already carries this exact coordinate
+  ALREADY_SET  altamont-gardens                                     target already carries this exact coordinate
+  ALREADY_SET  ducketts-grove                                       target already carries this exact coordinate
+  ALREADY_SET  huntington-castle-gardens                            target already carries this exact coordinate
+  ALREADY_SET  borris-house                                         target already carries this exact coordinate
+  ALREADY_SET  oak-park-forest-park                                 target already carries this exact coordinate
+  ALREADY_SET  mount-leinster-nine-stones                           target already carries this exact coordinate
+  ALREADY_SET  king-johns-castle-carlingford                        target already carries this exact coordinate
+  ALREADY_SET  chester-beatty                                       target already carries this exact coordinate
+  ALREADY_SET  forty-foot                                           target already carries this exact coordinate
+  ALREADY_SET  derrigimlagh                                         target already carries this exact coordinate
+  ALREADY_SET  joyce-tower-museum                                   target already carries this exact coordinate
+  ALREADY_SET  the-model                                            target already carries this exact coordinate
+  ALREADY_SET  doagh-famine-village                                 target already carries this exact coordinate
+  ALREADY_SET  dursey-island                                        target already carries this exact coordinate
+  ALREADY_SET  old-head-of-kinsale                                  target already carries this exact coordinate
+  ALREADY_SET  lough-muckno-leisure-park                            target already carries this exact coordinate
+  ALREADY_SET  jfk-arboretum                                        target already carries this exact coordinate
+  ALREADY_SET  cavan-cathedral                                      target already carries this exact coordinate
+  ALREADY_SET  national-design-craft-gallery                        target already carries this exact coordinate
+  ALREADY_SET  annes-grove-gardens                                  target already carries this exact coordinate
+  ALREADY_SET  barryscourt-castle                                   target already carries this exact coordinate
+  ALREADY_SET  desmond-castle-kinsale                               target already carries this exact coordinate
+  ALREADY_SET  fota-arboretum-and-gardens                           target already carries this exact coordinate
+  ALREADY_SET  arbour-hill-cemetery                                 target already carries this exact coordinate
+  ALREADY_SET  casino-marino                                        target already carries this exact coordinate
+  ALREADY_SET  custom-house-visitor-centre                          target already carries this exact coordinate
+  ALREADY_SET  farmleigh-house-and-estate                           target already carries this exact coordinate
+  ALREADY_SET  garden-of-remembrance                                target already carries this exact coordinate
+  ALREADY_SET  government-buildings                                 target already carries this exact coordinate
+  ALREADY_SET  grangegorman-military-cemetery                       target already carries this exact coordinate
+  ALREADY_SET  irish-national-war-memorial-gardens                  target already carries this exact coordinate
+  ALREADY_SET  iveagh-gardens                                       target already carries this exact coordinate
+  ALREADY_SET  pearse-museum-st-endas-park                          target already carries this exact coordinate
+  ALREADY_SET  phoenix-park-visitor-centre-ashtown-castle           target already carries this exact coordinate
+  ALREADY_SET  phoenix-park-peoples-flower-gardens                  target already carries this exact coordinate
+  ALREADY_SET  rathfarnham-castle                                   target already carries this exact coordinate
+  ALREADY_SET  royal-hospital-kilmainham                            target already carries this exact coordinate
+  ALREADY_SET  st-marys-abbey-chapter-house                         target already carries this exact coordinate
+  ALREADY_SET  st-audens-church                                     target already carries this exact coordinate
+  ALREADY_SET  st-stephens-green                                    target already carries this exact coordinate
+  ALREADY_SET  aras-an-uachtarain                                   target already carries this exact coordinate
+  ALREADY_SET  ardfert-cathedral                                    target already carries this exact coordinate
+  ALREADY_SET  listowel-castle                                      target already carries this exact coordinate
+  ALREADY_SET  blasket-centre-ionad-an-bhlascaoid                   target already carries this exact coordinate
+  ALREADY_SET  askeaton-castle                                      target already carries this exact coordinate
+  ALREADY_SET  desmond-castle-adare                                 target already carries this exact coordinate
+  ALREADY_SET  desmond-castle-newcastlewest                         target already carries this exact coordinate
+  ALREADY_SET  athenry-castle                                       target already carries this exact coordinate
+  ALREADY_SET  aughnanure-castle                                    target already carries this exact coordinate
+  ALREADY_SET  ionad-culturtha-an-phiarsaigh-pearses-cottage        target already carries this exact coordinate
+  ALREADY_SET  ballyhack-castle                                     target already carries this exact coordinate
+  ALREADY_SET  doe-castle                                           target already carries this exact coordinate
+  ALREADY_SET  glebe-house-and-gallery                              target already carries this exact coordinate
+  ALREADY_SET  newmills-corn-and-flax-mills                         target already carries this exact coordinate
+  ALREADY_SET  dungarvan-castle                                     target already carries this exact coordinate
+  ALREADY_SET  kells-priory                                         target already carries this exact coordinate
+  ALREADY_SET  st-marys-church-gowran                               target already carries this exact coordinate
+  ALREADY_SET  famine-warhouse-1848                                 target already carries this exact coordinate
+  ALREADY_SET  the-main-guard                                       target already carries this exact coordinate
+  ALREADY_SET  roscrea-heritage-centre-roscrea-castle-and-damer-house target already carries this exact coordinate
+  ALREADY_SET  fore-abbey                                           target already carries this exact coordinate
+  ALREADY_SET  national-botanic-gardens-kilmacurragh                target already carries this exact coordinate
+  ALREADY_SET  dwyer-mcallister-cottage                             target already carries this exact coordinate
+attributes: reading the source taxonomy from http://localhost:8080
+  ATTRIBUTES   dwyer-mcallister-cottage                             +estacionamento,gratuito,interior,necessita-reserva
+  ATTRIBUTES   national-botanic-gardens-kilmacurragh                +exterior,familias,gratuito
+  ATTRIBUTES   fore-abbey                                           +estacionamento,exterior
+  ATTRIBUTES   roscrea-heritage-centre-roscrea-castle-and-damer-house +estacionamento,familias,interior-exterior,pago
+  ATTRIBUTES   the-main-guard                                       +gratuito,interior
+  ATTRIBUTES   famine-warhouse-1848                                 +estacionamento,gratuito,interior,necessita-reserva
+  ATTRIBUTES   st-marys-church-gowran                               +gratuito,interior
+  ATTRIBUTES   kells-priory                                         +exterior,gratuito
+  ATTRIBUTES   dungarvan-castle                                     +gratuito,interior-exterior
+  ATTRIBUTES   newmills-corn-and-flax-mills                         +estacionamento,gratuito,interior-exterior
+  ATTRIBUTES   glebe-house-and-gallery                              +estacionamento,familias,gratuito-em-determinadas-condicoes,interior-exterior
+  ATTRIBUTES   doe-castle                                           +estacionamento,exterior,gratuito
+  ATTRIBUTES   ballyhack-castle                                     +exterior,gratuito
+  ATTRIBUTES   ionad-culturtha-an-phiarsaigh-pearses-cottage        +estacionamento,familias,interior-exterior,pago
+  ATTRIBUTES   aughnanure-castle                                    +estacionamento,interior-exterior,pago
+  ATTRIBUTES   athenry-castle                                       +estacionamento,familias,interior-exterior,pago
+  ATTRIBUTES   desmond-castle-newcastlewest                         +exterior,gratuito
+  ATTRIBUTES   desmond-castle-adare                                 +estacionamento,interior-exterior,necessita-reserva
+  ATTRIBUTES   askeaton-castle                                      +exterior
+  ATTRIBUTES   blasket-centre-ionad-an-bhlascaoid                   +interior,necessita-reserva,pago
+  ATTRIBUTES   listowel-castle                                      +exterior,gratuito
+  ATTRIBUTES   ardfert-cathedral                                    +estacionamento,interior-exterior,pago
+  ATTRIBUTES   aras-an-uachtarain                                   +gratuito,interior
+  ATTRIBUTES   st-stephens-green                                    +exterior,familias,gratuito
+  ATTRIBUTES   st-audens-church                                     +gratuito,interior
+  ATTRIBUTES   st-marys-abbey-chapter-house                         +gratuito,interior,necessita-reserva
+  ATTRIBUTES   royal-hospital-kilmainham                            +estacionamento,gratuito-em-determinadas-condicoes,interior-exterior
+  ATTRIBUTES   rathfarnham-castle                                   +estacionamento,familias,interior-exterior,pago
+  ATTRIBUTES   phoenix-park-peoples-flower-gardens                  +exterior,familias,gratuito
+  ATTRIBUTES   phoenix-park-visitor-centre-ashtown-castle           +estacionamento,familias,gratuito,interior-exterior
+  ATTRIBUTES   pearse-museum-st-endas-park                          +estacionamento,familias,gratuito,interior-exterior
+  ATTRIBUTES   iveagh-gardens                                       +exterior,familias,gratuito
+  ATTRIBUTES   irish-national-war-memorial-gardens                  +estacionamento,exterior,gratuito
+  ATTRIBUTES   grangegorman-military-cemetery                       +exterior,gratuito
+  ATTRIBUTES   government-buildings                                 +gratuito,interior
+  ATTRIBUTES   garden-of-remembrance                                +exterior,gratuito
+  ATTRIBUTES   farmleigh-house-and-estate                           +estacionamento,familias,gratuito-em-determinadas-condicoes,interior-exterior
+  ATTRIBUTES   custom-house-visitor-centre                          +interior,necessita-reserva,pago
+  ATTRIBUTES   casino-marino                                        +estacionamento,interior,pago
+  ATTRIBUTES   arbour-hill-cemetery                                 +exterior,gratuito
+  ATTRIBUTES   fota-arboretum-and-gardens                           +estacionamento,exterior,familias,gratuito
+  ATTRIBUTES   desmond-castle-kinsale                               +exterior,pago
+  ATTRIBUTES   barryscourt-castle                                   +estacionamento,interior-exterior,pago
+  ATTRIBUTES   annes-grove-gardens                                  +estacionamento,exterior,familias,pago
+  ATTRIBUTES   national-design-craft-gallery                        +gratuito,interior
+  ATTRIBUTES   cavan-cathedral                                      +gratuito,interior
+  ATTRIBUTES   jfk-arboretum                                        +estacionamento,exterior,familias,gratuito-em-determinadas-condicoes,pet-friendly
+  ATTRIBUTES   lough-muckno-leisure-park                            +estacionamento,exterior,familias,gratuito,pet-friendly
+  ATTRIBUTES   old-head-of-kinsale                                  +estacionamento,exterior,gratuito-em-determinadas-condicoes
+  ATTRIBUTES   dursey-island                                        +exterior,familias,gratuito-em-determinadas-condicoes
+  ATTRIBUTES   doagh-famine-village                                 +estacionamento,familias,interior-exterior,pago,pet-friendly
+  ATTRIBUTES   the-model                                            +acessivel,familias,gratuito,interior
+  ATTRIBUTES   joyce-tower-museum                                   +acesso-de-transporte-publico,gratuito,interior
+  ATTRIBUTES   derrigimlagh                                         +bicicleta,exterior,gratuito
+  ATTRIBUTES   forty-foot                                           +acesso-de-transporte-publico,estacionamento,exterior,gratuito
+  ATTRIBUTES   chester-beatty                                       +acessivel,acesso-de-transporte-publico,gratuito,interior-exterior
+  ATTRIBUTES   king-johns-castle-carlingford                        +exterior
+  ATTRIBUTES   mount-leinster-nine-stones                           +exterior,gratuito
+  ATTRIBUTES   oak-park-forest-park                                 +exterior,familias,gratuito
+  ATTRIBUTES   borris-house                                         +interior-exterior
+  ATTRIBUTES   huntington-castle-gardens                            +interior-exterior
+  ATTRIBUTES   ducketts-grove                                       +exterior,gratuito
+  ATTRIBUTES   altamont-gardens                                     +exterior,gratuito
+  ATTRIBUTES   brownshill-dolmen                                    +exterior,gratuito
+  ATTRIBUTES   millmount-fort-museum                                +interior-exterior
+  ATTRIBUTES   carlingford-lough-greenway                           +exterior,familias,gratuito
+  ATTRIBUTES   mellifont-abbey                                      +exterior,gratuito
+  ATTRIBUTES   monasterboice                                        +exterior,gratuito
+  ATTRIBUTES   proleek-dolmen                                       +exterior,gratuito
+  ATTRIBUTES   carlingford                                          +exterior,gratuito
+  ATTRIBUTES   mondello-park                                        +exterior,familias
+  ATTRIBUTES   lullymore-heritage-park                              +exterior,familias
+  ATTRIBUTES   donadea-forest-park                                  +exterior,familias,gratuito
+  ATTRIBUTES   maynooth-castle                                      +exterior,gratuito
+  ATTRIBUTES   pollardstown-fen                                     +exterior,gratuito
+  ATTRIBUTES   bog-of-allen-nature-centre                           +familias,interior-exterior
+  ATTRIBUTES   castletown-house                                     +interior-exterior
+  ATTRIBUTES   irish-national-stud-japanese-gardens                 +exterior,familias
+  ATTRIBUTES   curraghchase-forest-park                             +exterior,gratuito
+  ATTRIBUTES   lough-gur                                            +exterior,familias
+  ATTRIBUTES   foynes-flying-boat-museum                            +familias,interior
+  ATTRIBUTES   adare-village                                        +exterior,gratuito
+  ATTRIBUTES   st-marys-cathedral-limerick                          +interior
+  ATTRIBUTES   hunt-museum                                          +interior
+  ATTRIBUTES   king-johns-castle-limerick                           +familias,interior-exterior
+  ATTRIBUTES   holy-cross-abbey                                     +gratuito,interior
+  ATTRIBUTES   mitchelstown-cave                                    +familias,interior
+  ATTRIBUTES   ormond-castle                                        +interior
+  ATTRIBUTES   the-vee-bay-lough                                    +exterior,gratuito
+  ATTRIBUTES   glen-of-aherlow                                      +exterior,gratuito
+  ATTRIBUTES   swiss-cottage                                        +interior
+  ATTRIBUTES   cahir-castle                                         +exterior,familias
+  ATTRIBUTES   rock-of-cashel                                       +exterior
+  ATTRIBUTES   tintern-abbey-wexford                                +exterior
+  ATTRIBUTES   ferns-castle                                         +exterior,gratuito
+  ATTRIBUTES   wexford-wildfowl-reserve                             +exterior,gratuito
+  ATTRIBUTES   curracloe-beach                                      +exterior,familias,gratuito
+  ATTRIBUTES   saltee-islands                                       +exterior
+  ATTRIBUTES   dunbrody-famine-ship                                 +interior
+  ATTRIBUTES   hook-lighthouse                                      +familias,interior-exterior
+  ATTRIBUTES   johnstown-castle                                     +exterior,familias
+  ATTRIBUTES   irish-national-heritage-park                         +exterior,familias
+  ATTRIBUTES   coumshingaun-loop                                    +exterior,gratuito
+  ATTRIBUTES   ardmore-round-tower                                  +exterior,gratuito
+  ATTRIBUTES   lismore-castle-gardens                               +exterior
+  ATTRIBUTES   mount-congreve-gardens                               +exterior,familias
+  ATTRIBUTES   copper-coast-geopark                                 +exterior,gratuito
+  ATTRIBUTES   waterford-greenway                                   +exterior,familias,gratuito
+  ATTRIBUTES   reginals-tower                                       +interior
+  ATTRIBUTES   waterford-treasures                                  +interior
+  ATTRIBUTES   house-of-waterford-crystal                           +interior,necessita-reserva
+  ATTRIBUTES   woodstock-gardens                                    +exterior,gratuito
+  ATTRIBUTES   jerpoint-park                                        +exterior,necessita-reserva
+  ATTRIBUTES   castlecomer-discovery-park                           +exterior,familias
+  ATTRIBUTES   dunmore-cave                                         +interior
+  ATTRIBUTES   smithwicks-experience                                +interior,necessita-reserva
+  ATTRIBUTES   rothe-house-garden                                   +interior-exterior
+  ATTRIBUTES   jerpoint-abbey                                       +exterior
+  ATTRIBUTES   medieval-mile-museum                                 +interior
+  ATTRIBUTES   kilkenny-castle                                      +familias,interior-exterior
+  ATTRIBUTES   clare-island                                         +exterior
+  ATTRIBUTES   wild-nephin-ballycroy-national-park                  +exterior,gratuito
+  ATTRIBUTES   great-western-greenway                               +exterior,familias,gratuito
+  ATTRIBUTES   ceide-fields                                         +interior-exterior
+  ATTRIBUTES   downpatrick-head                                     +exterior,gratuito
+  ATTRIBUTES   national-museum-country-life                         +gratuito,interior
+  ATTRIBUTES   westport-house                                       +exterior,familias
+  ATTRIBUTES   keem-bay                                             +exterior,gratuito
+  ATTRIBUTES   achill-island                                        +exterior,gratuito
+  ATTRIBUTES   croagh-patrick                                       +exterior,gratuito
+  ATTRIBUTES   eagles-flying                                        +exterior,familias
+  ATTRIBUTES   drumcliffe                                           +exterior,gratuito
+  ATTRIBUTES   lissadell-house                                      +interior-exterior
+  ATTRIBUTES   sligo-abbey                                          +interior-exterior
+  ATTRIBUTES   queen-maeves-trail-knocknarea                        +estacionamento,exterior,gratuito
+  ATTRIBUTES   carrowmore-megalithic-cemetery                       +exterior
+  ATTRIBUTES   strandhill-beach                                     +exterior,familias,gratuito
+  ATTRIBUTES   benbulben                                            +exterior,gratuito
+  ATTRIBUTES   ards-forest-park                                     +exterior,familias,gratuito
+  ATTRIBUTES   errigal                                              +exterior,gratuito
+  ATTRIBUTES   grianan-of-aileach                                   +exterior,gratuito
+  ATTRIBUTES   fanad-head-lighthouse                                +exterior
+  ATTRIBUTES   malin-head                                           +exterior,gratuito
+  ATTRIBUTES   donegal-castle                                       +interior
+  ATTRIBUTES   sliabh-liag                                          +exterior,gratuito
+  ATTRIBUTES   glenveagh-national-park                              +exterior,familias
+  ATTRIBUTES   sliabh-beagh                                         +exterior,gratuito
+  ATTRIBUTES   patrick-kavanagh-centre                              +interior
+  ATTRIBUTES   carrickmacross-lace-gallery                          +interior
+  ATTRIBUTES   monaghan-county-museum                               +gratuito,interior
+  ATTRIBUTES   rossmore-forest-park                                 +exterior,familias,gratuito
+  ATTRIBUTES   castle-leslie-estate                                 +exterior,familias
+  ATTRIBUTES   belturbet-railway-station                            +interior
+  ATTRIBUTES   cavan-county-museum                                  +interior-exterior
+  ATTRIBUTES   shannon-pot                                          +exterior,gratuito
+  ATTRIBUTES   dun-a-ri-forest-park                                 +exterior,familias,gratuito
+  ATTRIBUTES   killykeen-forest-park                                +exterior,gratuito
+  ATTRIBUTES   cavan-burren-park                                    +exterior,familias,gratuito
+  ATTRIBUTES   sean-mac-diarmada-cottage                            +exterior
+  ATTRIBUTES   lough-rynn-castle-gardens                            +exterior,familias
+  ATTRIBUTES   lough-allen                                          +exterior,gratuito
+  ATTRIBUTES   acres-lake-floating-boardwalk                        +exterior,familias,gratuito
+  ATTRIBUTES   parkes-castle                                        +exterior
+  ATTRIBUTES   glencar-waterfall                                    +exterior,familias,gratuito
+  ATTRIBUTES   roscommon-castle                                     +exterior,gratuito
+  ATTRIBUTES   lough-key-forest-park                                +exterior,familias
+  ATTRIBUTES   arigna-mining-experience                             +interior,necessita-reserva
+  ATTRIBUTES   strokestown-park-famine-museum                       +interior-exterior
+  ATTRIBUTES   boyle-abbey                                          +exterior
+  ATTRIBUTES   rathcroghan                                          +interior-exterior
+  ATTRIBUTES   lough-ree                                            +exterior,gratuito
+  ATTRIBUTES   newcastle-wood                                       +exterior,gratuito
+  ATTRIBUTES   royal-canal-greenway                                 +exterior,gratuito
+  ATTRIBUTES   granard-motte-bailey                                 +exterior,gratuito
+  ATTRIBUTES   ardagh-heritage-village                              +exterior,gratuito
+  ATTRIBUTES   corlea-trackway                                      +interior
+  ATTRIBUTES   glendeer-pet-farm                                    +exterior,familias
+  ATTRIBUTES   mullaghmeen-forest                                   +exterior,gratuito
+  ATTRIBUTES   kilbeggan-distillery                                 +interior
+  ATTRIBUTES   athlone-castle                                       +familias,interior
+  ATTRIBUTES   belvedere-house-gardens                              +exterior,familias
+  ATTRIBUTES   tullamore-dew-experience                             +interior
+  ATTRIBUTES   charleville-forest-castle                            +exterior
+  ATTRIBUTES   lough-boora-discovery-park                           +exterior,familias,gratuito
+  ATTRIBUTES   birr-castle-demesne                                  +exterior,familias
+  ATTRIBUTES   clonmacnoise                                         +exterior
+  ATTRIBUTES   slieve-bloom-mountains                               +exterior,gratuito
+  ATTRIBUTES   abbeyleix-heritage-house                             +interior
+  ATTRIBUTES   timahoe-round-tower                                  +exterior,gratuito
+  ATTRIBUTES   heywood-gardens                                      +exterior,gratuito
+  ATTRIBUTES   emo-court                                            +exterior,gratuito
+  ATTRIBUTES   rock-of-dunamase                                     +exterior,gratuito
+  ATTRIBUTES   banna-strand                                         +exterior,familias,gratuito
+  ATTRIBUTES   muckross-abbey                                       +exterior,gratuito
+  ATTRIBUTES   gallarus-oratory                                     +exterior
+  ATTRIBUTES   derrynane-house                                      +exterior
+  ATTRIBUTES   kerry-cliffs                                         +exterior
+  ATTRIBUTES   valentia-island                                      +exterior,familias
+  ATTRIBUTES   skellig-michael                                      +exterior,necessita-reserva
+  ATTRIBUTES   doneraile-park                                       +exterior,familias,gratuito
+  ATTRIBUTES   spike-island-cork                                    +exterior,necessita-reserva
+  ATTRIBUTES   garnish-island                                       +exterior,necessita-reserva
+  ATTRIBUTES   blackrock-castle-observatory                         +familias,interior
+  ATTRIBUTES   cork-city-gaol                                       +familias,interior
+  ATTRIBUTES   english-market-cork                                  +gratuito,interior
+  ATTRIBUTES   vandeleur-walled-garden                              +exterior,familias
+  ATTRIBUTES   craggaunowen                                         +exterior,familias
+  ATTRIBUTES   spanish-point-beach                                  +exterior,familias,gratuito
+  ATTRIBUTES   holy-island-inis-cealtra                             +exterior
+  ATTRIBUTES   scattery-island                                      +exterior
+  ATTRIBUTES   ennis-friary                                         +interior
+  ATTRIBUTES   thoor-ballylee                                       +exterior
+  ATTRIBUTES   portumna-castle-gardens                              +exterior
+  ATTRIBUTES   coole-park                                           +exterior,gratuito
+  ATTRIBUTES   brigits-garden                                       +exterior,familias
+  ATTRIBUTES   galway-city-museum                                   +gratuito,interior
+  ATTRIBUTES   spanish-arch-long-walk                               +exterior,gratuito
+  ATTRIBUTES   dowth                                                +exterior,necessita-reserva
+  ATTRIBUTES   sonairte-ecology-centre                              +exterior,familias
+  ATTRIBUTES   kells-historic-town                                  +exterior,gratuito
+  ATTRIBUTES   bective-abbey                                        +exterior,gratuito
+  ATTRIBUTES   emerald-park                                         +exterior,familias,necessita-reserva
+  ATTRIBUTES   wicklow-way                                          +exterior,gratuito
+  ATTRIBUTES   mount-usher-gardens                                  +exterior,familias
+  ATTRIBUTES   killruddery-house-gardens                            +exterior,familias
+  ATTRIBUTES   brittas-bay-beach                                    +exterior,gratuito
+  ATTRIBUTES   wicklow-historic-gaol                                +familias,interior
+  ATTRIBUTES   russborough-house                                    +exterior,familias
+  ATTRIBUTES   portmarnock-beach                                    +exterior,gratuito
+  ATTRIBUTES   dun-laoghaire-east-pier                              +exterior,gratuito
+  ATTRIBUTES   glasnevin-cemetery-museum                            +interior
+  ATTRIBUTES   national-botanic-gardens-dublin                      +exterior,familias,gratuito
+  ATTRIBUTES   epic-irish-emigration-museum                         +interior
+  ATTRIBUTES   national-museum-archaeology                          +gratuito,interior
+  ATTRIBUTES   inch-beach                                           +exterior
+  ATTRIBUTES   dingle-peninsula                                     +exterior
+  ATTRIBUTES   ring-of-kerry                                        +exterior
+  ATTRIBUTES   gap-of-dunloe                                        +exterior
+  ATTRIBUTES   torc-waterfall                                       +exterior
+  ATTRIBUTES   ross-castle                                          +exterior
+  ATTRIBUTES   muckross-house                                       +estacionamento,interior-exterior
+  ATTRIBUTES   killarney-national-park                              +estacionamento,exterior,familias
+  ATTRIBUTES   mizen-head                                           +estacionamento,exterior
+  ATTRIBUTES   charles-fort                                         +exterior
+  ATTRIBUTES   kinsale                                              +exterior
+  ATTRIBUTES   jameson-distillery-midleton                          +interior,necessita-reserva
+  ATTRIBUTES   fota-wildlife-park                                   +estacionamento,exterior,familias
+  ATTRIBUTES   titanic-experience-cobh                              +interior
+  ATTRIBUTES   cobh                                                 +exterior
+  ATTRIBUTES   blarney-castle                                       +estacionamento,exterior,familias
+  ATTRIBUTES   kilkee-cliffs                                        +exterior
+  ATTRIBUTES   lahinch-beach                                        +exterior,familias
+  ATTRIBUTES   loop-head                                            +exterior
+  ATTRIBUTES   doolin-cave                                          +interior
+  ATTRIBUTES   aillwee-caves                                        +estacionamento,familias,interior-exterior
+  ATTRIBUTES   bunratty-castle-folk-park                            +estacionamento,familias,interior-exterior
+  ATTRIBUTES   burren-national-park                                 +exterior
+  ATTRIBUTES   cliffs-of-moher                                      +estacionamento,exterior,familias
+  ATTRIBUTES   galway-atlantaquaria                                 +estacionamento,familias,interior
+  ATTRIBUTES   diamond-hill                                         +exterior
+  ATTRIBUTES   dun-aonghasa                                         +exterior
+  ATTRIBUTES   aran-islands                                         +exterior
+  ATTRIBUTES   sky-road                                             +exterior
+  ATTRIBUTES   salthill                                             +exterior,familias
+  ATTRIBUTES   connemara-national-park                              +estacionamento,exterior,familias
+  ATTRIBUTES   kylemore-abbey                                       +estacionamento,exterior,familias
+  ATTRIBUTES   battle-of-the-boyne-visitor-centre                   +interior
+  ATTRIBUTES   loughcrew                                            +exterior
+  ATTRIBUTES   slane-castle                                         +exterior
+  ATTRIBUTES   trim-castle                                          +exterior
+  ATTRIBUTES   hill-of-tara                                         +exterior
+  ATTRIBUTES   knowth                                               +exterior,necessita-reserva
+  ATTRIBUTES   newgrange                                            +exterior,necessita-reserva
+  ATTRIBUTES   avondale-forest-park                                 +estacionamento,exterior,familias
+  ATTRIBUTES   sally-gap                                            +exterior
+  ATTRIBUTES   great-sugar-loaf                                     +exterior
+  ATTRIBUTES   bray-head                                            +exterior
+  ATTRIBUTES   powerscourt-waterfall                                +estacionamento,exterior,familias
+  ATTRIBUTES   powerscourt-estate                                   +estacionamento,exterior,familias
+  ATTRIBUTES   glendalough                                          +estacionamento,exterior,familias
+  ATTRIBUTES   wicklow-mountains-national-park                      +exterior,familias
+  ATTRIBUTES   malahide-castle-gardens                              +estacionamento,familias,necessita-reserva
+  ATTRIBUTES   howth-cliff-walk                                     +exterior
+  ATTRIBUTES   dublin-zoo                                           +estacionamento,exterior,familias
+  ATTRIBUTES   phoenix-park                                         +exterior,familias
+  ATTRIBUTES   guinness-storehouse                                  +interior,necessita-reserva
+  ATTRIBUTES   kilmainham-gaol                                      +familias,interior,necessita-reserva
+  ATTRIBUTES   dublin-castle                                        +interior
+  ATTRIBUTES   trinity-college-book-of-kells                        +interior,necessita-reserva
+summary: manifest_entries=289, eligible_entries=289, target_records=289, populate=0, update=0, already_set=289, conflicts=0, unresolved=0, resumed=0, planned_writes=0, written=0, attributes_planned=289, attributes_written=289, with_before=289, with_after=289, gate=0, api_requests=296, api_retries=0, manifest_skipped={'OWNER_INPUT_REQUIRED:NOT_FOUND': 4, 'REVIEW:MEDIUM': 1}
+report: docs/evidence/2026-11-05-leisure-location-stage-9/apply-02-coordinates-attributes.json

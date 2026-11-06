@@ -1,0 +1,28 @@
+{
+  "title": "Eventos na Irlanda | Conexão BR",
+  "bodyClassHasLeisureLocation": false,
+  "headerExists": true,
+  "headerHtml": "<span class=\"section-eyebrow\">Agenda Irlandesa</span> <h1 class=\"page-title\">Eventos</h1> <p class=\"page-description\">Encontre eventos, encontros e atividades na Irlanda.</p>",
+  "headerChildren": [
+    "span.section-eyebrow",
+    "h1.page-title",
+    "p.page-description"
+  ],
+  "toggleCount": 0,
+  "controlCount": 0,
+  "proximityNodes": [],
+  "proximityLabel": null,
+  "distanceSpans": 0,
+  "gridCards": 10,
+  "filtersPresent": 0,
+  "geoCalls": 0,
+  "proximityJsLoaded": false,
+  "proximityHelpers": "undefined",
+  "locationConfig": null,
+  "reapplyHook": "undefined",
+  "url": "http://localhost:8080/eventos/",
+  "httpStatus": 200,
+  "consoleErrors": [],
+  "pageErrors": [],
+  "failedResponses": []
+}

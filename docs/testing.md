@@ -564,12 +564,78 @@ suite is not vacuous and the change is scoped to mobile. The carousel's
 browserless half is the blocking in-process suite
 `wp-content/themes/conexao-br-irlanda/tests/test-stage7-hero-sponsors.php`.
 
+### The Node unit layer (`tests/js/`)
+
+A third opt-in layer covers **pure JavaScript logic** — code with no DOM, no
+network and no WordPress dependency — so it can be exercised directly by Node
+with no browser and no stack:
+
+```bash
+node tests/js/test-leisure-proximity.mjs
+```
+
+`tests/js/test-leisure-proximity.mjs` loads the **shipped** helper module
+(`wp-content/themes/conexao-br-irlanda/assets/js/leisure-proximity.js`) through
+`createRequire`, so the suite runs the real code rather than a copy. It covers
+the Haversine maths and its invalid-input contract, the approved distance
+display table, the global nearest-first ordering and its tie-break, the
+geolocation outcome/support classification and the proximity batch-cursor
+arithmetic. Like the browser layer it is **not** discovered by
+`./scripts/run-tests.sh` — it needs Node, not the stack — and is run explicitly.
+The DOM/network half of the same feature is the browser acceptance below.
+
+### The Lazer proximity browser acceptance
+
+Two opt-in browser suites cover the `/lazer/` proximity feature in real Chromium
+with a **simulated** visitor position. They are deliberately separate because
+they have different data contracts:
+
+```bash
+# read-only: consumes the existing published records, never writes
+python3 tests/browser/verify-lazer-proximity-geolocation-readonly.py --base-url http://localhost:8080
+
+# seeding: creates four temporary attractions and deletes them again
+python3 tests/browser/verify-lazer-proximity-browser.py --base-url http://localhost:8080
+```
+
+`verify-lazer-proximity-geolocation-readonly.py` answers the browser-geolocation
+question against the live dataset: the opt-in control is inert until it is
+clicked, a click yields the simulated position, the grid re-orders
+nearest-first, the displayed distances match an **independent** Haversine +
+display-table calculation, and no relevant JavaScript/network error is raised —
+for granted, denied, `POSITION_UNAVAILABLE`, `TIMEOUT` and API-unsupported. It
+seeds, mutates and deletes **nothing**.
+
+`verify-lazer-proximity-browser.py` seeds four suite-owned `[PROXIMITY BROWSER
+TEST]` attractions (three at known increasing distances, one without
+coordinates), asserts the same contract, and deletes them at the end. Both
+refuse a production host and exit `2` when the local stack is unreachable.
+
+Both run against the canonical `http://localhost:8080`; the obsolete
+`--connect 127.0.0.1:8081` host-resolver workaround is not needed and is not
+used. Their browserless halves are blocking: the in-process suite
+`wp-content/themes/conexao-br-irlanda/tests/test-leisure-location-services.php`,
+the Node suite above, and the admin-field suite
+`wp-content/plugins/conexao-admin-ux/tests/test-leisure-coordinates.php`.
+
+> **UI contract since 2026-11-05.** The header's `Mostrar distância de mim`
+> opt-in button was removed (see
+> `docs/reports/2026-11-05-lazer-proximity-button-removal.md`); both browser
+> suites now assert the **automatic** start instead: no control/explanation is
+> rendered, the archive header receives no injected node, exactly one geolocation
+> request is made per page load, and the transient notes sit above the results
+> grid. Neither suite was weakened: the header-injection, single-request and
+> note-placement assertions were added, and only the assertions about the removed
+> retry relabel were retired.
+
 ### What lives where
 
 | Path | Class | In the default runner? |
 |---|---|---|
 | `tests/acceptance/verify-*-http.py` | `ACCEPTANCE_TEST` | yes, under `--acceptance` |
 | `wp-content/*/*/tests/test-*.php` | `DEFAULT_TEST` | yes |
+| `tests/browser/verify-*.py` | `BROWSER_TEST` | no — opt-in, run explicitly |
+| `tests/js/test-*.mjs` | `NODE_TEST` | no — opt-in, run explicitly |
 
 ---
 
@@ -716,3 +782,7 @@ _Last verified: 2026-10-02 by Stage 18 — manual translation operator workflow 
 _Last verified: 2026-10-08 by the Apoiadores single-page directory change (opt-in browser acceptance `tests/browser/verify-sponsors-archive-browser.py` documented)_
 
 _Last verified: 2026-10-08 by the Featured Apoiadores carousel mobile-compactness fix (opt-in browser regression `tests/browser/verify-sponsor-carousel-mobile-browser.py` documented: 236 assertions / 25-mutation negative control)_
+
+_Last verified: 2026-11-04 by the Lazer proximity feature (opt-in Node layer `tests/js/` and the two Lazer proximity browser suites documented; browserless halves named)_
+
+_Last verified: 2026-11-05 by the Lazer header cleanup (proximity control removed; the two Lazer proximity browser suites marked as encoding the removed button)_

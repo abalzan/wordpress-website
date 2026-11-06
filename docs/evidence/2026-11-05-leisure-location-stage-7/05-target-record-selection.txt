@@ -1,0 +1,93 @@
+# Stage 7B — target record selection (documented, not arbitrary)
+
+Captured: 2026-11-05 (UTC) · methods: GET only · no credential used · no write of any kind.
+
+## 1. Candidate pool and the criteria applied
+
+The pool is the whole production `leisure` inventory —
+`04-production-leisure-inventory-slim.json`: **289 published records**, 289 distinct
+ids, 289 distinct slugs, and **0** carrying a non-empty `_leisure_lat`/`_leisure_lng`
+(every record exposes `"_leisure_lat": ""`, `"_leisure_lng": ""`).
+
+Selection criteria, in the order they were applied:
+
+| # | Criterion | Why |
+|---|---|---|
+| 1 | `status == "publish"` | The task restricts the test to an existing **published** record. |
+| 2 | Not one of the four records the local CI bootstrap overwrote (`phoenix-park`, `cliffs-of-moher`, `fota-wildlife-park`, `dwyer-mcallister-cottage`) | Their local titles/taxonomies are fixtures, so they are the least trustworthy records to reason about. |
+| 3 | `_leisure_feature == false` | Keeps the record out of the featured slots; a temporary coordinate must not surface in a prominent module. |
+| 4 | Public single page returns **200** (not a redirect to an external site) | Gives a stable, directly observable page whose behaviour can be compared before/after. |
+| 5 | An old `modified` timestamp | A record untouched since the original import — its `post_modified` movement is the least misleading. |
+
+## 2. Screening result (measured, one GET per candidate)
+
+| Slug | ID | `modified` | lat / lng | `/lazer/<slug>/` |
+|---|---|---|---|---|
+| `russborough-house` | 10551 | 2026-08-21T21:48:44 | `""` / `""` | **200** |
+| `brittas-bay-beach` | 10555 | 2026-08-21T21:48:45 | `""` / `""` | 200 |
+| `mount-usher-gardens` | 10559 | 2026-08-21T21:48:45 | `""` / `""` | 200 |
+| `wicklow-historic-gaol` | 10553 | 2026-08-21T21:48:44 | `""` / `""` | 200 |
+| `national-botanic-gardens-dublin` | 10543 | 2026-08-21T21:48:43 | `""` / `""` | 403 (edge/WAF response — rejected) |
+| `glasnevin-cemetery-museum` | 10545 | 2026-08-21T21:48:43 | `""` / `""` | 200 on re-probe (302 on the first probe — unstable, rejected) |
+
+## 3. Selection
+
+**`russborough-house` — post ID 10551, post type `leisure`, status `publish`.**
+
+* Page: https://conexaobr.ie/lazer/russborough-house/ → **HTTP 200**, 85,418 bytes,
+  `<title>Russborough House | História | Conexão BR</title>`.
+* Present in the public dataset at
+  `GET /wp-json/conexao/v1/leisure-coordinates?lang=pt` → `{"id":10551,"lat":null,"lng":null,"index":228}`.
+* Not featured (`_leisure_feature: false`), oldest `modified` batch
+  (`2026-08-21T21:48:44`), no CI overwrite.
+* The local counterpart (id 10551, same slug) carries the real coordinates
+  `53.141559 / -6.569674` — i.e. this record is one of the 289 rows the future
+  migration is meant to populate. **Those real values are NOT written by this test**
+  and are not used here; the test values are synthetic (below).
+
+Full pre-test snapshot: `06-target-record-pre-test.json`.
+
+
+## 4. Original values — exact representation
+
+| Key | Value as production REST exposes it | Note |
+|---|---|---|
+| `_leisure_lat` | `""` (empty string) | **Not** `null` and **not** absent from the `meta` object. |
+| `_leisure_lng` | `""` (empty string) | same |
+
+Why this matters, precisely: WordPress core's `WP_REST_Meta_Fields::get_value()`
+returns `$args['schema']['default']` when a single meta key has **no rows** — which
+for `type: string` is `""`. So an empty string over REST means *"no coordinate"*,
+but it does **not** prove whether a `postmeta` row exists. That distinction is
+unobservable without database access, which production does not offer
+(WordPress.com: no SSH/WP-CLI/DB). See `07-authorization-checkpoint.txt` for how
+the restore handles it.
+
+## 5. Validation / schema facts that make the test safe
+
+| Fact | Source |
+|---|---|
+| Both keys are registered for `leisure` with `type: string`, `single: true`, `show_in_rest: true` | `wp-content/plugins/conexao-data-model/includes/class-meta.php` (`register_leisure_coordinates`) |
+| `sanitize_latitude()` / `sanitize_longitude()` accept a decimal string in range and canonicalise it; an empty string stays empty; out-of-range becomes `""` | same file, `sanitize_coordinate()` |
+| `auth_callback` = `current_user_can( 'edit_post', $object_id )` — **the 1.6.3 change under test** | same file (G19, `docs/releases.md`) |
+| `get_coordinates()` returns `null` unless **both** keys are valid, so `""`/`""` and a missing pair behave identically to every consumer | same file |
+| `coordinate_status()` reports `''`/`''` as `missing` | same file |
+| The plugin's own in-process suite proves the write path and the `403 rest_cannot_update` regression when the fix is reverted | `wp-content/plugins/conexao-data-model/tests/test-leisure-coordinate-rest-permission.php` (74 assertions) |
+| A real loopback HTTP proof of write → read-back → clear already exists for the LOCAL stack | `docs/evidence/2026-11-05-leisure-coordinate-rest-permission/local-http-permission-proof.txt` |
+
+## 6. Side effects that cannot be reverted over REST (disclosed before authorisation)
+
+A REST post update is not a meta-only operation: `WP_REST_Posts_Controller` calls
+`wp_update_post()`, so **every** update on this post type also:
+
+1. moves `post_modified` / `post_modified_gmt` (permanent; `modified` is read-only
+   in the REST schema);
+2. creates a **revision** (`leisure` declares `revisions` support) — permanent,
+   because revisions are not deletable over REST;
+3. flushes the theme's language-scoped homepage/404 transients (self-healing).
+
+Nothing else in the record changes: title, slug, status, content, dates, taxonomies,
+Polylang relations and every other meta key are not sent, and no `save_post` handler
+for this post type writes them from a REST request (the data-model and admin-UX meta
+writers both return early without their admin nonces — `class-meta.php::save_meta()`
+and `conexao-admin-ux/includes/class-editor.php::save()`).

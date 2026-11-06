@@ -1,0 +1,41 @@
+Stage 9B — independent pre-apply reconciliation (read-only)
+-----------------------------------------------------------
+production records == 289                                              PASS  289 records
+production distinct ids == records                                     PASS  289 distinct ids
+production distinct slugs == records                                   PASS  289 distinct slugs
+every production record is publish                                     PASS  statuses=['publish']
+every production record has a slug                                     PASS  empty slugs=0
+production coordinate pairs before apply == 0                          PASS  0 pairs
+production half-filled pairs == 0                                      PASS  0 half-filled
+matched by slug == 289                                                 PASS  289 matched
+production-only records == 0                                           PASS  0 production-only
+un-migrated local records == 5 (4 CI fixtures + phoenix-park-en)       PASS  5: ['ph3c-test-lazer-alfa', 'ph3c-test-lazer-externo', 'ph3c-test-lazer-sem-condado', 'ph3c-test-lazer-zeta', 'phoenix-park-en']
+coordinate plan rows == 289                                            PASS  289 rows
+every coordinate row is POPULATE/slug                                  PASS  0 exceptions
+every planned target id is the production id                           PASS  0 mismatches
+every planned value equals the local database                          PASS  0 mismatches
+every planned value equals the manifest row                            PASS  0 mismatches
+no planned UPDATE (no coordinate replacement)                          PASS  UPDATE rows=0
+no production record already carries a coordinate                      PASS  0 non-empty
+every coordinate pair is a valid in-range decimal                      PASS  0 invalid
+distinct target ids in the plan == 289                                 PASS  289 distinct
+conflicts == 0                                                         PASS  0 conflicts
+unresolved == 0                                                        PASS  0 unresolved
+attribute plan rows == 289                                             PASS  289 rows
+production term set is a SUBSET of the local set on 289/289 records    FAIL  1 violations
+production-only assignments == 0 (no removal possible)                 FAIL  1 records with production-only terms
+unresolved local term slugs == 0                                       PASS  0 records
+planned assignment relationships == 592                                PASS  592 assignments
+records whose assignment set changes == 232                            PASS  232 records
+records receiving a full-set attribute POST == 289                     PASS  289 records
+distinct attribute terms in the local source == 13                     PASS  13: ['acessivel', 'acesso-de-transporte-publico', 'bicicleta', 'estacionamento', 'exterior', 'familias', 'gratuito', 'gratuito-em-determinadas-condicoes', 'interior', 'interior-exterior', 'necessita-reserva', 'pago', 'pet-friendly']
+every local term slug resolves on production                           PASS  unresolved=[]
+every planned term id is the production id for its slug                PASS  planned ids=13 expected ids=13
+per record, every planned id resolves back to the local term slug set  PASS  0 records with a id/slug mismatch
+production assignments before apply == 173                             PASS  173 assignments
+missing assignments == 419                                             PASS  419 missing
+verifier totals agree with this reconciliation                         PASS  local=592 production=173 production_only=0
+
+checks: 35  failed: 2
+expected production writes: 289 coordinate POSTs + 289 attribute POSTs = 578 writes on 289 records
+planned removals: 0   planned deletions: 0   planned creations: 0

@@ -1,0 +1,70 @@
+# Stage 7A - read-only deployment verification
+# captured: 2026-11-05T15:12:13Z (UTC)
+# methods used: GET only. No credentials were sent. No write of any kind.
+
+## 1. Site identity (public WordPress.com API, GET)
+{
+  "ID": 256777017,
+  "name": "Conexão BR",
+  "URL": "https://conexaobr.ie",
+  "jetpack": true,
+  "is_private": false
+}
+
+## 2. REST namespaces advertised by the site (GET /wp-json/)
+  oembed/1.0
+  jetpack/v4
+  wpcomsh/v1
+  akismet/v1
+  wp/v2
+  wp-block-editor/v1
+  wpcom/v2
+  pll/v1
+  jetpack/v4/stats-app
+  jetpack/v4/explat
+  newspack-blocks/v1
+  conexao/v1
+  jetpack/v4/blaze-app
+  jetpack/v4/blaze
+  help-center
+  jetpack-global-styles/v1
+  jetpack/v4/import
+  videopress/v1
+  jetpack/v4/videopress
+  jetpack-boost/v1
+  my-jetpack/v1
+  wpcom/v3
+  wp-site-health/v1
+  wp-abilities/v1
+
+## 3. Plugin inventory endpoint: is it exposed to an anonymous caller?
+# GET https://conexaobr.ie/wp-json/wp/v2/plugins  (anonymous)
+  HTTP 401
+  body: {"code":"rest_cannot_view_plugins","message":"Sorry, you are not allowed to manage plugins for this site.","data":{"status":401}}
+  => the route EXISTS and the version is NOT discoverable anonymously.
+
+## 4. Plugin PHP files are executed, not served (no version leakage)
+# GET https://conexaobr.ie/wp-content/plugins/conexao-data-model/conexao-data-model.php
+  HTTP 200 content_type=text/html; charset=utf-8 bytes=0
+  => 200 with a 0-byte body: the file is executed by PHP, so the 'Version:' header
+     cannot be read remotely without an authenticated plugin-inventory call.
+
+## 5. Repository source of the artifact that was uploaded (build provenance)
+  5: * Version: 1.6.3
+  {
+    "slug": "conexao-data-model",
+    "version": "1.6.3",
+    "kind": "plugin",
+    "file": "conexao-data-model.zip",
+    "file_count": 6,
+    "bytes": 18340,
+    "sha256": "c1a834406c39cdacab2b8553c6894aebadac393cd4e5376e0ac05b9f97863052"
+  }
+  => the artifact the operator uploaded is built from this tree at 1.6.3 (build provenance only;
+     it does NOT prove what is installed on production).
+
+## 6. Conclusion for the deployed version
+  The site does not expose a plugin version to an unauthenticated caller.
+  Confirmation of the DEPLOYED 1.6.3 therefore requires an authenticated
+  GET /wp-json/wp/v2/plugins/conexao-data-model (administrator Application Password),
+  which is performed at the authorised stage (see 07-authorization-checkpoint.txt).

@@ -1,0 +1,86 @@
+# In-process plugin suite — leisure coordinate REST permissions — BEFORE the fix (discriminating red run)
+# command: docker compose exec -T wordpress php /var/www/html/wp-content/plugins/conexao-data-model/tests/test-leisure-coordinate-rest-permissions.php
+# state: wp-content/plugins/conexao-data-model/includes/class-meta.php at HEAD dc79f26 (no auth_callback on _leisure_lat/_leisure_lng)
+
+== Leisure coordinate REST permissions ==
+  PASS: an administrator account exists for the authorised-write assertions
+  PASS: a temporary leisure record was created
+=== Registration: the two coordinate keys ===
+  PASS: _leisure_lat is registered for the leisure post type
+  PASS: _leisure_lng is registered for the leisure post type
+  PASS: _leisure_lat is registered as single-value meta
+  PASS: _leisure_lat is registered as a decimal string
+  PASS: _leisure_lat stays exposed through REST
+  PASS: _leisure_lat keeps its range-validating sanitize_callback
+  PASS: _leisure_lat declares a callable REST permission callback
+  FAIL: _leisure_lat does not fall back to the core default (neither "deny all" nor "allow everyone")
+  PASS: _leisure_lng is registered as single-value meta
+  PASS: _leisure_lng is registered as a decimal string
+  PASS: _leisure_lng stays exposed through REST
+  PASS: _leisure_lng keeps its range-validating sanitize_callback
+  PASS: _leisure_lng declares a callable REST permission callback
+  FAIL: _leisure_lng does not fall back to the core default (neither "deny all" nor "allow everyone")
+  PASS: _leisure_lat: the permission callback refuses an anonymous caller
+  PASS: _leisure_lng: the permission callback refuses an anonymous caller
+  FAIL: _leisure_lat: the permission callback allows a user who can edit the record
+  FAIL: _leisure_lng: the permission callback allows a user who can edit the record
+=== Authorised REST update (administrator) ===
+  FAIL: an authorised REST update of _leisure_lat/_leisure_lng succeeds (200, never 403 rest_cannot_update) — expected 200, got 403
+  FAIL: the authorised REST update returns no error code — expected '', got 'rest_cannot_update'
+  FAIL: the REST response echoes the stored latitude — expected '53.3498', got null
+  FAIL: the REST response echoes the stored longitude — expected '-6.2603', got null
+  FAIL: the latitude persists after the REST update — expected '53.3498', got ''
+  FAIL: the longitude persists after the REST update — expected '-6.2603', got ''
+  FAIL: get_coordinates() returns a pair after the REST update
+  FAIL: get_coordinates() reads back the latitude written over REST — expected 53.3498, got null
+  FAIL: get_coordinates() reads back the longitude written over REST — expected -6.2603, got null
+  PASS: the record can be read back through REST
+  FAIL: a subsequent REST read confirms the persisted latitude — expected '53.3498', got ''
+  FAIL: a subsequent REST read confirms the persisted longitude — expected '-6.2603', got ''
+=== Denied REST updates (anonymous and unprivileged) ===
+  FAIL: precondition: a stored latitude is in place before the denied requests — expected '53.3498', got ''
+  FAIL: precondition: a stored longitude is in place before the denied requests — expected '-6.2603', got ''
+  PASS: an ANONYMOUS caller is refused when updating _leisure_lat (401)
+  PASS: the anonymous refusal for _leisure_lat is the expected authorisation error
+  PASS: an ANONYMOUS caller is refused when updating _leisure_lng (401)
+  PASS: the anonymous refusal for _leisure_lng is the expected authorisation error
+  FAIL: the anonymous refusal left the stored latitude unchanged — expected '53.3498', got ''
+  FAIL: the anonymous refusal left the stored longitude unchanged — expected '-6.2603', got ''
+  PASS: a temporary subscriber account was created
+  PASS: precondition: the subscriber cannot edit the leisure record
+  PASS: an authenticated caller WITHOUT the capability is refused when updating _leisure_lat (403)
+  PASS: the unprivileged refusal for _leisure_lat is the expected authorisation error
+  PASS: an authenticated caller WITHOUT the capability is refused when updating _leisure_lng (403)
+  PASS: the unprivileged refusal for _leisure_lng is the expected authorisation error
+  FAIL: the unprivileged refusal left the stored latitude unchanged — expected '53.3498', got ''
+  FAIL: the unprivileged refusal left the stored longitude unchanged — expected '-6.2603', got ''
+=== Validation still applies over REST ===
+  FAIL: the schema accepts the request (the sanitizer, not the permission layer, owns the range rule) — expected 200, got 403
+  PASS: an out-of-range latitude written over REST sanitises to empty — the permission fix did not bypass validation
+  FAIL: the authorised writer can restore a valid pair over REST — expected 200, got 403
+  FAIL: the restored latitude is stored — expected '53.3498', got ''
+  FAIL: the restored longitude is stored — expected '-6.2603', got ''
+=== Regression: the fix is narrow ===
+  PASS: _leisure_image_source is still writable over REST by a user who can edit the record
+  PASS: the image source persists
+  PASS: _leisure_image_source is still refused to a caller without the capability
+  PASS: the refused image-source write changed nothing
+  PASS: unrelated leisure meta (_leisure_town) is unaffected
+  PASS: the unrelated leisure meta value persists
+  PASS: _leisure_coord_source is still NOT exposed through REST
+  PASS: _leisure_coord_verified is still NOT exposed through REST
+  PASS: a REST request carrying a non-REST key is not a fatal error
+  PASS: the provenance key cannot be written over REST
+  PASS: a temporary guide record was created
+  PASS: an unrelated protected key without its own auth_callback is still refused (protected-meta handling was not weakened globally)
+  PASS: the unrelated refusal is the core rest_cannot_update error
+  PASS: the unrelated protected key was not written
+  FAIL: the location read path still returns the latitude — expected 53.3498, got null
+  FAIL: the location read path still returns the longitude — expected -6.2603, got null
+  FAIL: the inventory state reports a valid pair as unverified (verification stays a separate editorial flag) — expected 'unverified', got 'missing'
+  FAIL: the inventory state exposes the canonical latitude string — expected '53.3498', got ''
+=== Cleanup ===
+  PASS: no temporary post remains after the suite
+  PASS: no temporary guide record remains after the suite
+  PASS: no temporary user remains after the suite
+45 passed, 29 failed

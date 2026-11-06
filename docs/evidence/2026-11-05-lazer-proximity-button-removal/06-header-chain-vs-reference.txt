@@ -1,0 +1,27 @@
+# Header chain: working tree vs master (reference)
+
+## archive.php
+   master       : ae212f3f691888992df8a21267838f9d72fcb9fa7dff12140175cdfeb77feefa
+   working tree : ae212f3f691888992df8a21267838f9d72fcb9fa7dff12140175cdfeb77feefa
+   git diff     : 0 line(s)
+## template-parts/archive-header.php
+   master       : dd628d231a6c631adc03fda83bbf4c893bc99d1b170aa0df188b43ddb374baef
+   working tree : dd628d231a6c631adc03fda83bbf4c893bc99d1b170aa0df188b43ddb374baef
+   git diff     : 0 line(s)
+## template-parts/leisure-filters.php
+   master       : b0dd7cf4d0555db7ec95b8d4802686aa5e3f474e37dcf2e6b12e0bb091c4b810
+   working tree : b0dd7cf4d0555db7ec95b8d4802686aa5e3f474e37dcf2e6b12e0bb091c4b810
+   git diff     : 0 line(s)
+## header.php
+   master       : 380e906a2d89afe91accf56f5c0a1d56fc2ab2218515ab900957080724bb54b2
+   working tree : 380e906a2d89afe91accf56f5c0a1d56fc2ab2218515ab900957080724bb54b2
+   git diff     : 0 line(s)
+## inc/assets.php
+   master       : a35a7d566dc7151abcff0797fda0d3c0bf09efc79806c221b048e79e23d18960
+   working tree : 6b995f84ebc1f2b55c2a718bffc6fd859f00410a428a5699cec15460b86a44c1
+   git diff     : 43 line(s)
+
+## Note: inc/assets.php differs in the working tree from HEAD?
+ .../conexao-br-irlanda/assets/css/leisure.css      |  29 +----
+ .../themes/conexao-br-irlanda/assets/js/main.js    | 117 +++++----------------
+ 2 files changed, 30 insertions(+), 116 deletions(-)

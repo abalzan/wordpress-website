@@ -1,0 +1,24 @@
+# Reference greps after the change
+
+## leisure-proximity-toggle (any file under wp-content/):
+   NONE
+
+## leisure-proximity-control:
+   NONE
+
+## leisure-proximity-explanation:
+   NONE
+
+## "Mostrar distância de mim":
+wp-content/themes/conexao-br-irlanda/inc/i18n.php:171:		'leisureDistanceControl'       => __( 'Mostrar distância de mim', 'conexao-br-irlanda' ),
+wp-content/themes/conexao-br-irlanda/languages/en_US.po:2014:msgid "Mostrar distância de mim"
+wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot:661:msgid "Mostrar distância de mim"
+
+## geolocation call sites (must still exist):
+wp-content/themes/conexao-br-irlanda/assets/js/main.js:2758:				navigator.geolocation.getCurrentPosition(onPosition, onPositionError, {
+
+## proximity service surface still enqueued/injected:
+77:		wp_enqueue_script( 'conexao-leisure-proximity', CONEXAO_THEME_URI . '/assets/js/leisure-proximity.js', array(), conexao_asset_version( 'assets/js/leisure-proximity.js' ), array( 'in_footer' => true, 'strategy' => 'defer' ) );
+78:		$main_deps[] = 'conexao-leisure-proximity';
+96:	 * `window.ConexaoLeisureLocation`; without it the feature is inert, so a
+102:			'window.ConexaoLeisureLocation = ' . wp_json_encode( conexao_leisure_location_js_config() ) . ';',

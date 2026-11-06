@@ -1,0 +1,38 @@
+# Release workflow proof — ./scripts/verify-release.sh
+# command: ./scripts/verify-release.sh
+# stages 1-6 PASS (build, manifest, allowlist+hash, determinism byte-for-byte, exclusion).
+# stage 7 (read-only HTTP deployment verification) fails on the SAME /empregos/ 302 row
+# that fails on the pristine HEAD code (see pre-existing-failures-ab.md) — a local
+# database condition: the PT empregos page is missing and two EN ones exist.
+
+conexao release verification
+  repository: /home/andrei/IdeaProjects/wordpress-website
+  artifacts:  /tmp/conexao-release-2qhks5/dist
+  site:       http://localhost:8080
+
+==> [1/7] plugin registry drift gate
+registry OK: 10 plugins validated, 19 generated regions current (zero writes).
+    OK   plugins.json and its generated regions agree
+
+==> [2/7] build plugins and theme
+    OK   plugin artifacts built (9 plugin(s))
+    OK   theme artifact built
+
+==> [3/7] release manifest (dist/release.json)
+    OK   manifest emitted with versions, git SHA, file counts and SHA-256
+
+==> [4/7] verify artifact allowlist and hashes
+    OK   every artifact matches the recorded allowlist, size, file count and hash
+
+==> [5/7] determinism proof (rebuild must reproduce identical hashes)
+    OK   all artifacts reproduced byte-for-byte
+
+==> [6/7] exclusion proof (no tests/fixtures/reports/junk in any artifact)
+    OK   no artifact contains a test, fixture, report or junk file
+
+==> [7/7] HTTP deployment verification (read-only)
+    FAIL deployment verification failed — see /tmp/conexao-release-2qhks5/dist.http.log
+           FAIL smoke-archive-empregos /empregos/  -- status 302, expected 200; missing fragment: '<html lang="pt-BR">'; missing fragment: 'rel="canonical"'
+
+----------------------------------------
+RELEASE VERIFICATION: FAILED

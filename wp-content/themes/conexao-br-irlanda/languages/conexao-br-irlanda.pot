@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-27 08:31+0000\n"
+"POT-Creation-Date: 2026-11-04 21:36+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 
 
@@ -332,59 +332,59 @@ msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/leisure-card.php:231
 msgid "Ver mais"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/header.php:46
+#: wp-content/themes/conexao-br-irlanda/header.php:55
 #: wp-content/themes/conexao-br-irlanda/inc/ui.php:36
 msgid "Pular para o conteúdo"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/header.php:59
+#: wp-content/themes/conexao-br-irlanda/header.php:68
 msgid "Abrir menu"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/header.php:101
+#: wp-content/themes/conexao-br-irlanda/header.php:110
 #: wp-content/themes/conexao-br-irlanda/inc/setup.php:51
 msgid "Menu Principal"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/header.php:132
+#: wp-content/themes/conexao-br-irlanda/header.php:141
 msgid "Alternar tema claro/escuro"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/header.php:140
+#: wp-content/themes/conexao-br-irlanda/header.php:149
 msgid "Abrir pesquisa"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/header.php:149
-#: wp-content/themes/conexao-br-irlanda/header.php:218
-#: wp-content/themes/conexao-br-irlanda/header.php:279
+#: wp-content/themes/conexao-br-irlanda/header.php:158
+#: wp-content/themes/conexao-br-irlanda/header.php:227
+#: wp-content/themes/conexao-br-irlanda/header.php:288
 #: wp-content/themes/conexao-br-irlanda/searchform.php:18
 msgid "Pesquisar"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/header.php:150
-#: wp-content/themes/conexao-br-irlanda/header.php:219
-#: wp-content/themes/conexao-br-irlanda/header.php:280
+#: wp-content/themes/conexao-br-irlanda/header.php:159
+#: wp-content/themes/conexao-br-irlanda/header.php:228
+#: wp-content/themes/conexao-br-irlanda/header.php:289
 msgid "Buscar no portal..."
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/header.php:151
-#: wp-content/themes/conexao-br-irlanda/header.php:220
-#: wp-content/themes/conexao-br-irlanda/header.php:281
+#: wp-content/themes/conexao-br-irlanda/header.php:160
+#: wp-content/themes/conexao-br-irlanda/header.php:229
+#: wp-content/themes/conexao-br-irlanda/header.php:290
 #: wp-content/themes/conexao-br-irlanda/searchform.php:25
 msgid "Buscar"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/header.php:160
-#: wp-content/themes/conexao-br-irlanda/header.php:174
-#: wp-content/themes/conexao-br-irlanda/header.php:180
-#: wp-content/themes/conexao-br-irlanda/header.php:255
+#: wp-content/themes/conexao-br-irlanda/header.php:169
+#: wp-content/themes/conexao-br-irlanda/header.php:183
+#: wp-content/themes/conexao-br-irlanda/header.php:189
+#: wp-content/themes/conexao-br-irlanda/header.php:264
 msgid "Anuncie Aqui"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/header.php:191
+#: wp-content/themes/conexao-br-irlanda/header.php:200
 msgid "Menu"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/header.php:192
+#: wp-content/themes/conexao-br-irlanda/header.php:201
 msgid "Fechar menu"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/header.php:225
+#: wp-content/themes/conexao-br-irlanda/header.php:234
 msgid "Menu Mobile"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/header.php:277
+#: wp-content/themes/conexao-br-irlanda/header.php:286
 msgid "Pesquisar no site"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/header.php:282
+#: wp-content/themes/conexao-br-irlanda/header.php:291
 msgid "Fechar pesquisa"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/home.php:28
@@ -405,8 +405,8 @@ msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/course-filters.php:53
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:366
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:553
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:305
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:471
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:309
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:475
 #: wp-content/themes/conexao-br-irlanda/template-parts/guide-filters.php:39
 #: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:288
 #: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:331
@@ -522,9 +522,9 @@ msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:505
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:531
 #: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:207
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:266
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:421
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:450
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:270
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:425
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:454
 #: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:376
 #: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:563
 msgid "Todas"
@@ -587,7 +587,7 @@ msgid "Link copiado"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/i18n.php:144
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:443
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:380
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:384
 #: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:476
 msgid "Filtrar"
 msgstr ""
@@ -647,7 +647,34 @@ msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/i18n.php:165
 msgid "cursos"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:286
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:167
+msgid ""
+"Permita o acesso à sua localização para calcular a distância aproximada até "
+"as atrações."
+msgstr ""
+#. translators: %s is a formatted distance, e.g. "2,4 km" or "850 m".
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:169
+#, php-format
+msgid "%s de você"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:171
+msgid "Mostrar distância de mim"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:173
+msgid "Obtendo sua localização…"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:175
+msgid ""
+"Não foi possível obter sua localização. Você pode continuar explorando as "
+"atrações normalmente."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:176
+msgid "Ordenado por proximidade"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:177
+msgid "Atrações ordenadas por proximidade."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:298
 msgid "F j, Y"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php:37
@@ -746,6 +773,14 @@ msgid "Escolher imagem"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/job-resources.php:255
 msgid "Remover imagem"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/inc/leisure-location.php:193
+#: wp-content/themes/conexao-br-irlanda/inc/leisure-location.php:201
+msgid "Invalid attraction ID."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/inc/leisure-location.php:227
+#: wp-content/themes/conexao-br-irlanda/inc/leisure-location.php:362
+msgid "Too many attractions requested in a single request."
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/leisure.php:209
 #: wp-content/themes/conexao-br-irlanda/single-leisure.php:209
@@ -1216,7 +1251,7 @@ msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/content-none.php:29
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:414
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:580
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:350
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:354
 #: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:442
 msgid "Limpar filtros"
 msgstr ""
@@ -1328,7 +1363,7 @@ msgstr ""
 msgid "Nenhuma localização encontrada."
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:384
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:323
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:327
 #: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:399
 msgid "Filtros ativos:"
 msgstr ""
@@ -1339,9 +1374,9 @@ msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:394
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:400
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:406
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:330
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:336
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:342
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:334
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:340
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:346
 #: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:407
 #: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:421
 #: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:433
@@ -1357,18 +1392,18 @@ msgstr[0] ""
 msgstr[1] ""
 #. translators: %s: number of active filters.
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:434
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:371
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:375
 #: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:467
 #, php-format
 msgid "Filtrar (%s filtros ativos)"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:453
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:390
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:394
 #: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:486
 msgid "Filtros"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:454
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:391
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:395
 #: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:487
 msgid "Fechar filtros"
 msgstr ""
@@ -1376,12 +1411,12 @@ msgstr ""
 msgid "Nenhuma localização encontrada"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:567
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:485
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:489
 #: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:578
 msgid "Limpar"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:568
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:486
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:490
 #: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:579
 msgid "Mostrar resultados"
 msgstr ""
@@ -1449,58 +1484,58 @@ msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:180
 #: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:185
 #: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:201
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:409
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:413
 #: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:168
 #: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:505
 msgid "County"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:197
 #: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:198
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:415
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:416
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:419
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:420
 #: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:280
 #: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:281
 #: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:511
 #: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:512
 msgid "Procurar county"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:227
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:231
 #: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:299
 msgid "Nenhum county encontrado."
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:242
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:247
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:261
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:438
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:246
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:251
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:265
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:442
 msgid "Cidade"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:257
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:258
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:444
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:445
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:261
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:262
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:448
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:449
 msgid "Procurar cidade"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:277
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:281
 msgid "Nenhuma cidade encontrada."
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:292
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:297
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:302
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:467
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:296
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:301
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:306
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:471
 msgid "Categoria"
 msgstr ""
 #. translators: %s: number of events.
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:358
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:362
 #, php-format
 msgid "%s evento encontrado"
 msgid_plural "%s eventos encontrados"
 msgstr[0] ""
 msgstr[1] ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:431
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:435
 #: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:528
 msgid "Nenhum county encontrado"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:460
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:464
 msgid "Nenhuma cidade encontrada"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/featured-sponsors.php:70

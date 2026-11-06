@@ -163,6 +163,18 @@ function conexao_js_i18n_strings(): array {
 		'nounEventsPlural'        => __( 'eventos', 'conexao-br-irlanda' ),
 		'nounCourses'             => __( 'curso', 'conexao-br-irlanda' ),
 		'nounCoursesPlural'       => __( 'cursos', 'conexao-br-irlanda' ),
+		/* Lazer location services (optional proximity ordering). */
+		'leisureLocationExplanation'   => __( 'Permita o acesso à sua localização para calcular a distância aproximada até as atrações.', 'conexao-br-irlanda' ),
+		/* translators: %s is a formatted distance, e.g. "2,4 km" or "850 m". */
+		'leisureDistanceTemplate'      => __( '%s de você', 'conexao-br-irlanda' ),
+		/* The explicit opt-in control that requests the location. */
+		'leisureDistanceControl'       => __( 'Mostrar distância de mim', 'conexao-br-irlanda' ),
+		/* Shown while the browser is resolving the visitor's position. */
+		'leisureLocationLoading'       => __( 'Obtendo sua localização…', 'conexao-br-irlanda' ),
+		/* Friendly, non-technical failure message (permission, timeout, …). */
+		'leisureLocationUnavailable'   => __( 'Não foi possível obter sua localização. Você pode continuar explorando as atrações normalmente.', 'conexao-br-irlanda' ),
+		'leisureOrderedByProximity'    => __( 'Ordenado por proximidade', 'conexao-br-irlanda' ),
+		'leisureProximityAnnouncement' => __( 'Atrações ordenadas por proximidade.', 'conexao-br-irlanda' ),
 	);
 }
 

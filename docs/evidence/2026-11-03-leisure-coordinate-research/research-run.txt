@@ -1,0 +1,226 @@
+resolving 294 attractions from 5164 title variants...
+[osm 1/294] trinity-college-book-of-kells -> miss
+[osm 7/294] howth-cliff-walk -> miss
+[osm 12/294] powerscourt-waterfall -> hit
+[osm 14/294] great-sugar-loaf -> miss
+[osm 16/294] avondale-forest-park -> miss
+[osm 17/294] newgrange -> hit
+[osm 18/294] knowth -> hit
+[osm 19/294] hill-of-tara -> hit
+    ~ HTTP 429; backing off 4.5s
+[osm 23/294] battle-of-the-boyne-visitor-centre -> hit
+[osm 24/294] kylemore-abbey -> hit
+    ~ HTTP 429; backing off 6.5s
+[osm 28/294] aran-islands -> miss
+    ~ HTTP 429; backing off 8.5s
+[osm 34/294] bunratty-castle-folk-park -> hit
+[osm 35/294] aillwee-caves -> miss
+[osm 43/294] fota-wildlife-park -> hit
+[osm 47/294] mizen-head -> hit
+[osm 52/294] gap-of-dunloe -> hit
+[osm 54/294] dingle-peninsula -> miss
+[osm 59/294] glasnevin-cemetery-museum -> miss
+[osm 60/294] dun-laoghaire-east-pier -> miss
+[osm 62/294] russborough-house -> hit
+[osm 63/294] wicklow-historic-gaol -> miss
+[osm 64/294] brittas-bay-beach -> hit
+    ~ HTTP 429; backing off 4.5s
+[osm 67/294] wicklow-way -> miss
+    ~ HTTP 429; backing off 6.5s
+[osm 70/294] kells-historic-town -> miss
+[osm 71/294] sonairte-ecology-centre -> miss
+[osm 72/294] dowth -> miss
+[osm 73/294] spanish-arch-long-walk -> miss
+[osm 78/294] thoor-ballylee -> hit
+[osm 79/294] ennis-friary -> miss
+[osm 81/294] holy-island-inis-cealtra -> miss
+[osm 83/294] craggaunowen -> hit
+[osm 90/294] doneraile-park -> miss
+    ~ HTTP 429; backing off 4.5s
+[osm 91/294] skellig-michael -> miss
+[osm 92/294] valentia-island -> hit
+    ~ HTTP 429; backing off 6.5s
+[osm 94/294] derrynane-house -> miss
+[osm 95/294] gallarus-oratory -> hit
+[osm 97/294] banna-strand -> hit
+[osm 98/294] rock-of-dunamase -> hit
+[osm 102/294] abbeyleix-heritage-house -> miss
+[osm 103/294] slieve-bloom-mountains -> miss
+[osm 104/294] clonmacnoise -> hit
+[osm 106/294] lough-boora-discovery-park -> miss
+    ~ HTTP 429; backing off 4.5s
+[osm 107/294] charleville-forest-castle -> miss
+    ~ HTTP 429; backing off 6.5s
+[osm 108/294] tullamore-dew-experience -> miss
+    ~ HTTP 429; backing off 8.5s
+[osm 109/294] belvedere-house-gardens -> miss
+[osm 110/294] athlone-castle -> miss
+[osm 111/294] kilbeggan-distillery -> miss
+[osm 112/294] mullaghmeen-forest -> hit
+[osm 113/294] glendeer-pet-farm -> miss
+[osm 114/294] corlea-trackway -> miss
+[osm 115/294] ardagh-heritage-village -> miss
+    ~ HTTP 429; backing off 4.5s
+[osm 116/294] granard-motte-bailey -> miss
+    ~ HTTP 429; backing off 6.5s
+[osm 120/294] rathcroghan -> hit
+[osm 122/294] strokestown-park-famine-museum -> miss
+[osm 127/294] parkes-castle -> hit
+[osm 128/294] acres-lake-floating-boardwalk -> miss
+[osm 130/294] lough-rynn-castle-gardens -> miss
+[osm 131/294] sean-mac-diarmada-cottage -> miss
+[osm 132/294] cavan-burren-park -> hit
+[osm 133/294] killykeen-forest-park -> hit
+[osm 135/294] shannon-pot -> hit
+    ~ HTTP 429; backing off 4.5s
+[osm 141/294] carrickmacross-lace-gallery -> miss
+[osm 144/294] glenveagh-national-park -> hit
+    ~ HTTP 429; backing off 6.5s
+[osm 145/294] sliabh-liag -> miss
+[osm 146/294] donegal-castle -> hit
+[osm 150/294] errigal -> hit
+[osm 151/294] ards-forest-park -> miss
+[osm 152/294] benbulben -> hit
+[osm 153/294] strandhill-beach -> miss
+[osm 155/294] queen-maeves-trail-knocknarea -> miss
+[osm 162/294] keem-bay -> hit
+    ~ HTTP 429; backing off 4.5s
+[osm 163/294] westport-house -> miss
+    ~ HTTP 429; backing off 6.5s
+[osm 165/294] downpatrick-head -> hit
+[osm 168/294] wild-nephin-ballycroy-national-park -> miss
+[osm 169/294] clare-island -> hit
+[osm 174/294] smithwicks-experience -> miss
+[osm 175/294] dunmore-cave -> hit
+[osm 177/294] jerpoint-park -> miss
+[osm 180/294] waterford-treasures -> miss
+[osm 181/294] reginals-tower -> hit
+[osm 182/294] waterford-greenway -> hit
+[osm 183/294] copper-coast-geopark -> hit
+    ~ HTTP 429; backing off 4.5s
+[osm 184/294] mount-congreve-gardens -> hit
+    ~ HTTP 429; backing off 6.5s
+[osm 185/294] lismore-castle-gardens -> miss
+[osm 186/294] ardmore-round-tower -> miss
+    ~ HTTP 429; backing off 8.5s
+[osm 187/294] coumshingaun-loop -> miss
+[osm 188/294] irish-national-heritage-park -> hit
+[osm 189/294] johnstown-castle -> hit
+[osm 190/294] hook-lighthouse -> miss
+[osm 191/294] dunbrody-famine-ship -> hit
+[osm 192/294] saltee-islands -> hit
+[osm 193/294] curracloe-beach -> hit
+[osm 194/294] wexford-wildfowl-reserve -> hit
+[osm 195/294] ferns-castle -> hit
+[osm 196/294] tintern-abbey-wexford -> hit
+[osm 197/294] rock-of-cashel -> hit
+[osm 198/294] cahir-castle -> hit
+    ~ HTTP 429; backing off 4.5s
+[osm 199/294] swiss-cottage -> hit
+[osm 200/294] glen-of-aherlow -> hit
+    ~ HTTP 429; backing off 6.5s
+[osm 201/294] the-vee-bay-lough -> miss
+[osm 202/294] ormond-castle -> hit
+[osm 203/294] mitchelstown-cave -> hit
+[osm 204/294] holy-cross-abbey -> hit
+[osm 205/294] king-johns-castle-limerick -> hit
+[osm 206/294] hunt-museum -> hit
+[osm 207/294] st-marys-cathedral-limerick -> miss
+[osm 208/294] adare-village -> hit
+[osm 209/294] foynes-flying-boat-museum -> hit
+[osm 210/294] lough-gur -> hit
+[osm 211/294] curraghchase-forest-park -> hit
+    ~ HTTP 429; backing off 4.5s
+[osm 212/294] irish-national-stud-japanese-gardens -> hit
+[osm 213/294] castletown-house -> hit
+    ~ HTTP 429; backing off 6.5s
+[osm 214/294] bog-of-allen-nature-centre -> hit
+[osm 215/294] pollardstown-fen -> hit
+[osm 216/294] maynooth-castle -> hit
+[osm 217/294] donadea-forest-park -> hit
+[osm 218/294] lullymore-heritage-park -> miss
+[osm 219/294] mondello-park -> hit
+[osm 220/294] carlingford -> hit
+[osm 221/294] proleek-dolmen -> hit
+[osm 222/294] monasterboice -> hit
+[osm 223/294] mellifont-abbey -> hit
+[osm 224/294] carlingford-lough-greenway -> hit
+    ~ HTTP 429; backing off 4.5s
+    ~ HTTP 429; backing off 6.5s
+    ~ HTTP 429; backing off 8.5s
+[osm 225/294] millmount-fort-museum -> miss
+[osm 226/294] brownshill-dolmen -> hit
+[osm 227/294] altamont-gardens -> hit
+[osm 228/294] ducketts-grove -> hit
+[osm 229/294] huntington-castle-gardens -> hit
+[osm 230/294] borris-house -> hit
+[osm 231/294] oak-park-forest-park -> hit
+[osm 232/294] mount-leinster-nine-stones -> miss
+[osm 233/294] king-johns-castle-carlingford -> miss
+[osm 234/294] chester-beatty -> hit
+[osm 235/294] forty-foot -> hit
+    ~ HTTP 429; backing off 4.5s
+[osm 236/294] derrigimlagh -> hit
+    ~ HTTP 429; backing off 6.5s
+[osm 237/294] joyce-tower-museum -> miss
+[osm 238/294] the-model -> hit
+[osm 239/294] doagh-famine-village -> hit
+[osm 240/294] dursey-island -> hit
+[osm 241/294] old-head-of-kinsale -> hit
+[osm 242/294] lough-muckno-leisure-park -> miss
+[osm 243/294] jfk-arboretum -> hit
+[osm 244/294] cavan-cathedral -> hit
+[osm 245/294] national-design-craft-gallery -> hit
+  batched pass resolved 169 article coordinates
+  132 attractions have no Wikipedia coordinate
+[wd] resolved 162/294 Wikipedia coordinates
+[osm 246/294] annes-grove-gardens -> miss
+[osm 247/294] barryscourt-castle -> hit
+[osm 248/294] desmond-castle-kinsale -> hit
+[osm 249/294] fota-arboretum-and-gardens -> hit
+[osm 250/294] arbour-hill-cemetery -> hit
+[osm 251/294] casino-marino -> miss
+[osm 252/294] custom-house-visitor-centre -> hit
+[osm 253/294] farmleigh-house-and-estate -> miss
+[osm 254/294] garden-of-remembrance -> hit
+[osm 255/294] government-buildings -> hit
+[osm 256/294] grangegorman-military-cemetery -> hit
+[osm 257/294] irish-national-war-memorial-gardens -> hit
+[osm 258/294] iveagh-gardens -> hit
+[osm 259/294] pearse-museum-st-endas-park -> miss
+[osm 260/294] phoenix-park-visitor-centre-ashtown-castle -> miss
+[osm 261/294] phoenix-park-peoples-flower-gardens -> miss
+[osm 262/294] rathfarnham-castle -> hit
+[osm 263/294] royal-hospital-kilmainham -> hit
+[osm 264/294] st-marys-abbey-chapter-house -> miss
+[osm 265/294] st-audens-church -> miss
+[osm 266/294] st-stephens-green -> hit
+[osm 267/294] aras-an-uachtarain -> hit
+[osm 268/294] ardfert-cathedral -> hit
+[osm 269/294] listowel-castle -> hit
+[osm 270/294] blasket-centre-ionad-an-bhlascaoid -> miss
+[osm 271/294] askeaton-castle -> hit
+[osm 272/294] desmond-castle-adare -> miss
+[osm 273/294] desmond-castle-newcastlewest -> miss
+[osm 274/294] athenry-castle -> hit
+[osm 275/294] aughnanure-castle -> hit
+[osm 276/294] ionad-culturtha-an-phiarsaigh-pearses-cottage -> miss
+[osm 277/294] ballyhack-castle -> hit
+[osm 278/294] doe-castle -> hit
+[osm 279/294] glebe-house-and-gallery -> miss
+[osm 280/294] newmills-corn-and-flax-mills -> hit
+[osm 281/294] dungarvan-castle -> hit
+[osm 282/294] kells-priory -> miss
+[osm 283/294] st-marys-church-gowran -> hit
+[osm 284/294] famine-warhouse-1848 -> hit
+[osm 285/294] the-main-guard -> miss
+[osm 286/294] roscrea-heritage-centre-roscrea-castle-and-damer-house -> miss
+[osm 287/294] fore-abbey -> hit
+[osm 288/294] national-botanic-gardens-kilmacurragh -> miss
+[osm 289/294] dwyer-mcallister-cottage -> hit
+[osm 290/294] ph3c-test-lazer-alfa -> miss
+[osm 291/294] ph3c-test-lazer-sem-condado -> miss
+[osm 292/294] ph3c-test-lazer-zeta -> miss
+[osm 293/294] ph3c-test-lazer-externo -> miss
+[osm 294/294] phoenix-park-en -> hit
+confidence: {'NOT_FOUND': 56, 'HIGH': 78, 'MEDIUM': 61, 'LOW': 99}

@@ -1,0 +1,45 @@
+# Post-edit documentation gates (after every doc edit)
+
+## tests/scripts/verify-documentation-drift.py
+== Stage L documentation-drift gate ==
+   repo: /home/andrei/IdeaProjects/wordpress-website
+
+   -- orchestrated gates --
+   Stage G registry drift             exit=0 registry OK: 10 plugins validated, 19 generated regions current (zero writes).
+   Stage I script conventions         exit=0 761 passed, 0 failed
+   Stage K agent governance           exit=0 Stage K governance verification: 357 passed, 0 failed
+
+   -- §9.2 last-verified markers (living reference set) --
+   living documents checked: 15, missing marker: 0
+   historical/audit documents without the marker (reported, not gated): 211
+
+   -- §9.2 no root-level report/evidence file --
+   root files scanned: 17, offenders: 0
+
+   -- §9.2 AGENTS.md remains orientation --
+   AGENTS.md lines: 229
+
+   -- authoritative sources referenced by the governance layer --
+   authoritative sources checked: 7
+14 passed, 0 failed
+GATE-RESULT {"gate": "documentation_drift", "status": "pass", "passed": 14, "failed": 0, "violations": 0, "details": []}
+exit=0
+
+## tests/scripts/verify-i18n-freshness.py
+== Stage L i18n catalogue freshness gate ==
+   repo:  /home/andrei/IdeaProjects/wordpress-website
+   signal: git commit time per file (mtime is not reproducible in CI)
+   conexao-br-irlanda       catalogue=1793828441 newest-source=1793823820 (wp-content/themes/conexao-br-irlanda/inc/leisure-location.php) fresh
+   conexao-data-model       catalogue=1791787669 newest-source=1790335165 (wp-content/plugins/conexao-data-model/includes/class-agency.php) fresh
+   conexao-content          catalogue=1791787669 newest-source=1790699556 (wp-content/plugins/conexao-content/conexao-content.php) fresh
+   conexao-admin-ux         catalogue=1793823820 newest-source=1793697406 (wp-content/plugins/conexao-admin-ux/includes/class-fields.php) fresh
+   conexao-event-runtime    catalogue=1791787669 newest-source=1791205894 (wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php) fresh
+   conexao-event-importer   catalogue=1792653196 newest-source=1792616365 (wp-content/plugins/conexao-event-importer/includes/class-event-cleanup.php) fresh
+   conexao-leisure-migration catalogue=1791787669 newest-source=1790325155 (wp-content/plugins/conexao-leisure-migration/includes/class-leisure-exporter.php) fresh
+   conexao-sponsor-migration catalogue=1791787669 newest-source=1789994211 (wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-importer.php) fresh
+   conexao-translation-automation catalogue=1791787669 newest-source=1790861950 (wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-batch-control.php) fresh
+
+   stale catalogues: 0
+3 passed, 0 failed
+GATE-RESULT {"gate": "i18n_freshness", "status": "pass", "passed": 3, "failed": 0, "violations": 0, "pre_existing": 0, "new": 0, "details": []}
+exit=0

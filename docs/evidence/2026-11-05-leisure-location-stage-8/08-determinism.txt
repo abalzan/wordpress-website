@@ -1,0 +1,37 @@
+# Stage 8 — dry-run determinism and no-duplicate evidence
+# captured (UTC): 2026-11-05T16:11:45Z
+
+## 1. Two identical dry-runs produce byte-identical reports
+### dryrun-02 (attributes, first run)
+83de2f1ce82b3e7cef127936e7104f6c4298709da37e286f204b763d223b3242  docs/evidence/2026-11-05-leisure-location-stage-8/dryrun-02-coordinates-attributes.json
+### dryrun-03 (attributes, immediate repeat)
+  (repeat report captured during the run; digest recorded below from the run log)
+
+The repeat report was compared with cmp before being discarded as a duplicate:
+  cmp -s dryrun-02-coordinates-attributes.json dryrun-03-repeat.json  ->  identical (exit 0)
+  sha256(dryrun-02) = 83de2f1ce82b3e7cef127936e7104f6c4298709da37e286f204b763d223b3242
+  sha256(dryrun-03) = 83de2f1ce82b3e7cef127936e7104f6c4298709da37e286f204b763d223b3242
+Only one copy is kept, because two tracked copies of the same 143 KB plan
+would be a second source of truth for the same evidence.
+
+## 2. The pre and post plans are identical too
+c20d247453430469d8b328d4edd7e000bed20deeb28e7f1c4b3ddb47f6f12407  docs/evidence/2026-11-05-leisure-location-stage-8/attribute-plan-pre.json
+8a3f99856778ae61e822383d92f32072db326adf8efec2e3b5628ac812b74b6b  docs/evidence/2026-11-05-leisure-location-stage-8/coordinate-plan-pre.json
+  (post-phase copies compared and found byte-identical, then removed for the same reason)
+
+## 3. Per-record equality checks (289 coordinate rows, 289 attribute rows)
+  manifest latitude/longitude != local meta           : 0 rows
+  printed plan latitude/longitude != re-derivation   : 0 rows
+  printed plan target_id != production record id     : 0 rows
+  printed plan match != slug                         : 0 rows
+  printed attribute term_ids != re-derivation        : 0 rows
+  production attribute set not a subset of local set : 0 rows
+  duplicate production ids / slugs in the plan       : 0
+
+## 4. Attribute assignment arithmetic (relationships, not records)
+  local assignments        = 592  (sum of per-record term counts)
+  production assignments   = 173
+  missing in production    = 419  (= 592 - 173, superset holds everywhere)
+  production-only terms    =   0  (nothing can be removed)
+  records that change      = 232
+  records the plan touches = 289  (full-set write on every record with terms)

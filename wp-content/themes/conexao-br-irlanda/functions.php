@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CONEXAO_THEME_VERSION', '1.0.1' );
+define( 'CONEXAO_THEME_VERSION', '1.0.2' );
 define( 'CONEXAO_THEME_DIR', get_template_directory() );
 define( 'CONEXAO_THEME_URI', get_template_directory_uri() );
 
@@ -134,6 +134,7 @@ require_once CONEXAO_THEME_DIR . '/inc/archive-filters.php';
 require_once CONEXAO_THEME_DIR . '/inc/leisure.php';
 require_once CONEXAO_THEME_DIR . '/inc/events.php';
 require_once CONEXAO_THEME_DIR . '/inc/archive-query.php';
+require_once CONEXAO_THEME_DIR . '/inc/leisure-location.php';
 require_once CONEXAO_THEME_DIR . '/inc/b2-fallback.php';
 require_once CONEXAO_THEME_DIR . '/inc/shortcodes.php';
 require_once CONEXAO_THEME_DIR . '/inc/ui.php';

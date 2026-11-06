@@ -1,0 +1,26 @@
+# Post-stage production state — read-only re-verification (Stage 7D precondition)
+# captured: 2026-11-05T15:28:10Z (UTC)
+# no credentials, GET only
+
+## Target record 10551 (russborough-house)
+{
+  "id": 10551,
+  "slug": "russborough-house",
+  "status": "publish",
+  "date": "2026-08-21T21:48:44",
+  "modified": "2026-08-21T21:48:44",
+  "lat": "",
+  "lng": ""
+}
+
+## Public dataset /wp-json/conexao/v1/leisure-coordinates?lang=pt
+{
+  "count": 289,
+  "with_lat": 0,
+  "target": {
+    "id": 10551,
+    "lat": null,
+    "lng": null,
+    "index": 228
+  }
+}

@@ -1,0 +1,33 @@
+Stage 9E — pre-apply re-confirmation (read-only)
+captured: 2026-11-05T18:44:04Z
+
+== 1. Operator authorisation (restated verbatim) ==
+Operator answer at the Stage 9D checkpoint:
+  "Yes — authorise the full Stage 9 migration (289 coordinate POSTs + 289 attribute
+   POSTs on https://conexaobr.ie/)"
+Scope: coordinates (_leisure_lat/_leisure_lng) AND the conexao_leisure_attribute set,
+on the 289 verified leisure records. Single-use, this stage only, this migration only.
+
+== 2. Production identity (anonymous GET) ==
+site name      : Conexão BR
+home           : https://conexaobr.ie
+conexao/v1     : True
+
+== 3. Authenticated administrator identity (id/name/slug only, no credential printed) ==
+authenticated user id : 283039558
+name                  : conexaobradmin
+slug                  : conexaobradmin
+administrator         : True
+edit_others_posts     : True
+publish_posts         : True
+
+== 4. Resume journal readiness ==
+.local/ absent -> the script will create .local/leisure-location-migration-state.json
+gitignored: .gitignore:20:.local/	.local/leisure-location-migration-state.json
+
+== 5. Pre-apply re-check (after an 18-minute delay) ==
+dry-run : populate=289 conflicts=0 unresolved=0 written=0 gate=0 attributes_planned=289 attributes_written=0 (exit 0)
+reconcile: 35/35 checks passed (exit 0)
+term map: byte-identical to the 18:30:20Z capture except its captured timestamp
+          (terms_by_slug identical=True, terms_by_id identical=True, ids 1465-1477)
+=> no abort condition is true; proceeding to apply.

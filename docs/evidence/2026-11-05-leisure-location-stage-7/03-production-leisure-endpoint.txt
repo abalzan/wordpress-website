@@ -1,0 +1,39 @@
+# Production Lazer coordinate endpoint - read-only verification
+# captured: 2026-11-05T15:12:20Z (UTC)
+# GET https://conexaobr.ie/wp-json/conexao/v1/leisure-coordinates?lang=pt
+
+HTTP 200
+{
+  "lang": "pt",
+  "count": 289,
+  "items_returned": 289,
+  "with_lat": 0,
+  "with_lat_and_lng": 0,
+  "null_both": 289
+}
+
+# Pagination: the endpoint is NOT paginated - it returns the whole filtered set in one
+# response (count == items length above), so there is no page parameter to follow.
+# The REST *post* collection used for the inventory IS paginated (X-WP-TotalPages=3).
+
+# First and last items (order is the archive order):
+  {
+    "id": 21197,
+    "lat": null,
+    "lng": null,
+    "index": 0
+  }
+  {
+    "id": 10148,
+    "lat": null,
+    "lng": null,
+    "index": 288
+  }
+
+# Target record (selected in 05-target-record-selection.txt) as returned by the endpoint:
+  {
+    "id": 10551,
+    "lat": null,
+    "lng": null,
+    "index": 228
+  }

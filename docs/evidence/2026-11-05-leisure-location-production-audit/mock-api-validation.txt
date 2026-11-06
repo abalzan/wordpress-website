@@ -1,0 +1,85 @@
+== Mock-API validation: migrate-leisure-location-rest.py ==
+   stub: loopback only (127.0.0.1), no external network, no credentials
+
+== dry run: pagination across pages, no writes ==
+  PASS: dry run exits 0
+  PASS: dry run performed ZERO writes
+  PASS: dry run sent ZERO write requests at all
+  PASS: 6 eligible entries (HIGH + owner-approved)
+  PASS: the pre-populated record is ALREADY_SET
+  PASS: 2 records would be populated (beta, gamma)
+  PASS: 3 entries unresolved (missing target slug, no coords, out of range)
+  PASS: the numeric gate is 0 in a dry run
+  PASS: the REVIEW entry is skipped and counted
+  PASS: pagination issued several requests
+  PASS: all 6 target records were read across pages
+
+== apply: populate, then re-run is idempotent ==
+  PASS: apply exits 0
+  PASS: apply wrote exactly 2 coordinates (beta, gamma)
+  PASS: the writes hit beta and gamma only
+  PASS: beta latitude landed exactly
+  PASS: the owner-approved MEDIUM entry was written too
+  PASS: no write attempt was made against an unplanned record
+  PASS: the second apply exits 0
+  PASS: IDEMPOTENT: the second apply wrote nothing new
+  PASS: the second apply reports every in-scope record as ALREADY_SET
+
+== interruption: resume completes the remaining records ==
+  PASS: the interrupted run exits non-zero
+  PASS: exactly one write landed before the interruption
+  PASS: the resume journal recorded the one completed record
+  PASS: the resumed run exits 0
+  PASS: the resumed run completed the second record
+  PASS: the journal now records both records
+
+== conflict: an existing differing coordinate is preserved ==
+  PASS: the apply exits 0
+  PASS: the existing production coordinate is PRESERVED (not overwritten)
+  PASS: no write was issued for the conflicting record
+  PASS: the conflict is reported
+
+== capability: protected meta 403 rest_cannot_update ==
+  PASS: a forbidden meta write exits non-zero
+  PASS: the error names the HTTP status and the WordPress error code
+  PASS: the error explains the auth_callback requirement
+  PASS: nothing was written
+  PASS: credentials never appear in the output
+
+== authentication failure ==
+  PASS: a missing credential exits non-zero
+  PASS: the error names the missing environment variable
+  PASS: nothing was written
+
+== rate limiting: 429 is retried with backoff ==
+  PASS: a single 429 does not fail the run
+  PASS: the retry is reported, not hidden
+
+== safety: production target requires explicit confirmation ==
+  PASS: a production apply without --confirm-production exits non-zero
+  PASS: the refusal names the required flag
+  PASS: the production target is announced loudly
+  PASS: --apply with no --target-url exits non-zero
+  PASS: the refusal names --target-url
+
+== safety: mutually exclusive modes ==
+  PASS: --apply --dry-run exits non-zero
+  PASS: the conflict is explained
+
+== safety: the report contains no credential ==
+  PASS: no password in the report
+  PASS: no username in the report
+  PASS: no authorization header in the report
+
+== attributes: full local set, no removal logic ==
+  PASS: the local set is sent verbatim (exterior=11, familias=12)
+  PASS: a second record gets its own local set (gratuito=13)
+  PASS: a record absent from the target is never planned (nothing is created)
+  PASS: the plan carries no removal/missing concept at all
+  PASS: a term unknown to the target is dropped, and the record still gets its known terms
+
+== diagnostics: a wrong REST base path is explained ==
+  PASS: a non-JSON response exits non-zero
+  PASS: the error explains that the response was not JSON
+  PASS: the error points at the /wp-json/ REST base
+58 passed, 0 failed

@@ -1,0 +1,49 @@
+# Stage 9F — post-migration endpoint verification (GET only, cache-busted).
+# Field names are the endpoint contract: items carry `lat` / `lng` (see
+# wp-content/themes/conexao-br-irlanda/inc/leisure-location.php:331-333), not `latitude`/`longitude`.
+# captured: 2026-11-05T19:25:05Z
+
+1. GET /wp-json/conexao/v1/leisure-coordinates?lang=pt&_cb=1793906705 (anonymous, cache-busted)
+   status              : 200
+   count               : 289
+   items               : 289
+   items with lat+lng  : 289
+   items with neither  : 0
+   half-filled items   : 0
+   item keys           : ['id', 'index', 'lat', 'lng']
+   body sha256         : a16f81b9f9db4ed54dcf8d9d80c99313a380286a6040a3f181e69ed8085dc994
+   sample              : {"id": 21197, "index": 0, "lat": 52.961976, "lng": -6.564829}
+
+   (the dataset indexes records by id, not slug; lat/lng equality against the local source is verified per slug by 26-independent-post-reconcile.txt)
+
+2. anonymous GET leisure?slug=trinity-college-book-of-kells -> 200
+   id=10146 modified_gmt=2026-11-05T19:22:08 meta_lat='53.34394' meta_lng='-6.2568' terms=2
+2. anonymous GET leisure?slug=russborough-house -> 200
+   id=10551 modified_gmt=2026-11-05T19:19:40 meta_lat='53.141559' meta_lng='-6.569674' terms=2
+2. anonymous GET leisure?slug=dwyer-mcallister-cottage -> 200
+   id=21197 modified_gmt=2026-11-05T19:10:21 meta_lat='52.961976' meta_lng='-6.564829' terms=4
+
+3. authenticated GET leisure?slug=trinity-college-book-of-kells -> 200
+   id=10146 modified=2026-11-05T19:22:08 modified_gmt=2026-11-05T19:22:08
+   _leisure_lat='53.34394' _leisure_lng='-6.2568' terms=[1467, 1473]
+   revisions (X-WP-Total) = 1
+   _leisure_coord_source/_verified exposed: False / False
+3. authenticated GET leisure?slug=russborough-house -> 200
+   id=10551 modified=2026-11-05T19:19:40 modified_gmt=2026-11-05T19:19:40
+   _leisure_lat='53.141559' _leisure_lng='-6.569674' terms=[1466, 1465]
+   revisions (X-WP-Total) = 1
+   _leisure_coord_source/_verified exposed: False / False
+3. authenticated GET leisure?slug=dwyer-mcallister-cottage -> 429 (no row; WordPress.com rate limit)
+
+4. GET wp/v2/conexao_leisure_attribute -> 200  terms=13  X-WP-Total=13
+   counts: {'acessivel': 2, 'acesso-de-transporte-publico': 3, 'bicicleta': 1, 'estacionamento': 45, 'exterior': 194, 'familias': 94, 'gratuito': 115, 'gratuito-em-determinadas-condicoes': 6, 'interior': 59, 'interior-exterior': 35, 'necessita-reserva': 22, 'pago': 13, 'pet-friendly': 3}
+   total assignments (sum of counts): 592
+
+5. Revision side effect sample (authenticated GET, one record at a time, 1.5s apart)
+   The plan predicted ~578 revisions (one per POST). WordPress reuses the last
+   revision when the post fields are unchanged, so the measured count is lower.
+   trinity-college-book-of-kells      id=10146  modified_gmt=2026-11-05T19:22:08 revisions=1
+   russborough-house                  id=10551  modified_gmt=2026-11-05T19:19:40 revisions=1
+   dwyer-mcallister-cottage           id=21197  modified_gmt=2026-11-05T19:10:21 revisions=2
+   abbeyleix-heritage-house           id=10631  modified_gmt=2026-11-05T19:18:00 revisions=1
+   fota-wildlife-park                 id=10188  modified_gmt=2026-11-05T19:20:28 revisions=1

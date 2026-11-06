@@ -1,0 +1,3556 @@
+{
+ "captured": "2026-11-05T18:25:18Z",
+ "base_url": "http://localhost:8080",
+ "pages": [
+  {
+   "page": 1,
+   "status": 200,
+   "returned": 100,
+   "x_wp_total": "294",
+   "x_wp_total_pages": "3"
+  },
+  {
+   "page": 2,
+   "status": 200,
+   "returned": 100,
+   "x_wp_total": "294",
+   "x_wp_total_pages": "3"
+  },
+  {
+   "page": 3,
+   "status": 200,
+   "returned": 94,
+   "x_wp_total": "294",
+   "x_wp_total_pages": "3"
+  }
+ ],
+ "records": [
+  {
+   "id": 10631,
+   "slug": "abbeyleix-heritage-house",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:12",
+   "lat": "52.917287",
+   "lng": "-7.34612",
+   "attribute_terms": [
+    "interior"
+   ]
+  },
+  {
+   "id": 10748,
+   "slug": "achill-island",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:09",
+   "lat": "53.92617",
+   "lng": "-9.93669",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10682,
+   "slug": "acres-lake-floating-boardwalk",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:11",
+   "lat": "54.04157",
+   "lng": "-8.048706",
+   "attribute_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10841,
+   "slug": "adare-village",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:06",
+   "lat": "52.56456",
+   "lng": "-8.789674",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10180,
+   "slug": "aillwee-caves",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:16",
+   "lat": "53.08918",
+   "lng": "-9.143677",
+   "attribute_terms": [
+    "estacionamento",
+    "familias",
+    "interior-exterior"
+   ]
+  },
+  {
+   "id": 10879,
+   "slug": "altamont-gardens",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:05",
+   "lat": "52.735567",
+   "lng": "-6.720599",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 20905,
+   "slug": "annes-grove-gardens",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:04",
+   "lat": "52.19462",
+   "lng": "-8.46596",
+   "attribute_terms": [
+    "estacionamento",
+    "exterior",
+    "familias",
+    "pago"
+   ]
+  },
+  {
+   "id": 10173,
+   "slug": "aran-islands",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:16",
+   "lat": "53.26598",
+   "lng": "-9.5641",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 20926,
+   "slug": "aras-an-uachtarain",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:03",
+   "lat": "53.36605",
+   "lng": "-6.33093",
+   "attribute_terms": [
+    "gratuito",
+    "interior"
+   ]
+  },
+  {
+   "id": 20909,
+   "slug": "arbour-hill-cemetery",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:04",
+   "lat": "53.350325",
+   "lng": "-6.286782",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10656,
+   "slug": "ardagh-heritage-village",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:11",
+   "lat": "53.6643",
+   "lng": "-7.6787",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 20927,
+   "slug": "ardfert-cathedral",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:03",
+   "lat": "52.328719",
+   "lng": "-9.78172",
+   "attribute_terms": [
+    "estacionamento",
+    "interior-exterior",
+    "pago"
+   ]
+  },
+  {
+   "id": 10797,
+   "slug": "ardmore-round-tower",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:08",
+   "lat": "51.943662",
+   "lng": "-7.734172",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10728,
+   "slug": "ards-forest-park",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:10",
+   "lat": "55.158",
+   "lng": "-7.8925",
+   "attribute_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10672,
+   "slug": "arigna-mining-experience",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:11",
+   "lat": "54.076949",
+   "lng": "-8.119236",
+   "attribute_terms": [
+    "interior",
+    "necessita-reserva"
+   ]
+  },
+  {
+   "id": 20930,
+   "slug": "askeaton-castle",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:03",
+   "lat": "52.600449",
+   "lng": "-8.973985",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 20933,
+   "slug": "athenry-castle",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:02",
+   "lat": "53.300073",
+   "lng": "-8.744482",
+   "attribute_terms": [
+    "estacionamento",
+    "familias",
+    "interior-exterior",
+    "pago"
+   ]
+  },
+  {
+   "id": 10647,
+   "slug": "athlone-castle",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:12",
+   "lat": "53.422827",
+   "lng": "-7.942676",
+   "attribute_terms": [
+    "familias",
+    "interior"
+   ]
+  },
+  {
+   "id": 20934,
+   "slug": "aughnanure-castle",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:02",
+   "lat": "53.418755",
+   "lng": "-9.275722",
+   "attribute_terms": [
+    "estacionamento",
+    "interior-exterior",
+    "pago"
+   ]
+  },
+  {
+   "id": 10161,
+   "slug": "avondale-forest-park",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:17",
+   "lat": "52.911583",
+   "lng": "-6.219361",
+   "attribute_terms": [
+    "estacionamento",
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 20936,
+   "slug": "ballyhack-castle",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:02",
+   "lat": "52.24585",
+   "lng": "-6.967226",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10621,
+   "slug": "banna-strand",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:13",
+   "lat": "52.338745",
+   "lng": "-9.835651",
+   "attribute_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 20906,
+   "slug": "barryscourt-castle",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:04",
+   "lat": "51.904637",
+   "lng": "-8.259317",
+   "attribute_terms": [
+    "estacionamento",
+    "interior-exterior",
+    "pago"
+   ]
+  },
+  {
+   "id": 10168,
+   "slug": "battle-of-the-boyne-visitor-centre",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:16",
+   "lat": "53.723223",
+   "lng": "-6.423496",
+   "attribute_terms": [
+    "interior"
+   ]
+  },
+  {
+   "id": 10565,
+   "slug": "bective-abbey",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:14",
+   "lat": "53.582558",
+   "lng": "-6.70274",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10700,
+   "slug": "belturbet-railway-station",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:10",
+   "lat": "54.097752",
+   "lng": "-7.442228",
+   "attribute_terms": [
+    "interior"
+   ]
+  },
+  {
+   "id": 10645,
+   "slug": "belvedere-house-gardens",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:12",
+   "lat": "53.4756",
+   "lng": "-7.36733",
+   "attribute_terms": [
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 10730,
+   "slug": "benbulben",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:10",
+   "lat": "54.361492",
+   "lng": "-8.501434",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10637,
+   "slug": "birr-castle-demesne",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:12",
+   "lat": "53.096704",
+   "lng": "-7.91432",
+   "attribute_terms": [
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 10601,
+   "slug": "blackrock-castle-observatory",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:13",
+   "lat": "51.89988",
+   "lng": "-8.40287",
+   "attribute_terms": [
+    "familias",
+    "interior"
+   ]
+  },
+  {
+   "id": 10185,
+   "slug": "blarney-castle",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:16",
+   "lat": "51.928999",
+   "lng": "-8.570843",
+   "attribute_terms": [
+    "estacionamento",
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 20929,
+   "slug": "blasket-centre-ionad-an-bhlascaoid",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:03",
+   "lat": "52.132286",
+   "lng": "-10.461605",
+   "attribute_terms": [
+    "interior",
+    "necessita-reserva",
+    "pago"
+   ]
+  },
+  {
+   "id": 10853,
+   "slug": "bog-of-allen-nature-centre",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:06",
+   "lat": "53.27861",
+   "lng": "-6.94256",
+   "attribute_terms": [
+    "familias",
+    "interior-exterior"
+   ]
+  },
+  {
+   "id": 10885,
+   "slug": "borris-house",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:05",
+   "lat": "52.598486",
+   "lng": "-6.926565",
+   "attribute_terms": [
+    "interior-exterior"
+   ]
+  },
+  {
+   "id": 10668,
+   "slug": "boyle-abbey",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:11",
+   "lat": "53.973501",
+   "lng": "-8.296862",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10158,
+   "slug": "bray-head",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:17",
+   "lat": "53.18717",
+   "lng": "-6.09917",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10577,
+   "slug": "brigits-garden",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:14",
+   "lat": "53.385304",
+   "lng": "-9.21248",
+   "attribute_terms": [
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 10555,
+   "slug": "brittas-bay-beach",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:15",
+   "lat": "52.877419",
+   "lng": "-6.061707",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10877,
+   "slug": "brownshill-dolmen",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:05",
+   "lat": "52.837441",
+   "lng": "-6.881061",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10179,
+   "slug": "bunratty-castle-folk-park",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:16",
+   "lat": "52.6953",
+   "lng": "-8.8139",
+   "attribute_terms": [
+    "estacionamento",
+    "familias",
+    "interior-exterior"
+   ]
+  },
+  {
+   "id": 10178,
+   "slug": "burren-national-park",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:16",
+   "lat": "52.944953",
+   "lng": "-9.063026",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10821,
+   "slug": "cahir-castle",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:07",
+   "lat": "52.374446",
+   "lng": "-7.927166",
+   "attribute_terms": [
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 10865,
+   "slug": "carlingford",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:05",
+   "lat": "54.04201",
+   "lng": "-6.186298",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10873,
+   "slug": "carlingford-lough-greenway",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:05",
+   "lat": "54.050161",
+   "lng": "-6.191342",
+   "attribute_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10708,
+   "slug": "carrickmacross-lace-gallery",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:10",
+   "lat": "53.978",
+   "lng": "-6.719",
+   "attribute_terms": [
+    "interior"
+   ]
+  },
+  {
+   "id": 10734,
+   "slug": "carrowmore-megalithic-cemetery",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:09",
+   "lat": "54.2509",
+   "lng": "-8.5193",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 20910,
+   "slug": "casino-marino",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:04",
+   "lat": "53.37132",
+   "lng": "-6.22704",
+   "attribute_terms": [
+    "estacionamento",
+    "interior",
+    "pago"
+   ]
+  },
+  {
+   "id": 10702,
+   "slug": "castle-leslie-estate",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:10",
+   "lat": "54.31821",
+   "lng": "-6.89582",
+   "attribute_terms": [
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 10778,
+   "slug": "castlecomer-discovery-park",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:08",
+   "lat": "52.80708",
+   "lng": "-7.20214",
+   "attribute_terms": [
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 10851,
+   "slug": "castletown-house",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:06",
+   "lat": "53.34903",
+   "lng": "-6.530488",
+   "attribute_terms": [
+    "interior-exterior"
+   ]
+  },
+  {
+   "id": 10690,
+   "slug": "cavan-burren-park",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:10",
+   "lat": "54.264734",
+   "lng": "-7.888553",
+   "attribute_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 13870,
+   "slug": "cavan-cathedral",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:04",
+   "lat": "53.9984",
+   "lng": "-7.361",
+   "attribute_terms": [
+    "gratuito",
+    "interior"
+   ]
+  },
+  {
+   "id": 10698,
+   "slug": "cavan-county-museum",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:10",
+   "lat": "53.865225",
+   "lng": "-7.20088",
+   "attribute_terms": [
+    "interior-exterior"
+   ]
+  },
+  {
+   "id": 10758,
+   "slug": "ceide-fields",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:09",
+   "lat": "54.306733",
+   "lng": "-9.457337",
+   "attribute_terms": [
+    "interior-exterior"
+   ]
+  },
+  {
+   "id": 10191,
+   "slug": "charles-fort",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:15",
+   "lat": "51.696431",
+   "lng": "-8.498955",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10641,
+   "slug": "charleville-forest-castle",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:12",
+   "lat": "53.26046",
+   "lng": "-7.52792",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 13860,
+   "slug": "chester-beatty",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:04",
+   "lat": "53.3422",
+   "lng": "-6.26745",
+   "attribute_terms": [
+    "acessivel",
+    "acesso-de-transporte-publico",
+    "gratuito",
+    "interior-exterior"
+   ]
+  },
+  {
+   "id": 10764,
+   "slug": "clare-island",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:09",
+   "lat": "53.761803",
+   "lng": "-9.904518",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10177,
+   "slug": "cliffs-of-moher",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:03:15",
+   "lat": "52.97201",
+   "lng": "-9.42592",
+   "attribute_terms": [
+    "estacionamento",
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 10635,
+   "slug": "clonmacnoise",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:12",
+   "lat": "53.32593",
+   "lng": "-7.98697",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10186,
+   "slug": "cobh",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:16",
+   "lat": "51.850614",
+   "lng": "-8.295882",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10170,
+   "slug": "connemara-national-park",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:16",
+   "lat": "53.550845",
+   "lng": "-9.94503",
+   "attribute_terms": [
+    "estacionamento",
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 10579,
+   "slug": "coole-park",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:14",
+   "lat": "53.09279",
+   "lng": "-8.837889",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10791,
+   "slug": "copper-coast-geopark",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:08",
+   "lat": "52.142309",
+   "lng": "-7.365009",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10599,
+   "slug": "cork-city-gaol",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:13",
+   "lat": "51.899505",
+   "lng": "-8.499008",
+   "attribute_terms": [
+    "familias",
+    "interior"
+   ]
+  },
+  {
+   "id": 10654,
+   "slug": "corlea-trackway",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:12",
+   "lat": "53.61226",
+   "lng": "-7.844691",
+   "attribute_terms": [
+    "interior"
+   ]
+  },
+  {
+   "id": 10799,
+   "slug": "coumshingaun-loop",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:07",
+   "lat": "52.23923",
+   "lng": "-7.50234",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10593,
+   "slug": "craggaunowen",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:13",
+   "lat": "52.810643",
+   "lng": "-8.793926",
+   "attribute_terms": [
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 10746,
+   "slug": "croagh-patrick",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:09",
+   "lat": "53.77811",
+   "lng": "-9.639078",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10811,
+   "slug": "curracloe-beach",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:07",
+   "lat": "52.38835",
+   "lng": "-6.36558",
+   "attribute_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10847,
+   "slug": "curraghchase-forest-park",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:06",
+   "lat": "52.59252",
+   "lng": "-8.867855",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 20911,
+   "slug": "custom-house-visitor-centre",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:04",
+   "lat": "53.34866",
+   "lng": "-6.25317",
+   "attribute_terms": [
+    "interior",
+    "necessita-reserva",
+    "pago"
+   ]
+  },
+  {
+   "id": 13862,
+   "slug": "derrigimlagh",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:04",
+   "lat": "53.461723",
+   "lng": "-10.023524",
+   "attribute_terms": [
+    "bicicleta",
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10615,
+   "slug": "derrynane-house",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:13",
+   "lat": "51.763449",
+   "lng": "-10.128605",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 20931,
+   "slug": "desmond-castle-adare",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:02",
+   "lat": "52.5647",
+   "lng": "-8.79",
+   "attribute_terms": [
+    "estacionamento",
+    "interior-exterior",
+    "necessita-reserva"
+   ]
+  },
+  {
+   "id": 20907,
+   "slug": "desmond-castle-kinsale",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:04",
+   "lat": "51.707257",
+   "lng": "-8.524692",
+   "attribute_terms": [
+    "exterior",
+    "pago"
+   ]
+  },
+  {
+   "id": 20932,
+   "slug": "desmond-castle-newcastlewest",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:02",
+   "lat": "52.450434",
+   "lng": "-9.061211",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10175,
+   "slug": "diamond-hill",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:16",
+   "lat": "53.550845",
+   "lng": "-9.94503",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10199,
+   "slug": "dingle-peninsula",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:15",
+   "lat": "52.139153",
+   "lng": "-10.274592",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 13865,
+   "slug": "doagh-famine-village",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:04",
+   "lat": "55.30902",
+   "lng": "-7.33563",
+   "attribute_terms": [
+    "estacionamento",
+    "familias",
+    "interior-exterior",
+    "pago",
+    "pet-friendly"
+   ]
+  },
+  {
+   "id": 20937,
+   "slug": "doe-castle",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:02",
+   "lat": "55.135049",
+   "lng": "-7.864075",
+   "attribute_terms": [
+    "estacionamento",
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10859,
+   "slug": "donadea-forest-park",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:06",
+   "lat": "53.340049",
+   "lng": "-6.745716",
+   "attribute_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10718,
+   "slug": "donegal-castle",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:10",
+   "lat": "54.655023",
+   "lng": "-8.1108",
+   "attribute_terms": [
+    "interior"
+   ]
+  },
+  {
+   "id": 10607,
+   "slug": "doneraile-park",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:13",
+   "lat": "52.219069",
+   "lng": "-8.580318",
+   "attribute_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10181,
+   "slug": "doolin-cave",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:16",
+   "lat": "53.0419",
+   "lng": "-9.345",
+   "attribute_terms": [
+    "interior"
+   ]
+  },
+  {
+   "id": 10756,
+   "slug": "downpatrick-head",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:09",
+   "lat": "54.322668",
+   "lng": "-9.345669",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10571,
+   "slug": "dowth",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:14",
+   "lat": "53.703644",
+   "lng": "-6.45027",
+   "attribute_terms": [
+    "exterior",
+    "necessita-reserva"
+   ]
+  },
+  {
+   "id": 10742,
+   "slug": "drumcliffe",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:09",
+   "lat": "54.3264",
+   "lng": "-8.4936",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10147,
+   "slug": "dublin-castle",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:18",
+   "lat": "53.342781",
+   "lng": "-6.267252",
+   "attribute_terms": [
+    "interior"
+   ]
+  },
+  {
+   "id": 10151,
+   "slug": "dublin-zoo",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:17",
+   "lat": "53.352833",
+   "lng": "-6.304694",
+   "attribute_terms": [
+    "estacionamento",
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 10881,
+   "slug": "ducketts-grove",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:05",
+   "lat": "52.857455",
+   "lng": "-6.813212",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10694,
+   "slug": "dun-a-ri-forest-park",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:10",
+   "lat": "53.91982",
+   "lng": "-6.793",
+   "attribute_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10174,
+   "slug": "dun-aonghasa",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:16",
+   "lat": "53.12993",
+   "lng": "-9.75736",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10547,
+   "slug": "dun-laoghaire-east-pier",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:15",
+   "lat": "53.29433",
+   "lng": "-6.12857",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10807,
+   "slug": "dunbrody-famine-ship",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:07",
+   "lat": "52.3936",
+   "lng": "-6.9476",
+   "attribute_terms": [
+    "interior"
+   ]
+  },
+  {
+   "id": 20940,
+   "slug": "dungarvan-castle",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:02",
+   "lat": "52.088981",
+   "lng": "-7.616245",
+   "attribute_terms": [
+    "gratuito",
+    "interior-exterior"
+   ]
+  },
+  {
+   "id": 10776,
+   "slug": "dunmore-cave",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:08",
+   "lat": "52.733932",
+   "lng": "-7.246799",
+   "attribute_terms": [
+    "interior"
+   ]
+  },
+  {
+   "id": 13866,
+   "slug": "dursey-island",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:04",
+   "lat": "51.60777",
+   "lng": "-10.15831",
+   "attribute_terms": [
+    "exterior",
+    "familias",
+    "gratuito-em-determinadas-condicoes"
+   ]
+  },
+  {
+   "id": 20948,
+   "slug": "dwyer-mcallister-cottage",
+   "status": "publish",
+   "modified_gmt": "2026-11-05T14:42:16",
+   "lat": "52.961976",
+   "lng": "-6.564829",
+   "attribute_terms": [
+    "estacionamento",
+    "gratuito",
+    "interior",
+    "necessita-reserva"
+   ]
+  },
+  {
+   "id": 10744,
+   "slug": "eagles-flying",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:09",
+   "lat": "54.10345",
+   "lng": "-8.56755",
+   "attribute_terms": [
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 10563,
+   "slug": "emerald-park",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:14",
+   "lat": "53.545918",
+   "lng": "-6.45806",
+   "attribute_terms": [
+    "exterior",
+    "familias",
+    "necessita-reserva"
+   ]
+  },
+  {
+   "id": 10625,
+   "slug": "emo-court",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:13",
+   "lat": "53.107187",
+   "lng": "-7.196871",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10597,
+   "slug": "english-market-cork",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:13",
+   "lat": "51.89787",
+   "lng": "-8.474242",
+   "attribute_terms": [
+    "gratuito",
+    "interior"
+   ]
+  },
+  {
+   "id": 10585,
+   "slug": "ennis-friary",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:14",
+   "lat": "52.845978",
+   "lng": "-8.981586",
+   "attribute_terms": [
+    "interior"
+   ]
+  },
+  {
+   "id": 10541,
+   "slug": "epic-irish-emigration-museum",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:15",
+   "lat": "53.348133",
+   "lng": "-6.247989",
+   "attribute_terms": [
+    "interior"
+   ]
+  },
+  {
+   "id": 10726,
+   "slug": "errigal",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:10",
+   "lat": "55.025047",
+   "lng": "-8.089997",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 20943,
+   "slug": "famine-warhouse-1848",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:02",
+   "lat": "52.619266",
+   "lng": "-7.522708",
+   "attribute_terms": [
+    "estacionamento",
+    "gratuito",
+    "interior",
+    "necessita-reserva"
+   ]
+  },
+  {
+   "id": 10722,
+   "slug": "fanad-head-lighthouse",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:10",
+   "lat": "55.27658",
+   "lng": "-7.63629",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 20912,
+   "slug": "farmleigh-house-and-estate",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:04",
+   "lat": "53.3661",
+   "lng": "-6.3516",
+   "attribute_terms": [
+    "estacionamento",
+    "familias",
+    "gratuito-em-determinadas-condicoes",
+    "interior-exterior"
+   ]
+  },
+  {
+   "id": 10815,
+   "slug": "ferns-castle",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:07",
+   "lat": "52.5905",
+   "lng": "-6.4992",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 20946,
+   "slug": "fore-abbey",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:01",
+   "lat": "53.683937",
+   "lng": "-7.227534",
+   "attribute_terms": [
+    "estacionamento",
+    "exterior"
+   ]
+  },
+  {
+   "id": 13861,
+   "slug": "forty-foot",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:04",
+   "lat": "53.28949",
+   "lng": "-6.1137",
+   "attribute_terms": [
+    "acesso-de-transporte-publico",
+    "estacionamento",
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 20908,
+   "slug": "fota-arboretum-and-gardens",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:04",
+   "lat": "51.893461",
+   "lng": "-8.302749",
+   "attribute_terms": [
+    "estacionamento",
+    "exterior",
+    "familias",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10188,
+   "slug": "fota-wildlife-park",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:03:16",
+   "lat": "51.8906",
+   "lng": "-8.30772",
+   "attribute_terms": [
+    "estacionamento",
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 10843,
+   "slug": "foynes-flying-boat-museum",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:06",
+   "lat": "52.611581",
+   "lng": "-9.109658",
+   "attribute_terms": [
+    "familias",
+    "interior"
+   ]
+  },
+  {
+   "id": 10617,
+   "slug": "gallarus-oratory",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:13",
+   "lat": "52.1726",
+   "lng": "-10.349401",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10176,
+   "slug": "galway-atlantaquaria",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:16",
+   "lat": "53.259807",
+   "lng": "-9.074272",
+   "attribute_terms": [
+    "estacionamento",
+    "familias",
+    "interior"
+   ]
+  },
+  {
+   "id": 10575,
+   "slug": "galway-city-museum",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:14",
+   "lat": "53.269832",
+   "lng": "-9.053629",
+   "attribute_terms": [
+    "gratuito",
+    "interior"
+   ]
+  },
+  {
+   "id": 10197,
+   "slug": "gap-of-dunloe",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:15",
+   "lat": "52.040799",
+   "lng": "-9.63152",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 20913,
+   "slug": "garden-of-remembrance",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:04",
+   "lat": "53.353987",
+   "lng": "-6.263853",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10603,
+   "slug": "garnish-island",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:13",
+   "lat": "51.748777",
+   "lng": "-9.548521",
+   "attribute_terms": [
+    "exterior",
+    "necessita-reserva"
+   ]
+  },
+  {
+   "id": 10545,
+   "slug": "glasnevin-cemetery-museum",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:15",
+   "lat": "53.372614",
+   "lng": "-6.276813",
+   "attribute_terms": [
+    "interior"
+   ]
+  },
+  {
+   "id": 20938,
+   "slug": "glebe-house-and-gallery",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:02",
+   "lat": "55.004383",
+   "lng": "-7.903299",
+   "attribute_terms": [
+    "estacionamento",
+    "familias",
+    "gratuito-em-determinadas-condicoes",
+    "interior-exterior"
+   ]
+  },
+  {
+   "id": 10825,
+   "slug": "glen-of-aherlow",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:07",
+   "lat": "52.42925",
+   "lng": "-8.16767",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10678,
+   "slug": "glencar-waterfall",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:11",
+   "lat": "54.3405",
+   "lng": "-8.3677",
+   "attribute_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10155,
+   "slug": "glendalough",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:17",
+   "lat": "53.010446",
+   "lng": "-6.323834",
+   "attribute_terms": [
+    "estacionamento",
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 10653,
+   "slug": "glendeer-pet-farm",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:12",
+   "lat": "53.758454",
+   "lng": "-8.091431",
+   "attribute_terms": [
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 10714,
+   "slug": "glenveagh-national-park",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:10",
+   "lat": "55.05649",
+   "lng": "-7.93686",
+   "attribute_terms": [
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 20914,
+   "slug": "government-buildings",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:04",
+   "lat": "53.339211",
+   "lng": "-6.253563",
+   "attribute_terms": [
+    "gratuito",
+    "interior"
+   ]
+  },
+  {
+   "id": 10658,
+   "slug": "granard-motte-bailey",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:11",
+   "lat": "53.77537",
+   "lng": "-7.50061",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 20915,
+   "slug": "grangegorman-military-cemetery",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:04",
+   "lat": "53.36036",
+   "lng": "-6.3057",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10159,
+   "slug": "great-sugar-loaf",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:17",
+   "lat": "53.144956",
+   "lng": "-6.155013",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10760,
+   "slug": "great-western-greenway",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:09",
+   "lat": "53.801034",
+   "lng": "-9.521637",
+   "attribute_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10724,
+   "slug": "grianan-of-aileach",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:10",
+   "lat": "55.023813",
+   "lng": "-7.427523",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10149,
+   "slug": "guinness-storehouse",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:18",
+   "lat": "53.341903",
+   "lng": "-6.28672",
+   "attribute_terms": [
+    "interior",
+    "necessita-reserva"
+   ]
+  },
+  {
+   "id": 10627,
+   "slug": "heywood-gardens",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:13",
+   "lat": "52.885278",
+   "lng": "-7.296",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10164,
+   "slug": "hill-of-tara",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:16",
+   "lat": "53.5813",
+   "lng": "-6.60963",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10833,
+   "slug": "holy-cross-abbey",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:07",
+   "lat": "52.639856",
+   "lng": "-7.868282",
+   "attribute_terms": [
+    "gratuito",
+    "interior"
+   ]
+  },
+  {
+   "id": 10589,
+   "slug": "holy-island-inis-cealtra",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:13",
+   "lat": "52.929491",
+   "lng": "-8.429379",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10805,
+   "slug": "hook-lighthouse",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:07",
+   "lat": "52.213542",
+   "lng": "-6.951708",
+   "attribute_terms": [
+    "familias",
+    "interior-exterior"
+   ]
+  },
+  {
+   "id": 10783,
+   "slug": "house-of-waterford-crystal",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:08",
+   "lat": "52.259326",
+   "lng": "-7.106593",
+   "attribute_terms": [
+    "interior",
+    "necessita-reserva"
+   ]
+  },
+  {
+   "id": 10152,
+   "slug": "howth-cliff-walk",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:17",
+   "lat": "53.38882",
+   "lng": "-6.07422",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10837,
+   "slug": "hunt-museum",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:07",
+   "lat": "52.666325",
+   "lng": "-8.624458",
+   "attribute_terms": [
+    "interior"
+   ]
+  },
+  {
+   "id": 10883,
+   "slug": "huntington-castle-gardens",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:05",
+   "lat": "52.692097",
+   "lng": "-6.646664",
+   "attribute_terms": [
+    "interior-exterior"
+   ]
+  },
+  {
+   "id": 10200,
+   "slug": "inch-beach",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:15",
+   "lat": "52.142225",
+   "lng": "-9.981935",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 20935,
+   "slug": "ionad-culturtha-an-phiarsaigh-pearses-cottage",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:02",
+   "lat": "53.3885",
+   "lng": "-9.617917",
+   "attribute_terms": [
+    "estacionamento",
+    "familias",
+    "interior-exterior",
+    "pago"
+   ]
+  },
+  {
+   "id": 10801,
+   "slug": "irish-national-heritage-park",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:07",
+   "lat": "52.347966",
+   "lng": "-6.516899",
+   "attribute_terms": [
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 10849,
+   "slug": "irish-national-stud-japanese-gardens",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:06",
+   "lat": "53.1442",
+   "lng": "-6.9029",
+   "attribute_terms": [
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 20916,
+   "slug": "irish-national-war-memorial-gardens",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:03",
+   "lat": "53.344745",
+   "lng": "-6.308281",
+   "attribute_terms": [
+    "estacionamento",
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 20917,
+   "slug": "iveagh-gardens",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:03",
+   "lat": "53.336",
+   "lng": "-6.262",
+   "attribute_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10189,
+   "slug": "jameson-distillery-midleton",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:16",
+   "lat": "51.913819",
+   "lng": "-8.168309",
+   "attribute_terms": [
+    "interior",
+    "necessita-reserva"
+   ]
+  },
+  {
+   "id": 10770,
+   "slug": "jerpoint-abbey",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:08",
+   "lat": "52.510894",
+   "lng": "-7.157818",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10779,
+   "slug": "jerpoint-park",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:08",
+   "lat": "52.512267",
+   "lng": "-7.166894",
+   "attribute_terms": [
+    "exterior",
+    "necessita-reserva"
+   ]
+  },
+  {
+   "id": 13869,
+   "slug": "jfk-arboretum",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:04",
+   "lat": "52.321047",
+   "lng": "-6.933696",
+   "attribute_terms": [
+    "estacionamento",
+    "exterior",
+    "familias",
+    "gratuito-em-determinadas-condicoes",
+    "pet-friendly"
+   ]
+  },
+  {
+   "id": 10803,
+   "slug": "johnstown-castle",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:07",
+   "lat": "52.294063",
+   "lng": "-6.50548",
+   "attribute_terms": [
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 13863,
+   "slug": "joyce-tower-museum",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:04",
+   "lat": "53.28865",
+   "lng": "-6.11364",
+   "attribute_terms": [
+    "acesso-de-transporte-publico",
+    "gratuito",
+    "interior"
+   ]
+  },
+  {
+   "id": 10750,
+   "slug": "keem-bay",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:09",
+   "lat": "53.9679",
+   "lng": "-10.1942",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10567,
+   "slug": "kells-historic-town",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:14",
+   "lat": "53.7264",
+   "lng": "-6.87097",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 20941,
+   "slug": "kells-priory",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:02",
+   "lat": "52.5368",
+   "lng": "-7.268",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10613,
+   "slug": "kerry-cliffs",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:13",
+   "lat": "51.868605",
+   "lng": "-10.385583",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10649,
+   "slug": "kilbeggan-distillery",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:12",
+   "lat": "53.36948",
+   "lng": "-7.50267",
+   "attribute_terms": [
+    "interior"
+   ]
+  },
+  {
+   "id": 10184,
+   "slug": "kilkee-cliffs",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:16",
+   "lat": "52.68178",
+   "lng": "-9.66503",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10766,
+   "slug": "kilkenny-castle",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:08",
+   "lat": "52.650283",
+   "lng": "-7.249348",
+   "attribute_terms": [
+    "familias",
+    "interior-exterior"
+   ]
+  },
+  {
+   "id": 10193,
+   "slug": "killarney-national-park",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:15",
+   "lat": "52.056831",
+   "lng": "-9.508254",
+   "attribute_terms": [
+    "estacionamento",
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 10557,
+   "slug": "killruddery-house-gardens",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:14",
+   "lat": "53.181692",
+   "lng": "-6.102061",
+   "attribute_terms": [
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 10692,
+   "slug": "killykeen-forest-park",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:10",
+   "lat": "54.0067",
+   "lng": "-7.468134",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10148,
+   "slug": "kilmainham-gaol",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:18",
+   "lat": "53.341679",
+   "lng": "-6.309505",
+   "attribute_terms": [
+    "familias",
+    "interior",
+    "necessita-reserva"
+   ]
+  },
+  {
+   "id": 10891,
+   "slug": "king-johns-castle-carlingford",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:04",
+   "lat": "54.043177",
+   "lng": "-6.18683",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10835,
+   "slug": "king-johns-castle-limerick",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:07",
+   "lat": "52.669671",
+   "lng": "-8.625577",
+   "attribute_terms": [
+    "familias",
+    "interior-exterior"
+   ]
+  },
+  {
+   "id": 10190,
+   "slug": "kinsale",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:16",
+   "lat": "51.705646",
+   "lng": "-8.522602",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10163,
+   "slug": "knowth",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:16",
+   "lat": "53.701435",
+   "lng": "-6.491534",
+   "attribute_terms": [
+    "exterior",
+    "necessita-reserva"
+   ]
+  },
+  {
+   "id": 10169,
+   "slug": "kylemore-abbey",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:16",
+   "lat": "53.561725",
+   "lng": "-9.889423",
+   "attribute_terms": [
+    "estacionamento",
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 10183,
+   "slug": "lahinch-beach",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:16",
+   "lat": "52.9343",
+   "lng": "-9.3486",
+   "attribute_terms": [
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 10795,
+   "slug": "lismore-castle-gardens",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:08",
+   "lat": "52.13824",
+   "lng": "-7.933187",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10740,
+   "slug": "lissadell-house",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:09",
+   "lat": "54.346936",
+   "lng": "-8.580878",
+   "attribute_terms": [
+    "interior-exterior"
+   ]
+  },
+  {
+   "id": 20928,
+   "slug": "listowel-castle",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:03",
+   "lat": "52.444869",
+   "lng": "-9.486404",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10182,
+   "slug": "loop-head",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:16",
+   "lat": "52.563",
+   "lng": "-9.9205",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10684,
+   "slug": "lough-allen",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:11",
+   "lat": "54.04157",
+   "lng": "-8.048706",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10639,
+   "slug": "lough-boora-discovery-park",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:12",
+   "lat": "53.223583",
+   "lng": "-7.729028",
+   "attribute_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10845,
+   "slug": "lough-gur",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:06",
+   "lat": "52.523106",
+   "lng": "-8.52038",
+   "attribute_terms": [
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 10674,
+   "slug": "lough-key-forest-park",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:11",
+   "lat": "53.982051",
+   "lng": "-8.245974",
+   "attribute_terms": [
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 13868,
+   "slug": "lough-muckno-leisure-park",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:04",
+   "lat": "54.11912",
+   "lng": "-6.72454",
+   "attribute_terms": [
+    "estacionamento",
+    "exterior",
+    "familias",
+    "gratuito",
+    "pet-friendly"
+   ]
+  },
+  {
+   "id": 10664,
+   "slug": "lough-ree",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:11",
+   "lat": "53.46719",
+   "lng": "-7.98719",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10686,
+   "slug": "lough-rynn-castle-gardens",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:10",
+   "lat": "53.90316",
+   "lng": "-7.85542",
+   "attribute_terms": [
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 10167,
+   "slug": "loughcrew",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:16",
+   "lat": "53.7441",
+   "lng": "-7.1188",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10861,
+   "slug": "lullymore-heritage-park",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:06",
+   "lat": "53.270363",
+   "lng": "-6.949394",
+   "attribute_terms": [
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 10153,
+   "slug": "malahide-castle-gardens",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:17",
+   "lat": "53.444829",
+   "lng": "-6.163631",
+   "attribute_terms": [
+    "estacionamento",
+    "familias",
+    "necessita-reserva"
+   ]
+  },
+  {
+   "id": 10720,
+   "slug": "malin-head",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:10",
+   "lat": "55.380948",
+   "lng": "-7.373576",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10857,
+   "slug": "maynooth-castle",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:06",
+   "lat": "53.381055",
+   "lng": "-6.594154",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10768,
+   "slug": "medieval-mile-museum",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:08",
+   "lat": "52.651811",
+   "lng": "-7.252209",
+   "attribute_terms": [
+    "interior"
+   ]
+  },
+  {
+   "id": 10871,
+   "slug": "mellifont-abbey",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:05",
+   "lat": "53.74229",
+   "lng": "-6.466527",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10875,
+   "slug": "millmount-fort-museum",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:05",
+   "lat": "53.7119",
+   "lng": "-6.35024",
+   "attribute_terms": [
+    "interior-exterior"
+   ]
+  },
+  {
+   "id": 10831,
+   "slug": "mitchelstown-cave",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:07",
+   "lat": "52.30576",
+   "lng": "-8.1045",
+   "attribute_terms": [
+    "familias",
+    "interior"
+   ]
+  },
+  {
+   "id": 10192,
+   "slug": "mizen-head",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:15",
+   "lat": "51.4516",
+   "lng": "-9.811097",
+   "attribute_terms": [
+    "estacionamento",
+    "exterior"
+   ]
+  },
+  {
+   "id": 10706,
+   "slug": "monaghan-county-museum",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:10",
+   "lat": "54.251823",
+   "lng": "-6.969879",
+   "attribute_terms": [
+    "gratuito",
+    "interior"
+   ]
+  },
+  {
+   "id": 10869,
+   "slug": "monasterboice",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:05",
+   "lat": "53.777761",
+   "lng": "-6.417839",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10863,
+   "slug": "mondello-park",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:06",
+   "lat": "53.2575",
+   "lng": "-6.745",
+   "attribute_terms": [
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 10793,
+   "slug": "mount-congreve-gardens",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:08",
+   "lat": "52.2409",
+   "lng": "-7.214",
+   "attribute_terms": [
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 10889,
+   "slug": "mount-leinster-nine-stones",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:04",
+   "lat": "52.636843",
+   "lng": "-6.793677",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10559,
+   "slug": "mount-usher-gardens",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:14",
+   "lat": "53.008345",
+   "lng": "-6.105598",
+   "attribute_terms": [
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 10619,
+   "slug": "muckross-abbey",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:13",
+   "lat": "52.026128",
+   "lng": "-9.495194",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10194,
+   "slug": "muckross-house",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:15",
+   "lat": "52.018016",
+   "lng": "-9.502822",
+   "attribute_terms": [
+    "estacionamento",
+    "interior-exterior"
+   ]
+  },
+  {
+   "id": 10651,
+   "slug": "mullaghmeen-forest",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:12",
+   "lat": "53.748869",
+   "lng": "-7.273165",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10543,
+   "slug": "national-botanic-gardens-dublin",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:15",
+   "lat": "53.3717",
+   "lng": "-6.2696",
+   "attribute_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 20947,
+   "slug": "national-botanic-gardens-kilmacurragh",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:01",
+   "lat": "52.9341",
+   "lng": "-6.1529",
+   "attribute_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 13871,
+   "slug": "national-design-craft-gallery",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:04",
+   "lat": "52.64956",
+   "lng": "-7.24991",
+   "attribute_terms": [
+    "gratuito",
+    "interior"
+   ]
+  },
+  {
+   "id": 10539,
+   "slug": "national-museum-archaeology",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:15",
+   "lat": "53.340257",
+   "lng": "-6.254982",
+   "attribute_terms": [
+    "gratuito",
+    "interior"
+   ]
+  },
+  {
+   "id": 10754,
+   "slug": "national-museum-country-life",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:09",
+   "lat": "53.883986",
+   "lng": "-9.212476",
+   "attribute_terms": [
+    "gratuito",
+    "interior"
+   ]
+  },
+  {
+   "id": 10662,
+   "slug": "newcastle-wood",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:11",
+   "lat": "53.5667",
+   "lng": "-7.7667",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10162,
+   "slug": "newgrange",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:16",
+   "lat": "53.694567",
+   "lng": "-6.4463",
+   "attribute_terms": [
+    "exterior",
+    "necessita-reserva"
+   ]
+  },
+  {
+   "id": 20939,
+   "slug": "newmills-corn-and-flax-mills",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:02",
+   "lat": "54.92907",
+   "lng": "-7.80844",
+   "attribute_terms": [
+    "estacionamento",
+    "gratuito",
+    "interior-exterior"
+   ]
+  },
+  {
+   "id": 10887,
+   "slug": "oak-park-forest-park",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:05",
+   "lat": "52.865393",
+   "lng": "-6.89796",
+   "attribute_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 13867,
+   "slug": "old-head-of-kinsale",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:04",
+   "lat": "51.62007",
+   "lng": "-8.54263",
+   "attribute_terms": [
+    "estacionamento",
+    "exterior",
+    "gratuito-em-determinadas-condicoes"
+   ]
+  },
+  {
+   "id": 10829,
+   "slug": "ormond-castle",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:07",
+   "lat": "52.34528",
+   "lng": "-7.407136",
+   "attribute_terms": [
+    "interior"
+   ]
+  },
+  {
+   "id": 10680,
+   "slug": "parkes-castle",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:11",
+   "lat": "54.264639",
+   "lng": "-8.334046",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10710,
+   "slug": "patrick-kavanagh-centre",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:10",
+   "lat": "54.002924",
+   "lng": "-6.58094",
+   "attribute_terms": [
+    "interior"
+   ]
+  },
+  {
+   "id": 20918,
+   "slug": "pearse-museum-st-endas-park",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:03",
+   "lat": "53.283004",
+   "lng": "-6.281551",
+   "attribute_terms": [
+    "estacionamento",
+    "familias",
+    "gratuito",
+    "interior-exterior"
+   ]
+  },
+  {
+   "id": 22734,
+   "slug": "ph3c-test-lazer-alfa",
+   "status": "publish",
+   "modified_gmt": "2026-11-05T15:19:57",
+   "lat": "",
+   "lng": "",
+   "attribute_terms": []
+  },
+  {
+   "id": 22739,
+   "slug": "ph3c-test-lazer-externo",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:01",
+   "lat": "",
+   "lng": "",
+   "attribute_terms": []
+  },
+  {
+   "id": 22737,
+   "slug": "ph3c-test-lazer-sem-condado",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:01",
+   "lat": "",
+   "lng": "",
+   "attribute_terms": []
+  },
+  {
+   "id": 22738,
+   "slug": "ph3c-test-lazer-zeta",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:01",
+   "lat": "",
+   "lng": "",
+   "attribute_terms": []
+  },
+  {
+   "id": 10150,
+   "slug": "phoenix-park",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:03:15",
+   "lat": "53.36605",
+   "lng": "-6.33093",
+   "attribute_terms": [
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 115357,
+   "slug": "phoenix-park-en",
+   "status": "publish",
+   "modified_gmt": "2026-01-02T09:00:00",
+   "lat": "",
+   "lng": "",
+   "attribute_terms": []
+  },
+  {
+   "id": 20920,
+   "slug": "phoenix-park-peoples-flower-gardens",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:03",
+   "lat": "53.352192",
+   "lng": "-6.299305",
+   "attribute_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 20919,
+   "slug": "phoenix-park-visitor-centre-ashtown-castle",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:03",
+   "lat": "53.36605",
+   "lng": "-6.33093",
+   "attribute_terms": [
+    "estacionamento",
+    "familias",
+    "gratuito",
+    "interior-exterior"
+   ]
+  },
+  {
+   "id": 10855,
+   "slug": "pollardstown-fen",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:06",
+   "lat": "53.183591",
+   "lng": "-6.845753",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10549,
+   "slug": "portmarnock-beach",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:15",
+   "lat": "53.416",
+   "lng": "-6.128",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10581,
+   "slug": "portumna-castle-gardens",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:14",
+   "lat": "53.08832",
+   "lng": "-8.219873",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10156,
+   "slug": "powerscourt-estate",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:17",
+   "lat": "53.184912",
+   "lng": "-6.187038",
+   "attribute_terms": [
+    "estacionamento",
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 10157,
+   "slug": "powerscourt-waterfall",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:17",
+   "lat": "53.1467",
+   "lng": "-6.2105",
+   "attribute_terms": [
+    "estacionamento",
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 10867,
+   "slug": "proleek-dolmen",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:05",
+   "lat": "54.037195",
+   "lng": "-6.348259",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10736,
+   "slug": "queen-maeves-trail-knocknarea",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:09",
+   "lat": "54.2532",
+   "lng": "-8.55783",
+   "attribute_terms": [
+    "estacionamento",
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10666,
+   "slug": "rathcroghan",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:11",
+   "lat": "53.802144",
+   "lng": "-8.304081",
+   "attribute_terms": [
+    "interior-exterior"
+   ]
+  },
+  {
+   "id": 20921,
+   "slug": "rathfarnham-castle",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:03",
+   "lat": "53.298079",
+   "lng": "-6.283608",
+   "attribute_terms": [
+    "estacionamento",
+    "familias",
+    "interior-exterior",
+    "pago"
+   ]
+  },
+  {
+   "id": 10787,
+   "slug": "reginals-tower",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:08",
+   "lat": "52.260443",
+   "lng": "-7.10541",
+   "attribute_terms": [
+    "interior"
+   ]
+  },
+  {
+   "id": 10198,
+   "slug": "ring-of-kerry",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:15",
+   "lat": "52.056831",
+   "lng": "-9.508254",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10819,
+   "slug": "rock-of-cashel",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:07",
+   "lat": "52.520091",
+   "lng": "-7.890319",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10623,
+   "slug": "rock-of-dunamase",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:13",
+   "lat": "53.0324",
+   "lng": "-7.208",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10676,
+   "slug": "roscommon-castle",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:11",
+   "lat": "53.635378",
+   "lng": "-8.194071",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 20945,
+   "slug": "roscrea-heritage-centre-roscrea-castle-and-damer-house",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:01",
+   "lat": "52.95495",
+   "lng": "-7.79805",
+   "attribute_terms": [
+    "estacionamento",
+    "familias",
+    "interior-exterior",
+    "pago"
+   ]
+  },
+  {
+   "id": 10195,
+   "slug": "ross-castle",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:15",
+   "lat": "52.041085",
+   "lng": "-9.531247",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10704,
+   "slug": "rossmore-forest-park",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:10",
+   "lat": "54.227745",
+   "lng": "-6.996775",
+   "attribute_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10772,
+   "slug": "rothe-house-garden",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:08",
+   "lat": "52.654129",
+   "lng": "-7.255176",
+   "attribute_terms": [
+    "interior-exterior"
+   ]
+  },
+  {
+   "id": 10660,
+   "slug": "royal-canal-greenway",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:11",
+   "lat": "53.72252",
+   "lng": "-7.79766",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 20922,
+   "slug": "royal-hospital-kilmainham",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:03",
+   "lat": "53.34346",
+   "lng": "-6.30255",
+   "attribute_terms": [
+    "estacionamento",
+    "gratuito-em-determinadas-condicoes",
+    "interior-exterior"
+   ]
+  },
+  {
+   "id": 10551,
+   "slug": "russborough-house",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:15",
+   "lat": "53.141559",
+   "lng": "-6.569674",
+   "attribute_terms": [
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 10160,
+   "slug": "sally-gap",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:17",
+   "lat": "53.137792",
+   "lng": "-6.312171",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10809,
+   "slug": "saltee-islands",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:07",
+   "lat": "52.171024",
+   "lng": "-6.588825",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10171,
+   "slug": "salthill",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:16",
+   "lat": "53.261513",
+   "lng": "-9.074841",
+   "attribute_terms": [
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 10587,
+   "slug": "scattery-island",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:13",
+   "lat": "52.63503",
+   "lng": "-9.4948",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10688,
+   "slug": "sean-mac-diarmada-cottage",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:10",
+   "lat": "54.3232",
+   "lng": "-8.0151",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10696,
+   "slug": "shannon-pot",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:10",
+   "lat": "54.234734",
+   "lng": "-7.918979",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10609,
+   "slug": "skellig-michael",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:13",
+   "lat": "51.8864",
+   "lng": "-10.3656",
+   "attribute_terms": [
+    "exterior",
+    "necessita-reserva"
+   ]
+  },
+  {
+   "id": 10172,
+   "slug": "sky-road",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:16",
+   "lat": "53.500679",
+   "lng": "-10.096485",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10166,
+   "slug": "slane-castle",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:16",
+   "lat": "53.7098",
+   "lng": "-6.56143",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10712,
+   "slug": "sliabh-beagh",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:10",
+   "lat": "54.32373",
+   "lng": "-7.10128",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10716,
+   "slug": "sliabh-liag",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:10",
+   "lat": "54.6356",
+   "lng": "-8.6453",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10633,
+   "slug": "slieve-bloom-mountains",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:12",
+   "lat": "53.12272",
+   "lng": "-7.45026",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10738,
+   "slug": "sligo-abbey",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:09",
+   "lat": "54.270908",
+   "lng": "-8.470054",
+   "attribute_terms": [
+    "interior-exterior"
+   ]
+  },
+  {
+   "id": 10774,
+   "slug": "smithwicks-experience",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:08",
+   "lat": "52.654334",
+   "lng": "-7.25424",
+   "attribute_terms": [
+    "interior",
+    "necessita-reserva"
+   ]
+  },
+  {
+   "id": 10569,
+   "slug": "sonairte-ecology-centre",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:14",
+   "lat": "53.678268",
+   "lng": "-6.256799",
+   "attribute_terms": [
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 10573,
+   "slug": "spanish-arch-long-walk",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:14",
+   "lat": "53.26979",
+   "lng": "-9.05405",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10591,
+   "slug": "spanish-point-beach",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:13",
+   "lat": "52.843178",
+   "lng": "-9.432872",
+   "attribute_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10605,
+   "slug": "spike-island-cork",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:13",
+   "lat": "51.849874",
+   "lng": "-8.293713",
+   "attribute_terms": [
+    "exterior",
+    "necessita-reserva"
+   ]
+  },
+  {
+   "id": 20924,
+   "slug": "st-audens-church",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:03",
+   "lat": "53.343721",
+   "lng": "-6.274203",
+   "attribute_terms": [
+    "gratuito",
+    "interior"
+   ]
+  },
+  {
+   "id": 20923,
+   "slug": "st-marys-abbey-chapter-house",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:03",
+   "lat": "53.347474",
+   "lng": "-6.269293",
+   "attribute_terms": [
+    "gratuito",
+    "interior",
+    "necessita-reserva"
+   ]
+  },
+  {
+   "id": 10839,
+   "slug": "st-marys-cathedral-limerick",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:06",
+   "lat": "52.6686",
+   "lng": "-8.6233",
+   "attribute_terms": [
+    "interior"
+   ]
+  },
+  {
+   "id": 20942,
+   "slug": "st-marys-church-gowran",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:02",
+   "lat": "52.628983",
+   "lng": "-7.06471",
+   "attribute_terms": [
+    "gratuito",
+    "interior"
+   ]
+  },
+  {
+   "id": 20925,
+   "slug": "st-stephens-green",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:03",
+   "lat": "53.3381",
+   "lng": "-6.25917",
+   "attribute_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10732,
+   "slug": "strandhill-beach",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:09",
+   "lat": "54.2704",
+   "lng": "-8.60275",
+   "attribute_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10670,
+   "slug": "strokestown-park-famine-museum",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:11",
+   "lat": "53.77794",
+   "lng": "-8.097939",
+   "attribute_terms": [
+    "interior-exterior"
+   ]
+  },
+  {
+   "id": 10823,
+   "slug": "swiss-cottage",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:07",
+   "lat": "52.357305",
+   "lng": "-7.923365",
+   "attribute_terms": [
+    "interior"
+   ]
+  },
+  {
+   "id": 20944,
+   "slug": "the-main-guard",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:02",
+   "lat": "52.352945",
+   "lng": "-7.701398",
+   "attribute_terms": [
+    "gratuito",
+    "interior"
+   ]
+  },
+  {
+   "id": 13864,
+   "slug": "the-model",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:04",
+   "lat": "54.27304",
+   "lng": "-8.46842",
+   "attribute_terms": [
+    "acessivel",
+    "familias",
+    "gratuito",
+    "interior"
+   ]
+  },
+  {
+   "id": 10827,
+   "slug": "the-vee-bay-lough",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:07",
+   "lat": "52.2422",
+   "lng": "-7.95681",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10583,
+   "slug": "thoor-ballylee",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:14",
+   "lat": "53.103152",
+   "lng": "-8.774948",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10629,
+   "slug": "timahoe-round-tower",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:13",
+   "lat": "52.960389",
+   "lng": "-7.203389",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10817,
+   "slug": "tintern-abbey-wexford",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:07",
+   "lat": "52.236959",
+   "lng": "-6.837966",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10187,
+   "slug": "titanic-experience-cobh",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:16",
+   "lat": "51.850285",
+   "lng": "-8.294663",
+   "attribute_terms": [
+    "interior"
+   ]
+  },
+  {
+   "id": 10196,
+   "slug": "torc-waterfall",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:15",
+   "lat": "52.005938",
+   "lng": "-9.50636",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10165,
+   "slug": "trim-castle",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:16",
+   "lat": "53.554643",
+   "lng": "-6.789738",
+   "attribute_terms": [
+    "exterior"
+   ]
+  },
+  {
+   "id": 10146,
+   "slug": "trinity-college-book-of-kells",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:18",
+   "lat": "53.34394",
+   "lng": "-6.2568",
+   "attribute_terms": [
+    "interior",
+    "necessita-reserva"
+   ]
+  },
+  {
+   "id": 10643,
+   "slug": "tullamore-dew-experience",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:12",
+   "lat": "53.25334",
+   "lng": "-7.50088",
+   "attribute_terms": [
+    "interior"
+   ]
+  },
+  {
+   "id": 10611,
+   "slug": "valentia-island",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:13",
+   "lat": "51.92548",
+   "lng": "-10.2861",
+   "attribute_terms": [
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 10595,
+   "slug": "vandeleur-walled-garden",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:13",
+   "lat": "52.631415",
+   "lng": "-9.476517",
+   "attribute_terms": [
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 10789,
+   "slug": "waterford-greenway",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:08",
+   "lat": "52.264343",
+   "lng": "-7.122586",
+   "attribute_terms": [
+    "exterior",
+    "familias",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10785,
+   "slug": "waterford-treasures",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:08",
+   "lat": "52.2599",
+   "lng": "-7.1069",
+   "attribute_terms": [
+    "interior"
+   ]
+  },
+  {
+   "id": 10752,
+   "slug": "westport-house",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:09",
+   "lat": "53.80027",
+   "lng": "-9.546854",
+   "attribute_terms": [
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 10813,
+   "slug": "wexford-wildfowl-reserve",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:07",
+   "lat": "52.35625",
+   "lng": "-6.4217",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10553,
+   "slug": "wicklow-historic-gaol",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:15",
+   "lat": "52.97915",
+   "lng": "-6.03785",
+   "attribute_terms": [
+    "familias",
+    "interior"
+   ]
+  },
+  {
+   "id": 10154,
+   "slug": "wicklow-mountains-national-park",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:17",
+   "lat": "53.005028",
+   "lng": "-6.345286",
+   "attribute_terms": [
+    "exterior",
+    "familias"
+   ]
+  },
+  {
+   "id": 10561,
+   "slug": "wicklow-way",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:14",
+   "lat": "53.27715",
+   "lng": "-6.26829",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10762,
+   "slug": "wild-nephin-ballycroy-national-park",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:09",
+   "lat": "54.024505",
+   "lng": "-9.823505",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  },
+  {
+   "id": 10781,
+   "slug": "woodstock-gardens",
+   "status": "publish",
+   "modified_gmt": "2026-10-21T19:04:08",
+   "lat": "52.47554",
+   "lng": "-7.0578",
+   "attribute_terms": [
+    "exterior",
+    "gratuito"
+   ]
+  }
+ ]
+}

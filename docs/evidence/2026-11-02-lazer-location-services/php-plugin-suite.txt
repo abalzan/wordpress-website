@@ -1,0 +1,39 @@
+
+== Lazer coordinate admin fields ==
+
+=== Config: fields and list column ===
+  PASS: the leisure config is available
+  PASS: latitude is a coordinate field
+  PASS: longitude is a coordinate field
+  PASS: the latitude field declares the -90 minimum
+  PASS: the latitude field declares the 90 maximum
+  PASS: the longitude field declares the -180 minimum
+  PASS: the longitude field declares the 180 maximum
+  PASS: coordinate verification is a checkbox
+  PASS: the coordinate source field exists
+  PASS: the leisure list declares a coordinate inventory column
+  PASS: latitude sits in the existing location section
+  PASS: longitude sits in the existing location section
+
+=== Field rendering ===
+  PASS: the latitude control is a numeric input
+  PASS: the latitude control carries the lower bound
+  PASS: the latitude control carries the upper bound
+  PASS: the latitude control shows the stored value
+  PASS: the latitude control posts to the meta key
+  PASS: the longitude control carries the lower bound
+  PASS: the longitude control shows a negative value
+
+=== Save + validation ===
+  PASS: a temporary leisure post was created
+  PASS: a valid latitude is saved
+  PASS: a valid longitude is saved
+  PASS: an invalid latitude never overwrites the stored value
+  PASS: an emptied latitude clears the meta
+  PASS: an emptied longitude clears the meta
+  PASS: an out-of-range latitude produces a specific message
+  PASS: a half-supplied pair produces a pairing message
+  PASS: a valid pair produces no validation errors
+  PASS: no temporary test post remains
+
+29 passed, 0 failed

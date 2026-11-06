@@ -1,0 +1,12 @@
+# Reference-branch facts (2026-11-05)
+
+## Requested reference branch: main
+5a318d2a82cb15686872035b5697d9c4e1a1bd3b	refs/heads/master
+
+## Local branches matching main:
+(none printed above = no main branch in this repository)
+
+## Remote default branch (origin/HEAD):
+refs/remotes/origin/master
+
+## Conclusion: the repository default/reference branch is master.

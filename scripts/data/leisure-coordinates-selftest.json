@@ -1,0 +1,19 @@
+[
+ {
+  "slug": "does-not-exist",
+  "title": "Nope",
+  "proposed_latitude": "53.1",
+  "proposed_longitude": "-6.1",
+  "confidence": "HIGH",
+  "action": "POPULATE"
+ },
+ {
+  "_comment": "Shared-UUID ambiguity proof. `_leisure_export_uuid` identifies the ATTRACTION, so the Phoenix Park PT master (10150) and its Polylang EN translation (115357) deliberately carry the SAME value. This entry names that UUID with NO slug and NO lang, so the resolver cannot tell the two records apart and MUST fail safely (uuid_ambiguous, nothing written) instead of writing the same coordinate twice to one post and skipping the other. DRY-RUN ONLY: run this fixture with --dry-run.",
+  "uuid": "ci-fixture-0000-0000-4000-8000-000000000002",
+  "title": "Phoenix Park (ambiguous UUID, no slug)",
+  "proposed_latitude": "53.36605",
+  "proposed_longitude": "-6.33093",
+  "confidence": "HIGH",
+  "action": "POPULATE"
+ }
+]

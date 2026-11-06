@@ -1,0 +1,16 @@
+# Stage 8 — read-only endpoint probe (GET only). No credential value or header is recorded.
+# captured (UTC): 2026-11-05T16:14:28Z
+#
+1. GET /wp-json/  ->  200  namespaces=24  conexao/v1 present=True
+2. GET plugin identity  ->  200  version=1.6.3  status=active
+3. GET wp/v2/leisure?per_page=1  ->  200  X-WP-Total=289  X-WP-TotalPages=289
+4. GET wp/v2/conexao_leisure_attribute  ->  200  terms=13  X-WP-Total=13
+   slugs: ['acessivel', 'acesso-de-transporte-publico', 'bicicleta', 'estacionamento', 'exterior', 'familias', 'gratuito', 'gratuito-em-determinadas-condicoes', 'interior', 'interior-exterior', 'necessita-reserva', 'pago', 'pet-friendly']
+5. GET /wp-json/conexao/v1/leisure-coordinates?lang=pt (anonymous)  ->  200
+   response keys      : ['count', 'items', 'lang']
+   count              : 289
+   items              : 289
+   items with any non-null lat/lng : 0
+   body sha256        : a394b7b8c72119d65dfb5d64bee02d45017e9d09e5e6723ccf7d173a2d225aa4
+6. GET wp/v2/leisure/10551 (the Stage 7C target)  ->  200
+   slug=russborough-house  status=publish  modified_gmt=2026-11-05T15:46:00  _leisure_lat=''  _leisure_lng=''
