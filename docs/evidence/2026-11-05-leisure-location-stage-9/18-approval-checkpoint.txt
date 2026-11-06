@@ -1,0 +1,63 @@
+Stage 9D — explicit production approval checkpoint
+prepared: 2026-11-05T18:39:29Z
+
+Repository
+  branch          : leisure-location
+  HEAD            : 83082edb3ff0a79616ee0b83e1e12ea234774965
+  worktree        : clean apart from this stage's untracked evidence directory
+  stash entries   : 9 (untouched)
+  migration script sha256: f07e5cca6656eed1efb19bf3ecb44a20f61f483dd301b9d49521cbbfd29ded9c
+
+Production inventory (fresh sweep, 2026-11-05T18:25:18Z onward)
+  published leisure records            : 289
+  distinct ids / distinct slugs        : 289 / 289
+  production-only records              : 0
+  records with coordinates             : 0
+  attribute assignments                : 173 across 57 records, 13 terms
+
+Planned writes (existing script, corrected gate accounting)
+  coordinate POSTs                     : 289
+  attribute POSTs (full-set per record): 289   [NOT 232 — see 15-corrected-gate-accounting.txt]
+  total POSTs                          : 578 on 289 existing records
+  records whose attribute set changes  : 232
+  assignments written                  : 592 (419 new + 173 already present)
+  conflicts / unresolved               : 0 / 0
+  planned deletions / creations        : 0 / 0
+
+Taxonomy superset verification (the only way a full-set write can remove a term)
+  production term set subset of local set : 289/289 records
+  production-only assignments             : 0
+  all 13 local term slugs resolve         : yes (ids 1465-1477)
+
+Expected permanent side effects (REST content write, not revertible over REST)
+  post_modified moves on   : 289 records x 2 writes (coordinate phase, attribute phase)
+  revisions created        : ~578 (one per successful POST)
+
+Recovery
+  journal  : .local/leisure-location-migration-state.json (slug -> target_id, lat, lng,
+             plus the attribute term ids per record), written atomically after each POST
+  revert   : re-issue empty coordinate strings + the pre-change term set (the pre-change
+             inventory is production-inventory-pre.json in this directory)
+  NOT revertible: post_modified, revisions, and _leisure_coord_source/_leisure_coord_verified
+             (not exposed over REST: the admin will keep showing "por verificar")
+
+Discrepancies vs Stage 8
+  production numbers      : identical (289 / 0 coordinates / 173 assignments / 13 terms)
+  dry-run report digest   : identical (83de2f1c...b3242 both stages)
+  public dataset sha256   : identical (a394b7b8...5aa4 both stages)
+  repository HEAD         : MOVED 2aef58f -> 83082ed (operator commit at 18:25:30Z, docs only,
+                            no script/plan/test/source change) — see 17-repository-state-change.txt
+
+Verification results on which this checkpoint rests
+  02-verification-pre.txt              fresh production + local inventory and per-record reconciliation
+  03-independent-reconciliation-pre.txt 35/35 independent checks (exit 0)
+  04/05 dry-runs                        populate=289 conflicts=0 unresolved=0 written=0 gate=0,
+                                        attributes_planned=289 attributes_written=0
+  06 dry-run repeat                     byte-identical to 05 (determinism)
+  07-verification-post.txt              plan cross-check 289/289 rows, 0 mismatches;
+                                        write proof identical=True (0 production writes)
+  09-mock-suite.txt                     58 passed, 0 failed
+  10-script-contract-suite.txt         20 suites, 20 passed, 0 failed
+  11/12 failure proofs                 the reconciler fails when the plan is tampered with
+
+DECISION: PENDING — awaiting explicit operator authorisation for a production write.

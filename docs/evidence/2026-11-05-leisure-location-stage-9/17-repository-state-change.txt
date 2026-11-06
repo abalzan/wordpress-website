@@ -1,0 +1,51 @@
+Stage 9A — repository-state change observed during the stage (recorded, not caused by any agent action)
+
+HEAD at the first Stage 9A capture (18:24:48Z): 2aef58f8f5a52b0cbe4b805c81ad5bf100eb1006
+HEAD at this check                    : 83082edb3ff0a79616ee0b83e1e12ea234774965
+committed at                          : 2026-11-05 18:25:30 +0000
+commit subject                        : Add report for Stage 8: Lazer location migration production dry-run
+
+What that commit added (docs only):
+ docs/README.md                                     |    2 +
+ .../01-preflight.txt                               |  107 +
+ .../02-inventory-pre.txt                           |    9 +
+ .../07-dryrun-safety.txt                           |   92 +
+ .../08-determinism.txt                             |   37 +
+ .../11-endpoint-probe.txt                          |   16 +
+ .../12-migration-verify.json                       |   12 +
+ .../attribute-plan-pre.json                        | 5824 ++++++++++++++++
+ .../coordinate-plan-pre.json                       | 4626 +++++++++++++
+ .../dryrun-01-coordinates.json                     | 3790 ++++++++++
+ .../dryrun-02-coordinates-attributes.json          | 7287 ++++++++++++++++++++
+ .../local-inventory.json                           | 3556 ++++++++++
+ .../production-inventory-post.json                 | 3379 +++++++++
+ .../production-inventory-pre.json                  | 3379 +++++++++
+ .../stage8-dry-run-verify.py                       |  706 ++
+ .../verification-post.json                         | 6029 ++++++++++++++++
+ .../verification-pre.json                          | 5992 ++++++++++++++++
+ .../01-preflight.txt                               |  128 +
+ .../stage9-pre-migration-verify.py                 |  706 ++
+ ...eisure-location-production-migration-dry-run.md |  505 ++
+ docs/reports/README.md                             |    2 +
+ 21 files changed, 46184 insertions(+)
+
+Consequence: the operator committed the Stage 8 report/evidence while Stage 9A was running.
+The commit also swept in the two Stage 9 files that already existed at that instant
+(01-preflight.txt and stage9-pre-migration-verify.py); their content is unchanged.
+
+Proof that nothing that governs the migration changed:
+f07e5cca6656eed1efb19bf3ecb44a20f61f483dd301b9d49521cbbfd29ded9c  scripts/migrate-leisure-location-rest.py
+ef67c35f8ee18978269abae28d9ce4c37283677b72d1b6ac5fc1c144c3dec13f  scripts/lib/rest.py
+26ceedbb96c79dcb87c65be2516c5edb279cbb53221f1bd10af704af75dc9f6b  tests/scripts/verify-leisure-location-migration.py
+9214e0305a3ba7a7fed4c08262ce694761e75430a31e38cc36fe733ab36adb37  scripts/data/leisure-coordinates-2026-11-03.json
+dcc5a8e8c873759466f4e8ff8029dabf85eca499fbc1897a8170c9c6781e5392  docs/plans/2026-11-05-leisure-location-production-migration.md
+(these digests are identical to the Stage 9A capture at 18:24:48Z and to the Stage 8 report)
+
+Nothing was reset, cleaned, checked out, restored, amended or stashed by this stage:
+stash entries: 9 (9 at Stage 9A start, 9 now)
+worktree after the commit:
+(no tracked file modified; only the Stage 9 evidence directory is untracked)
+
+Note on ignore rules: .gitignore:19 ignores *.log, so six of the Stage 8 evidence log
+files are NOT tracked by that commit. Stage 9 therefore stores its evidence as .txt:
+.gitignore:19:*.log	docs/evidence/2026-11-05-leisure-location-stage-8/03-dryrun-01-coordinates.log

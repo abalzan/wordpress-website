@@ -1,0 +1,8 @@
+docs/evidence/2026-10-12-empregos-cta-dark
+docs/evidence/2026-10-17-eventos-filter-cache-completion
+docs/evidence/2026-10-19-event-date-badge/final
+docs/evidence/2026-10-21-stage-e
+docs/evidence/2026-10-21-ui-ux-image-ratio
+docs/evidence/2026-10-21-ui-ux-image-ratio-verification
+docs/evidence/2026-10-21-ui-ux-improvement-9
+docs/evidence/2026-10-24-ai-instructions-audit

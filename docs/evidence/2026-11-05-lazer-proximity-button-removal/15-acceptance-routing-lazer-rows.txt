@@ -1,0 +1,22 @@
+# Routing HTTP acceptance — every /lazer/ row (base http://localhost:8080)
+
+  PASS  pt-200-lazer /lazer/ (status 200)
+  PASS  en-200-en-lazer /en/lazer/ (status 200)
+  PASS  en-lazer-card-excerpt-is-english /en/lazer/ (status 200)
+  PASS  en-lazer-no-portuguese-card-excerpt-leak /en/lazer/ (status 200)
+  PASS  en-lazer-canonical-and-hreflang /en/lazer/ (status 200)
+  PASS  pt-lazer-card-excerpt-stays-portuguese /lazer/ (status 200)
+  PASS  a11y-lazer-no-option-role /lazer/ (status 200)
+  PASS  a11y-en-lazer-no-option-role /en/lazer/ (status 200)
+
+## summary
+
+acceptance/routing-http: 120 passed, 6 failed
+
+## the 6 failing rows (all /empregos/, pre-existing)
+  FAIL  pt-200-empregos /empregos/  -- status 302, expected 200; missing fragment: '<html lang="pt-BR">'
+  FAIL  jobs-en-hreflang /en/empregos/  -- missing fragment: 'hreflang="pt-BR" href="http://localhost:8080/empregos/"'; missing fragment: 'hreflang="x-default" href="http://localhost:8080/empregos/"'
+  FAIL  jobs-pt /empregos/  -- status 302, expected 200; missing fragment: '<html lang="pt-BR">'; missing fragment: 'rel="canonical" href="http://localhost:8080/empregos/"'; missing fragment: 'hreflang="en" href="http://localhost:8080/en/empregos/"'
+  FAIL  pt-empregos-job-resources /empregos/  -- status 302, expected 200; missing fragment: 'class="empregos-job-resources"'; missing fragment: 'Onde procurar emprego'; missing fragment: 'href="https://www.jobs.ie/"'; missing fragment: 'href="https://ie.indeed.com/"'; missing fragment: 'href="https://www.irishjobs.ie/"'; missing fragment: 'Encontre vagas de emprego em diversas áreas e regiões da Irlanda.'; missing fragment: 'Busca de vagas em todo o país, com filtros por área, salário e localização.'; missing fragment: 'Uma das maiores plataformas de recrutamento da Irlanda, com vagas de grandes empresas.'; missing fragment: 'target="_blank" rel="noopener noreferrer"'; missing fragment: 'Acessar Jobs.ie (abre em nova aba)'; missing fragment: 'Oportunidades de emprego'
+  FAIL  a11y-empregos-filter-links-are-not-options /empregos/  -- status 302, expected 200; missing fragment: 'class="agency-filters-dropdown-link'; missing fragment: 'aria-current="true"'
+  FAIL  a11y-empregos-filter-state-no-option-role /empregos/?tipo=agency  -- status 302, expected 200; missing fragment: 'agency-filters-dropdown-link'; missing fragment: 'aria-current="true"'

@@ -1,0 +1,364 @@
+# Change diff (this task only)
+diff --git a/docs/testing.md b/docs/testing.md
+index 6b81e44..37ab9b5 100644
+--- a/docs/testing.md
++++ b/docs/testing.md
+@@ -618,6 +618,14 @@ used. Their browserless halves are blocking: the in-process suite
+ the Node suite above, and the admin-field suite
+ `wp-content/plugins/conexao-admin-ux/tests/test-leisure-coordinates.php`.
+ 
++> **Stale UI contract since 2026-11-05.** Both browser scripts drive the
++> `/lazer/` header's `Mostrar distância de mim` opt-in button, which was removed
++> in the 2026-11-05 header cleanup (see
++> `docs/reports/2026-11-05-lazer-proximity-button-removal.md`). They still
++> compile and still refuse production, but their control-click scenarios cannot
++> pass until a replacement location trigger exists; they were deliberately **not**
++> edited or weakened. The browserless suites above remain green and blocking.
++
+ ### What lives where
+ 
+ | Path | Class | In the default runner? |
+diff --git a/docs/themes/conexao-br-irlanda.md b/docs/themes/conexao-br-irlanda.md
+index 5bf3102..60da970 100644
+--- a/docs/themes/conexao-br-irlanda.md
++++ b/docs/themes/conexao-br-irlanda.md
+@@ -192,53 +192,59 @@ Features:
+ - Sponsors carousel (homepage Apoiadores: scroll-snap track, arrows, keyboard nav, adaptive static mode, 10-second autoplay on the Hero variant with pause-on-interaction and reduced-motion support)
+ - Infinite scroll (`initInfiniteScroll`) — progressive enhancement on the Blog (`/blog/`), Guias (`/guias/`), Lazer (`/lazer/`), **Eventos (`/eventos/`)** and **Cursos (`/cursos/`)** archives, plus the Blog's own category-filtered views (`/blog/?categoria=slug`), and the unified Empregos directory (`/empregos/` — a static page, so pagination there is a hand-rendered `?pagina=N` component over the already-filtered merged opportunities array in `template-parts/employment-opportunities.php`: 24 cards per page, stable `id="opp-{key}"` per card, pagination URLs preserve every active filter, filter links never carry `pagina`). Grids are tagged `data-infinite-scroll` in `home.php`/`archive.php`; the JS reads the next-page URL from the server-rendered `.conexao-pagination` component, fetches the real `/page/N/` URL (so `?categoria=`/`?county=` filters and main-query ordering are preserved by construction), parses the document, dedupes by `id="post-{ID}"`, and appends the cards via an IntersectionObserver sentinel (no scroll listeners). One request at a time; `history.pushState` per loaded page; `aria-live="polite"` loading state; manual "Tentar novamente" retry on error; observer disconnects at the end of pagination. A `pageshow` (bfcache) guard resets an in-flight request abandoned by back/forward navigation so scrolling continues where it stopped. Without JavaScript the numeric pagination keeps rendering and working — it is only hidden via the `.conexao-pagination--infinite-hidden` class when the enhancement initializes.
+ - Manual Load More (`initLoadMore`) — explicit "Carregar mais" button; **no archive currently uses it** (Cursos was the last one and was retagged to infinite scroll in the 2026-10-18 change — see `docs/reports/2026-10-18-cursos-infinite-scroll-plan.md`). The handler stays in `main.js` and binds to any grid tagged `data-load-more` in `archive.php`; the mechanism is otherwise identical to infinite scroll (next-page URL read from the server-rendered pagination component, real `/page/N/` fetch, `id="post-{ID}"` dedupe, append-only). The button is disabled with a "Carregando..." label while the request is active, announces "Mais N cursos carregados." via an `aria-live="polite"` status region, has a visible `:focus-visible` outline, is re-enabled by a `pageshow` (bfcache) guard after back/forward cache restore, and is removed with a "Você chegou ao fim." note when no further page exists. Without JavaScript the numeric pagination keeps working untouched. (Eventos was retagged to infinite scroll in the 2026-10-17 change — see `docs/reports/2026-10-17-eventos-infinite-scroll-plan.md`.)
+-- Lazer location services (`initLeisureProximity` + `assets/js/leisure-proximity.js`) — optional, visitor-activated proximity ordering + distance estimates on `/lazer/` and `/en/lazer/`. See the dedicated section below.
++- Lazer location services (`initLeisureProximity` + `assets/js/leisure-proximity.js`) — optional proximity ordering + distance estimates on `/lazer/` and `/en/lazer/`; since the 2026-11-05 header cleanup there is **no in-header control** (see the dedicated section below).
+ 
+ ## Lazer location services (proximity ordering + distance estimates)
+ 
+-Optional, progressive-enhancement feature on the Lazer archive only. Nothing is
+-requested of the browser until the visitor **explicitly activates** the
+-"Mostrar distância de mim" control; once they grant location, attractions are
+-ordered globally nearest-first and each geolocated card shows an estimated
+-straight-line distance. A visitor who never activates the control — or whose
+-browser refuses, times out or cannot geolocate — browses exactly as before.
++Optional, progressive-enhancement feature on the Lazer archive only. `/lazer/`
++renders **no location control**: the archive header is the shared archive header
++every other listing page renders, and **nothing is requested of the browser on
++page load**, so the browser permission prompt can never appear without an
++explicit visitor action. The location service itself is intact — the one-shot
++geolocation entry point, the Haversine helpers, the two read-only endpoints, the
++global ordering and the distance rendering are unchanged. Once a position is
++available, attractions are ordered globally nearest-first and each geolocated
++card shows an estimated straight-line distance.
++
++> **Open dependency (2026-11-05).** The in-header `Mostrar distância de mim`
++> button was the *only* trigger for
++> `navigator.geolocation.getCurrentPosition()`. The 2026-11-05 header cleanup
++> removed that button, so the ordering/distance path is currently
++> **unreachable**: the page behaves exactly as it did for a visitor who never
++> activated the old control (no prompt, no distance, no reorder), and **no
++> localization code was deleted**. Choosing a replacement trigger is a separate,
++> deliberate decision — see
++> `docs/reports/2026-11-05-lazer-proximity-button-removal.md`.
+ 
+ **Files**
+ 
+ | File | Role |
+ |---|---|
+ | `assets/js/leisure-proximity.js` | Pure helpers: Haversine distance, locale-aware formatting, global ordering, geolocation outcome classification, batch cursor. Loaded only on the leisure archive; Node-testable (see `tests/js/test-leisure-proximity.mjs`). |
+-| `assets/js/main.js` → `initLeisureProximity()` | DOM orchestration: the opt-in control, loading state, one-shot geolocation, dataset fetch, atomic list swap, proximity batch loading, distance insertion, friendly failure message + retry, scroll/focus preservation. |
++| `assets/js/main.js` → `initLeisureProximity()` | DOM orchestration: one-shot geolocation entry point, dataset fetch, atomic list swap, proximity batch loading, distance insertion, friendly failure message, scroll/focus preservation. The in-header opt-in control was removed on 2026-11-05 (see the dependency note above). |
+ | `inc/leisure-location.php` | The two read-only REST endpoints, the shared query-args builder, the JS config payload and the `conexao-leisure-location` body class. |
+ | `inc/archive-query.php` → `conexao_leisure_archive_tax_query()` | The **single** interpreter of the Lazer county/category/attribute filters, used by both the archive query and the endpoints. |
+-| `inc/i18n.php` | The seven JS strings (explanation, opt-in control label, loading state, failure message, distance template, proximity note, screen-reader announcement). The retry label reuses the existing `retry` key. |
+-| `assets/css/leisure.css` | `.leisure-card-distance`, `.leisure-proximity-explanation`, `.leisure-proximity-error`, `.leisure-proximity-note`, `.leisure-proximity-control` (existing muted-text tokens; the control reuses the design-system `.btn`/`.btn-outline-dark`; dark mode inherited). |
++| `inc/i18n.php` | The JS strings (failure message, distance template, proximity note, screen-reader announcement). `leisureDistanceControl`, `leisureLocationExplanation` and `leisureLocationLoading` remain in the catalogue — the control markup they labelled was removed on 2026-11-05 — and the retry label reuses the existing `retry` key. |
++| `assets/css/leisure.css` | `.leisure-card-distance`, `.leisure-proximity-error`, `.leisure-proximity-note` (existing muted-text tokens; dark mode inherited). The `.leisure-proximity-control` / `.leisure-proximity-toggle` / `.leisure-proximity-explanation` rules were removed with the control on 2026-11-05. |
+ 
+ **Scope.** `initLeisureProximity()` returns immediately unless the page is the
+ leisure archive: it requires `window.ConexaoLeisureLocation` (injected by
+ `inc/assets.php` only when `is_post_type_archive('leisure')`) **and** the
+ `conexao-leisure-location` body class. No other page requests location.
+ 
+-**Permission experience.** A short explanation
+-(`leisureLocationExplanation`) is inserted near the archive heading, followed by
+-an explicit opt-in control — a real `<button type="button">` labelled
+-"Mostrar distância de mim" (`leisureDistanceControl`). **No geolocation request
+-is made until the visitor activates that control**, so the archive is fully
+-usable without granting location permission and no browser permission prompt
+-appears on page load. Activating it calls
+-`navigator.geolocation.getCurrentPosition()` exactly once with
+-`{ enableHighAccuracy: false, timeout: 10000, maximumAge: 0 }` — approximate
+-precision (all a straight-line estimate needs) and a guaranteed-fresh fix, so a
+-visitor who has moved and retries gets a new position. `watchPosition()` is
+-never used. While the position is being resolved the button is disabled with
+-`aria-busy="true"` and both it and the explanation show
+-"Obtendo sua localização…" (`leisureLocationLoading`). The explanation and the
+-control are removed only after the list has been reordered and the distances are
+-in place.
++**Permission experience.** The archive header carries no explanation and no
++opt-in control (both were removed on 2026-11-05 — see the dependency note above),
++so `/lazer/` can never trigger a browser permission prompt on its own. The
++geolocation call that remains in `main.js` is unchanged in behaviour and is never
++invoked on page load: `navigator.geolocation.getCurrentPosition()` exactly once
++with `{ enableHighAccuracy: false, timeout: 10000, maximumAge: 0 }` —
++approximate precision (all a straight-line estimate needs) and a guaranteed-fresh
++fix, so a visitor who has moved and retries gets a new position.
++`watchPosition()` is never used.
+ 
+ If the browser cannot geolocate at all (`unsupported`) or the page is not a
+-secure context (`insecure`), the explanation is removed and **no control is
+-offered** — a control that could not work is never shown.
++secure context (`insecure`), the enhancement returns inert before any request can
++be attempted.
+ 
+ **Display table.** Distances are straight-line (great-circle) estimates, never
+ road distance or travel time, and are rounded before the unit boundary is
+@@ -312,9 +318,10 @@ keyboard focus are restored from an anchor captured before the swap.
+ dataset/first-batch failure shows ONE friendly, non-technical message
+ (`leisureLocationUnavailable` — "Não foi possível obter sua localização. Você
+ pode continuar explorando as atrações normalmente.") in a `role="status"`
+-region, keeps the original cards and the default infinite scroll, and relabels
+-the control to "Tentar novamente" (`retry`) so the visitor can try again — the
+-retry issues a new request and never stacks a second message. No technical
++`aria-live="polite"` region and never stacks a second message; the original
++cards and the default infinite scroll are kept, so browsing never depends on the
++permission. (The "Tentar novamente" relabel belonged to the removed control; the
++retry label `retry` stays in the catalogue for a future trigger.) No technical
+ error is ever surfaced. A later batch failure keeps the already-loaded proximity
+ cards, shows the standard error/retry UI and leaves the cursor unchanged, so
+ retrying requests the identical slice — no skipped and no duplicated IDs.
+@@ -326,16 +333,16 @@ stored (no cookie, no localStorage, no visitor meta) and never used as a query
+ parameter. The endpoints have no coordinate input. No analytics or tracking is
+ attached to them, and no precise coordinate is logged.
+ 
+-**Accessibility.** Distances are visible text (`2,4 km de você`); the control is
+-a keyboard-operable `<button>` whose label is its accessible name (never
+-icon-only) and which inherits the design-system `:focus-visible` ring and 44 px
+-minimum touch target; the loading state is `aria-busy` plus visible text; the
+-failure message is a `role="status"`/`aria-live="polite"` region; and a single
++**Accessibility.** Distances are visible text (`2,4 km de você`); the failure
++message is a `role="status"`/`aria-live="polite"` region; and a single
+ `aria-live="polite"` region announces "Atrações ordenadas por proximidade." once
+ when proximity ordering activates. Focus inside the list is preserved across the
+ swap, individual distances are not announced, and no animation is introduced (so
+ `prefers-reduced-motion` needs no special case). The "Ordenado por proximidade"
+-note never appears when location is denied or unavailable.
++note never appears when location is denied or unavailable. The archive header
++contributes no interactive control (the `<button>` opt-in and its
++`:focus-visible`/44 px touch-target contract were removed on 2026-11-05), so the
++Lazer header's focus order is identical to every other archive header.
+ 
+ 
+ ## Custom WordPress Integration
+@@ -1114,3 +1121,4 @@ _Last verified: 2026-10-27 by Halloween navigation continuity_
+ _Last verified: 2026-10-27 by Halloween witch animation_
+ _Last verified: 2026-10-27 by Halloween theme compatibility_
+ _Last verified: 2026-10-27 by Halloween mobile spontaneous appearances_
++_Last verified: 2026-11-05 by Lazer header cleanup (proximity control removed)_
+diff --git a/wp-content/themes/conexao-br-irlanda/assets/css/leisure.css b/wp-content/themes/conexao-br-irlanda/assets/css/leisure.css
+index 7735669..d8113d0 100644
+--- a/wp-content/themes/conexao-br-irlanda/assets/css/leisure.css
++++ b/wp-content/themes/conexao-br-irlanda/assets/css/leisure.css
+@@ -885,16 +885,15 @@
+  *
+  * The distance reuses the existing .leisure-card-detail tokens so it sits
+  * naturally in the county · town row and stays visually secondary to the
+- * title. It is inserted by JavaScript only, and only after the visitor has
+- * activated the opt-in control and their location has been resolved — PHP
+- * never renders a distance.
++ * title. It is inserted by JavaScript only, and only once a visitor position
++ * has been resolved — PHP never renders a distance. The archive header itself
++ * carries no location control (.leisure-page keeps the shared .page-header).
+  */
+ .leisure-card-distance {
+ 	font-variant-numeric: tabular-nums;
+ 	white-space: nowrap;
+ }
+ 
+-.leisure-proximity-explanation,
+ .leisure-proximity-error,
+ .leisure-proximity-note {
+ 	margin: 8px 0 0;
+@@ -903,32 +902,10 @@
+ 	color: var(--conexao-text-muted, #6b7280);
+ }
+ 
+-.leisure-proximity-explanation {
+-	max-width: 60ch;
+-}
+-
+ .leisure-proximity-note {
+ 	font-weight: 600;
+ }
+ 
+-/* The explicit opt-in control ("Mostrar distância de mim"). The wrapper only
+- * owns the spacing: the button itself reuses the design-system secondary
+- * button, so its colour, hover, disabled state, 44 px touch target and
+- * `:focus-visible` ring are the site's existing conventions. It wraps rather
+- * than overflowing when the heading column is narrow. */
+-.leisure-proximity-control {
+-	margin: 12px 0 0;
+-	display: flex;
+-	flex-wrap: wrap;
+-	align-items: center;
+-	gap: 8px;
+-}
+-
+-.leisure-proximity-toggle {
+-	max-width: 100%;
+-	white-space: normal;
+-}
+-
+ .leisure-card-excerpt {
+ 	font-size: 0.9rem;
+ 	line-height: 1.55;
+diff --git a/wp-content/themes/conexao-br-irlanda/assets/js/main.js b/wp-content/themes/conexao-br-irlanda/assets/js/main.js
+index 9d6ca2d..de8f628 100644
+--- a/wp-content/themes/conexao-br-irlanda/assets/js/main.js
++++ b/wp-content/themes/conexao-br-irlanda/assets/js/main.js
+@@ -2720,99 +2720,40 @@ function initHalloweenNavEffects() {
+ 			}
+ 		};
+ 
+-		// 1. The opt-in control. The location request is NEVER automatic:
+-		//    nothing is asked of the browser until the visitor activates
+-		//    this control, so /lazer/ is fully usable without granting
+-		//    location permission. The explanation says why access would be
+-		//    requested, and it is a polite live region so the loading and
+-		//    failure updates are announced without moving focus.
+-		var explanation = createNote(
+-			'leisure-proximity-explanation',
+-			'leisureLocationExplanation',
+-			'Permita o acesso à sua localização para calcular a distância aproximada até as atrações.'
+-		);
+-		explanation.setAttribute('role', 'status');
+-		explanation.setAttribute('aria-live', 'polite');
+-		insertNearHeading(explanation);
++		// 1. No location control is rendered in the archive header, so the
++		//    Lazer header is exactly the shared archive header every other
++		//    listing page renders (eyebrow, title, description, filters) and
++		//    no visitor is offered a control that requests location. The
++		//    request itself is NEVER automatic — nothing is asked of the
++		//    browser on page load, so /lazer/ is fully usable without
++		//    granting location permission. Every path that obtains the
++		//    position, orders the list and shows the distances is retained
++		//    unchanged; only the in-page trigger was removed.
+ 
+ 		// The friendly, non-technical failure message (one at a time).
+ 		var message = null;
+ 
+-		// 2. Feature detection BEFORE the control is offered: a browser that
+-		//    cannot geolocate — or an insecure context — is never shown a
+-		//    control that could not work.
++		// 2. Feature detection BEFORE any location request can be attempted:
++		//    a browser that cannot geolocate — or an insecure context — keeps
++		//    the enhancement completely inert.
+ 		var support = proximity.classifyGeolocationSupport(
+ 			navigator,
+ 			typeof window.isSecureContext === 'boolean' ? window.isSecureContext : undefined
+ 		);
+-		if (support !== 'available') {
+-			removeNote(explanation);
+-			return;
+-		}
+-
+-		var control = createControl();
+-		insertNearHeading(control.wrapper);
+-
+-		function createControl() {
+-			var wrapper = document.createElement('p');
+-			wrapper.className = 'leisure-proximity-control';
+-			wrapper.setAttribute('data-leisure-proximity', 'leisure-proximity-control');
+-
+-			var button = document.createElement('button');
+-			button.type = 'button';
+-			// Reuses the design-system secondary button (and its
+-			// `:focus-visible` ring and 44 px minimum touch target)
+-			// instead of inventing a new style.
+-			button.className = 'btn btn-outline-dark leisure-proximity-toggle';
+-			button.textContent = t('leisureDistanceControl', 'Mostrar distância de mim');
+-			button.addEventListener('click', requestPosition);
+-
+-			wrapper.appendChild(button);
+-			return { wrapper: wrapper, button: button };
+-		}
+-
+-		// The control's three states. Its label is always the accessible
+-		// name, so the control is never icon-only and never unlabelled.
+-		function setControlState(state) {
+-			var busy = 'busy' === state;
+-			control.button.disabled = busy;
+-
+-			if (busy) {
+-				control.button.setAttribute('aria-busy', 'true');
+-			} else {
+-				control.button.removeAttribute('aria-busy');
+-			}
+-
+-			var labels = {
+-				busy: ['leisureLocationLoading', 'Obtendo sua localização…'],
+-				retry: ['retry', 'Tentar novamente'],
+-				idle: ['leisureDistanceControl', 'Mostrar distância de mim']
+-			};
+-			var label = labels[state] || labels.idle;
+-			control.button.textContent = t(label[0], label[1]);
+-		}
+-
+-		// 3. One-shot geolocation, requested ONLY by activating the control.
+-		//    getCurrentPosition() only — never watchPosition(), and never an
+-		//    automatic second request. `enableHighAccuracy: false` asks for
+-		//    an approximate fix, which is all a straight-line estimate
+-		//    needs; `maximumAge: 0` guarantees a fresh fix, so a visitor who
+-		//    has moved and retries gets a new position.
++		if (support !== 'available') return;
++
++		// 3. The one-shot geolocation entry point. Retained unchanged in
++		//    behaviour, and never invoked automatically: no permission prompt
++		//    can appear on page load. getCurrentPosition() only — never
++		//    watchPosition(), and never an automatic second request.
++		//    `enableHighAccuracy: false` asks for an approximate fix, which
++		//    is all a straight-line estimate needs; `maximumAge: 0`
++		//    guarantees a fresh fix, so a visitor who has moved and retries
++		//    gets a new position.
+ 		function requestPosition() {
+-			setControlState('busy');
+ 			removeNote(message);
+ 			message = null;
+ 
+-			// The loading state is visible and announced on every attempt,
+-			// including a retry (a retry follows a failure, which removed
+-			// the explanation, so it is re-attached above the control).
+-			explanation.textContent = t('leisureLocationLoading', 'Obtendo sua localização…');
+-			if (control.wrapper.parentNode) {
+-				control.wrapper.parentNode.insertBefore(explanation, control.wrapper);
+-			} else {
+-				insertNearHeading(explanation);
+-			}
+-
+ 			try {
+ 				navigator.geolocation.getCurrentPosition(onPosition, onPositionError, {
+ 					enableHighAccuracy: false,
+@@ -2843,21 +2784,17 @@ function initHalloweenNavEffects() {
+ 
+ 		function onActivated() {
+ 			// The list has been reordered and every distance is in place:
+-			// the explanation and the control have done their job.
+-			removeNote(explanation);
++			// the transient failure message (if any) has done its job.
+ 			removeNote(message);
+-			removeNote(control.wrapper);
+ 			message = null;
+ 		}
+ 
+ 		function onPositionError() {
+ 			// Denied, previously denied, revoked, unavailable, timeout, or a
+-			// failed dataset/card fetch — ONE friendly, non-technical message
+-			// and the control stays available as a retry. The default server
+-			// order, the filters, the pagination and every other page feature
+-			// are untouched, so browsing never depends on the permission.
+-			setControlState('retry');
+-			removeNote(explanation);
++			// failed dataset/card fetch — ONE friendly, non-technical
++			// message. The default server order, the filters, the pagination
++			// and every other page feature are untouched, so browsing never
++			// depends on the permission.
+ 			removeNote(message);
+ 
+ 			message = createNote(

@@ -1,0 +1,75 @@
+Stage 9C — dry-run safety contract
+captured: 2026-11-05T18:38:28Z
+
+== 1. The exact invocations used (mode contract) ==
+script: migrate-leisure-location-rest.py
+target: https://conexaobr.ie (production)
+mode:   dry-run
+scope:  leisure coordinate meta (_leisure_lat, _leisure_lng)
+summary: manifest_entries=289, eligible_entries=289, target_records=289, populate=289, update=0, already_set=0, conflicts=0, unresolved=0, resumed=0, planned_writes=289, written=0, attributes_planned=0, attributes_written=0, with_before=0, with_after=0, gate=0, api_requests=6, api_retries=0, manifest_skipped={'OWNER_INPUT_REQUIRED:NOT_FOUND': 4, 'REVIEW:MEDIUM': 1}
+script: migrate-leisure-location-rest.py
+target: https://conexaobr.ie (production)
+mode:   dry-run
+scope:  leisure coordinate meta (_leisure_lat, _leisure_lng) + conexao_leisure_attribute (add-only)
+summary: manifest_entries=289, eligible_entries=289, target_records=289, populate=289, update=0, already_set=0, conflicts=0, unresolved=0, resumed=0, planned_writes=289, written=0, attributes_planned=289, attributes_written=0, with_before=0, with_after=0, gate=0, api_requests=7, api_retries=0, manifest_skipped={'OWNER_INPUT_REQUIRED:NOT_FOUND': 4, 'REVIEW:MEDIUM': 1}
+script: migrate-leisure-location-rest.py
+target: https://conexaobr.ie (production)
+mode:   dry-run
+scope:  leisure coordinate meta (_leisure_lat, _leisure_lng) + conexao_leisure_attribute (add-only)
+summary: manifest_entries=289, eligible_entries=289, target_records=289, populate=289, update=0, already_set=0, conflicts=0, unresolved=0, resumed=0, planned_writes=289, written=0, attributes_planned=289, attributes_written=0, with_before=0, with_after=0, gate=0, api_requests=7, api_retries=0, manifest_skipped={'OWNER_INPUT_REQUIRED:NOT_FOUND': 4, 'REVIEW:MEDIUM': 1}
+
+== 2. Flags NOT passed in any Stage 9 run ==
+--apply: never passed
+--confirm-production: never passed
+--overwrite: never passed
+--no-resume: never passed
+
+== 3. Every HTTP method the migration can issue (write call sites) ==
+786:    status, _headers, body = client.request(
+988:    status, _headers, _body = client.request(
+-- method literals --
+471:                "GET", "{}?{}".format(path, urllib.parse.urlencode(query))
+787:        "POST", "wp/v2/leisure/{}".format(row["target_id"]), payload
+989:        "POST", "wp/v2/leisure/{}".format(row["target_id"]), payload
+DELETE/PUT/PATCH occurrences: 0
+
+== 4. Resume journal state after three dry-runs ==
+no journal (.local/ absent) -> no write path ran
+
+== 5. The only callers of the two write helpers, and their mode guard ==
+783:def write_coordinate(client, row, state, state_path):
+869:    if mode == "apply" and kind == "production" and not args.confirm_production:
+958:    if mode == "apply":
+962:            write_coordinate(client, row, state, args.state_file)
+967:            write_attributes(client, row, state, args.state_file)
+979:def write_attributes(client, row, state, state_path):
+1011:    expected_after = with_before + (written if mode == "apply" else 0)
+1057:    if mode == "apply":
+
+    if mode == "apply":
+        for row in rows:
+            if row["action"] not in ("POPULATE", "UPDATE"):
+                continue
+            write_coordinate(client, row, state, args.state_file)
+            written += 1
+            if args.request_delay:
+                time.sleep(args.request_delay)
+        for row in attribute_rows:
+            write_attributes(client, row, state, args.state_file)
+            attribute_written += 1
+            if args.request_delay:
+                time.sleep(args.request_delay)
+
+    return _report(
+        args, mode, target, scope, client, rows, counts, eligible,
+        attribute_rows, written, attribute_written, planned_writes,
+
+== 6. Production identity re-confirmation (read-only GET) ==
+name: Conexão BR
+home: https://conexaobr.ie
+conexao/v1 present: True
+
+== 7. Determinism ==
+dryrun-02 vs dryrun-03: cmp exit 0 (byte-identical)
+83de2f1ce82b3e7cef127936e7104f6c4298709da37e286f204b763d223b3242  docs/evidence/2026-11-05-leisure-location-stage-9/dryrun-02-coordinates-attributes.json
+83de2f1ce82b3e7cef127936e7104f6c4298709da37e286f204b763d223b3242  docs/evidence/2026-11-05-leisure-location-stage-9/dryrun-03-repeat.json

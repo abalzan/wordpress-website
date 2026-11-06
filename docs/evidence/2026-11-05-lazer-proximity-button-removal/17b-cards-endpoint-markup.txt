@@ -1,0 +1,9 @@
+requested ids: 20948,10146
+returned ids : [20948, 10146]
+html length  : 8991
+contains 'leisure-card': True
+contains 'archive-card': False
+contains 'post-': True
+contains 'leisure-card-details': True
+first 240 chars:
+ <article id="post-20948" class="leisure-card leisure-card--external post-20948 leisure type-leisure status-publish has-post-thumbnail hentry conexao_category-natureza conexao_county-wicklow">  	<div class="leisure-card-image-wrapper"> 		<a

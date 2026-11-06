@@ -1,0 +1,21 @@
+  transient (HTTP 429); retrying in 2.0s [attempt 1/5]
+Stage 9F — independent post-migration verification (read-only)
+--------------------------------------------------------------
+production records == 289                                     PASS  289 records
+no production record was created or removed                   PASS  added=[] removed=[]
+records in scope == 289                                       PASS  289 matched by slug
+production coordinate pairs == 289                            PASS  289 pairs
+missing coordinates == 0                                      PASS  0 missing
+half-filled pairs == 0                                        PASS  0 half-filled
+every coordinate equals the local source                      PASS  0 mismatches
+every production id is unchanged                              PASS  0 id changes
+production assignment relationships == 592                    PASS  592 assignments
+every record's attribute set equals the local source set      PASS  0 differing records
+no production-only term survived (nothing was removed)        PASS  0 records
+every production term slug is a local term slug               PASS  production-only slugs=[]
+attribute taxonomy is unchanged (no term created or deleted)  PASS  13 term slug(s) before and after
+modified_gmt moved on exactly the records in scope            PASS  moved=289 in-scope=289 outside-scope-moved=[]
+
+checks: 14  failed: 0
+production writes performed by Stage 9: 289 coordinate POSTs + 289 attribute POSTs
+deletions: 0   creations: 0   records written outside the scope: 0

@@ -1,0 +1,165 @@
+-- 1. geolocation GRANTED (simulated Dublin position) --
+  PASS  the page loads (status 200)
+  PASS  the header is exactly the shared archive header (got ['span.section-eyebrow', 'h1.page-title', 'p.page-description'])
+  PASS  nothing is injected into .page-header
+  PASS  the 'Mostrar distância de mim' button is absent
+  PASS  no proximity control wrapper exists
+  PASS  no explanation paragraph is rendered
+  PASS  exactly ONE geolocation request is made (got 1)
+  PASS  the ordered note is shown (got 'Ordenado por proximidade')
+  PASS  the note sits directly above the results grid
+  PASS  distances are rendered (10 spans)
+  PASS  the first 10 cards are the independently computed nearest-first order
+  PASS  every rendered label is a '<distance> de você' string (['490 m de você', '520 m de você', '650 m de você'])
+  PASS  every geolocated rendered card shows a distance (10/10)
+  PASS  no JS page errors ([])
+-- 2. geolocation DENIED (headless default) --
+  PASS  the page still loads (status 200)
+  PASS  the header is unchanged on denial (got ['span.section-eyebrow', 'h1.page-title', 'p.page-description'])
+  PASS  nothing is injected into .page-header on denial
+  PASS  exactly one attempt is made (got 1)
+  PASS  ONE friendly failure note is shown
+  PASS  the failure note sits directly above the results grid
+  PASS  the server-rendered cards are untouched (10) 
+  PASS  no distances are shown (got 0)
+  PASS  no JS page errors on denial ([])
+
+{
+  "failures": [],
+  "granted": {
+    "headerChildren": [
+      "span.section-eyebrow",
+      "h1.page-title",
+      "p.page-description"
+    ],
+    "headerHasProximityNode": 0,
+    "toggleCount": 0,
+    "controlCount": 0,
+    "explanationCount": 0,
+    "noteText": "Ordenado por proximidade",
+    "noteAboveGrid": true,
+    "errorText": null,
+    "errorAboveGrid": false,
+    "cardIds": [
+      "post-20911",
+      "post-20913",
+      "post-20923",
+      "post-10146",
+      "post-10541",
+      "post-10147",
+      "post-13860",
+      "post-10539",
+      "post-20924",
+      "post-20914"
+    ],
+    "distances": [
+      [
+        "20911",
+        "490 m de você"
+      ],
+      [
+        "20913",
+        "520 m de você"
+      ],
+      [
+        "20923",
+        "650 m de você"
+      ],
+      [
+        "10146",
+        "690 m de você"
+      ],
+      [
+        "10541",
+        "840 m de você"
+      ],
+      [
+        "10147",
+        "910 m de você"
+      ],
+      [
+        "13860",
+        "970 m de você"
+      ],
+      [
+        "10539",
+        "1,1 km de você"
+      ],
+      [
+        "20924",
+        "1,1 km de você"
+      ],
+      [
+        "20914",
+        "1,3 km de você"
+      ]
+    ],
+    "geoCalls": 1,
+    "proximityHelpers": "object",
+    "httpStatus": 200,
+    "consoleErrors": [
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    ],
+    "pageErrors": [],
+    "apiCount": 293
+  },
+  "denied": {
+    "headerChildren": [
+      "span.section-eyebrow",
+      "h1.page-title",
+      "p.page-description"
+    ],
+    "headerHasProximityNode": 0,
+    "toggleCount": 0,
+    "controlCount": 0,
+    "explanationCount": 0,
+    "noteText": null,
+    "noteAboveGrid": false,
+    "errorText": "Não foi possível obter sua localização. Você pode continuar explorando as atrações normalmente.",
+    "errorAboveGrid": true,
+    "cardIds": [
+      "post-20948",
+      "post-10146",
+      "post-10147",
+      "post-10148",
+      "post-10149",
+      "post-10150",
+      "post-10151",
+      "post-10152",
+      "post-10153",
+      "post-10154"
+    ],
+    "distances": [],
+    "geoCalls": 1,
+    "proximityHelpers": "object",
+    "httpStatus": 200,
+    "consoleErrors": [
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    ],
+    "pageErrors": []
+  }
+}
+
+ALL CHECKS PASSED (0 failed)

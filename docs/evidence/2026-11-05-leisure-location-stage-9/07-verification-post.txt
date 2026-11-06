@@ -1,0 +1,10 @@
+phase:       post
+captured:    2026-11-05T18:33:14Z
+production:  289 records, 289 distinct ids, 289 distinct slugs, 0 with coordinates, 57 with attributes (173 assignments, 13 terms)
+local:       294 records, 289 with coordinates, 289 with attributes (592 assignments, 14 terms)
+matching:    289 matched by slug, local_only=['ph3c-test-lazer-alfa', 'ph3c-test-lazer-externo', 'ph3c-test-lazer-sem-condado', 'ph3c-test-lazer-zeta', 'phoenix-park-en'], production_only=[]
+coordinates: manifest=294 eligible=289 actions={'POPULATE': 289} manifest/local mismatches=0
+attributes:  local=592 production=173 missing=419 production_only=0 records_changing=232 plan_records=289 planned_assignments=592 unresolved=[]
+report:      docs/evidence/2026-11-05-leisure-location-stage-9/dryrun-02-coordinates-attributes.json (plan rows 289, attribute rows 289, coordinate mismatches 0, attribute mismatches 0, missing rows 0)
+write proof: before=289 after=289 changed=0 added=0 removed=0 identical=True
+PASS: every Stage 8 check holds

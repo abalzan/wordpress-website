@@ -1,0 +1,15 @@
+Stage 9E — apply result (script-reported, production)
+phase 1 started 18:45:39Z, finished 19:10:08Z, exit 0
+phase 2 started 19:10:08Z, finished 19:22:18Z, exit 0
+
+Coordinate phase  : populate=289 written=289 gate=0 with_before=0 with_after=289 api_requests=297 api_retries=2
+Attribute phase   : already_set=289 written=0 (coordinates idempotent, 0 rewrites) attributes_planned=289 attributes_written=289 gate=0 api_requests=296 api_retries=0
+Total POSTs       : 289 coordinate + 289 attribute = 578
+Journal           : 289 coordinate entries (289 distinct target ids), 289 attribute entries, 592 term ids
+
+Expected vs actual
+  coordinate POSTs : expected 289 / actual 289
+  attribute POSTs  : expected 289 / actual 289
+  target records   : expected 289 / actual 289 distinct ids
+  conflicts        : expected 0 / actual 0
+  unresolved       : expected 0 / actual 0

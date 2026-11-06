@@ -1,0 +1,18 @@
+# Localization service still operational (read-only GETs, local stack)
+
+## GET /wp-json/conexao/v1/leisure-coordinates
+status: 200 JSON
+count: 293
+lang: pt
+sample keys: ['id', 'index', 'lat', 'lng']
+items with lat+lng: 289
+
+## GET /wp-json/conexao/v1/leisure-cards?ids=<first two ids>
+   ids=20948,10146
+status: 200 JSON
+ids: [20948, 10146]
+html bytes: 8991
+contains card markup: False
+
+## Invalid request must answer 400
+   ids=abc -> HTTP 400

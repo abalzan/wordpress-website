@@ -1,0 +1,48 @@
+{
+  "title": "Lazer & Turismo na Irlanda | Conexão BR",
+  "bodyClassHasLeisureLocation": true,
+  "headerExists": true,
+  "headerHtml": "<span class=\"section-eyebrow\">Lazer &amp; Turismo</span> <h1 class=\"page-title\">Lazer</h1> <p class=\"page-description\">Descubra lugares para visitar, natureza, cultura, turismo e coisas para fazer na Irlanda.</p> <p class=\"leisure-proximity-explanation\" data-leisure-proximity=\"leisure-proximity-explanation\" role=\"status\" aria-live=\"polite\">Permita o acesso à sua localização para calcular a distância aproximada até as atrações.</p><p class=\"leisure-proximity-control\" data-leisure-proximity=\"leisure-proximity-control\"><button type=\"button\" class=\"btn btn-outline-dark leisure-proximity-toggle\">Mostrar distância de mim</button></p>",
+  "headerChildren": [
+    "span.section-eyebrow",
+    "h1.page-title",
+    "p.page-description",
+    "p.leisure-proximity-explanation",
+    "p.leisure-proximity-control"
+  ],
+  "toggleCount": 1,
+  "controlCount": 1,
+  "proximityNodes": [
+    "leisure-proximity-explanation",
+    "leisure-proximity-control"
+  ],
+  "proximityLabel": "Mostrar distância de mim",
+  "distanceSpans": 0,
+  "gridCards": 10,
+  "filtersPresent": 1,
+  "geoCalls": 0,
+  "proximityJsLoaded": true,
+  "proximityHelpers": "object",
+  "locationConfig": [
+    "cardsUrl",
+    "coordinatesUrl",
+    "lang",
+    "locale",
+    "maxBatch"
+  ],
+  "reapplyHook": "function",
+  "url": "http://localhost:8080/lazer/",
+  "httpStatus": 200,
+  "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ],
+  "pageErrors": []
+}

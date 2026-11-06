@@ -1,0 +1,7 @@
+Stage 9A — proof that the Stage 8 evidence directory was not modified
+
+files before: 22   files after: 22
+RESULT: identical — no Stage 8 evidence file was added, modified or deleted
+
+git status of the Stage 8 report (untracked by design, unchanged content):
+37d9a6af280f1454d56353fbcd96b9377d64a1b123e5bace51488fb45261e030  docs/reports/2026-11-05-leisure-location-production-migration-dry-run.md

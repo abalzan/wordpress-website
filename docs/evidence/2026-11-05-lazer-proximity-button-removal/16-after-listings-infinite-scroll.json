@@ -1,0 +1,22 @@
+{
+  "url": "http://localhost:8080/lazer/",
+  "httpStatus": 200,
+  "beforeScroll": {
+    "cards": 10,
+    "gridTag": "events-grid",
+    "toggle": 0,
+    "proximityNodes": 0,
+    "filterBar": 1,
+    "statusText": ""
+  },
+  "afterScroll": {
+    "cards": 70,
+    "gridTag": "events-grid",
+    "toggle": 0,
+    "proximityNodes": 0,
+    "filterBar": 1,
+    "statusText": "Carregando..."
+  },
+  "cardsGrew": true,
+  "pageErrors": []
+}

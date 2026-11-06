@@ -64,7 +64,7 @@ is **not** an active skill set.
 | [reports/2026-10-10-ui-polish.md](reports/2026-10-10-ui-polish.md) | **UI polish Phase 3** — the Tier-2 convergence remainder, re-validated against live renders: component-heading tokens, the card-CTA 44px target floor and the 720px single editorial measure, with the shared-card / breakpoint / filter items recorded as deliberately deferred. Evidence in [evidence/2026-10-10-ui-polish/](evidence/2026-10-10-ui-polish/) |
 | [reports/README.md](reports/README.md) | Index of dated stage/feature reports + the no-root-reports rule |
 | [reports/site/](reports/site/) | Repository-engineering stage reports (Stage B repository hygiene, Stage C static quality tooling, …) |
-| [evidence/README.md](evidence/README.md) | Standing rule for machine-readable evidence + contents map |
+| [evidence/README.md](evidence/README.md) | Standing rule for machine-readable evidence: naming, a complete index of every evidence folder, the A–E retention policy, what must never be committed, and how to add new evidence |
 | [project-inventory.md](project-inventory.md) | Project/plugin inventory (versions generated from plugin headers) |
 
 ### Permanent invariant gates (Stage L)
@@ -253,3 +253,4 @@ _Last verified: 2026-11-05 by the Lazer coordinate REST permission fix (the 1.6.
 _Last verified: 2026-11-05 by Stage 7 (the 2026-11-05 production REST permission verification report added to the index; blocked at its write checkpoint, 0 production writes)_
 _Last verified: 2026-11-05 by Stage 8 (the 2026-11-05 production migration dry-run report added to the index; read-only, 0 production writes, migration not applied)_
 _Last verified: 2026-11-05 by Stage 9 (the 2026-11-05 production migration report added to the index; 578 authorised production writes, independently verified, PASS)_
+_Last verified: 2026-11-06 by the evidence directory audit and cleanup (the evidence rule now carries a complete folder index, the A–E retention policy, the commit prohibitions and the add-evidence procedure; the 2026-11-06 audit report added to the reports index)_

@@ -1,0 +1,27 @@
+Stage 9 — corrected migration accounting (re-measured, not assumed)
+
+The approved plan (docs/plans/2026-11-05-leisure-location-production-migration.md)
+section 11 gate 5 says: --apply --include-attributes -> attributes_written = 232.
+That is wrong about what the script does; Stage 8 section 5 found it and this
+stage re-measures it. The migration sends the FULL final attribute set per
+record, so every planned record receives a POST.
+
+| Attribute metric                         | Value |
+|---|---:|
+| Records receiving full-set attribute POSTs | 289 |
+| Records whose assignment set changes       | 232 |
+| Total intended assignments                 | 592 |
+| Missing assignments                        | 419 |
+| Existing assignments                       | 173 |
+| Removals planned                           | 0 |
+
+Coordinate side: rows=289 POPULATE=289 CONFLICT=0 UPDATE=0
+
+Expected apply-time report line:
+  coordinates : written=289  gate=0
+  attributes  : attributes_planned=289  attributes_written=289
+  total       : 578 POSTs on 289 existing records
+
+Apply-time gate used by Stage 9 (plan gates 1-7 with gate 5 corrected):
+  written=289  gate=0  attributes_written=289  conflicts=0  unresolved=0
+  + independent verifier: 592 assignments, 0 lost, 289/289 coordinate equality
