@@ -1,0 +1,39 @@
+conexao test harness
+  repository:    /home/andrei/IdeaProjects/wordpress-website
+  php:           8.5.4
+  environment:   host (docker compose exec)
+  base url:      http://localhost:8080
+
+HTTP acceptance suites (base: http://localhost:8080)
+[FAIL] tests/acceptance/verify-commemorative-http.py (exit 1)
+           FAIL  pt-landing-page /natal/  -- missing fragment: 'data-ce-motif="bauble_ornament"'
+           PASS  the matrix labels the sitemap row VACUOUS where an index is served (the theme producer does not run, so the row is not an exclusion proof)
+[FAIL] tests/acceptance/verify-event-occurrence-http.py (exit 1)
+           FAIL  exactly one weekly series is listed in the Laois archive  -- found 0
+           FAIL  exactly one all-day event is listed in the Laois archive  -- found 0
+[PASS] tests/acceptance/verify-guides-en-http.py — 20 passed, 0 failed
+[FAIL] tests/acceptance/verify-release-http.py (exit 1)
+         == HTTP acceptance: release smoke matrix (local) ==
+            matrix: scripts/data/release-smoke-matrix.json
+         -- release smoke matrix --
+           FAIL  smoke-archive-empregos /empregos/  -- status 302, expected 200; missing fragment: '<html lang="pt-BR">'; missing fragment: 'rel="canonical"'
+         1 matrix row(s) failed
+[FAIL] tests/acceptance/verify-routing-http.py (exit 1)
+           FAIL  pt-200-empregos /empregos/  -- status 302, expected 200; missing fragment: '<html lang="pt-BR">'
+           FAIL  jobs-en-hreflang /en/empregos/  -- missing fragment: 'hreflang="pt-BR" href="http://localhost:8080/empregos/"'; missing fragment: 'hreflang="x-default" href="http://localhost:8080/empregos/"'
+           FAIL  jobs-pt /empregos/  -- status 302, expected 200; missing fragment: '<html lang="pt-BR">'; missing fragment: 'rel="canonical" href="http://localhost:8080/empregos/"'; missing fragment: 'hreflang="en" href="http://localhost:8080/en/empregos/"'
+           FAIL  pt-empregos-job-resources /empregos/  -- status 302, expected 200; missing fragment: 'class="empregos-job-resources"'; missing fragment: 'Onde procurar emprego'; missing fragment: 'href="https://www.jobs.ie/"'; missing fragment: 'href="https://ie.indeed.com/"'; missing fragment: 'href="https://www.irishjobs.ie/"'; missing fragment: 'Encontre vagas de emprego em diversas áreas e regiões da Irlanda.'; missing fragment: 'Busca de vagas em todo o país, com filtros por área, salário e localização.'; missing fragment: 'Uma das maiores plataformas de recrutamento da Irlanda, com vagas de grandes empresas.'; missing fragment: 'target="_blank" rel="noopener noreferrer"'; missing fragment: 'Acessar Jobs.ie (abre em nova aba)'; missing fragment: 'Oportunidades de emprego'
+           PASS  rest-invalid-lang-guide /wp-json/wp/v2/guide?lang=pt-br (status 400)
+           PASS  rest-invalid-lang-event /wp-json/wp/v2/event?lang=pt-br (status 400)
+           PASS  rest-invalid-lang-leisure /wp-json/wp/v2/leisure?lang=pt-br (status 400)
+           PASS  rest-invalid-lang-posts /wp-json/wp/v2/posts?lang=pt-br (status 400)
+           FAIL  a11y-empregos-filter-links-are-not-options /empregos/  -- status 302, expected 200; missing fragment: 'class="agency-filters-dropdown-link'; missing fragment: 'aria-current="true"'
+           FAIL  a11y-empregos-filter-state-no-option-role /empregos/?tipo=agency  -- status 302, expected 200; missing fragment: 'agency-filters-dropdown-link'; missing fragment: 'aria-current="true"'
+
+----------------------------------------
+In-process PHP suites: 0 total, 0 passed, 0 failed
+HTTP acceptance suites: 5 total, 1 passed, 4 failed
+----------------------------------------
+TESTS FAILED
+full suite output kept in /tmp/tmp.WR0XciEoNE
+exit:1

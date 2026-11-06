@@ -1,0 +1,1670 @@
+{
+  "base_url": "http://localhost:8080",
+  "routes": {
+    "pt": {
+      "path": "/",
+      "lcp": {
+        "url": "http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/images/conexaobr_Hero_image_mobile.webp",
+        "size": 150003,
+        "tag": "IMG"
+      },
+      "errors": {
+        "console": [],
+        "pageerror": [],
+        "requestfailed": [],
+        "media_404": []
+      },
+      "status": 200,
+      "welcome_roots": 0,
+      "dialogs": 0,
+      "commemorative_requests": []
+    },
+    "en": {
+      "path": "/en/",
+      "lcp": {
+        "url": "http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/images/conexaobr_Hero_image_mobile.webp",
+        "size": 150003,
+        "tag": "IMG"
+      },
+      "errors": {
+        "console": [],
+        "pageerror": [],
+        "requestfailed": [],
+        "media_404": [
+          "http://localhost:8080/wp-content/uploads/2026/06/aeroporto-400x300.jpg"
+        ]
+      },
+      "status": 200,
+      "welcome_roots": 0,
+      "dialogs": 0,
+      "commemorative_requests": []
+    },
+    "pt-landing": {
+      "path": "/natal/",
+      "lcp": {
+        "url": "http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/images/presentations/christmas/two-skies/star-bridge-780.webp",
+        "size": 53130,
+        "tag": "IMG"
+      },
+      "errors": {
+        "console": [],
+        "pageerror": [],
+        "requestfailed": [],
+        "media_404": []
+      },
+      "status": 200,
+      "welcome_roots": 0,
+      "dialogs": 0,
+      "commemorative_requests": [
+        "http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/js/presentations/christmas/christmas.js?ver=1793980394",
+        "http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/images/presentations/christmas/two-skies/two-skies-postcard-760.webp",
+        "http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/images/presentations/christmas/two-skies/star-bridge-780.webp"
+      ]
+    },
+    "en-landing": {
+      "path": "/en/christmas/",
+      "lcp": {
+        "url": "http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/images/presentations/christmas/two-skies/star-bridge-780.webp",
+        "size": 58483,
+        "tag": "IMG"
+      },
+      "errors": {
+        "console": [],
+        "pageerror": [],
+        "requestfailed": [],
+        "media_404": []
+      },
+      "status": 200,
+      "welcome_roots": 0,
+      "dialogs": 0,
+      "commemorative_requests": [
+        "http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/js/presentations/christmas/christmas.js?ver=1793980394",
+        "http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/images/presentations/christmas/two-skies/two-skies-postcard-760.webp",
+        "http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/images/presentations/christmas/two-skies/star-bridge-780.webp"
+      ]
+    }
+  },
+  "phases": {
+    "preview": {
+      "status": 200,
+      "url_length": 86,
+      "initial_state": {
+        "present": true,
+        "isModal": false,
+        "hasOpen": true,
+        "state": "inline",
+        "preview": true,
+        "closeHidden": true,
+        "closeVisible": false,
+        "bandVisible": true,
+        "bodyPosition": "",
+        "scrollY": 0,
+        "box": {
+          "x": 0,
+          "y": 580,
+          "w": 390,
+          "h": 460
+        }
+      },
+      "lcp_band": {
+        "url": "http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/images/conexaobr_Hero_image_mobile.webp",
+        "size": 149760,
+        "tag": "IMG"
+      },
+      "opened": {
+        "returned": true,
+        "state": {
+          "present": true,
+          "isModal": true,
+          "hasOpen": true,
+          "state": "open",
+          "preview": true,
+          "closeHidden": false,
+          "closeVisible": true,
+          "bandVisible": true,
+          "bodyPosition": "fixed",
+          "scrollY": 0,
+          "box": {
+            "x": 12,
+            "y": 163,
+            "w": 366,
+            "h": 519
+          }
+        }
+      },
+      "lcp_modal": {
+        "url": "http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/images/conexaobr_Hero_image_mobile.webp",
+        "size": 149760,
+        "tag": "IMG"
+      },
+      "profiles": {
+        "iphone-small-320x568": {
+          "profile": "iphone-small-320x568",
+          "state": {
+            "present": true,
+            "isModal": true,
+            "hasOpen": true,
+            "state": "open",
+            "preview": true,
+            "closeHidden": false,
+            "closeVisible": true,
+            "bandVisible": true,
+            "bodyPosition": "fixed",
+            "scrollY": 0,
+            "box": {
+              "x": 12,
+              "y": 19,
+              "w": 296,
+              "h": 531
+            }
+          },
+          "metrics": {
+            "viewport": {
+              "w": 320,
+              "h": 568
+            },
+            "docOverflow": [
+              320,
+              320
+            ],
+            "dialog": {
+              "x": 12,
+              "y": 19,
+              "w": 296,
+              "h": 531,
+              "bottom": 549,
+              "right": 308
+            },
+            "close": {
+              "x": 197,
+              "y": 28,
+              "w": 100,
+              "h": 44,
+              "bottom": 72,
+              "right": 297
+            },
+            "cta": {
+              "x": 27,
+              "y": 484,
+              "w": 211,
+              "h": 48,
+              "bottom": 532,
+              "right": 238
+            },
+            "image": {
+              "x": 27,
+              "y": 72,
+              "w": 266,
+              "h": 150,
+              "bottom": 221,
+              "right": 293
+            },
+            "imageRatio": {
+              "natural": 1.771,
+              "rendered": 1.778
+            },
+            "heroScroll": {
+              "client": 477,
+              "scroll": 477
+            },
+            "activeInside": true,
+            "closeText": "Fechar",
+            "ctaText": "Explorar os dois céus",
+            "ctaHref": "http://localhost:8080/natal/"
+          },
+          "screenshot": "welcome-preview-iphone-small-320x568.png"
+        },
+        "iphone-se-375x667": {
+          "profile": "iphone-se-375x667",
+          "state": {
+            "present": true,
+            "isModal": true,
+            "hasOpen": true,
+            "state": "open",
+            "preview": true,
+            "closeHidden": false,
+            "closeVisible": true,
+            "bandVisible": true,
+            "bodyPosition": "fixed",
+            "scrollY": 0,
+            "box": {
+              "x": 12,
+              "y": 78,
+              "w": 351,
+              "h": 511
+            }
+          },
+          "metrics": {
+            "viewport": {
+              "w": 375,
+              "h": 667
+            },
+            "docOverflow": [
+              375,
+              375
+            ],
+            "dialog": {
+              "x": 12,
+              "y": 78,
+              "w": 351,
+              "h": 511,
+              "bottom": 589,
+              "right": 363
+            },
+            "close": {
+              "x": 252,
+              "y": 87,
+              "w": 100,
+              "h": 44,
+              "bottom": 131,
+              "right": 352
+            },
+            "cta": {
+              "x": 27,
+              "y": 524,
+              "w": 211,
+              "h": 48,
+              "bottom": 572,
+              "right": 238
+            },
+            "image": {
+              "x": 27,
+              "y": 131,
+              "w": 321,
+              "h": 181,
+              "bottom": 312,
+              "right": 348
+            },
+            "imageRatio": {
+              "natural": 1.777,
+              "rendered": 1.778
+            },
+            "heroScroll": {
+              "client": 457,
+              "scroll": 457
+            },
+            "activeInside": true,
+            "closeText": "Fechar",
+            "ctaText": "Explorar os dois céus",
+            "ctaHref": "http://localhost:8080/natal/"
+          },
+          "screenshot": "welcome-preview-iphone-se-375x667.png"
+        },
+        "iphone-modern-390x844": {
+          "profile": "iphone-modern-390x844",
+          "state": {
+            "present": true,
+            "isModal": true,
+            "hasOpen": true,
+            "state": "open",
+            "preview": true,
+            "closeHidden": false,
+            "closeVisible": true,
+            "bandVisible": true,
+            "bodyPosition": "fixed",
+            "scrollY": 0,
+            "box": {
+              "x": 12,
+              "y": 163,
+              "w": 366,
+              "h": 519
+            }
+          },
+          "metrics": {
+            "viewport": {
+              "w": 390,
+              "h": 844
+            },
+            "docOverflow": [
+              390,
+              390
+            ],
+            "dialog": {
+              "x": 12,
+              "y": 163,
+              "w": 366,
+              "h": 519,
+              "bottom": 681,
+              "right": 378
+            },
+            "close": {
+              "x": 267,
+              "y": 172,
+              "w": 100,
+              "h": 44,
+              "bottom": 216,
+              "right": 367
+            },
+            "cta": {
+              "x": 27,
+              "y": 616,
+              "w": 211,
+              "h": 48,
+              "bottom": 664,
+              "right": 238
+            },
+            "image": {
+              "x": 27,
+              "y": 216,
+              "w": 336,
+              "h": 189,
+              "bottom": 405,
+              "right": 363
+            },
+            "imageRatio": {
+              "natural": 1.781,
+              "rendered": 1.778
+            },
+            "heroScroll": {
+              "client": 465,
+              "scroll": 465
+            },
+            "activeInside": true,
+            "closeText": "Fechar",
+            "ctaText": "Explorar os dois céus",
+            "ctaHref": "http://localhost:8080/natal/"
+          },
+          "screenshot": "welcome-preview-iphone-modern-390x844.png"
+        },
+        "android-small-360x800": {
+          "profile": "android-small-360x800",
+          "state": {
+            "present": true,
+            "isModal": true,
+            "hasOpen": true,
+            "state": "open",
+            "preview": true,
+            "closeHidden": false,
+            "closeVisible": true,
+            "bandVisible": true,
+            "bodyPosition": "fixed",
+            "scrollY": 0,
+            "box": {
+              "x": 12,
+              "y": 136,
+              "w": 336,
+              "h": 528
+            }
+          },
+          "metrics": {
+            "viewport": {
+              "w": 360,
+              "h": 800
+            },
+            "docOverflow": [
+              360,
+              360
+            ],
+            "dialog": {
+              "x": 12,
+              "y": 136,
+              "w": 336,
+              "h": 528,
+              "bottom": 664,
+              "right": 348
+            },
+            "close": {
+              "x": 237,
+              "y": 145,
+              "w": 100,
+              "h": 44,
+              "bottom": 189,
+              "right": 337
+            },
+            "cta": {
+              "x": 27,
+              "y": 599,
+              "w": 211,
+              "h": 48,
+              "bottom": 647,
+              "right": 238
+            },
+            "image": {
+              "x": 27,
+              "y": 189,
+              "w": 306,
+              "h": 172,
+              "bottom": 361,
+              "right": 333
+            },
+            "imageRatio": {
+              "natural": 1.783,
+              "rendered": 1.778
+            },
+            "heroScroll": {
+              "client": 474,
+              "scroll": 474
+            },
+            "activeInside": true,
+            "closeText": "Fechar",
+            "ctaText": "Explorar os dois céus",
+            "ctaHref": "http://localhost:8080/natal/"
+          },
+          "screenshot": "welcome-preview-android-small-360x800.png"
+        },
+        "phone-large-430x932": {
+          "profile": "phone-large-430x932",
+          "state": {
+            "present": true,
+            "isModal": true,
+            "hasOpen": true,
+            "state": "open",
+            "preview": true,
+            "closeHidden": false,
+            "closeVisible": true,
+            "bandVisible": true,
+            "bodyPosition": "fixed",
+            "scrollY": 0,
+            "box": {
+              "x": 12,
+              "y": 195,
+              "w": 406,
+              "h": 541
+            }
+          },
+          "metrics": {
+            "viewport": {
+              "w": 430,
+              "h": 932
+            },
+            "docOverflow": [
+              430,
+              430
+            ],
+            "dialog": {
+              "x": 12,
+              "y": 195,
+              "w": 406,
+              "h": 541,
+              "bottom": 737,
+              "right": 418
+            },
+            "close": {
+              "x": 307,
+              "y": 204,
+              "w": 100,
+              "h": 44,
+              "bottom": 248,
+              "right": 407
+            },
+            "cta": {
+              "x": 27,
+              "y": 672,
+              "w": 211,
+              "h": 48,
+              "bottom": 720,
+              "right": 238
+            },
+            "image": {
+              "x": 27,
+              "y": 248,
+              "w": 376,
+              "h": 212,
+              "bottom": 460,
+              "right": 403
+            },
+            "imageRatio": {
+              "natural": 1.777,
+              "rendered": 1.778
+            },
+            "heroScroll": {
+              "client": 487,
+              "scroll": 487
+            },
+            "activeInside": true,
+            "closeText": "Fechar",
+            "ctaText": "Explorar os dois céus",
+            "ctaHref": "http://localhost:8080/natal/"
+          },
+          "screenshot": "welcome-preview-phone-large-430x932.png"
+        },
+        "tablet-768x1024": {
+          "profile": "tablet-768x1024",
+          "state": {
+            "present": true,
+            "isModal": true,
+            "hasOpen": true,
+            "state": "open",
+            "preview": true,
+            "closeHidden": false,
+            "closeVisible": true,
+            "bandVisible": true,
+            "bodyPosition": "fixed",
+            "scrollY": 0,
+            "box": {
+              "x": 104,
+              "y": 210,
+              "w": 560,
+              "h": 604
+            }
+          },
+          "metrics": {
+            "viewport": {
+              "w": 768,
+              "h": 1024
+            },
+            "docOverflow": [
+              768,
+              768
+            ],
+            "dialog": {
+              "x": 104,
+              "y": 210,
+              "w": 560,
+              "h": 604,
+              "bottom": 814,
+              "right": 664
+            },
+            "close": {
+              "x": 553,
+              "y": 220,
+              "w": 100,
+              "h": 44,
+              "bottom": 264,
+              "right": 652
+            },
+            "cta": {
+              "x": 119,
+              "y": 749,
+              "w": 211,
+              "h": 48,
+              "bottom": 797,
+              "right": 330
+            },
+            "image": {
+              "x": 119,
+              "y": 264,
+              "w": 530,
+              "h": 298,
+              "bottom": 562,
+              "right": 649
+            },
+            "imageRatio": {
+              "natural": 1.778,
+              "rendered": 1.778
+            },
+            "heroScroll": {
+              "client": 548,
+              "scroll": 548
+            },
+            "activeInside": true,
+            "closeText": "Fechar",
+            "ctaText": "Explorar os dois céus",
+            "ctaHref": "http://localhost:8080/natal/"
+          },
+          "screenshot": "welcome-preview-tablet-768x1024.png"
+        },
+        "desktop-1366x768": {
+          "profile": "desktop-1366x768",
+          "state": {
+            "present": true,
+            "isModal": true,
+            "hasOpen": true,
+            "state": "open",
+            "preview": true,
+            "closeHidden": false,
+            "closeVisible": true,
+            "bandVisible": true,
+            "bodyPosition": "fixed",
+            "scrollY": 0,
+            "box": {
+              "x": 203,
+              "y": 218,
+              "w": 960,
+              "h": 332
+            }
+          },
+          "metrics": {
+            "viewport": {
+              "w": 1366,
+              "h": 768
+            },
+            "docOverflow": [
+              1366,
+              1366
+            ],
+            "dialog": {
+              "x": 203,
+              "y": 218,
+              "w": 960,
+              "h": 332,
+              "bottom": 550,
+              "right": 1163
+            },
+            "close": {
+              "x": 1046,
+              "y": 233,
+              "w": 100,
+              "h": 44,
+              "bottom": 277,
+              "right": 1146
+            },
+            "cta": {
+              "x": 677,
+              "y": 475,
+              "w": 211,
+              "h": 44,
+              "bottom": 519,
+              "right": 888
+            },
+            "image": {
+              "x": 230,
+              "y": 289,
+              "w": 417,
+              "h": 234,
+              "bottom": 523,
+              "right": 647
+            },
+            "imageRatio": {
+              "natural": 1.778,
+              "rendered": 1.778
+            },
+            "heroScroll": {
+              "client": 272,
+              "scroll": 272
+            },
+            "activeInside": true,
+            "closeText": "Fechar",
+            "ctaText": "Explorar os dois céus",
+            "ctaHref": "http://localhost:8080/natal/"
+          },
+          "screenshot": "welcome-preview-desktop-1366x768.png"
+        },
+        "landscape-844x390": {
+          "profile": "landscape-844x390",
+          "state": {
+            "present": true,
+            "isModal": true,
+            "hasOpen": true,
+            "state": "open",
+            "preview": true,
+            "closeHidden": false,
+            "closeVisible": true,
+            "bandVisible": true,
+            "bodyPosition": "fixed",
+            "scrollY": 0,
+            "box": {
+              "x": 25,
+              "y": 45,
+              "w": 793,
+              "h": 300
+            }
+          },
+          "metrics": {
+            "viewport": {
+              "w": 844,
+              "h": 390
+            },
+            "docOverflow": [
+              844,
+              844
+            ],
+            "dialog": {
+              "x": 25,
+              "y": 45,
+              "w": 793,
+              "h": 300,
+              "bottom": 345,
+              "right": 819
+            },
+            "close": {
+              "x": 706,
+              "y": 56,
+              "w": 100,
+              "h": 44,
+              "bottom": 100,
+              "right": 806
+            },
+            "cta": {
+              "x": 404,
+              "y": 283,
+              "w": 211,
+              "h": 44,
+              "bottom": 327,
+              "right": 615
+            },
+            "image": {
+              "x": 43,
+              "y": 120,
+              "w": 349,
+              "h": 196,
+              "bottom": 316,
+              "right": 392
+            },
+            "imageRatio": {
+              "natural": 1.778,
+              "rendered": 1.778
+            },
+            "heroScroll": {
+              "client": 244,
+              "scroll": 244
+            },
+            "activeInside": true,
+            "closeText": "Fechar",
+            "ctaText": "Explorar os dois céus",
+            "ctaHref": "http://localhost:8080/natal/"
+          },
+          "screenshot": "welcome-preview-landscape-844x390.png"
+        }
+      },
+      "after_escape": {
+        "present": true,
+        "isModal": false,
+        "hasOpen": true,
+        "state": "inline",
+        "preview": true,
+        "closeHidden": true,
+        "closeVisible": false,
+        "bandVisible": true,
+        "bodyPosition": "",
+        "scrollY": 0,
+        "box": {
+          "x": 0,
+          "y": 580,
+          "w": 390,
+          "h": 460
+        }
+      },
+      "after_reload": {
+        "present": true,
+        "isModal": false,
+        "hasOpen": true,
+        "state": "inline",
+        "preview": true,
+        "closeHidden": true,
+        "closeVisible": false,
+        "bandVisible": true,
+        "bodyPosition": "",
+        "scrollY": 0,
+        "box": {
+          "x": 0,
+          "y": 580,
+          "w": 390,
+          "h": 460
+        }
+      },
+      "errors": {
+        "console": [],
+        "pageerror": [],
+        "requestfailed": [],
+        "media_404": []
+      }
+    },
+    "harness": {
+      "no_javascript": {
+        "band": true,
+        "close_visible": false,
+        "cta": true,
+        "cta_href": "http://localhost:8080/natal/",
+        "heading": "Um Natal, dois céus"
+      },
+      "preview_harness": {
+        "present": true,
+        "isModal": false,
+        "hasOpen": true,
+        "state": "inline",
+        "preview": true,
+        "closeHidden": true,
+        "closeVisible": false,
+        "bandVisible": true,
+        "bodyPosition": "",
+        "scrollY": 0,
+        "box": {
+          "x": 0,
+          "y": 95,
+          "w": 390,
+          "h": 460
+        }
+      },
+      "profiles": {
+        "iphone-small-320x568": {
+          "profile": "iphone-small-320x568",
+          "state": {
+            "present": true,
+            "isModal": true,
+            "hasOpen": true,
+            "state": "open",
+            "preview": false,
+            "closeHidden": false,
+            "closeVisible": true,
+            "bandVisible": true,
+            "bodyPosition": "fixed",
+            "scrollY": 0,
+            "box": {
+              "x": 12,
+              "y": 31,
+              "w": 296,
+              "h": 505
+            }
+          },
+          "metrics": {
+            "viewport": {
+              "w": 320,
+              "h": 568
+            },
+            "docOverflow": [
+              320,
+              320
+            ],
+            "dialog": {
+              "x": 12,
+              "y": 31,
+              "w": 296,
+              "h": 505,
+              "bottom": 537,
+              "right": 308
+            },
+            "close": {
+              "x": 198,
+              "y": 40,
+              "w": 99,
+              "h": 44,
+              "bottom": 84,
+              "right": 297
+            },
+            "cta": {
+              "x": 27,
+              "y": 472,
+              "w": 211,
+              "h": 48,
+              "bottom": 520,
+              "right": 238
+            },
+            "image": {
+              "x": 27,
+              "y": 84,
+              "w": 266,
+              "h": 150,
+              "bottom": 234,
+              "right": 293
+            },
+            "imageRatio": {
+              "natural": 1.771,
+              "rendered": 1.778
+            },
+            "heroScroll": {
+              "client": 451,
+              "scroll": 451
+            },
+            "activeInside": true,
+            "closeText": "Fechar",
+            "ctaText": "Explorar os dois céus",
+            "ctaHref": "http://localhost:8080/natal/"
+          },
+          "screenshot": "welcome-harness-iphone-small-320x568.png",
+          "errors": {
+            "console": [],
+            "pageerror": [],
+            "requestfailed": [],
+            "media_404": []
+          },
+          "lcp": {
+            "url": "",
+            "size": 29149,
+            "tag": "P"
+          }
+        },
+        "iphone-se-375x667": {
+          "profile": "iphone-se-375x667",
+          "state": {
+            "present": true,
+            "isModal": true,
+            "hasOpen": true,
+            "state": "open",
+            "preview": false,
+            "closeHidden": false,
+            "closeVisible": true,
+            "bandVisible": true,
+            "bodyPosition": "fixed",
+            "scrollY": 0,
+            "box": {
+              "x": 12,
+              "y": 78,
+              "w": 351,
+              "h": 511
+            }
+          },
+          "metrics": {
+            "viewport": {
+              "w": 375,
+              "h": 667
+            },
+            "docOverflow": [
+              375,
+              375
+            ],
+            "dialog": {
+              "x": 12,
+              "y": 78,
+              "w": 351,
+              "h": 511,
+              "bottom": 589,
+              "right": 363
+            },
+            "close": {
+              "x": 253,
+              "y": 87,
+              "w": 99,
+              "h": 44,
+              "bottom": 131,
+              "right": 352
+            },
+            "cta": {
+              "x": 27,
+              "y": 524,
+              "w": 211,
+              "h": 48,
+              "bottom": 572,
+              "right": 238
+            },
+            "image": {
+              "x": 27,
+              "y": 131,
+              "w": 321,
+              "h": 181,
+              "bottom": 312,
+              "right": 348
+            },
+            "imageRatio": {
+              "natural": 1.777,
+              "rendered": 1.778
+            },
+            "heroScroll": {
+              "client": 457,
+              "scroll": 457
+            },
+            "activeInside": true,
+            "closeText": "Fechar",
+            "ctaText": "Explorar os dois céus",
+            "ctaHref": "http://localhost:8080/natal/"
+          },
+          "screenshot": "welcome-harness-iphone-se-375x667.png",
+          "errors": {
+            "console": [],
+            "pageerror": [],
+            "requestfailed": [],
+            "media_404": []
+          },
+          "lcp": {
+            "url": "",
+            "size": 35020,
+            "tag": "P"
+          }
+        },
+        "iphone-modern-390x844": {
+          "profile": "iphone-modern-390x844",
+          "state": {
+            "present": true,
+            "isModal": true,
+            "hasOpen": true,
+            "state": "open",
+            "preview": false,
+            "closeHidden": false,
+            "closeVisible": true,
+            "bandVisible": true,
+            "bodyPosition": "fixed",
+            "scrollY": 0,
+            "box": {
+              "x": 12,
+              "y": 163,
+              "w": 366,
+              "h": 519
+            }
+          },
+          "metrics": {
+            "viewport": {
+              "w": 390,
+              "h": 844
+            },
+            "docOverflow": [
+              390,
+              390
+            ],
+            "dialog": {
+              "x": 12,
+              "y": 163,
+              "w": 366,
+              "h": 519,
+              "bottom": 681,
+              "right": 378
+            },
+            "close": {
+              "x": 268,
+              "y": 172,
+              "w": 99,
+              "h": 44,
+              "bottom": 216,
+              "right": 367
+            },
+            "cta": {
+              "x": 27,
+              "y": 616,
+              "w": 211,
+              "h": 48,
+              "bottom": 664,
+              "right": 238
+            },
+            "image": {
+              "x": 27,
+              "y": 216,
+              "w": 336,
+              "h": 189,
+              "bottom": 405,
+              "right": 363
+            },
+            "imageRatio": {
+              "natural": 1.781,
+              "rendered": 1.778
+            },
+            "heroScroll": {
+              "client": 465,
+              "scroll": 465
+            },
+            "activeInside": true,
+            "closeText": "Fechar",
+            "ctaText": "Explorar os dois céus",
+            "ctaHref": "http://localhost:8080/natal/"
+          },
+          "screenshot": "welcome-harness-iphone-modern-390x844.png",
+          "errors": {
+            "console": [],
+            "pageerror": [],
+            "requestfailed": [],
+            "media_404": []
+          },
+          "lcp": {
+            "url": "",
+            "size": 35020,
+            "tag": "P"
+          }
+        },
+        "android-small-360x800": {
+          "profile": "android-small-360x800",
+          "state": {
+            "present": true,
+            "isModal": true,
+            "hasOpen": true,
+            "state": "open",
+            "preview": false,
+            "closeHidden": false,
+            "closeVisible": true,
+            "bandVisible": true,
+            "bodyPosition": "fixed",
+            "scrollY": 0,
+            "box": {
+              "x": 12,
+              "y": 136,
+              "w": 336,
+              "h": 528
+            }
+          },
+          "metrics": {
+            "viewport": {
+              "w": 360,
+              "h": 800
+            },
+            "docOverflow": [
+              360,
+              360
+            ],
+            "dialog": {
+              "x": 12,
+              "y": 136,
+              "w": 336,
+              "h": 528,
+              "bottom": 664,
+              "right": 348
+            },
+            "close": {
+              "x": 238,
+              "y": 145,
+              "w": 99,
+              "h": 44,
+              "bottom": 189,
+              "right": 337
+            },
+            "cta": {
+              "x": 27,
+              "y": 599,
+              "w": 211,
+              "h": 48,
+              "bottom": 647,
+              "right": 238
+            },
+            "image": {
+              "x": 27,
+              "y": 189,
+              "w": 306,
+              "h": 172,
+              "bottom": 361,
+              "right": 333
+            },
+            "imageRatio": {
+              "natural": 1.783,
+              "rendered": 1.778
+            },
+            "heroScroll": {
+              "client": 474,
+              "scroll": 474
+            },
+            "activeInside": true,
+            "closeText": "Fechar",
+            "ctaText": "Explorar os dois céus",
+            "ctaHref": "http://localhost:8080/natal/"
+          },
+          "screenshot": "welcome-harness-android-small-360x800.png",
+          "errors": {
+            "console": [],
+            "pageerror": [],
+            "requestfailed": [],
+            "media_404": []
+          },
+          "lcp": {
+            "url": "",
+            "size": 33784,
+            "tag": "P"
+          }
+        },
+        "phone-large-430x932": {
+          "profile": "phone-large-430x932",
+          "state": {
+            "present": true,
+            "isModal": true,
+            "hasOpen": true,
+            "state": "open",
+            "preview": false,
+            "closeHidden": false,
+            "closeVisible": true,
+            "bandVisible": true,
+            "bodyPosition": "fixed",
+            "scrollY": 0,
+            "box": {
+              "x": 12,
+              "y": 195,
+              "w": 406,
+              "h": 541
+            }
+          },
+          "metrics": {
+            "viewport": {
+              "w": 430,
+              "h": 932
+            },
+            "docOverflow": [
+              430,
+              430
+            ],
+            "dialog": {
+              "x": 12,
+              "y": 195,
+              "w": 406,
+              "h": 541,
+              "bottom": 737,
+              "right": 418
+            },
+            "close": {
+              "x": 308,
+              "y": 204,
+              "w": 99,
+              "h": 44,
+              "bottom": 248,
+              "right": 407
+            },
+            "cta": {
+              "x": 27,
+              "y": 672,
+              "w": 211,
+              "h": 48,
+              "bottom": 720,
+              "right": 238
+            },
+            "image": {
+              "x": 27,
+              "y": 248,
+              "w": 376,
+              "h": 212,
+              "bottom": 460,
+              "right": 403
+            },
+            "imageRatio": {
+              "natural": 1.777,
+              "rendered": 1.778
+            },
+            "heroScroll": {
+              "client": 487,
+              "scroll": 487
+            },
+            "activeInside": true,
+            "closeText": "Fechar",
+            "ctaText": "Explorar os dois céus",
+            "ctaHref": "http://localhost:8080/natal/"
+          },
+          "screenshot": "welcome-harness-phone-large-430x932.png",
+          "errors": {
+            "console": [],
+            "pageerror": [],
+            "requestfailed": [],
+            "media_404": []
+          },
+          "lcp": {
+            "url": "",
+            "size": 32308,
+            "tag": "P"
+          }
+        },
+        "tablet-768x1024": {
+          "profile": "tablet-768x1024",
+          "state": {
+            "present": true,
+            "isModal": true,
+            "hasOpen": true,
+            "state": "open",
+            "preview": false,
+            "closeHidden": false,
+            "closeVisible": true,
+            "bandVisible": true,
+            "bodyPosition": "fixed",
+            "scrollY": 0,
+            "box": {
+              "x": 104,
+              "y": 210,
+              "w": 560,
+              "h": 604
+            }
+          },
+          "metrics": {
+            "viewport": {
+              "w": 768,
+              "h": 1024
+            },
+            "docOverflow": [
+              768,
+              768
+            ],
+            "dialog": {
+              "x": 104,
+              "y": 210,
+              "w": 560,
+              "h": 604,
+              "bottom": 814,
+              "right": 664
+            },
+            "close": {
+              "x": 553,
+              "y": 220,
+              "w": 99,
+              "h": 44,
+              "bottom": 264,
+              "right": 652
+            },
+            "cta": {
+              "x": 119,
+              "y": 749,
+              "w": 211,
+              "h": 48,
+              "bottom": 797,
+              "right": 330
+            },
+            "image": {
+              "x": 119,
+              "y": 264,
+              "w": 530,
+              "h": 298,
+              "bottom": 562,
+              "right": 649
+            },
+            "imageRatio": {
+              "natural": 1.778,
+              "rendered": 1.778
+            },
+            "heroScroll": {
+              "client": 548,
+              "scroll": 548
+            },
+            "activeInside": true,
+            "closeText": "Fechar",
+            "ctaText": "Explorar os dois céus",
+            "ctaHref": "http://localhost:8080/natal/"
+          },
+          "screenshot": "welcome-harness-tablet-768x1024.png",
+          "errors": {
+            "console": [],
+            "pageerror": [],
+            "requestfailed": [],
+            "media_404": []
+          },
+          "lcp": {
+            "url": "",
+            "size": 36112,
+            "tag": "P"
+          }
+        },
+        "desktop-1366x768": {
+          "profile": "desktop-1366x768",
+          "state": {
+            "present": true,
+            "isModal": true,
+            "hasOpen": true,
+            "state": "open",
+            "preview": false,
+            "closeHidden": false,
+            "closeVisible": true,
+            "bandVisible": true,
+            "bodyPosition": "fixed",
+            "scrollY": 0,
+            "box": {
+              "x": 203,
+              "y": 218,
+              "w": 960,
+              "h": 332
+            }
+          },
+          "metrics": {
+            "viewport": {
+              "w": 1366,
+              "h": 768
+            },
+            "docOverflow": [
+              1366,
+              1366
+            ],
+            "dialog": {
+              "x": 203,
+              "y": 218,
+              "w": 960,
+              "h": 332,
+              "bottom": 550,
+              "right": 1163
+            },
+            "close": {
+              "x": 1047,
+              "y": 233,
+              "w": 99,
+              "h": 44,
+              "bottom": 277,
+              "right": 1146
+            },
+            "cta": {
+              "x": 677,
+              "y": 475,
+              "w": 211,
+              "h": 44,
+              "bottom": 519,
+              "right": 888
+            },
+            "image": {
+              "x": 230,
+              "y": 289,
+              "w": 417,
+              "h": 234,
+              "bottom": 523,
+              "right": 647
+            },
+            "imageRatio": {
+              "natural": 1.778,
+              "rendered": 1.778
+            },
+            "heroScroll": {
+              "client": 272,
+              "scroll": 272
+            },
+            "activeInside": true,
+            "closeText": "Fechar",
+            "ctaText": "Explorar os dois céus",
+            "ctaHref": "http://localhost:8080/natal/"
+          },
+          "screenshot": "welcome-harness-desktop-1366x768.png",
+          "errors": {
+            "console": [],
+            "pageerror": [],
+            "requestfailed": [],
+            "media_404": []
+          },
+          "lcp": {
+            "url": "",
+            "size": 36112,
+            "tag": "P"
+          }
+        },
+        "landscape-844x390": {
+          "profile": "landscape-844x390",
+          "state": {
+            "present": true,
+            "isModal": true,
+            "hasOpen": true,
+            "state": "open",
+            "preview": false,
+            "closeHidden": false,
+            "closeVisible": true,
+            "bandVisible": true,
+            "bodyPosition": "fixed",
+            "scrollY": 0,
+            "box": {
+              "x": 25,
+              "y": 45,
+              "w": 793,
+              "h": 300
+            }
+          },
+          "metrics": {
+            "viewport": {
+              "w": 844,
+              "h": 390
+            },
+            "docOverflow": [
+              844,
+              844
+            ],
+            "dialog": {
+              "x": 25,
+              "y": 45,
+              "w": 793,
+              "h": 300,
+              "bottom": 345,
+              "right": 819
+            },
+            "close": {
+              "x": 706,
+              "y": 56,
+              "w": 99,
+              "h": 44,
+              "bottom": 100,
+              "right": 806
+            },
+            "cta": {
+              "x": 404,
+              "y": 283,
+              "w": 211,
+              "h": 44,
+              "bottom": 327,
+              "right": 615
+            },
+            "image": {
+              "x": 43,
+              "y": 120,
+              "w": 349,
+              "h": 196,
+              "bottom": 316,
+              "right": 392
+            },
+            "imageRatio": {
+              "natural": 1.778,
+              "rendered": 1.778
+            },
+            "heroScroll": {
+              "client": 244,
+              "scroll": 244
+            },
+            "activeInside": true,
+            "closeText": "Fechar",
+            "ctaText": "Explorar os dois céus",
+            "ctaHref": "http://localhost:8080/natal/"
+          },
+          "screenshot": "welcome-harness-landscape-844x390.png",
+          "errors": {
+            "console": [],
+            "pageerror": [],
+            "requestfailed": [],
+            "media_404": []
+          },
+          "lcp": {
+            "url": "",
+            "size": 36112,
+            "tag": "P"
+          }
+        }
+      },
+      "dismissal": {
+        "locked": [
+          "fixed",
+          0
+        ],
+        "after": {
+          "present": true,
+          "isModal": false,
+          "hasOpen": true,
+          "state": "inline",
+          "preview": false,
+          "closeHidden": true,
+          "closeVisible": false,
+          "bandVisible": true,
+          "bodyPosition": "",
+          "scrollY": 0,
+          "box": {
+            "x": 0,
+            "y": 137,
+            "w": 390,
+            "h": 460
+          }
+        }
+      },
+      "after_reload": {
+        "present": true,
+        "isModal": false,
+        "hasOpen": true,
+        "state": "inline",
+        "preview": false,
+        "closeHidden": true,
+        "closeVisible": false,
+        "bandVisible": true,
+        "bodyPosition": "",
+        "scrollY": 0,
+        "box": {
+          "x": 0,
+          "y": 137,
+          "w": 390,
+          "h": 460
+        }
+      },
+      "scroll": {
+        "before": 260,
+        "opened": true,
+        "locked": [
+          "fixed",
+          "-260px",
+          0
+        ],
+        "restored": 260
+      },
+      "fresh_session": true,
+      "storage_denied": {
+        "opened": true,
+        "after": {
+          "present": true,
+          "isModal": false,
+          "hasOpen": true,
+          "state": "inline",
+          "preview": false,
+          "closeHidden": true,
+          "closeVisible": false,
+          "bandVisible": true,
+          "bodyPosition": "",
+          "scrollY": 0,
+          "box": {
+            "x": 0,
+            "y": 137,
+            "w": 390,
+            "h": 460
+          }
+        },
+        "errors": {
+          "console": [],
+          "pageerror": [],
+          "requestfailed": [],
+          "media_404": []
+        }
+      },
+      "reduced_motion": {
+        "dialog": "none",
+        "backdrop": "none",
+        "transition": "1e-05s"
+      },
+      "themes": {
+        "light": {
+          "title": "rgb(27, 36, 71)",
+          "ctaBg": "rgb(232, 194, 115)",
+          "ctaColor": "rgb(8, 12, 34)"
+        },
+        "dark": {
+          "title": "rgb(253, 247, 238)",
+          "ctaBg": "rgb(232, 194, 115)",
+          "ctaColor": "rgb(8, 12, 34)"
+        }
+      },
+      "cta": {
+        "href": "http://localhost:8080/natal/",
+        "landed": "http://localhost:8080/natal/"
+      },
+      "image_mobile_dpr1": null,
+      "image_desktop_dpr1": null,
+      "image_mobile_dpr2": null,
+      "image_desktop_dpr2": null,
+      "image_transfer": {
+        "mobile-dpr1": {
+          "requests": [
+            "two-skies-hero-840.webp"
+          ],
+          "bytes": {
+            "two-skies-hero-840.webp": 96892
+          },
+          "count": 1
+        },
+        "desktop-dpr1": {
+          "requests": [
+            "two-skies-hero-840.webp"
+          ],
+          "bytes": {
+            "two-skies-hero-840.webp": 96892
+          },
+          "count": 1
+        },
+        "mobile-dpr2": {
+          "requests": [
+            "two-skies-hero-840.webp"
+          ],
+          "bytes": {
+            "two-skies-hero-840.webp": 96892
+          },
+          "count": 1
+        },
+        "desktop-dpr2": {
+          "requests": [
+            "two-skies-hero-1200.webp"
+          ],
+          "bytes": {
+            "two-skies-hero-1200.webp": 168988
+          },
+          "count": 1
+        }
+      }
+    }
+  },
+  "browser": "chromium 151.0.7922.34",
+  "preview_url_shape": "http://localhost:8080/?conexao_preview=…",
+  "harness_files": {
+    "preview": "welcome-harness-preview.html",
+    "public": "welcome-harness-public.html"
+  },
+  "failures": [],
+  "status": "pass"
+}

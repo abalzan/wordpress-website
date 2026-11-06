@@ -34,11 +34,13 @@ REPO_ROOT = os.environ.get("CONEXAO_REPO_ROOT") or os.path.abspath(
 GATE_ID = "commemorative_ambient_runtime"
 
 # Every Node runtime case of the commemorative surface, in one gate: the shared
-# ambient scheduler and the Christmas two-sky journey controller. A new runtime test
-# joins this tuple rather than adding a second runner.
+# ambient scheduler, the Christmas two-sky journey controller and the Christmas
+# homepage welcome dialog. A new runtime test joins this tuple rather than adding a
+# second runner.
 TEST_FILES = (
     {"path": os.path.join("tests", "node", "commemorative-ambient.test.js"), "min_cases": 11},
     {"path": os.path.join("tests", "node", "christmas-journey.test.js"), "min_cases": 8},
+    {"path": os.path.join("tests", "node", "christmas-welcome.test.js"), "min_cases": 14},
 )
 
 PASS_RE = re.compile(r"^(?:# |ℹ )pass (\d+)$", re.M)

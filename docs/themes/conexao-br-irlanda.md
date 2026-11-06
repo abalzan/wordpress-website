@@ -164,6 +164,9 @@ worth knowing before touching it:
 | Piece | Where | Contract |
 |---|---|---|
 | Shared star motif | `template-parts/commemorative/christmas/star.php` | Code-drawn SVG (8-point star, optional light trails). Decorative by default (`aria-hidden`, `focusable="false"`); a unique `id` per instance keeps the gradient ids from colliding. Never a raster cut-out of the panorama. |
+| **Homepage welcome** | `template-parts/commemorative/christmas/hero.php` | The hero is rendered **once**, inside a native `<dialog open>`. Without JavaScript (or if the package script never runs) `open` makes it the ordinary band; with JavaScript `showModal()` makes the same node the welcome modal. One dialog, one `<img>`, one `<h2>`, one paragraph, one CTA — the modal never has a second copy. |
+| Welcome controller | `assets/js/presentations/christmas/christmas.js` → `createWelcome()` | Opens on the first eligible homepage view of a **tab session** (`showModal()`), locks the background scroll (`position: fixed` + negative `top`), restores focus and the exact scroll offset on close, and writes `sessionStorage['ce_christmas_welcome_dismissed_v1']` **only on dismissal**. No timer, interval, `requestAnimationFrame`, cookie, `localStorage`, network request, analytics or date computation. Fails closed: no dialog, no close control or no `showModal()` leaves the band inline with no dead button. Proven by `tests/node/christmas-welcome.test.js` and the in-process suite. |
+| Welcome styles | `assets/css/presentations/christmas.css` §11 | Two states on one selector: the UA `<dialog>` box is neutralised for the band, and `.is-welcome-open` draws the card in the top layer. `dvh` + `env(safe-area-inset-*)`, stacked on phones, two columns on desktop, internal scrolling on short viewports, a gold CTA with sufficient contrast in both site themes, and reduced motion removes every entrance transform. |
 | Signature scene | `template-parts/commemorative/christmas/journey.php` | Both skies are server-rendered in full (heading, paragraph, three details, nuance note) from ONE two-key data structure. The tab control ships inside a `hidden` container and **no** tab roles are emitted, so a visitor without JavaScript reads both skies and never meets an unusable control. |
 | Scene controller | `assets/js/presentations/christmas/christmas.js` → `createJourney()` | Upgrades that pair into a WAI-ARIA tabs widget (roles, `aria-controls`/`aria-labelledby`, `aria-selected`, roving tabindex, Arrow/Home/End, focus follow). It creates **no** timer, interval, storage entry, request or analytics event; an incomplete scene fails closed and is left as plain markup. Proven at runtime by `tests/node/christmas-journey.test.js`. |
 | Artwork | `assets/images/presentations/christmas/two-skies/` | Six WebP derivatives of the three supplied GPT Images panoramas, served through `<img srcset>` with intrinsic width/height. The multi-megabyte PNG masters are deliberately **not** shipped. The ambient `decorations/star.svg` is the only other image request. |
@@ -173,7 +176,20 @@ worth knowing before touching it:
 height server-side, and the band keeps art and copy as siblings — no sentence is ever
 placed on top of the photograph.
 
-_Last verified: 2026-11-06 by the Christmas signature experience_
+#### The homepage welcome — display, frequency and failure behaviour
+
+| Question | Answer |
+|---|---|
+| Where does it appear? | Only where the dispatcher already renders the Christmas `homepage_hero` placement — the front page, while the event is window-eligible. Landing pages, internal pages, other packages and no-event states render nothing and load no Christmas asset. |
+| When does it open? | Immediately on the first eligible view of a **tab session**, as soon as the deferred package script runs (`document.readyState === "interactive"`). No scroll, hover, timer or second gesture. |
+| How often? | Once per tab session. Dismissal writes `ce_christmas_welcome_dismissed_v1` to `sessionStorage`; a reload, or returning from the landing page, does not reopen it. A **new** session is eligible again. Nothing is persisted beyond the tab: no cookie, option, post meta, account or remote store. |
+| What if storage is denied? | Every access is guarded; the dismissal falls back to a per-document in-memory flag and the page keeps working. |
+| What after dismissal? | The node returns to the **inline band** in its usual place, so the reserved `.hero-section` height stays truthful and the seasonal content is never lost. The close control hides again. |
+| What without JavaScript / if the script fails? | The dialog keeps its server-rendered `open` attribute: the full hero, image and CTA are inline and usable. The parse-time guard sets `data-ce-welcome-state="pending"` only when `showModal()` really exists, and its `DOMContentLoaded` fallback reveals the band if the controller never claims it. |
+| What in the signed private preview? | The template adds `data-ce-welcome-preview="1"`, so the controller wires everything but **never auto-opens**: the non-dismissible `conexao-preview-banner` stays visible and can never be covered by a modal top layer. Preview authorisation is untouched; `ConexaoChristmas.openWelcome()` remains available to drive it. |
+| What about the old `[data-ce-reveal]` hooks? | `template-parts/commemorative/homepage-hero.php` still ships a `<noscript>` block for `[data-ce-reveal]` / `[data-ce-dismiss]`. Those hooks are real for **Halloween** and have always been inert for Christmas (the Christmas hero never carried them), so the welcome ships its own explicit contract above instead of relying on them. |
+
+_Last verified: 2026-11-06 by the Christmas homepage welcome modal_
 
 ## Homepage Apoiadores Carousel
 

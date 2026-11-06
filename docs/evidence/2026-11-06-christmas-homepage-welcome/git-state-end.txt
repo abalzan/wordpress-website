@@ -1,0 +1,25 @@
+# Git state at the END of the task
+
+HEAD 448cd9dd8458c02430e11238a9fd9a5ab98ed70e Add Christmas journey feature with server-rendered tabs and SVG star motif
+branch commemorative-events
+stashes: 9
+
+## git status --short
+ M docs/README.md
+ M docs/commemorative-events.md
+ M docs/evidence/README.md
+ M docs/reports/README.md
+ M docs/testing.md
+ M docs/themes/conexao-br-irlanda.md
+ M tests/scripts/verify-commemorative-runtime.py
+ M wp-content/themes/conexao-br-irlanda/assets/css/presentations/christmas.css
+ M wp-content/themes/conexao-br-irlanda/assets/js/presentations/christmas/christmas.js
+ M wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/hero.php
+ M wp-content/themes/conexao-br-irlanda/tests/test-commemorative-christmas-journey.php
+ M wp-content/themes/conexao-br-irlanda/tests/test-commemorative-presentation-dispatch.php
+?? docs/evidence/2026-11-06-christmas-homepage-welcome/
+?? docs/reports/2026-11-06-christmas-homepage-welcome-modal-plan.md
+?? docs/reports/2026-11-06-christmas-homepage-welcome-modal.md
+?? tests/browser/verify-christmas-welcome-browser.py
+?? tests/node/christmas-welcome.test.js
+?? wp-content/themes/conexao-br-irlanda/tests/test-commemorative-christmas-welcome.php

@@ -166,7 +166,12 @@ assert_contains( 'height="675"', $ce_hero, 'the hero art declares its intrinsic 
 assert_contains( 'alt="', $ce_hero, 'the informative artwork carries alternative text' );
 assert_contains( '<h2', $ce_hero, 'the band keeps a level-two heading under the page h1' );
 assert_not_contains( '<h1', $ce_hero, 'the band never introduces a second document heading' );
-assert_not_contains( 'data-dismiss-key', $ce_hero, 'the hero is a band, never a dismissible overlay' );
+// The welcome closes, it is not a second editable block: the hero is ONE node inside
+// a native dialog (supersedes the earlier "band, never a dismissible overlay" rule —
+// see docs/reports/2026-11-06-christmas-homepage-welcome-modal.md).
+assert_contains( '<dialog', $ce_hero, 'the hero is a native dialog, rendered once' );
+assert_contains( 'aria-labelledby="ce-christmas-welcome-title"', $ce_hero, 'the dialog is named by its own localised heading' );
+assert_equals( 1, substr_count( $ce_hero, 'ce-christmas-hero__copy' ), 'the welcome reuses the single copy, never a second one' );
 
 $ce_landing = conexao_commemorative_resolve_record( 'page', 'natal' );
 

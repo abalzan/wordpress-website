@@ -109,6 +109,17 @@ renders nothing until its placement map ships.
 - **A landing page is a page.** It is not a modal, not a CPT route. It carries the
   template *and* `_ce_landing_package`, renders from the PAGE's copy (never the event
   schedule, so it survives the window), and is excluded from the sitemap.
+- **A hero may be presented as a welcome, not as a second experience.** The
+  `homepage_hero` placement of a package may be rendered once inside a native
+  `<dialog>` that the package script promotes to a modal (`showModal()`) on the first
+  eligible homepage view of a **tab session**, capped by a `sessionStorage` dismissal.
+  This is still the SAME placement, template, record and asset plan: no new event,
+  package, placement, scheduler or route. Without JavaScript the dialog's `open`
+  attribute leaves the band inline and usable; after dismissal the node returns to the
+  band. The signed private preview sets a package attribute that **suppresses** the
+  auto-open, so the non-dismissible preview banner can never be covered by the top
+  layer. Only `christmas` does this today
+  ([theme internals](../themes/conexao-br-irlanda.md#the-homepage-welcome--display-frequency-and-failure-behaviour)).
 
 ## 3. Timing and caps
 

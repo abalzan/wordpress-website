@@ -1,0 +1,13 @@
+# Commemorative asset + welcome-markup presence over plain HTTP (read-only GETs, local site)
+
+/                    status=200 welcome_roots=0 dialogs=0 christmas_css=0 christmas_js=0
+/en/                 status=200 welcome_roots=0 dialogs=0 christmas_css=0 christmas_js=0
+/natal/              status=200 welcome_roots=0 dialogs=0 christmas_css=7 christmas_js=2
+/en/christmas/       status=200 welcome_roots=0 dialogs=0 christmas_css=7 christmas_js=2
+/guias/              status=200 welcome_roots=0 dialogs=0 christmas_css=0 christmas_js=0
+
+# NOTE: the Christmas event window is 10-25 December, so no homepage route is eligible today (2026-11-06).
+
+# PT and EN preview homepages (signed preview, read-only GET)
+PT welcome=6 dialog=1 open_attr=1 heading_pt=1 heading_en=0 close_pt=1 close_en=0 cta_pt=1 cta_en=0
+EN welcome=6 dialog=1 open_attr=1 heading_pt=0 heading_en=1 close_pt=0 close_en=1 cta_pt=0 cta_en=1

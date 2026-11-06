@@ -34,8 +34,11 @@ is the *proof of invariance* (nothing changed), not a duplicate to remove.
 
 ## Index — every evidence folder
 
-One row per date; the folders for that date follow the row. 140 folders,
-1,445 files (1,215 tracked). Regenerate the inspection at any time with:
+One row per date; the folders for that date follow the row. **139** top-level
+folders and **1,583** files on disk, of which **1,389** are tracked — measured
+2026-11-06 by the Christmas homepage welcome task (the earlier 140/1,445/1,215
+figures were the audit-day snapshot and had drifted). Regenerate the inspection at
+any time with:
 
 ```bash
 find docs/evidence -mindepth 1 -maxdepth 1 -type d | sort
@@ -71,7 +74,7 @@ git ls-files docs/evidence | wc -l
 | 2026-11-03 | `leisure-coordinate-research` |
 | 2026-11-04 | `lazer-proximity-release` · `leisure-distance-optin` · `leisure-proximity-geolocation` |
 | 2026-11-05 | `lazer-proximity-button-removal` · `leisure-coordinate-rest-permission` · `leisure-location-production-audit` · `leisure-location-stage-7` · `leisure-location-stage-8` · `leisure-location-stage-9` |
-| 2026-11-06 | `evidence-directory-audit` · `christmas-signature-experience` |
+| 2026-11-06 | `evidence-directory-audit` · `christmas-signature-experience` · `christmas-homepage-welcome` · `commemorative-events` · `commemorative-local-remediation` · `commemorative-precedence` |
 | undated | `lazer-wikimedia-image-seed` · `stage-4-1-rest-matrix` |
 
 Two dated pairs are easy to confuse and are **different records**:

@@ -1,0 +1,23 @@
+
+== PERMANENT GATE: commemorative_ambient_runtime ==
+The commemorative runtime behaviours are executed under node --test:
+  - tests/node/commemorative-ambient.test.js
+  - tests/node/christmas-journey.test.js
+  - tests/node/christmas-welcome.test.js
+  prerequisites: node
+
+   -- tests/node/commemorative-ambient.test.js --
+   runtime cases executed: 11
+   assertions passed:      11
+
+   -- tests/node/christmas-journey.test.js --
+   runtime cases executed: 8
+   assertions passed:      8
+
+   -- tests/node/christmas-welcome.test.js --
+   runtime cases executed: 14
+   assertions passed:      14
+
+66 passed, 0 failed
+GATE-RESULT {"gate": "commemorative_ambient_runtime", "status": "pass", "passed": 66, "failed": 0, "violations": 0, "pre_existing": 0, "new": 0, "prerequisites": ["node"], "allowlisted": [], "allowlisted_count": 0, "details": []}
+exit:0

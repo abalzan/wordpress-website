@@ -914,3 +914,247 @@ body.ce-active.ce-package-christmas.ce-placement-homepage-hero .hero-section {
   }
 }
 
+
+/* ===== 11. The homepage welcome dialog ===== */
+/*
+ * ONE node, two presentations. The server renders the whole hero once inside a
+ * native <dialog open>: without JavaScript that is the seasonal band the package has
+ * always shown, and `createWelcome()` only adds `.is-welcome-open` + showModal() to
+ * make it the welcome. There is no second copy of the copy, the art or the CTA.
+ *
+ * The rules below are split in the same two states:
+ *   - no `.is-welcome-open`  → a transparent block in the placement (the band);
+ *   - `.is-welcome-open`     → the card, in the browser's top layer.
+ */
+.ce-xmas-welcome {
+  display: block;
+}
+
+/* Neutralise the user-agent <dialog> box so the non-modal state is an ordinary
+   block: no absolute positioning, no border, no background, no padding. */
+.ce-xmas-welcome__dialog {
+  position: static;
+  inset: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  width: auto;
+  max-width: none;
+  max-height: none;
+  background: none;
+  color: inherit;
+  overflow: visible;
+}
+
+.ce-xmas-welcome__dialog:not([open]):not(.is-welcome-open) {
+  display: none;
+}
+
+/* The parse-time guard claims the band while it waits for the controller, so an
+   eligible visitor never sees it painted inline and then jump into the modal. If the
+   controller never arrives, the guard's DOMContentLoaded fallback clears this. */
+:root[data-ce-welcome-state="pending"] .ce-xmas-welcome__dialog {
+  display: none;
+}
+
+/* --- Close control: fail-closed, ≥ 44 × 44 px, never inside the scroll area --- */
+.ce-xmas-welcome__close {
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 8px 14px;
+  border: 1px solid var(--ce-xmas-hairline, rgba(27, 36, 71, 0.16));
+  border-radius: 999px;
+  background: rgba(27, 36, 71, 0.06);
+  color: var(--ce-xmas-ink, #1a2038);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.ce-xmas-welcome__close-icon {
+  display: inline-flex;
+  line-height: 0;
+}
+
+.ce-xmas-welcome__dialog.is-welcome-open .ce-xmas-welcome__close:not([hidden]) {
+  display: inline-flex;
+}
+
+.ce-xmas-welcome__close:hover {
+  background: rgba(27, 36, 71, 0.12);
+}
+
+.ce-xmas-welcome__dialog:focus-visible,
+.ce-xmas-welcome__close:focus-visible {
+  outline: 3px solid var(--ce-accent, #d9a441);
+  outline-offset: 2px;
+}
+
+/* --- The card --- */
+.ce-xmas-welcome__dialog.is-welcome-open {
+  --ce-xmas-welcome-frame-top: max(16px, env(safe-area-inset-top, 0px));
+  --ce-xmas-welcome-frame-bottom: max(16px, env(safe-area-inset-bottom, 0px));
+
+  position: fixed;
+  inset: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  width: min(94vw, 960px);
+  max-width: calc(100vw - 2 * max(12px, env(safe-area-inset-left, 0px)));
+  height: fit-content;
+  margin: auto;
+  padding: 0;
+  /* `vh` first as the fallback for engines without dynamic viewport units. */
+  max-height: calc(100vh - 32px);
+  max-height: min(calc(100dvh - var(--ce-xmas-welcome-frame-top) - var(--ce-xmas-welcome-frame-bottom)), 820px);
+  border: 1px solid color-mix(in srgb, var(--ce-accent, #d9a441) 46%, transparent);
+  border-radius: 22px;
+  background:
+    radial-gradient(120% 140% at 100% 0%, rgba(242, 166, 90, 0.16), transparent 58%),
+    linear-gradient(180deg, #fffcf5 0%, var(--ce-surface, #fdf7ee) 100%);
+  color: var(--ce-xmas-ink, #1a2038);
+  box-shadow: 0 30px 80px rgba(8, 12, 34, 0.5);
+  overflow: hidden;
+  animation: ce-xmas-welcome-in 220ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+.ce-xmas-welcome__dialog.is-welcome-open::backdrop {
+  background: rgba(8, 12, 34, 0.66);
+  animation: ce-xmas-welcome-fade 220ms linear both;
+}
+
+/* The close control sits in the dialog's own first row, outside the scrolling area,
+   so it stays reachable at every height. */
+body.ce-package-christmas .ce-xmas-welcome__dialog.is-welcome-open > .ce-xmas-welcome__close {
+  justify-self: end;
+  margin: clamp(8px, 1.2vw, 14px) clamp(10px, 1.4vw, 16px) 0;
+}
+
+/* The hero keeps its sibling layout inside the card; only the band's outer chrome
+   (its own width, margin, padding, border, background and shadow) is dropped. */
+body.ce-package-christmas .ce-xmas-welcome__dialog.is-welcome-open .ce-christmas-hero {
+  width: auto;
+  margin: 0;
+  padding: clamp(6px, 1vw, 12px) clamp(14px, 2vw, 26px) clamp(16px, 2vw, 26px);
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  grid-template-columns: minmax(0, 46%) minmax(0, 1fr);
+  gap: clamp(16px, 2.2vw, 30px);
+  align-items: center;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+body.ce-package-christmas .ce-xmas-welcome__dialog.is-welcome-open .ce-christmas-hero__title {
+  font-size: clamp(1.4rem, 2.1vw, 2rem);
+}
+
+body.ce-package-christmas .ce-xmas-welcome__dialog.is-welcome-open .ce-christmas-hero__copy {
+  max-width: 42ch;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* The CTA keeps the package's candle-gold surface inside the card in BOTH site
+   themes: the global dark-mode button pairing computes to green-on-orange (1.16:1)
+   here, so the dialog states its own pair explicitly — deep-navy ink on gold is
+   11.2:1 and stays inside the Christmas palette instead of inventing a new one. */
+body.ce-package-christmas .ce-xmas-welcome__dialog.is-welcome-open .ce-christmas-hero__cta,
+body.ce-package-christmas .ce-xmas-welcome__dialog.is-welcome-open .ce-christmas-hero__cta:hover,
+body.ce-package-christmas .ce-xmas-welcome__dialog.is-welcome-open .ce-christmas-hero__cta:focus {
+  background: var(--ce-xmas-gold, #e8c273);
+  border-color: var(--ce-xmas-gold, #e8c273);
+  color: var(--ce-xmas-night-deep, #080c22);
+}
+
+:root[data-theme="dark"] .ce-xmas-welcome__dialog.is-welcome-open {
+  background:
+    radial-gradient(120% 140% at 100% 0%, rgba(242, 166, 90, 0.18), transparent 58%),
+    linear-gradient(180deg, #182042 0%, var(--ce-surface, #12162e) 100%);
+  border-color: color-mix(in srgb, var(--ce-accent, #e8c273) 42%, transparent);
+}
+
+:root[data-theme="dark"] .ce-xmas-welcome__close {
+  border-color: var(--ce-xmas-on-night-hairline, rgba(232, 194, 115, 0.26));
+  background: rgba(253, 247, 238, 0.08);
+  color: var(--ce-xmas-on-night-strong, #fdf7ee);
+}
+
+:root[data-theme="dark"] .ce-xmas-welcome__close:hover {
+  background: rgba(253, 247, 238, 0.16);
+}
+
+@keyframes ce-xmas-welcome-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes ce-xmas-welcome-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* --- Phones: stacked, image above the copy, internal scrolling at short heights --- */
+@media (max-width: 768px) {
+  .ce-xmas-welcome__dialog.is-welcome-open {
+    width: min(100% - 20px, 560px);
+    border-radius: 18px;
+  }
+
+  body.ce-package-christmas .ce-xmas-welcome__dialog.is-welcome-open .ce-christmas-hero {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    align-items: start;
+    padding: 0 14px 16px;
+  }
+
+  /* The panorama keeps its full 16:9 frame, so Brazil and Ireland both stay visible
+     inside the dialog exactly as they do in the band. */
+  body.ce-package-christmas .ce-xmas-welcome__dialog.is-welcome-open .ce-christmas-hero__art img {
+    aspect-ratio: 16 / 9;
+  }
+}
+
+/* Very short viewports (a landscape phone): the card uses the room it has and the
+   content scrolls, while the close control keeps its own row. */
+@media (max-height: 560px) {
+  .ce-xmas-welcome__dialog.is-welcome-open {
+    max-height: calc(100dvh - 12px);
+    border-radius: 14px;
+  }
+
+  body.ce-package-christmas .ce-xmas-welcome__dialog.is-welcome-open .ce-christmas-hero {
+    gap: 12px;
+  }
+}
+
+/* --- Reduced motion: no entrance transform, no backdrop fade, no star travel --- */
+@media (prefers-reduced-motion: reduce) {
+  .ce-xmas-welcome__dialog.is-welcome-open,
+  .ce-xmas-welcome__dialog.is-welcome-open::backdrop {
+    animation: none !important;
+    transform: none !important;
+  }
+}

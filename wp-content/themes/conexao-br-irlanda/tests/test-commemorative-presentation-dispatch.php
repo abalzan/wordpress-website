@@ -204,7 +204,8 @@ $christmas_hero = (string) ob_get_clean();
 assert_contains( 'ce-christmas-hero', $christmas_hero, 'the christmas hero renders its own component' );
 assert_contains( 'data-ce-motif="shared_star"', $christmas_hero, 'the christmas motif is exposed' );
 assert_not_contains( 'seasonal-halloween', $christmas_hero, 'no Halloween markup leaks into the christmas hero' );
-assert_not_contains( 'data-dismiss-key', $christmas_hero, 'the christmas hero is not a dismissible overlay' );
+assert_contains( 'data-ce-welcome', $christmas_hero, 'the christmas hero is the homepage welcome dialog' );
+assert_equals( 1, substr_count( $christmas_hero, '<img' ), 'the welcome reuses the single hero image, never a copy' );
 
 $plan = conexao_dispatch_test_plan( '2026-12-15 12:00:00', 'internal' );
 
