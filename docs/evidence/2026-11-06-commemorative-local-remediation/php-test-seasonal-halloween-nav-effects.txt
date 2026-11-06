@@ -1,0 +1,128 @@
+
+== Halloween navigation and spontaneous mobile effects ==
+
+=== Halloween eligibility marker output ===
+  PASS: conexao_seasonal_variant() is available
+  PASS: Halloween occasion variant resolves to halloween
+  PASS: Halloween occasion is enabled and eligible for the marker
+
+=== Disabled and non-Halloween occasions produce no marker ===
+  PASS: Disabled Halloween occasion does not enable the marker
+  PASS: A non-Halloween occasion does not match Halloween id
+
+=== Dismissal is independent of eligibility ===
+  PASS: Halloween occasion reports itself active inside its window (injected clock)
+  PASS: Halloween occasion reports itself inactive outside its window (injected clock)
+  PASS: Halloween occasion reports itself enabled
+
+=== Navigation continuity contract ===
+  PASS: Halloween navigation script is readable
+  PASS: Halloween navigation styles are readable
+  PASS: Halloween dark-mode styles are readable
+  PASS: The ambient placement template is readable
+  PASS: Header source is readable
+  PASS: The witch illustration is readable
+  PASS: Transition state uses a namespaced, versioned session key
+  PASS: Transition state is constrained to the four known effects
+  PASS: Unknown transition record versions are rejected
+  PASS: Invalid timestamps are rejected
+  PASS: Non-finite animation coordinates are rejected
+  PASS: Existing navigation effects retain their 1,000 millisecond handoff duration
+  PASS: The witch uses the requested 3,000 millisecond flight duration
+  PASS: The CSS flight animation lasts three seconds with a smooth easing curve
+  PASS: The witch begins fully beyond the left viewport edge
+  PASS: The witch exits fully beyond the opposite viewport edge
+  PASS: The animation uses the existing fixed, overflow-clipped decorative layer
+  PASS: The flying bat follows the scoped theme-aware silhouette token
+  PASS: The navigation illustrations retain a visible rim in both themes
+  PASS: The navigation pumpkin inherits theme colors without JavaScript theme state
+  PASS: In-flight navigation effects use the existing root theme attribute
+  PASS: The witch receives theme-specific separation without changing its SVG
+  PASS: The decorative layer does not intercept interaction
+  PASS: Reduced-motion users do not see a static substitute witch
+  PASS: The handoff derives its total duration from the selected effect
+  PASS: The witch is selected as an uncommon one-in-eight surprise
+  PASS: Only one Halloween effect can be active at a time
+  PASS: The shared effect layer is tracked explicitly inside the strict-mode initializer
+  PASS: The witch trail is bounded to four sparkles
+  PASS: Each effect layer stores a cleanup timer that can be cancelled safely
+  PASS: Each effect layer is removed after only its remaining animation duration
+  PASS: Persisted state has a bounded 3,500 millisecond ceiling for the witch flight
+  PASS: Stale state is rejected after its expiry ceiling
+  PASS: Coordinates outside the current viewport are rejected
+  PASS: Destination cleanup uses only the remaining effect duration
+  PASS: Destination CSS animation resumes at the elapsed progress
+  PASS: Expired effects are rejected using their selected animation duration
+  PASS: Transition state is removed when consumed
+  PASS: Only the minimal serialized transition record is stored
+  PASS: Unconsumed state is cleaned up when its short expiry timer runs
+  PASS: Cross-document duration uses a monotonic performance clock when available
+  PASS: Destination URL must remain same-origin
+  PASS: Destination path must match the link that started the effect
+  PASS: Query strings and fragments are not accepted as transition state
+  PASS: Destination must follow an expected same-origin navigation
+  PASS: Only a fresh document navigation can resume a transition
+  PASS: No destination effect runs without Halloween eligibility or with reduced motion
+  PASS: Reduced-motion changes after page initialization also suppress effects
+  PASS: Download links do not persist a transition
+  PASS: Links opening a separate browsing context do not persist a transition
+  PASS: The listener remains passive and leaves native navigation in control
+  PASS: Navigation is never prevented or delayed for the animation
+  PASS: Modified clicks keep browser-native behavior
+  PASS: Middle-click does not trigger or persist the effect
+  PASS: External links do not trigger or persist the effect
+  PASS: The package marker is emitted by the site-wide ambient placement
+  PASS: Only the Halloween package emits the navigation eligibility marker
+  PASS: The active marker exposes only the locally stored, escaped witch illustration URL
+  PASS: header.php no longer contains any Halloween identity (the dispatcher owns the marker)
+  PASS: The broom-riding witch illustration is stored in the package asset directory
+  PASS: The global main.js bundle no longer ships the Halloween code
+  PASS: The global main.css bundle no longer ships the Halloween styles
+  PASS: The global dark-mode.css bundle no longer ships the Halloween tokens
+  PASS: The witch is added through the existing decorative effect layer
+  PASS: The local SVG has a compact, responsive illustration viewBox
+  PASS: The SVG includes the witch’s distinctive pointed hat
+  PASS: The SVG includes a long broom handle and bristle silhouette
+  PASS: The witch is created as temporary decorative markup rather than persistent page content
+  PASS: The illustration source is read from the Halloween-gated marker
+  PASS: Welcome-card dismissal remains independent from navigation-effect state
+
+=== Spontaneous mobile effect schedule and safety ===
+  PASS: Spontaneous appearances are limited to the existing mobile breakpoint
+  PASS: The first surprise waits at least twenty seconds
+  PASS: The first surprise waits no longer than thirty seconds
+  PASS: Subsequent surprises wait at least twenty-five seconds
+  PASS: Subsequent surprises wait no longer than thirty-five seconds
+  PASS: The first-appearance delay remains in force until a surprise is actually shown
+  PASS: Visibility and interface resumes preserve the initial delay until the first appearance
+  PASS: Spontaneous cleanup waits for each selected effect’s own animation duration
+  PASS: Only spontaneous effects use their full visual duration
+  PASS: The spontaneous pumpkin laugh is allowed to complete
+  PASS: The spontaneous ghost float is allowed to complete
+  PASS: Only one stored appearance timer is scheduled with a bounded random delay
+  PASS: An existing appearance timer is cleared before a replacement is scheduled
+  PASS: The existing selected-Halloween marker remains the live eligibility authority
+  PASS: The scheduler is eligible only while the page is visible
+  PASS: Reduced-motion users never receive spontaneous motion
+  PASS: Spontaneous effects use the existing selector and one-effect playback guard
+  PASS: Pending work is cleaned up when the page lifecycle ends
+  PASS: Back-forward-cache restoration schedules a fresh delay instead of replaying state
+  PASS: Safe-area insets are measured before selecting a placement
+  PASS: Placement uses viewport width instead of document height or scroll position
+  PASS: Placement respects the visible bottom edge and safe-area inset
+  PASS: Decorative placements keep a bounded margin from viewport edges and nearby content
+  PASS: Corner candidates include their collision clearance inside the safe viewport
+  PASS: Text-bearing content is excluded from spontaneous placements
+  PASS: Decorative placements also avoid important text in non-semantic content wrappers
+  PASS: Form controls are excluded from spontaneous placements
+  PASS: A dense viewport skips an unsafe effect rather than forcing a position
+  PASS: The bat uses a deliberate, clipped horizontal flight path
+  PASS: The pumpkin animation retains its complete silent laugh
+  PASS: The ghost animation retains its complete float-away
+  PASS: The spontaneous pumpkin remains large enough to recognize on a phone
+  PASS: The spontaneous ghost remains recognizable on a phone
+  PASS: The spontaneous witch continues to use the established three-second flight
+  PASS: Direct navigation interrupts a spontaneous appearance before its own effect
+  PASS: Closing the welcome greeting can resume scheduling without changing its dismissal key
+
+seasonal-halloween-nav-effects: 114 passed, 0 failed

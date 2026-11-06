@@ -1,5 +1,5 @@
 {
-  "description": "Commemorative presentations: no-event negative proof, the opt-in Christmas landing page in PT and EN, the CPT privacy invariants, the sitemap archival policy and the public-query activation negative proof. The authenticated admin preview rows live in verify-commemorative-http.py because they need a real session and a derived nonce.",
+  "description": "Commemorative presentations: no-event negative proof, the opt-in Christmas landing page in PT and EN, the CPT privacy invariants, the sitemap archival policy (an HTTP observation only — vacuous where Jetpack serves the sitemap index) and the public-query activation negative proof. The authenticated admin preview rows live in verify-commemorative-http.py because they need a real session and a derived nonce.",
   "base_url_default": "http://localhost:8080",
   "rows": [
     {
@@ -66,7 +66,7 @@
         "/en/christmas/",
         "commemorative_event"
       ],
-      "note": "r10 §7.13 / gate (c): the commemorative URLs are not published. The theme sitemap is the producer of that exclusion; in this local stack Jetpack serves /sitemap.xml, so the exclusion decision itself is proven in-process by the cpt_privacy gate (see docs/evidence, 'sitemap producer' limitation)."
+      "note": "r10 §7.13 archival policy, as an HTTP observation only. VACUOUS IN THIS ENVIRONMENT: the local stack is answered by the Jetpack sitemap plugin, whose /sitemap.xml is an INDEX (sitemap-1.xml) that enumerates no page, so the theme producer never runs and this row cannot prove end-to-end exclusion. The exclusion decision itself is proven in-process by the commemorative_cpt_privacy gate, which renders the theme sitemap producer. Whether the PRODUCTION sitemap serves these pages from a producer that honours the exclusion is NOT VERIFIED and needs a separately authorised production check. See docs/testing.md 'Sitemap evidence semantics'."
     },
     {
       "id": "pt-landing-page",

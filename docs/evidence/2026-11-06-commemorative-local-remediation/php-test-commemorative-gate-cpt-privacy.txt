@@ -1,0 +1,30 @@
+
+== PERMANENT GATE: commemorative_cpt_privacy ==
+The commemorative_event CPT has no public route, archive, query var or REST route, and neither it nor the archived landing pages appear in the sitemap.
+  prerequisites: theme-active, conexao-commemorative plugin active, the seeded landing pages
+  PASS: the gate prerequisite is available: the commemorative_event post type
+
+=== The CPT registration is private ===
+  PASS: the CPT is private on every axis (route, archive, query var, REST, search)
+
+=== No REST route exists ===
+  PASS: no REST route is registered for the commemorative CPT
+
+=== No public route or archive resolves ===
+  PASS: the CPT exposes no archive link and no public PATH-based permalink
+
+=== The sitemap producer publishes neither the CPT nor the archived landing pages ===
+  PASS: the sitemap publishes no commemorative CPT URL and no archived landing page
+
+=== Injected negative proof: the same check CAN see a forbidden URL ===
+  PASS: the gate detects a sitemap that DOES publish the forbidden URLs
+  PASS: the sitemap check is not vacuous: a normal published page is still listed
+
+=== The landing pages are opt-in PAGES, not CPT exposure ===
+  PASS: the gate prerequisite is available: the PT landing page
+  PASS: the landing page is a page record
+  PASS: the landing page is recognised through its opt-in meta
+  PASS: the landing page is excluded from the sitemap
+
+11 passed, 0 failed
+GATE-RESULT {"gate":"commemorative_cpt_privacy","status":"pass","passed":11,"failed":0,"violations":0,"pre_existing":0,"new":0,"prerequisites":["theme-active","conexao-commemorative plugin active","the seeded landing pages"],"allowlisted":[],"allowlisted_count":0,"details":[{"key":"cpt:public_exposure","count":0,"label":"the CPT is private on every axis (route, archive, query var, REST, search)","detail":{"flags":{"public":false,"publicly_queryable":false,"has_archive":false,"query_var":false,"show_in_rest":false,"show_ui":true},"exposure":[]}},{"key":"cpt:rest_route","count":0,"label":"no REST route is registered for the commemorative CPT","detail":{"routes":[]}},{"key":"cpt:public_permalink","count":0,"label":"the CPT exposes no archive link and no public PATH-based permalink","detail":{"archive":"","public_paths":[]}},{"key":"sitemap:forbidden_url","count":0,"label":"the sitemap publishes no commemorative CPT URL and no archived landing page","detail":{"offenders":[],"bytes":312725}},{"key":"gate:injected_negative_not_detected","count":0,"label":"the gate detects a sitemap that DOES publish the forbidden URLs","detail":{"fixture_offenders":["sitemap:contains:\/natal\/","sitemap:contains:commemorative_event"]}},{"key":"gate:sitemap_check_is_vacuous","count":0,"label":"the sitemap check is not vacuous: a normal published page is still listed","detail":{"page":"documentos"}}]}

@@ -1,0 +1,151 @@
+
+== Commemorative experience packages ==
+
+=== Every registered package validates ===
+  PASS: six packages validate
+  PASS: halloween: the slug round-trips
+  PASS: halloween: a human label exists
+  PASS: halloween: the status is implemented or planned
+  PASS: halloween: the energy is one of the three levels
+  PASS: halloween: a signature motif is declared
+  PASS: christmas: the slug round-trips
+  PASS: christmas: a human label exists
+  PASS: christmas: the status is implemented or planned
+  PASS: christmas: the energy is one of the three levels
+  PASS: christmas: a signature motif is declared
+  PASS: new_year: the slug round-trips
+  PASS: new_year: a human label exists
+  PASS: new_year: the status is implemented or planned
+  PASS: new_year: the energy is one of the three levels
+  PASS: new_year: a signature motif is declared
+  PASS: st_patricks_day: the slug round-trips
+  PASS: st_patricks_day: a human label exists
+  PASS: st_patricks_day: the status is implemented or planned
+  PASS: st_patricks_day: the energy is one of the three levels
+  PASS: st_patricks_day: a signature motif is declared
+  PASS: valentines_day: the slug round-trips
+  PASS: valentines_day: a human label exists
+  PASS: valentines_day: the status is implemented or planned
+  PASS: valentines_day: the energy is one of the three levels
+  PASS: valentines_day: a signature motif is declared
+  PASS: easter: the slug round-trips
+  PASS: easter: a human label exists
+  PASS: easter: the status is implemented or planned
+  PASS: easter: the energy is one of the three levels
+  PASS: easter: a signature motif is declared
+
+=== Implemented packages carry the full §7.12 brief ===
+  PASS: halloween: the four public tokens are present
+  PASS: halloween: token primary is declared
+  PASS: halloween: token primary is a hex colour
+  PASS: halloween: token secondary is declared
+  PASS: halloween: token secondary is a hex colour
+  PASS: halloween: token accent is declared
+  PASS: halloween: token accent is a hex colour
+  PASS: halloween: token surface is declared
+  PASS: halloween: token surface is a hex colour
+  PASS: halloween: the motion language states a duration
+  PASS: halloween: the motion language states an easing
+  PASS: halloween: the motion language states an entry
+  PASS: halloween: the motion language states an exit
+  PASS: halloween: the copy voice states a tone
+  PASS: halloween: PT and EN headline examples exist
+  PASS: halloween: PT and EN CTA examples exist
+  PASS: halloween: the do-not list has at least three entries
+  PASS: halloween: the package declares at least two placements
+  PASS: christmas: the four public tokens are present
+  PASS: christmas: token primary is declared
+  PASS: christmas: token primary is a hex colour
+  PASS: christmas: token secondary is declared
+  PASS: christmas: token secondary is a hex colour
+  PASS: christmas: token accent is declared
+  PASS: christmas: token accent is a hex colour
+  PASS: christmas: token surface is declared
+  PASS: christmas: token surface is a hex colour
+  PASS: christmas: the motion language states a duration
+  PASS: christmas: the motion language states an easing
+  PASS: christmas: the motion language states an entry
+  PASS: christmas: the motion language states an exit
+  PASS: christmas: the copy voice states a tone
+  PASS: christmas: PT and EN headline examples exist
+  PASS: christmas: PT and EN CTA examples exist
+  PASS: christmas: the do-not list has at least three entries
+  PASS: christmas: the package declares at least two placements
+
+=== Registry tokens agree with the package stylesheet ===
+  PASS: halloween: the package stylesheet exists
+  PASS: halloween: the stylesheet mirrors --ce-primary from the registry
+  PASS: halloween: the stylesheet mirrors --ce-secondary from the registry
+  PASS: halloween: the stylesheet mirrors --ce-accent from the registry
+  PASS: halloween: the stylesheet mirrors --ce-surface from the registry
+  PASS: christmas: the package stylesheet exists
+  PASS: christmas: the stylesheet mirrors --ce-primary from the registry
+  PASS: christmas: the stylesheet mirrors --ce-secondary from the registry
+  PASS: christmas: the stylesheet mirrors --ce-accent from the registry
+  PASS: christmas: the stylesheet mirrors --ce-surface from the registry
+
+=== Two packages are distinguishable at a glance ===
+  PASS: the signature motifs differ
+  PASS: the primary colours differ
+  PASS: the secondary colours differ
+  PASS: the accent colours differ
+  PASS: the energy levels differ
+  PASS: the motion languages differ
+
+=== The energy table matches r10 §7.7 exactly ===
+  PASS: calm starts at 60 s
+  PASS: calm ends at 120 s
+  PASS: calm lasts 2 s
+  PASS: calm lasts at most 4 s
+  PASS: calm caps at 3 decorations
+  PASS: moderate starts at 45 s
+  PASS: moderate ends at 90 s
+  PASS: moderate lasts 3 s
+  PASS: moderate lasts at most 6 s
+  PASS: moderate caps at 5 decorations
+  PASS: playful starts at 30 s
+  PASS: playful ends at 60 s
+  PASS: playful lasts 3 s
+  PASS: playful lasts at most 5 s
+  PASS: playful caps at 7 decorations
+  PASS: calm: only one decoration may run at a time
+  PASS: moderate: only one decoration may run at a time
+  PASS: playful: only one decoration may run at a time
+
+=== Ambient options: approved cadence override and energy defaults ===
+  PASS: Halloween keeps the playful energy row
+  PASS: the first mobile surprise waits at least 20 s
+  PASS: the first mobile surprise waits no more than 30 s
+  PASS: later surprises wait at least 25 s
+  PASS: later surprises wait no more than 35 s
+  PASS: the bat effect lasts 0.9 s
+  PASS: the witch effect lasts 3 s
+  PASS: only one Halloween decoration at a time
+  PASS: the playful session cap is 7 decorations
+  PASS: Christmas uses the calm energy row
+  PASS: a Christmas bauble appears every 60 s at the earliest
+  PASS: a Christmas bauble appears every 120 s at the latest
+  PASS: Christmas decorations last 2–4 s
+  PASS: Christmas decorations last 2–4 s
+  PASS: the calm session cap is 3 decorations
+  PASS: the approved Halloween cadence does not leak into the generic energy defaults
+
+=== Hard bounds always hold, whatever a package declares ===
+  PASS: an inverted interval range is repaired
+  PASS: an inverted duration range is repaired
+  PASS: a package can never ask for concurrent decorations
+  PASS: a zero cap is raised to one rather than disabling the barrier
+  PASS: an unknown energy level falls back to calm
+  PASS: the calm default applies to an unknown energy level
+
+=== Validation fails closed ===
+  PASS: a non-array definition is rejected
+  PASS: an empty slug is rejected
+  PASS: an unknown package resolves to null
+  PASS: a partially valid package still validates
+  PASS: unknown placements, missing templates and missing content templates are dropped
+  PASS: an invalid token value is dropped rather than emitted
+  PASS: a missing stylesheet is dropped, an existing one is kept
+  PASS: a missing script is dropped
+
+commemorative-packages: 131 passed, 0 failed

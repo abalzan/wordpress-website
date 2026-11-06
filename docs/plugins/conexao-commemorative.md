@@ -99,6 +99,15 @@ selects **at most one** event package per request.
 - A purge is **targeted**: this plugin's own transients (in every language), its
   object-cache group, and the `conexao_commemorative_purge_caches` action. It
   never calls `wp_cache_flush()` or `delete_expired_transients()`.
+- **What is actually effective here (L8).** The engine memoises its resolution
+  per request, so the two transients the purge deletes
+  (`conexao_commemorative_active` / `…_evaluated`) are not written by this
+  version: that part is a **no-op**. The host action
+  `conexao_commemorative_purge_caches` has **no listener in this repository** —
+  the host/CDN integration lives in the WordPress.com serving layer, not here.
+  The honest consequence: the Option B guarantee rests on (a) the per-request
+  due check and (b) a host listener that this repository cannot implement or
+  verify. Production confirmation of both is a separately authorised activity.
 - Every purge re-arms the next boundary, so the chain is never left unarmed.
 - A short-lived lock (object-cache `add()` when a persistent cache exists,
   otherwise an auto-expiring option) guarantees at most one purge per boundary.
@@ -166,6 +175,25 @@ both are minimal and covered by regression tests:
    every record to an unauthenticated caller — a breach of r10 §3.7/§9.8. It is now
    `show_in_rest => false`, the route no longer exists (404), and the permanent gate
    `commemorative_cpt_privacy` asserts it. The wp-admin surface is unaffected.
+
+### Deliberate deviation from r10 §3.2/§3.7: no REST surface at all
+
+r10 §3.2/§3.7 **proposed** `show_in_rest => true` with explicit unauthenticated
+*and* authenticated REST-read tests (§9.8). The implementation deliberately goes
+further: the CPT and every `_ce_*` meta key are `show_in_rest => false`, so the
+REST route is **absent** (404) rather than permission-gated. Rationale: the records
+are admin-only configuration that is edited through the classic editor, nothing
+public or mobile consumes them, and an absent route cannot be mis-configured into
+an exposure. Consequences that must be recorded rather than silently dropped:
+
+- r10 §9.8's "a user with the CPT capability can read what the editor needs" REST
+  row is **not applicable** — there is no route to authenticate against.
+- An unauthenticated `GET /wp-json/wp/v2/commemorative_event` returns **404**, and
+  that is asserted by the acceptance matrix (`pt-cpt-rest-is-locked`) and by
+  `commemorative_cpt_privacy`.
+- Re-enabling REST would be an architecture change requiring the authenticated
+  permission test r10 §9.8 specifies. It is not to be re-enabled to make the
+  documentation match the original proposal.
 
 The theme's legacy `inc/occasion.php` keeps working for non-presentation callers;
 the commemorative presentation no longer reads it. Its date methods gained an

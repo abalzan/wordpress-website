@@ -1,0 +1,18 @@
+Seasonal occasion foundation
+------------------------------------------------------------------------
+  PASS: Christmas occurrence resolves to a DateTime
+  PASS: Christmas occurrence uses the current calendar year
+  PASS: Christmas occurrence resolves to Dec 25
+  PASS: Christmas start date resolves to a DateTime
+  PASS: Christmas start date is 15 days before the occasion
+  PASS: Christmas end date resolves to a DateTime
+  PASS: Christmas end date is inclusive on the occasion date
+  PASS: Easter occurrence resolves to a DateTime
+  PASS: The registry contains at least one configured occasion
+  PASS: Primary active selection function is available
+  PASS: Fixed annual eligibility is boolean
+  PASS: Date-boundary eligibility is boolean
+  PASS: Seasonal screen active check returns a boolean
+  PASS: Selected seasonal variant is a string or null
+
+seasonal-occasion: 14 passed, 0 failed

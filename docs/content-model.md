@@ -51,12 +51,25 @@ The authoritative requirements are in architecture proposal r10 §3.
 | `_ce_date` / `_ce_variable` / `_ce_one_off_date` / `_ce_window_start` / `_ce_window_end` / `_ce_lead_in_days` | string / int | see r10 §3.2 | **Shared** | scheduling inputs. `MM-DD` values round-trip exactly; `02-29` is rejected |
 | `_ce_heading`, `_ce_subheading`, `_ce_cta_label`, `_ce_cta_url` | string | `''` | **Translated** | optional content overrides for the current language |
 
-**Single-owner Polylang rule.** Shared configuration lives ONLY on the canonical
-Portuguese record and is read from there whichever language renders. The EN
-record carries `post_title`/`post_name`, the translated copy and
-`_ce_event_key`, and **no other `_ce_*` meta** — the split is asserted by the
-migration suite against the database, and both languages resolve the same
-canonical values.
+**Single-owner Polylang rule — enforced, not merely documented.** Shared
+configuration lives ONLY on the canonical Portuguese record and is read from there
+whichever language renders. The EN record carries `post_title`/`post_name`, the
+translated copy and `_ce_event_key`, and **no other `_ce_*` meta**. Three layers
+enforce it, all reading the split from
+`Conexao_Data_Model_Commemorative::shared_meta_keys()` — the single source of truth:
+
+| Layer | Mechanism |
+|---|---|
+| Polylang meta copy | the `conexao-commemorative` engine filters `pll_copy_post_metas` (an **inclusion** list) and removes `SHARED_META_KEYS` whenever either side of the copy is a `commemorative_event`; every other post type is untouched |
+| Editor | `Conexao_Admin_Ux_Editor::lock_shared_fields()` marks the shared fields `readonly` on a non-canonical record, so no input is emitted for them |
+| Save | `Conexao_Admin_Ux_Fields::writable_field_keys()` (used by the save loop) and the engine's `save_precedence()` both refuse shared keys on a non-canonical record, so a crafted POST cannot install a second owner |
+
+The canonical record is identified through Polylang's configured default language
+(`Conexao_Data_Model_Commemorative::is_canonical_language()`, which the engine's
+`Repository::is_canonical_language()` delegates to). The expected canonical state
+**and** the absence of shared configuration on every translation are asserted by
+the permanent gate `commemorative_translation_ownership`, which also refuses to
+pass when no translation fixture exists.
 
 **No runtime fallback.** The CPT is the only source of truth: there is no
 "if empty, use the built-in six" path. The six legacy occasions are created once
@@ -65,6 +78,17 @@ by `scripts/seed-commemorative-events.php` (dry-run first, idempotent,
 creates one. `_ce_*` meta is registered with `show_in_rest => false` and the CPT
 itself declares `show_in_rest => false`, so no REST surface exposes scheduling
 data or event records.
+
+**Recorded deviation from r10 §3.2/§3.7.** The proposal **proposed**
+`show_in_rest => true` for the CPT (with authenticated REST-read tests in §9.8);
+the implementation deliberately keeps the whole surface out of REST, so
+`GET /wp-json/wp/v2/commemorative_event` is a **404** rather than a
+permission-gated route. That is stricter than the proposal: an absent route cannot
+be mis-configured into an exposure, the records are admin-only configuration and
+nothing public consumes them. Consequence: r10 §9.8's authenticated REST-read row
+is **not applicable** and is not silently re-interpreted. Re-enabling REST is an
+architecture decision, not a documentation fix — see
+[`plugins/conexao-commemorative.md`](plugins/conexao-commemorative.md).
 
 #### The opt-in landing page is a PAGE, not a CPT route (r10 Stages 4–6)
 

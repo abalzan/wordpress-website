@@ -600,7 +600,8 @@ final class Conexao_Admin_Ux_List {
 
 		printf(
 			'<div class="notice notice-success is-dismissible"><p>%s</p></div>',
-			esc_html( sprintf( __( '%d %s com sucesso.', 'conexao-admin-ux' ), $count, $label ) )
+			/* translators: 1: number of records changed, 2: bulk action label. */
+			esc_html( sprintf( __( '%1$d %2$s com sucesso.', 'conexao-admin-ux' ), $count, $label ) )
 		);
 	}
 

@@ -1,0 +1,8 @@
+# Read-only probe — commemorative editor render, PT canonical vs EN translation
+# executed: docker compose exec -T wordpress php /tmp/ce-editor-probe.php
+# date: 2026-11-06T12:09:43+00:00
+
+PT (canonical) (post 124278): inputs=17 readonly_markers=0 notice=no
+  fields: ce_cta_label,ce_cta_url,ce_date,ce_description,ce_enabled,ce_event_key,ce_heading,ce_lead_in_days,ce_name,ce_one_off_date,ce_presentation,ce_priority,ce_rule,ce_subheading,ce_variable,ce_window_end,ce_window_start
+EN (translation) (post 124279): inputs=6 readonly_markers=11 notice=yes
+  fields: ce_cta_label,ce_cta_url,ce_event_key,ce_heading,ce_name,ce_subheading

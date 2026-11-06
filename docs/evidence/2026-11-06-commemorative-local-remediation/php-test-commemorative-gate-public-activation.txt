@@ -1,0 +1,16 @@
+
+== PERMANENT GATE: commemorative_no_public_activation ==
+A public request cannot activate a commemorative event through a query parameter; the signed preview still works for an authorised administrator.
+  prerequisites: conexao-commemorative plugin active, an administrator account
+
+=== Anonymous request with a preview key and a bogus nonce ===
+  PASS: an unauthenticated request cannot activate an event or a package through a query parameter
+
+=== Authorised administrator with a valid nonce (injected positive proof) ===
+  PASS: the gate prerequisite is available: an administrator account
+  PASS: the gate prerequisite is available: the halloween event record
+  PASS: the gate can detect AUTHORISED activation (the signed preview still works for an administrator)
+  PASS: an administrator session with an invalid nonce is still refused
+
+5 passed, 0 failed
+GATE-RESULT {"gate":"commemorative_no_public_activation","status":"pass","passed":5,"failed":0,"violations":0,"pre_existing":0,"new":0,"prerequisites":["conexao-commemorative plugin active","an administrator account"],"allowlisted":[],"allowlisted_count":0,"details":[{"key":"public_activation:anonymous","count":0,"label":"an unauthenticated request cannot activate an event or a package through a query parameter","detail":{"paths":[]}},{"key":"gate:injected_positive_not_detected","count":0,"label":"the gate can detect AUTHORISED activation (the signed preview still works for an administrator)","detail":[]},{"key":"public_activation:bad_nonce","count":0,"label":"an administrator session with an invalid nonce is still refused","detail":[]}]}

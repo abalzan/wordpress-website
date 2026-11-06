@@ -1,0 +1,54 @@
+# Preservation snapshot — END of remediation (final)
+# date: 2026-11-06T12:13:35+00:00
+
+## git rev-parse --abbrev-ref HEAD
+commemorative-events
+
+## git rev-parse HEAD
+657c3340f85f7b9f783edc85c43805ee8a35347c
+
+## git status --short
+ M docs/README.md
+ M docs/commemorative-events.md
+ M docs/content-model.md
+ M docs/plugins/conexao-commemorative.md
+ M docs/releases.md
+ M docs/reports/README.md
+ M docs/testing.md
+ M scripts/verify-permanent-gates.py
+ M tests/acceptance/matrices/commemorative.json
+ M tests/acceptance/verify-commemorative-http.py
+ M wp-content/plugins/conexao-admin-ux/includes/class-editor.php
+ M wp-content/plugins/conexao-admin-ux/includes/class-fields.php
+ M wp-content/plugins/conexao-admin-ux/includes/class-list.php
+ M wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php
+ M wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-repository.php
+ M wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative.php
+ M wp-content/plugins/conexao-data-model/includes/class-conexao-data-model-commemorative.php
+ M wp-content/themes/conexao-br-irlanda/assets/js/commemorative.js
+ M wp-content/themes/conexao-br-irlanda/inc/occasion.php
+?? docs/evidence/2026-11-06-commemorative-local-remediation/
+?? docs/evidence/2026-11-06-commemorative-precedence/
+?? docs/reports/2026-11-06-commemorative-events-local-remediation.md
+?? docs/reports/2026-11-06-commemorative-events-r10-final-review.md
+?? wp-content/themes/conexao-br-irlanda/inc/class-conexao-seasonal-occasion.php
+?? wp-content/themes/conexao-br-irlanda/tests/test-commemorative-gate-translation-ownership.php
+
+## git stash list
+stash@{0}: WIP on feat/christmas-easter-egg: ceb27a6 feat: add Christmas Easter egg feature with localization support
+stash@{1}: WIP on master: a26fd7f Implement Stage 3.1 of English support architecture: B2 fallback rendering, SEO adjustments, and key static-page translations
+stash@{2}: On master: tmp-all-revert
+stash@{3}: WIP on master: 125688c feat: implement accent-insensitive search for Portuguese content by adjusting SQL collation handling
+stash@{4}: WIP on master: 4fc999c Refactor sponsor image handling and update CSS for responsive design
+stash@{5}: WIP on master: 9edf2d8 Add Import Logs functionality with admin interface for viewing, downloading, and clearing logs
+stash@{6}: WIP on master: 6dc6ee3 feat: Add functions to create redirect pages and manage menu items; refactor footer and primary menu item handling
+stash@{7}: WIP on master: 26f546f Add mobile search functionality and submenu toggle to header; enhance mobile menu styles
+stash@{8}: WIP on master: fe758a3 Enhance theme header and navigation structure
+
+## upstream
+fatal: no upstream configured for branch 'commemorative-events'
+
+## git log --oneline -3
+657c334 Add tests for commemorative presentation dispatch and seasonal Halloween effects
+cfea1fa Add commemorative scheduling tests and data model implementation
+50ae318 commemorative events architecture document

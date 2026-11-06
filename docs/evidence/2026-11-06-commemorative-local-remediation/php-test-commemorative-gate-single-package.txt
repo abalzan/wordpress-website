@@ -1,0 +1,23 @@
+[06-Nov-2026 12:08:21 UTC] PHP Warning:  Undefined array key "landing_page" in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-commemorative-gate-single-package.php on line 64
+[06-Nov-2026 12:08:21 UTC] PHP Warning:  Trying to access array offset on null in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-commemorative-gate-single-package.php on line 64
+
+== PERMANENT GATE: commemorative_single_package ==
+At most one event/package is selected, and only that package renders placements.
+  prerequisites: theme-active, conexao-commemorative plugin active
+
+=== Every real plan renders only its own package ===
+  PASS: the gate inspected at least eight real dispatch plans
+  PASS: no plan ever renders a placement that belongs to another package
+  PASS: a resolution holds exactly one selected event
+
+=== Injected negative proof: a stolen placement IS detected ===
+  PASS: the gate prerequisite is available: a resolvable package on the homepage
+  PASS: the gate prerequisite is available: the stolen placement definition
+
+Warning: Undefined array key "landing_page" in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-commemorative-gate-single-package.php on line 64
+
+Warning: Trying to access array offset on null in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-commemorative-gate-single-package.php on line 64
+  PASS: the gate detects a placement that does not belong to the selected package
+
+6 passed, 0 failed
+GATE-RESULT {"gate":"commemorative_single_package","status":"pass","passed":6,"failed":0,"violations":0,"pre_existing":0,"new":0,"prerequisites":["theme-active","conexao-commemorative plugin active"],"allowlisted":[],"allowlisted_count":0,"details":[{"key":"package:leaked_placement","count":0,"label":"no plan ever renders a placement that belongs to another package","detail":{"violations":[]}},{"key":"multiple:selected_events","count":0,"label":"a resolution holds exactly one selected event","detail":[]},{"key":"gate:injected_negative_not_detected","count":0,"label":"the gate detects a placement that does not belong to the selected package","detail":{"fixture_violations":["placement_not_owned_by_package:landing_page","template_mismatch:landing_page"]}}]}

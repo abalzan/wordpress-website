@@ -159,6 +159,13 @@ GATES = (
         "command": ["python3", os.path.join("tests", "scripts", "verify-commemorative-runtime.py")],
         "needs_wordpress": False,
     },
+    {
+        "domain": "commemorative_polylang",
+        "gate": "commemorative_translation_ownership",
+        "kind": "php",
+        "command": ["php", os.path.join(THEME_TESTS, "test-commemorative-gate-translation-ownership.php")],
+        "needs_wordpress": True,
+    },
 )
 
 GATE_RESULT = re.compile(r"^GATE-RESULT (\{.*\})$", re.M)

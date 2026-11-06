@@ -80,6 +80,135 @@ final class Conexao_Data_Model_Commemorative {
 	const IDENTITY_META_KEYS = array( '_ce_event_key' );
 
 	/**
+	 * The shared scheduling/presentation keys (single source of truth).
+	 *
+	 * Every layer that must ENFORCE the single-owner rule — the Polylang
+	 * meta-copy filter (engine), the editor's read-only rendering and the
+	 * server-side save guard (admin UX), and the permanent gate — reads this
+	 * split from here. There is deliberately no second list anywhere: a copy
+	 * would drift and re-open the drift class r10 §3.6 removes.
+	 *
+	 * @return string[]
+	 */
+	public static function shared_meta_keys() {
+		return self::SHARED_META_KEYS;
+	}
+
+	/**
+	 * The translated (per-language) content keys.
+	 *
+	 * @return string[]
+	 */
+	public static function translated_meta_keys() {
+		return self::TRANSLATED_META_KEYS;
+	}
+
+	/**
+	 * The identity keys carried by BOTH language records.
+	 *
+	 * @return string[]
+	 */
+	public static function identity_meta_keys() {
+		return self::IDENTITY_META_KEYS;
+	}
+
+	/**
+	 * Whether a meta key carries shared (canonical-only) configuration.
+	 *
+	 * @param string $key Meta key.
+	 * @return bool
+	 */
+	public static function is_shared_meta_key( $key ) {
+		return in_array( (string) $key, self::SHARED_META_KEYS, true );
+	}
+
+	/**
+	 * Remove the shared keys from a Polylang meta copy/sync list.
+	 *
+	 * The `pll_copy_post_metas` filter receives the list of keys to copy (it is
+	 * an inclusion list, not an exclusion list), so removing our keys from it
+	 * is what stops Polylang from duplicating the shared configuration onto the
+	 * translation.
+	 *
+	 * @param string[] $keys Meta keys Polylang would copy.
+	 * @return string[]
+	 */
+	public static function strip_shared_meta_keys( array $keys ) {
+		return array_values( array_diff( $keys, self::SHARED_META_KEYS ) );
+	}
+
+	/**
+	 * The canonical language slug (Polylang's configured default), or ''.
+	 *
+	 * @return string
+	 */
+	public static function canonical_language() {
+		if ( ! function_exists( 'pll_default_language' ) ) {
+			return '';
+		}
+
+		$slug = pll_default_language( 'slug' );
+
+		return is_string( $slug ) ? $slug : '';
+	}
+
+	/**
+	 * The Polylang language slug of one record, or '' when unknown/inactive.
+	 *
+	 * @param int $post_id Post ID.
+	 * @return string
+	 */
+	public static function language_of( $post_id ) {
+		if ( ! function_exists( 'pll_get_post_language' ) ) {
+			return '';
+		}
+
+		$slug = pll_get_post_language( (int) $post_id, 'slug' );
+
+		return is_string( $slug ) ? $slug : '';
+	}
+
+	/**
+	 * Whether a record lives in the canonical (default) language.
+	 *
+	 * Polylang inactive or a record with no language is canonical: a
+	 * single-language install has nothing to split, and an unassigned record
+	 * must never be locked out of its own configuration.
+	 *
+	 * @param int $post_id Post ID.
+	 * @return bool
+	 */
+	public static function is_canonical_language( $post_id ) {
+		$language = self::language_of( $post_id );
+
+		if ( '' === $language ) {
+			return true;
+		}
+
+		$canonical = self::canonical_language();
+
+		if ( '' === $canonical ) {
+			return true;
+		}
+
+		return $canonical === $language;
+	}
+
+	/**
+	 * Whether shared configuration may be written to this record.
+	 *
+	 * Only the canonical Portuguese record owns `SHARED_META_KEYS`. Every write
+	 * path (admin editor save, the annual-precedence control) asks this before
+	 * persisting, so a crafted POST cannot install a second owner.
+	 *
+	 * @param int $post_id Post ID.
+	 * @return bool
+	 */
+	public static function can_write_shared_meta( $post_id ) {
+		return self::is_canonical_language( (int) $post_id );
+	}
+
+	/**
 	 * Default meta values (§3.2).
 	 *
 	 * @return array<string,string>
@@ -112,9 +241,10 @@ final class Conexao_Data_Model_Commemorative {
 	 * Every field is registered with a `sanitize_callback`, so every write path
 	 * (admin editor, REST, importer, CLI migration) is sanitised (§3.5).
 	 *
-	 * `_ce_*` meta is deliberately NOT exposed through REST: the CPT itself is
-	 * REST-enabled so the editor plumbing keeps working, but the
-	 * scheduling/private meta must not leak (§3.7).
+	 * `_ce_*` meta is deliberately NOT exposed through REST, and neither is the
+	 * CPT: both are `show_in_rest => false`, so there is no REST route at all
+	 * (404). The editor uses the classic admin screen, so nothing needs the REST
+	 * plumbing; an absent route is stricter than a permission-gated one (§3.7).
 	 *
 	 * @return void
 	 */

@@ -1,0 +1,24 @@
+# Read-only probe — H2 ownership layers (data model / copy filter / save guard)
+# executed: docker compose exec -T wordpress php /tmp/ce-h2-probe.php
+# date: 2026-11-06T12:09:43+00:00
+
+filter registered: yes
+pt canonical: true
+en canonical: false
+pt can write shared: true
+en can write shared: false
+shared keys on PT copy: 
+kept translated/identity/unrelated: _ce_heading,_ce_subheading,_ce_cta_label,_ce_cta_url,_ce_event_key,_wp_page_template,_thumbnail_id
+page copy unchanged: true
+writable keys on PT: 17
+writable keys on EN: _ce_name,_ce_event_key,_ce_heading,_ce_subheading,_ce_cta_label,_ce_cta_url
+editor locked EN: true
+editor locked PT: false
+  field _ce_name readonly=no
+  field _ce_event_key readonly=no
+  field _ce_description readonly=yes
+  field _ce_enabled readonly=yes
+  field _ce_priority readonly=yes
+PT fields unlocked: true
+EN enabled field renders input: no
+EN enabled field renders readonly marker: yes

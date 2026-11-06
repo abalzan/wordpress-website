@@ -104,11 +104,54 @@ def find_preview_url(opener, base, event_key):
             return url, post_id
 
     return None, None
+SITEMAP_ROW = "pt-sitemap-does-not-publish-commemorative-urls"
+
+
+def report_sitemap_evidence(base, matrix, results):
+    """Classify who serves /sitemap.xml and say honestly what the row proves.
+
+    The matrix row can only be an *effective* exclusion proof when the serving
+    producer enumerates pages. Where a sitemap plugin answers with an index, the
+    row passes vacuously, so the documentation must say so — otherwise a green
+    row would be mistaken for end-to-end proof (the H1 finding of the
+    commemorative-events r10 final review).
+    """
+    row = next((item for item in matrix["rows"] if item["id"] == SITEMAP_ROW), None)
+
+    if row is None:
+        results.check(False, "the sitemap evidence row exists in the matrix")
+        return
+
+    status, _headers, body = http_client.fetch_relative(base, "/sitemap.xml")
+
+    if status != 200:
+        results.check(False, "GET /sitemap.xml answers", "got %s" % status)
+        return
+
+    # A sitemap INDEX lists sitemap documents, not URLs; a URLSET lists URLs.
+    is_index = "<sitemapindex" in body
+
+    if is_index:
+        results.check(
+            "vacuous" in row["note"].lower(),
+            "the matrix labels the sitemap row VACUOUS where an index is served "
+            "(the theme producer does not run, so the row is not an exclusion proof)",
+        )
+    else:
+        results.check(
+            "/natal/" not in body and "/en/christmas/" not in body and "commemorative_event" not in body,
+            "the serving urlset does not publish the commemorative URLs "
+            "(effective exclusion proof by the serving producer in this environment)",
+        )
+
+
 def main():
     base = http_client.assert_local_base(http_client.base_url())
     results = Results("verify-commemorative-http")
+    matrix = load(MATRIX)
 
-    run_matrix(results, load(MATRIX), base)
+    run_matrix(results, matrix, base)
+    report_sitemap_evidence(base, matrix, results)
 
     # -- Authenticated preview layer ---------------------------------------
     opener = login(base)

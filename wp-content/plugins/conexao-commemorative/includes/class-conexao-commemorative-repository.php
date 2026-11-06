@@ -241,34 +241,29 @@ final class Conexao_Commemorative_Repository {
 	 * @return string
 	 */
 	public static function language_of( $post_id ) {
-		if ( ! function_exists( 'pll_get_post_language' ) ) {
+		if ( ! class_exists( 'Conexao_Data_Model_Commemorative' ) ) {
 			return '';
 		}
 
-		$slug = pll_get_post_language( (int) $post_id, 'slug' );
-
-		return is_string( $slug ) ? $slug : '';
+		return Conexao_Data_Model_Commemorative::language_of( $post_id );
 	}
 
 	/**
 	 * Whether a record is in the canonical (default) language.
 	 *
+	 * Delegates to the data model, which owns the shared/translated split: the
+	 * engine must agree with the editor and the Polylang filter about which
+	 * record is the single owner.
+	 *
 	 * @param int $post_id Post ID.
 	 * @return bool
 	 */
 	public static function is_canonical_language( $post_id ) {
-		$language = self::language_of( $post_id );
-
-		if ( '' === $language ) {
-			// Polylang inactive: every record is canonical.
+		if ( ! class_exists( 'Conexao_Data_Model_Commemorative' ) ) {
 			return true;
 		}
 
-		if ( ! function_exists( 'pll_default_language' ) ) {
-			return true;
-		}
-
-		return pll_default_language( 'slug' ) === $language;
+		return Conexao_Data_Model_Commemorative::is_canonical_language( $post_id );
 	}
 
 	/**

@@ -293,8 +293,11 @@
 	 * Boot every ambient placement rendered on the page.
 	 *
 	 * Each package supplies its own decoration factory; the timer, the cap, the
-	 * visibility handling and the cleanup stay here, so no package can ship a
-	 * second scheduler.
+	 * visibility handling and the cleanup stay here, so no package may ship a
+	 * second AMBIENT scheduler. The one approved exception is the Halloween
+	 * mobile navigation surprise in
+	 * `presentations/halloween/halloween.js`, whose own scheduler drives that
+	 * package's navigation effect (never the ambient layer).
 	 *
 	 * @param {Object} options {packageSlug, decorate}
 	 * @returns {Object|null} The running scheduler, or null.

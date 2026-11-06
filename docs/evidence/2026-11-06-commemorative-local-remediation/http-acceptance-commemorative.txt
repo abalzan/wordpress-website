@@ -1,0 +1,26 @@
+  PASS  pt-home-no-commemorative-bytes / (status 200)
+  PASS  pt-internal-no-commemorative-bytes /guias/ (status 200)
+  PASS  pt-cpt-route-is-not-public /commemorative_event/ (status 404)
+  PASS  pt-cpt-rest-is-locked /wp-json/wp/v2/commemorative_event (status 404)
+  PASS  pt-sitemap-does-not-publish-commemorative-urls /sitemap.xml (status 200)
+  PASS  pt-landing-page /natal/ (status 200)
+  PASS  en-landing-page /en/christmas/ (status 200)
+  PASS  en-landing-is-not-a-redirect /en/christmas/ (status 200)
+  PASS  public-preview-query-does-not-activate /?conexao_preview=halloween&_wpnonce=deadbeefdead&_ce_ts=1 (status 200)
+  PASS  public-package-parameter-does-not-activate /?ce_package=halloween&ce_placement=homepage_hero (status 200)
+  PASS  public-landing-preview-query-does-not-activate /natal/?conexao_preview=christmas&_wpnonce=deadbeefdead&_ce_ts=1 (status 200)
+  PASS  the matrix labels the sitemap row VACUOUS where an index is served (the theme producer does not run, so the row is not an exclusion proof)
+  PASS  the local test administrator can log in
+  PASS  the engine prints a signed preview link (event post 124278)
+  PASS  the preview homepage returns 200
+  PASS  the preview banner is rendered for the administrator
+  PASS  the homepage hero placement renders the Halloween package for the administrator
+  PASS  the site-wide ambient placement renders
+  PASS  only the previewed package's stylesheet is enqueued
+  PASS  the preview on an internal page returns 200
+  PASS  an internal page previews the ambient placement and never the homepage hero
+  PASS  the preview is visibly marked on internal pages too
+  PASS  the preview URL still serves the public page anonymously
+  PASS  the same preview URL is inert for an unauthenticated visitor
+
+verify-commemorative-http: 24 passed, 0 failed

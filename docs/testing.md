@@ -62,23 +62,45 @@ same conventions, no special runner, no hand-maintained list.
 
 #### The commemorative gates (r10 Stages 4–6)
 
-Seven further fail-closed gates guard the commemorative presentation system. Each
+Eight further fail-closed gates guard the commemorative presentation system. Each
 one contains an **injected negative proof**: it deliberately creates the forbidden
 condition in a fixture and fails if its own check cannot detect it, so a gate that
 has gone blind fails instead of passing vacuously.
 
 | Gate | Proves | Suite | Layer |
 |---|---|---|---|
-| `commemorative_no_asset_without_event` | with no displayed placement, no commemorative CSS/JS handle is planned **or** enqueued (and the injected active plan IS reported) | `test-commemorative-gate-assets.php` | In-process PHP |
+| `commemorative_no_asset_without_event` | with no displayed placement, no commemorative CSS/JS handle is planned **or** enqueued (and the injected active plan IS reported). Scope: ordinary routes. An explicitly opted-in commemorative **landing page** keeps its package assets outside the event window by design (archival, §7.13) — see [`commemorative-events.md`](commemorative-events.md) §2 | `test-commemorative-gate-assets.php` | In-process PHP |
 | `commemorative_no_public_activation` | an anonymous request with a preview key, a bogus nonce or a package parameter activates nothing; an administrator with a valid nonce still previews | `test-commemorative-gate-public-activation.php` | In-process PHP |
-| `commemorative_cpt_privacy` | the CPT is private on every axis (route, archive, query var, REST, search), has no public permalink, and neither it nor the archived landing pages appear in the **rendered** theme sitemap | `test-commemorative-gate-cpt-privacy.php` | In-process PHP |
+| `commemorative_cpt_privacy` | the CPT is private on every axis (route, archive, query var, REST, search), has no public permalink, and neither it nor the archived landing pages appear in the **rendered theme sitemap producer**. This gate proves the theme producer's own decision; it does **not** prove that the publicly served `/sitemap.xml` is produced by that producer (`docs/testing.md` §"Sitemap evidence semantics") | `test-commemorative-gate-cpt-privacy.php` | In-process PHP |
 | `commemorative_single_package` | every real plan renders only placements owned by the selected package (and a stolen placement IS detected) | `test-commemorative-gate-single-package.php` | In-process PHP |
 | `commemorative_ambient_decorative` | the ambient DOM is `aria-hidden`, non-focusable and free of interactive/audio nodes, in markup and in the shared CSS/JS (and a violating fixture IS detected) | `test-commemorative-gate-ambient-decoration.php` | In-process PHP |
 | `commemorative_placement_assets` | placement assets are planned only for placements that render on that route (and a leaked asset IS detected) | `test-commemorative-gate-placement-assets.php` | In-process PHP |
+| `commemorative_translation_ownership` | the Polylang single-owner rule (r10 §3.6) is **enforced**: `pll_copy_post_metas` carries no shared key for a commemorative copy (and a list that still does IS detected), the translated editor renders every shared field read-only with no submittable input (and an unlocked field still renders an input), the save paths persist no shared key on a translation while the canonical record keeps them, and the stored translation carries only `_ce_event_key` plus its translated copy | `test-commemorative-gate-translation-ownership.php` | In-process PHP |
 | `commemorative_ambient_runtime` | the shared scheduler's **runtime** behaviour: interval/duration bounds, the initial/subsequent split, one decoration at a time, node cleanup, the session cap across a reload and its reset in a new session, the visibility pause + cooldown, and reduced motion. Executed with `node --test`; Node being unavailable reports **blocked**, never pass | `verify-commemorative-runtime.py` + `tests/node/commemorative-ambient.test.js` | Script contract (Node) |
 
-The six PHP gates are registered in `scripts/verify-permanent-gates.py`; all seven
-are discovered by `./scripts/run-tests.sh` through the normal conventions.
+The seven PHP gates are registered in `scripts/verify-permanent-gates.py`; all
+eight are discovered by `./scripts/run-tests.sh` through the normal conventions.
+
+#### Sitemap evidence semantics
+
+Two different producers answer for the commemorative landing pages, and the
+evidence must not confuse them:
+
+- **The theme producer** (`conexao_seo_sitemap()`, hooked to `template_redirect`
+  for `/sitemap.xml`/`/sitemap_index.xml`) is the producer this repository owns.
+  `commemorative_cpt_privacy` renders it in-process and proves its exclusion
+  decision. That is a real proof of *the theme producer's* behaviour.
+- **The serving producer** is whatever answers a public `GET /sitemap.xml`. In the
+  local stack Jetpack answers with a sitemap **index** (`sitemap-1.xml`), which
+  lists no page at all, so the theme producer never runs. An HTTP row that checks
+  "no commemorative URL in `/sitemap.xml`" therefore passes **vacuously** in that
+  environment: it is *not* an effective proof of end-to-end sitemap exclusion.
+
+The acceptance matrix labels that row accordingly (`note` on
+`pt-sitemap-does-not-publish-commemorative-urls`) and the row additionally asserts
+that the response is a sitemap it can interpret. End-to-end exclusion by the
+**serving** producer is **NOT VERIFIED** in this repository and requires a
+separately authorised production check.
 
 Run them all and get one machine-readable summary:
 

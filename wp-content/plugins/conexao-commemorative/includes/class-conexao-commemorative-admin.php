@@ -84,7 +84,15 @@ final class Conexao_Commemorative_Admin {
 		$boundary = Conexao_Commemorative_Cache::armed_boundary();
 		$last     = Conexao_Commemorative_Cache::last_result();
 
-		wp_nonce_field( self::PRECEDENCE_NONCE, 'conexao_commemorative_precedence_nonce' );
+		// r10 §3.6: only the canonical record owns the shared configuration, so
+		// only the canonical record gets the editable annual-preference control.
+		// The translation shows a read-only explanation instead of a control it
+		// could not persist.
+		$canonical = Conexao_Data_Model_Commemorative::can_write_shared_meta( $post->ID );
+
+		if ( $canonical ) {
+			wp_nonce_field( self::PRECEDENCE_NONCE, 'conexao_commemorative_precedence_nonce' );
+		}
 
 		echo '<div class="conexao-commemorative-diagnostics">';
 
@@ -114,7 +122,14 @@ final class Conexao_Commemorative_Admin {
 
 		self::render_boundary_section( $boundary, $last );
 		self::render_preview_section( $post );
-		self::render_precedence_control( $post, $event );
+
+		if ( $canonical ) {
+			self::render_precedence_control( $post, $event );
+		} else {
+			echo '<h3>' . esc_html__( 'Preferência anual manual', 'conexao-commemorative' ) . '</h3>';
+			echo '<p class="description">' . esc_html__( 'A preferência anual, o agendamento e a prioridade pertencem ao registo canónico (PT). Abra o registo PT ligado para os alterar.', 'conexao-commemorative' ) . '</p>';
+		}
+
 		self::render_simulation( $post, $event );
 
 		echo '</div>';
@@ -367,6 +382,14 @@ final class Conexao_Commemorative_Admin {
 		}
 
 		if ( Conexao_Data_Model_Commemorative::POST_TYPE !== get_post_type( $post_id ) ) {
+			return;
+		}
+
+		// r10 §3.6 single-owner invariant, layer 3 (save): the annual preference
+		// is shared configuration, so only the canonical record may persist it.
+		// This is checked BEFORE anything is written, so a crafted POST aimed at
+		// a translation changes nothing at all.
+		if ( ! Conexao_Data_Model_Commemorative::can_write_shared_meta( $post_id ) ) {
 			return;
 		}
 

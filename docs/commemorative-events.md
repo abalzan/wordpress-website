@@ -85,8 +85,23 @@ renders nothing until its placement map ships.
 - **Conditional assets.** `assets/css/commemorative.css` and
   `assets/js/commemorative.js` load only when at least one placement renders; each
   package file is a dependency of the shared framework and loads only for its own
-  placement. With no active event: zero commemorative bytes (gate
-  `commemorative_no_asset_without_event`).
+  placement. With no active event: **zero commemorative bytes on every ordinary
+  route** (gate `commemorative_no_asset_without_event`).
+- **The landing page is the one deliberate exception to that zero-asset rule.**
+  An explicitly opted-in commemorative landing page keeps loading its package
+  assets outside the event window, because it is an **archival / seasonal page**
+  (§7.13): it must still look like itself in July, for a visitor following a
+  link, a bookmark or a search result. Landing resolution is a separate path —
+  it reads `_ce_landing_package` plus the package's declared slug for the current
+  language and never asks the active-event resolver, so the page exists with no
+  event, with a disabled event and after the window has passed. This is a
+  **constrained** exception, not a relaxation of conditional loading:
+  - it requires *both* opt-ins (the page template **and** `_ce_landing_package`)
+    **and** a slug match in the package registry;
+  - only that package's own assets load — never another package's;
+  - the gate's zero-asset assertion stays scoped to ordinary routes and is not
+    weakened; a landing page is never treated as proof that ordinary routes may
+    load commemorative assets.
 - **The ambient layer is decoration.** `aria-hidden="true"`, `pointer-events: none`,
   no focusable node, no audio, one decoration at a time, one timer, node removed
   after its duration, paused on a hidden tab, disabled under reduced motion (gates
@@ -143,7 +158,9 @@ defaults, and it must never be copied into another package.
    - enabled, priority, and (only if needed) the annual preference.
 3. **Add the EN translation.** Translate the title and the `_ce_heading` /
    `_ce_subheading` / `_ce_cta_*` copy. **Keep the shared configuration on the PT
-   record only** — `_ce_year_precedence` must not be duplicated.
+   record only** — this is now enforced, not just asked for (see §6): Polylang
+   does not copy the shared keys, the EN editor renders them read-only, and the
+   save paths refuse them on a non-canonical record.
 4. **Preview it.** Open the event editor and use the signed preview link on the
    homepage and on an internal page; check PT/EN, desktop/mobile, light/dark and
    reduced motion.
@@ -183,16 +200,26 @@ defaults, and it must never be copied into another package.
 
 | Invariant | Gate |
 |---|---|
-| No commemorative asset without a displayed event | `commemorative_no_asset_without_event` |
+| No commemorative asset without a displayed event (ordinary routes; the opted-in landing page is the documented exception in §2) | `commemorative_no_asset_without_event` |
 | No public activation through a query parameter | `commemorative_no_public_activation` |
-| The CPT stays private (route, archive, query var, REST, sitemap) | `commemorative_cpt_privacy` |
+| The CPT stays private (route, archive, query var, REST, search) and neither it nor the landing pages are emitted by the **theme sitemap producer** | `commemorative_cpt_privacy` |
 | One package, many placements | `commemorative_single_package` |
 | The ambient layer is decorative only | `commemorative_ambient_decorative` |
 | Placement assets are conditional | `commemorative_placement_assets` |
+| The canonical PT record is the single owner of the shared `_ce_*` configuration (Polylang copies none of it; the EN editor is read-only; the save paths refuse it there) | `commemorative_translation_ownership` |
 | The scheduler's runtime behaviour | `commemorative_ambient_runtime` (Node) |
 
-All seven run inside `./scripts/run-tests.sh` and are aggregated by
+All eight run inside `./scripts/run-tests.sh` and are aggregated by
 `python3 scripts/verify-permanent-gates.py`.
 
-_Last verified: 2026-11-06 by the commemorative-events Stages 4–6 implementation_
+**What the sitemap gate does and does not prove.** `commemorative_cpt_privacy`
+renders the **theme-owned** sitemap producer in-process, so it proves that
+producer's exclusion decision. It does **not** prove that a public
+`GET /sitemap.xml` is served by that producer: in the local stack (and therefore
+in CI) Jetpack answers with a sitemap **index**, so the theme producer never
+runs and the HTTP acceptance row passes vacuously. Whether production serves the
+landing pages in its sitemap is **NOT VERIFIED** — see
+[`testing.md`](testing.md) §"Sitemap evidence semantics".
+
+_Last verified: 2026-11-06 by the commemorative-events local remediation_
 
