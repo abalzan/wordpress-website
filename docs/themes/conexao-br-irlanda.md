@@ -128,6 +128,34 @@ animation. Full behavior and browser evidence are recorded in the
 [frontend contract](../frontend.md#occasional-mobile-appearances) and
 [mobile experience report](../reports/2026-10-27-halloween-mobile-experience-report.md).
 
+## Commemorative presentation framework (r10 Stages 4–6)
+
+The Halloween block above is now ONE package inside a small presentation framework.
+The system contract lives in [`docs/commemorative-events.md`](../commemorative-events.md);
+this section is the theme-internals map.
+
+| Piece | Where |
+|---|---|
+| Package registry + placement catalogue + dispatcher + conditional enqueue + preview banner | `inc/commemorative-presentations.php` |
+| Landing-page content modules (records by slug, upcoming events) | `inc/commemorative-modules.php` |
+| Shared components | `template-parts/commemorative/{homepage-hero,ambient-layer,landing-page}.php`, `template-parts/commemorative/modules/module.php` |
+| Package content | `template-parts/commemorative/halloween/`, `template-parts/commemorative/christmas/` |
+| Shared framework assets | `assets/css/commemorative.css`, `assets/js/commemorative.js` |
+| Package assets | `assets/css/presentations/*.css`, `assets/js/presentations/*`, `assets/images/presentations/*` |
+| Landing page template | `page-commemorative-landing.php` (assigned template + `_ce_landing_package`) |
+
+- `front-page.php` and `header.php` no longer contain any holiday identity: the
+  homepage calls `conexao_commemorative_render_placement( 'homepage_hero' )`, the
+  footer calls the ambient placement, and the generic client marker is printed on
+  `wp_body_open`.
+- Halloween's presentation CSS, JS and art were **moved out of `main.css`,
+  `dark-mode.css` and `main.js`** into `assets/css/presentations/halloween.css`,
+  `assets/js/presentations/halloween/halloween.js` and
+  `assets/images/presentations/halloween/decorations/`. The global bundles shrank by
+  ~24 KB of JS and ~19 KB of CSS and no longer contain the word `halloween`.
+- Every asset is conditional on the placement that needs it, so a request with no
+  active commemorative event ships **no** commemorative bytes.
+
 ## Homepage Apoiadores Carousel
 
 The Featured Apoiadores carousel is a compact supporting showcase **inside the homepage Hero** (right-hand column beside the copy at every breakpoint, including mobile), rendered by the reusable template part `template-parts/featured-sponsors.php`. It is a responsive, dependency-free carousel over the **existing sponsor data model** — no new content type, no duplicated supporter data:

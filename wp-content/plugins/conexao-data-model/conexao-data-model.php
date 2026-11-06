@@ -82,7 +82,13 @@ final class Conexao_Data_Model {
 				'exclude_from_search' => true,
 				'show_ui'            => true,
 				'show_in_menu'       => true,
-				'show_in_rest'       => true,
+				// r10 §3.7/§9.8: no REST exposure. `show_in_rest => false` removes the
+				// default `/wp-json/wp/v2/commemorative_event` route entirely, so an
+				// unauthenticated request cannot read the event records (the admin
+				// surface is the classic editor and needs no REST route). The `_ce_*`
+				// meta keys are registered with `show_in_rest => false` as well.
+				// Regression proof: tests/test-commemorative-gate-cpt-privacy.php.
+				'show_in_rest'       => false,
 				'menu_icon'          => 'dashicons-star-filled',
 				'supports'           => array( 'title', 'revisions', 'custom-fields' ),
 				'capability_type'    => 'post',

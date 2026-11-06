@@ -562,7 +562,26 @@ home.php                → /blog/
 search.php              → /search/
 404.php                 → 404 errors
 page-landing.php        → landing page template (specific pages)
+page-commemorative-landing.php → the opt-in commemorative landing page (see below)
 ```
+
+### Commemorative landing page (`/natal/`, `/en/christmas/`)
+
+The commemorative landing page uses **only** the existing page mechanism: it is a
+normal `page` record with the assigned template `page-commemorative-landing.php`
+and the `_ce_landing_package` meta. There is **no rewrite rule, no query var and no
+CPT exposure** — `commemorative_event` still has no public URL at all.
+
+| Concern | Behaviour |
+|---|---|
+| Status | `200` in both languages (never a redirect) |
+| Canonical | self-referencing in each language |
+| hreflang | the real translation pair (`pt-BR` ↔ `en`) |
+| Redirect precedence | no redirect matches these slugs; the page wins |
+| Sitemap | **excluded** by `conexao_seo_sitemap_include_page()` (archived, not promoted) |
+| After the window | still `200`; the copy comes from the page, not the event schedule |
+| Opt-in failure | a page with only one of the two opt-ins renders as an ordinary page |
+
 
 ## Navigation Architecture
 

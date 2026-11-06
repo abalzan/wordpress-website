@@ -60,6 +60,26 @@ same conventions, no special runner, no hand-maintained list.
 | Documentation drift | Orchestrates the Stage G/I/K gates (it does not reimplement them) and owns the §9.2 rules: `_Last verified:` markers on the living reference set, no root-level report/evidence file, `AGENTS.md` stays orientation, the authoritative sources still exist. | `verify-documentation-drift.py` | Script contract |
 | i18n catalogue freshness | A `.pot` is never older than the PHP defining its strings. Signal: **git commit time**, not mtime (a fresh clone gives every file the checkout time, so mtime cannot express this rule). | `verify-i18n-freshness.py`, `scripts/i18n-check.sh` | Script contract |
 
+#### The commemorative gates (r10 Stages 4–6)
+
+Seven further fail-closed gates guard the commemorative presentation system. Each
+one contains an **injected negative proof**: it deliberately creates the forbidden
+condition in a fixture and fails if its own check cannot detect it, so a gate that
+has gone blind fails instead of passing vacuously.
+
+| Gate | Proves | Suite | Layer |
+|---|---|---|---|
+| `commemorative_no_asset_without_event` | with no displayed placement, no commemorative CSS/JS handle is planned **or** enqueued (and the injected active plan IS reported) | `test-commemorative-gate-assets.php` | In-process PHP |
+| `commemorative_no_public_activation` | an anonymous request with a preview key, a bogus nonce or a package parameter activates nothing; an administrator with a valid nonce still previews | `test-commemorative-gate-public-activation.php` | In-process PHP |
+| `commemorative_cpt_privacy` | the CPT is private on every axis (route, archive, query var, REST, search), has no public permalink, and neither it nor the archived landing pages appear in the **rendered** theme sitemap | `test-commemorative-gate-cpt-privacy.php` | In-process PHP |
+| `commemorative_single_package` | every real plan renders only placements owned by the selected package (and a stolen placement IS detected) | `test-commemorative-gate-single-package.php` | In-process PHP |
+| `commemorative_ambient_decorative` | the ambient DOM is `aria-hidden`, non-focusable and free of interactive/audio nodes, in markup and in the shared CSS/JS (and a violating fixture IS detected) | `test-commemorative-gate-ambient-decoration.php` | In-process PHP |
+| `commemorative_placement_assets` | placement assets are planned only for placements that render on that route (and a leaked asset IS detected) | `test-commemorative-gate-placement-assets.php` | In-process PHP |
+| `commemorative_ambient_runtime` | the shared scheduler's **runtime** behaviour: interval/duration bounds, the initial/subsequent split, one decoration at a time, node cleanup, the session cap across a reload and its reset in a new session, the visibility pause + cooldown, and reduced motion. Executed with `node --test`; Node being unavailable reports **blocked**, never pass | `verify-commemorative-runtime.py` + `tests/node/commemorative-ambient.test.js` | Script contract (Node) |
+
+The six PHP gates are registered in `scripts/verify-permanent-gates.py`; all seven
+are discovered by `./scripts/run-tests.sh` through the normal conventions.
+
 Run them all and get one machine-readable summary:
 
 ```bash

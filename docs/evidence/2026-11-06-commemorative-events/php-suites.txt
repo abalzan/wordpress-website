@@ -139,49 +139,12 @@ In-process PHP suites (serial, one process per suite)
            FAIL: the PT Jobs page content is unchanged (Portuguese source preserved)
            FAIL: the EN request resolves a different jobs URL — http://localhost:8080/en/empregos/
 [PASS] theme/conexao-br-irlanda/test-language-switcher-flag.php — 60 passed, 0 failed
- property "locale" on null in /var/www/html/wp-content/plugins/polylang/src/frontend/frontend-filters.php on line 60
-         Warning: Attempt to read property "locale" on null in /var/www/html/wp-content/plugins/polylang/src/frontend/frontend-filters.php on line 60
-[PASS] theme/conexao-br-irlanda/test-event-location-filters.php — 63 passed, 0 failed
-[PASS] theme/conexao-br-irlanda/test-eventos-infinite-scroll.php — 9 passed, 0 failed
-[PASS] theme/conexao-br-irlanda/test-filter-link-aria-semantics.php — 103 passed, 0 failed
-[PASS] theme/conexao-br-irlanda/test-guide-breadcrumb-filter.php — 36 passed, 0 failed
-[FAIL] theme/conexao-br-irlanda/test-guide-en-translation.php — 667 passed, 7 failed (exit 1)
-           FAIL: eligible public PT guides missing EN = 0 — missing: ["carteira-motorista-brasileiros"]
-           FAIL: one EN translation per public PT guide — 54 pairs vs 55 PT guides
-           FAIL: inverno-irlanda-depressao-sazonal-saude-mental: EN guide uses the EN category term(s) — {"expected":[2998],"actual":[3001]}
-           FAIL: stage32-editorial-source: EN keeps the PT publication date
-           FAIL: stage32-editorial-source: EN meta description is set
-           FAIL: stage32-editorial-source: EN guide uses the EN category term(s) — {"expected":[],"actual":[]}
-           FAIL: violencia-domestica-irlanda-onde-encontrar-ajuda: EN guide uses the EN category term(s) — {"expected":[3034],"actual":[3037]}
-[PASS] theme/conexao-br-irlanda/test-header-cta-dark-mode.php — 31 passed, 0 failed
-[PASS] theme/conexao-br-irlanda/test-header-menu-selection.php (pt) — 12 passed, 0 failed
-[PASS] theme/conexao-br-irlanda/test-header-menu-selection.php (en) — 16 passed, 0 failed
-[PASS] theme/conexao-br-irlanda/test-hero-preload-fallback.php — 33 passed, 0 failed
-[PASS] theme/conexao-br-irlanda/test-homepage-content-type-label.php — 29 passed, 0 failed
-[PASS] theme/conexao-br-irlanda/test-homepage-shortcut-consolidation.php — 33 passed, 0 failed
-[PASS] theme/conexao-br-irlanda/test-i18n-foundation.php — 29 passed, 0 failed
-[FAIL] theme/conexao-br-irlanda/test-job-en-translation.php — 28 passed, 4 failed (exit 1)
-           FAIL: the Jobs page has an EN translation — en_id=22200
-           FAIL: the Jobs page pair is linked from both sides
-           FAIL: the PT Jobs page is still assigned to pt
-           FAIL: EN jobs keep the PT publication date — oportunidades
-[FAIL] theme/conexao-br-irlanda/test-jobs-en-language.php — 98 passed, 6 failed (exit 1)
-           FAIL: the Jobs page has an EN translation — en_id=22200
-           FAIL: the Jobs page pair is linked from both sides
-           FAIL: the EN Jobs body is the authored English body from the manifest (not a template hardcode)
-           FAIL: no Portuguese prose from the PT body survives on the EN Jobs page — As vagas mais recentes estão no nosso Instagram.Acompanhe nossas publicações para encontrar novas oportunidades de trabalho na Irlanda.
-           FAIL: the PT Jobs page content is unchanged (Portuguese source preserved)
-           FAIL: the EN request resolves a different jobs URL — http://localhost:8080/en/empregos/
-[PASS] theme/conexao-br-irlanda/test-language-switcher-flag.php — 60 passed, 0 failed
 [PASS] theme/conexao-br-irlanda/test-leisure-attribute-normalization.php — 22 passed, 0 failed
 [PASS] theme/conexao-br-irlanda/test-leisure-card-excerpt-language.php — 45 passed, 0 failed
 [PASS] theme/conexao-br-irlanda/test-leisure-card-map-action.php — 47 passed, 0 failed
 [PASS] theme/conexao-br-irlanda/test-leisure-location-services.php — 102 passed, 0 failed
 [PASS] theme/conexao-br-irlanda/test-leisure-multiselect-filters.php — 64 passed, 0 failed
-[FAIL] theme/conexao-br-irlanda/test-leisure-related-events.php — 16 passed, 3 failed (exit 1)
-           FAIL: includes the recurring event (next-occurrence logic)
-           FAIL: recurring event next occurrence resolves to +4
-           FAIL: includes the multi-day event active today
+[PASS] theme/conexao-br-irlanda/test-leisure-related-events.php — 19 passed, 0 failed
 [PASS] theme/conexao-br-irlanda/test-nav-language-context-logic.php — 49 passed, 0 failed
 [PASS] theme/conexao-br-irlanda/test-nav-language-context.php — 16 passed, 0 failed
 [PASS] theme/conexao-br-irlanda/test-nav-menu-regression.php — 41 passed, 0 failed
@@ -194,6 +157,51 @@ In-process PHP suites (serial, one process per suite)
            FAIL: The first surprise waits no longer than thirty seconds — 'var INITIAL_DELAY_MAX_MS = 30000;' not found in '/**
            FAIL: Subsequent surprises wait at least twenty-five seconds — 'var INTERVAL_MIN_MS = 25000;' not found in '/**
            FAIL: Subsequent surprises wait no longer than thirty-five seconds — 'var INTERVAL_MAX_MS = 35000;' not found in '/**
+[PASS] theme/conexao-br-irlanda/test-seasonal-halloween-presentation.php — 26 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-seasonal-occasion.php — 14 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-sponsor-archive-ordering.php — 15 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-sponsor-archive-single-page.php — 28 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-stage32-bilingual.php — 49 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-stage33-bilingual.php — 196 passed, 2 failed (exit 1)
+           FAIL: guide EN #22388: every category is the linked EN term of a master term (or the shared master term)
+           FAIL: guide EN #22387: every category is the linked EN term of a master term (or the shared master term)
+[FAIL] theme/conexao-br-irlanda/test-stage41-rest-language.php — 220 passed, 2 failed (exit 1)
+         [06-Nov-2026 09:57:19 UTC] PHP Warning:  Attempt to read property "locale" on null in /var/www/html/wp-content/plugins/polylang/src/frontend/frontend-filters.php on line 60
+         Warning: Attempt to read property "locale" on null in /var/www/html/wp-content/plugins/polylang/src/frontend/frontend-filters.php on line 60
+           FAIL: PT warm-up keeps the PT master; EN read still replaces it
+           FAIL: after trashing the EN translation, the PT master returns exactly once (B2)
+[FAIL] theme/conexao-br-irlanda/test-stage45-pages.php — 364 passed, 2 failed (exit 1)
+           FAIL: empregos: EN→PT link points back at the right source
+           FAIL: no orphan EN page outside the stage manifests (4 found)
+[PASS] theme/conexao-br-irlanda/test-stage7-hero-sponsors.php — 10 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-taxonomy-policy.php — 18 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-translation-completeness.php — 21 passed, 2 failed (exit 1)
+           FAIL: guide: eligible public PT records missing a linked EN translation = 0 — 1 violation(s): {"eligible":55,"translated":54,"allowlisted":0,"sample":["carteira-motorista-brasileiros"]}
+           FAIL: page: every translation relationship is a bidirectional link to a PT master — 2 violation(s): {"sample":["en_without_pt:empregos-3","en_without_pt:empregos"]}
+[PASS] theme/conexao-br-irlanda/test-ui-convergence-t1.php — 43 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-ui-convergence-t2.php — 64 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-ui-polish-p3.php — 13 passed, 0 failed
+
+----------------------------------------
+In-process PHP suites: 124 total, 112 passed, 12 failed
+Assertions: 9366 passed, 43 failed
+----------------------------------------
+TESTS FAILED
+failing suites:
+  - plugin/conexao-event-importer/test-town-sanitization.php
+  - theme/conexao-br-irlanda/test-blog-en-translation.php
+  - theme/conexao-br-irlanda/test-en-jobs-shared-slug.php
+  - theme/conexao-br-irlanda/test-event-filter-cache.php
+  - theme/conexao-br-irlanda/test-guide-en-translation.php
+  - theme/conexao-br-irlanda/test-job-en-translation.php
+  - theme/conexao-br-irlanda/test-jobs-en-language.php
+  - theme/conexao-br-irlanda/test-seasonal-halloween-nav-effects.php
+  - theme/conexao-br-irlanda/test-stage33-bilingual.php
+  - theme/conexao-br-irlanda/test-stage41-rest-language.php
+  - theme/conexao-br-irlanda/test-stage45-pages.php
+  - theme/conexao-br-irlanda/test-translation-completeness.php
+full suite output kept in /tmp/tmp.duDyToljEs
+S = 35000;' not found in '/**
 [PASS] theme/conexao-br-irlanda/test-seasonal-halloween-presentation.php — 26 passed, 0 failed
 [PASS] theme/conexao-br-irlanda/test-seasonal-occasion.php — 14 passed, 0 failed
 [PASS] theme/conexao-br-irlanda/test-sponsor-archive-ordering.php — 15 passed, 0 failed
@@ -244,4 +252,5 @@ failing suites:
   - theme/conexao-br-irlanda/test-stage45-pages.php
   - theme/conexao-br-irlanda/test-translation-completeness.php
 full suite output kept in /tmp/tmp.AhDQJXZvUx
+EXIT=1
 EXIT=1

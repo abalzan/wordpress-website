@@ -1,0 +1,70 @@
+[06-Nov-2026 10:20:26 UTC] PHP Notice:  $_SERVER['HTTP_HOST'] or $_SERVER['REQUEST_URI'] are required but not set. in /var/www/html/wp-content/plugins/polylang/src/functions.php on line 81
+script: scripts/diagnostics/commemorative-christmas-content.php
+target: http://localhost:8080 (local, local)
+mode:   read-only
+scope:  read-only
+
+Notice: $_SERVER['HTTP_HOST'] or $_SERVER['REQUEST_URI'] are required but not set. in /var/www/html/wp-content/plugins/polylang/src/functions.php on line 81
+
+== event matches=38 ==
+  21480   pt  vira-christmas-glow                            → 2026-12-11     christmas
+  21423   pt  setu-christmas-media-gala                      → 2026-11-25     christmas
+  20774   pt  rising-stars-ben-gannon-ellen-jansson          → 2026-11-14     winter
+  20772   pt  paddington-trio                                → 2026-11-14     winter
+  20766   pt  multi-buy-west-wicklow-festival-13-15-november-2026 → 2026-11-15     winter
+  20764   pt  seamus-caoimhe-ui-fhlatharta                   → 2026-11-15     winter
+  20752   pt  a-journey-inwards-winter-day-retreat-at-anam-kara-wellness → 2026-11-28     winter
+  20750   pt  living-in-harmony-with-nature-a-winter-day     → 2026-11-14     winter
+  20748   pt  fiachra-garvey-mishka-rushdie-momen            → 2026-11-13     winter
+  20564   pt  brake-loosethe-wires-12-gauge-outrage-foot-squeaker-bowzy-crownlive → 2026-11-06     winter
+  20529   pt  christmas-o-holy-night-live-with-the-three-tenors-live-killucan-church → 2026-11-22     christmas
+  20486   pt  singles-christmas-party                        → 2026-12-06     christmas
+  20441   pt  creating-a-christmas-wreath-workshop-with-vivienne-brophy → 2026-12-04     christmas
+  20354   pt  christmas-walk-train-ride-with-santa-for-over-50s → 2026-12-01     christmas
+  20290   pt  mamma-mia-the-christmas-experience-brunch-clayton-hotel-sligo → 2026-12-19     christmas
+  20291   pt  mamma-mia-the-christmas-experience-evening-clayton-hotel-sligo → 2026-12-19     christmas
+  20248   pt  womens-little-country-christmas                → 2027-01-06     christmas
+  20222   pt  onoir-live-radisson-blu-sligo-december-4th-2026 → 2026-12-04     christmas
+  20205   pt  nathan-carter-christmas-concert-in-st-josephs-church → 2026-12-13     christmas
+  20197   pt  iao-winter-meeting                             → 2026-11-26     winter
+  20174   pt  womens-little-christmas-brunch-2027            → 2027-01-09     christmas
+  20124   pt  matilda-the-experience-hillgrove-hotel-monaghan → 2026-11-08     christmas
+  20072   pt  2026-solstice-newgrange-circle-of-peace-and-overnight-dowth → 2026-12-21     winter,solstice
+  20043   pt  caulstown-christmas-tree-alpaca-family-farm-free-visit-2026 → 2026-11-27     christmas
+  20041   pt  handmade-wreath-making-class-2026              → 2026-11-21     christmas
+  19997   pt  matilda-the-experience-knightsbrook-hotel-trim → 2026-12-13     christmas
+  19968   pt  enfield-rathmolyon-parish-christmas-concert-niamh-kavanagh-simon-morgan → 2026-12-11     christmas
+  19759   pt  santa-at-the-riverbank-the-enchanted-christmas-experience-2026 → 2026-11-27     christmas
+  19734   pt  smash-hits-at-christmas                        → 2026-12-29     christmas
+  19696   pt  dundalk-comic-con-christmas-special            → 2026-11-29     christmas,winter
+  19612   pt  christmas-cabaret-at-foynes-museum             → 2026-12-12     christmas
+  19448   pt  mega-kilkenny-christmas-speed-dating-ages-30-45 → 2026-11-29     christmas
+  19393   pt  mike-denver-philomena-begley-guests-christmas-concert-in-kilkenny → 2026-12-03     christmas
+  19362   pt  millicent-singers-with-irish-studio-orchestra-leah-barniville-fri-4th → 2026-12-04     christmas
+  19311   pt  millicent-singers-with-irish-studio-orchestra-leah-barniville-sat-5th → 2026-12-05     christmas
+  19305   pt  charlottes-christmas-gathering-2026            → 2026-12-04     christmas
+  19278   pt  onoir-live-the-keadeen-hotel-kildare-sunday-6th-december-2026 → 2026-12-06     christmas
+  19197   pt  coming-home-for-christmas                      → 2026-12-04     christmas
+
+== guide matches=1 ==
+  11277   pt  inverno-irlanda-depressao-sazonal-saude-mental                    inverno
+
+== post matches=6 ==
+  10365   pt  entre-o-silencio-do-inverno-e-o-primeiro-sopro-da-primavera                    inverno
+  10357   pt  coragem-a-estrela-que-ilumina-o-caminho-do-empreendedor-especial-de-natal                    natal
+  10354   pt  preparando-o-corpo-para-o-inverno                                 inverno
+  10352   pt  o-calor-que-nasce-do-inverno                                      inverno
+  10349   pt  o-inverno-do-ego-um-renascimento-poetico                          inverno
+  10348   pt  sol-e-lua-equilibrando-consciencia-e-emocoesdurante-o-inverno-norte-europeu                    inverno
+
+== page matches=0 ==
+
+== leisure matches=4 ==
+  10162   pt  newgrange                                                         inverno
+  10688   pt  sean-mac-diarmada-cottage                                         natal
+  10710   pt  patrick-kavanagh-centre                                           natal
+  10813   pt  wexford-wildfowl-reserve                                          inverno
+
+== Christmas event records with a December date ==
+
+summary: read-only probe complete

@@ -27,8 +27,10 @@ posts keep their `/empregos/{slug}/` permalinks (the CPT `rewrite` slug stays
 Registered by its own method (`Conexao_Data_Model::register_commemorative_post_type()`)
 because it is a **pure wp-admin configuration container**: `public` and
 `publicly_queryable` false, `has_archive` false, `rewrite` false, no query var,
-excluded from search — **no front-end URL, no archive, no sitemap entry**. It
-has its own top-level wp-admin menu ("Eventos Comemorativos").
+excluded from search, and **`show_in_rest => false`** — **no front-end URL, no
+archive, no REST route, no sitemap entry**. It has its own top-level wp-admin menu
+("Eventos Comemorativos"). Those five negatives are asserted by the permanent gate
+`commemorative_cpt_privacy`.
 
 The field schema, defaults and sanitizers are owned by
 `Conexao_Data_Model_Commemorative`; the scheduling/activation behaviour is owned
@@ -60,8 +62,27 @@ canonical values.
 "if empty, use the built-in six" path. The six legacy occasions are created once
 by `scripts/seed-commemorative-events.php` (dry-run first, idempotent,
 `--apply`), and a brand-new install simply has zero events until an administrator
-creates one. `_ce_*` meta is registered with `show_in_rest => false`, so the
-REST surface exposes no scheduling data.
+creates one. `_ce_*` meta is registered with `show_in_rest => false` and the CPT
+itself declares `show_in_rest => false`, so no REST surface exposes scheduling
+data or event records.
+
+#### The opt-in landing page is a PAGE, not a CPT route (r10 Stages 4–6)
+
+An experience package may render a dedicated landing page. It is a normal `page`
+record that carries **two independent opt-ins**:
+
+| Opt-in | Value |
+|---|---|
+| assigned page template | `page-commemorative-landing.php` (`Template Name: Commemorative Landing Page`) |
+| `_ce_landing_package` meta | the experience-package slug (`christmas`) |
+
+A page with only one of them renders as an ordinary page. The package's
+`landing_page` → `options.page_slugs` must also match the page slug for the current
+language (`natal` for PT, `christmas` for EN). The pair is a real Polylang
+translation pair. The landing page renders from the PAGE's own copy, never from the
+event schedule, so it keeps working after the event window; it is **excluded from
+the sitemap** (`conexao_seo_sitemap_include_page()`) unless inclusion is explicitly
+approved. See [`commemorative-events.md`](commemorative-events.md) §5.2.
 
 
 **`recruitment_agency`** and **`permit_employer`** are further exceptions: they

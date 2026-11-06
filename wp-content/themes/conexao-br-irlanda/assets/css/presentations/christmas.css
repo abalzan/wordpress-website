@@ -1,0 +1,202 @@
+/**
+ * Christmas experience package — package-scoped presentation CSS.
+ *
+ * Identity (r10 §7.12): one bauble ornament, palette of deep green / red / gold /
+ * warm white, CALM motion (a single slow settle, 2.6 s, no repetition). It shares
+ * no motif, palette or motion with Halloween.
+ *
+ * Enqueued only when a Christmas placement renders. The public tokens
+ * (`--ce-primary`, `--ce-secondary`, `--ce-accent`, `--ce-surface`) are emitted
+ * inline by the dispatcher from the registry; the mirrors below are the fallback
+ * for the ambient decorations, which the script appends to <body> and therefore
+ * outside any placement wrapper.
+ *
+ * @package Conexao_BR_Irlanda
+ */
+
+.ce-package--christmas,
+.ce-placement--site_wide_ambient.ce-package--christmas {
+  --ce-primary: #0f5132;
+  --ce-secondary: #b3202c;
+  --ce-accent: #c8a243;
+  --ce-surface: #fdf8ef;
+}
+
+:root[data-theme="dark"] .ce-package--christmas,
+:root[data-theme="dark"] .ce-placement--site_wide_ambient.ce-package--christmas {
+  --ce-surface: #10201a;
+  --ce-accent: #e0c266;
+}
+
+/* ===== 1. Homepage hero band ===== */
+/* The band is reserved server-side: the generic body classes (ce-active +
+   ce-package-christmas + ce-placement-homepage-hero) add the padding, so the hero
+   makes room for the band before paint and nothing shifts afterwards. */
+body.ce-active.ce-package-christmas.ce-placement-homepage-hero .hero-section {
+  padding-bottom: clamp(148px, 17vw, 208px);
+}
+
+.ce-christmas-hero {
+  position: relative;
+  display: flex;
+  gap: clamp(12px, 2vw, 24px);
+  align-items: center;
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto clamp(12px, 2vw, 24px);
+  padding: clamp(14px, 2.4vw, 22px) clamp(16px, 2.8vw, 28px);
+  border-radius: 18px;
+  border: 1px solid color-mix(in srgb, var(--ce-accent, #c8a243) 45%, transparent);
+  background: var(--ce-surface, #fdf8ef);
+  color: #1d2a22;
+  box-shadow: 0 18px 40px rgba(6, 24, 16, 0.28);
+}
+
+.ce-christmas-hero__ornament {
+  flex: 0 0 auto;
+  display: block;
+  width: clamp(52px, 7vw, 76px);
+  line-height: 0;
+  animation: ce-christmas-settle 2600ms cubic-bezier(0.22, 0.61, 0.36, 1) 1 both;
+}
+
+.ce-christmas-hero__ornament svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.ce-christmas-hero__kicker {
+  margin: 0 0 4px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ce-secondary, #b3202c);
+}
+
+.ce-christmas-hero__title {
+  margin: 0 0 6px;
+  font-size: clamp(1.15rem, 2.2vw, 1.6rem);
+  line-height: 1.2;
+  color: var(--ce-primary, #0f5132);
+}
+
+.ce-christmas-hero__copy {
+  margin: 0 0 12px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #33453a;
+}
+
+.ce-christmas-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.ce-christmas-hero__link {
+  border-color: var(--ce-primary, #0f5132);
+  color: var(--ce-primary, #0f5132);
+}
+
+/* The single calm motion: one slow settle, never repeated. */
+@keyframes ce-christmas-settle {
+  from {
+    transform: translateY(-8px);
+    opacity: 0.4;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 640px) {
+  .ce-christmas-hero {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .ce-christmas-hero__ornament {
+    width: 54px;
+  }
+}
+
+/* On phones the hero is a flex row whose copy is bottom-anchored, so a band
+   pinned to the hero's bottom edge would sit on top of the copy. Below 768px the
+   band therefore joins the normal flow UNDER the hero: the wrapper stops being an
+   overlay and the section reserves no padding for it. Server-rendered, so still
+   no layout shift. */
+@media (max-width: 768px) {
+  body.ce-active.ce-package-christmas.ce-placement-homepage-hero .hero-section {
+    display: block;
+    padding-bottom: 0;
+  }
+
+  body.ce-active.ce-package-christmas.ce-placement-homepage-hero .ce-placement--homepage_hero {
+    position: static;
+  }
+
+  body.ce-active.ce-package-christmas.ce-placement-homepage-hero .ce-christmas-hero {
+    margin: 12px auto 16px;
+  }
+}
+
+/* ===== 2. Ambient decorations ===== */
+.ce-package--christmas .ce-ambient-decoration {
+  animation: ce-christmas-settle 2600ms cubic-bezier(0.22, 0.61, 0.36, 1) 1 both;
+}
+
+.ce-package--christmas .ce-ambient-decoration img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ce-christmas-hero__ornament,
+  .ce-package--christmas .ce-ambient-decoration {
+    animation: none !important;
+  }
+}
+
+/* ===== 3. Landing page (package colour only; the layout is shared) ===== */
+.ce-package--christmas .ce-landing__hero {
+  border-bottom: 1px solid color-mix(in srgb, var(--ce-primary, #0f5132) 18%, transparent);
+}
+
+.ce-package--christmas .ce-landing__kicker {
+  color: var(--ce-secondary, #b3202c);
+}
+
+.ce-package--christmas .ce-landing__title {
+  color: var(--ce-primary, #0f5132);
+}
+
+.ce-package--christmas .ce-module__title,
+.ce-package--christmas .ce-card__title a {
+  color: var(--ce-primary, #0f5132);
+}
+
+.ce-package--christmas .ce-card__type {
+  color: var(--ce-secondary, #b3202c);
+}
+
+:root[data-theme="dark"] .ce-package--christmas .ce-landing__title,
+:root[data-theme="dark"] .ce-package--christmas .ce-module__title,
+:root[data-theme="dark"] .ce-package--christmas .ce-card__title a {
+  color: #e7f3ea;
+}
+
+.ce-package--christmas .ce-card {
+  border-color: color-mix(in srgb, var(--ce-primary, #0f5132) 22%, transparent);
+  background: color-mix(in srgb, var(--ce-surface, #fdf8ef) 92%, white);
+}
+
+:root[data-theme="dark"] .ce-package--christmas .ce-card {
+  border-color: rgba(224, 194, 102, 0.32);
+  background: #16241d;
+}
+

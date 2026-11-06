@@ -141,7 +141,34 @@ convention and executed by `./scripts/run-tests.sh`:
 
 Stages 0–3 of the r10 roadmap are implemented: data model, scheduling engine,
 event records + administration + seed migration, and secure preview + cache
-handling. The experience-package **dispatcher**, the Halloween multi-placement
-migration and the second package (Stages 4–6) are not part of this change; the
-theme registers the six package identities (labels only), and the legacy theme
-presentation keeps rendering as before.
+handling.
+
+**Stages 4–6 (2026-11-06) completed the presentation half without changing the
+engine's scheduling rules.** The plugin still renders no markup and knows no
+holiday; the theme owns the registry, the dispatcher, the placements and the assets
+(see [`docs/commemorative-events.md`](../commemorative-events.md)). Two plugin
+changes were required by real defects found while wiring the presentation up, and
+both are minimal and covered by regression tests:
+
+1. **`conexao_commemorative_active()` built the value object from the wrong array.**
+   A live resolution returns the winner's *evaluation row* while an authorised
+   preview returns the *normalised event itself*. Passing the raw array through
+   meant (a) a live event emitted `Undefined array key "id"` warnings and silently
+   lost every localised `_ce_heading` / `_ce_subheading` / `_ce_cta_*` value, and
+   (b) a preview produced an EMPTY event object (`presentation === ''`), so no
+   placement could ever render. The accessor now unwraps the row, resolves the
+   content from the normalised event and rebuilds the evaluation row for the value
+   object (including the occurrence year, for the dismissal key).
+   *Proof:* `test-commemorative-presentation-dispatch.php` plus the authenticated
+   preview rows of `tests/acceptance/verify-commemorative-http.py`.
+2. **The CPT was readable through REST.** `register_post_type()` declared
+   `show_in_rest => true`, so `GET /wp-json/wp/v2/commemorative_event` returned
+   every record to an unauthenticated caller — a breach of r10 §3.7/§9.8. It is now
+   `show_in_rest => false`, the route no longer exists (404), and the permanent gate
+   `commemorative_cpt_privacy` asserts it. The wp-admin surface is unaffected.
+
+The theme's legacy `inc/occasion.php` keeps working for non-presentation callers;
+the commemorative presentation no longer reads it. Its date methods gained an
+optional injected clock (`is_active( $now = null )`) so the Halloween regression
+suite is date-independent, as r10 §9.1 requires.
+

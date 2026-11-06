@@ -95,6 +95,19 @@
 	</footer>
 </div><!-- #page -->
 
+<?php
+/*
+ * Commemorative site-wide ambient placement.
+ *
+ * The dispatcher decides whether this renders at all (one selected event, one
+ * package, one placement); with no active event this call outputs nothing and no
+ * commemorative asset is enqueued. The layer is decorative and `aria-hidden`.
+ */
+if ( function_exists( 'conexao_commemorative_render_placement' ) ) {
+	conexao_commemorative_render_placement( 'site_wide_ambient' );
+}
+?>
+
 <?php wp_footer(); ?>
 </body>
 </html>

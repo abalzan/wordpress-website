@@ -48,10 +48,55 @@ function conexao_commemorative_active( $now = null ) {
 		return null;
 	}
 
-	$event   = (array) $resolution['event'];
+	/*
+	 * Two shapes reach this point and both are legitimate:
+	 *
+	 * - a live resolution returns the winner's EVALUATION ROW
+	 *   (`array( 'event' => <normalised event>, 'eligible' => …, 'window' => … )`),
+	 *   because the row carries the occurrence year and the window;
+	 * - an authorised preview returns the normalised EVENT itself.
+	 *
+	 * Both the value object and `Repository::content()` need the NORMALISED EVENT,
+	 * so unwrap a row first and rebuild a complete evaluation row for the value
+	 * object. Passing the raw array straight through produced two real defects that
+	 * only appear the moment an event is actually displayed (a state the site had
+	 * never been in before Stage 4):
+	 *
+	 *   1. live events emitted "Undefined array key id" warnings and silently lost
+	 *      all localised copy (`_ce_heading`, `_ce_subheading`, `_ce_cta_*`);
+	 *   2. an authorised PREVIEW produced an EMPTY event object, so
+	 *      `$event->presentation` was `''` and no placement could ever render.
+	 *
+	 * Regression proofs: `test-commemorative-resolution.php` ("active() resolves
+	 * localised copy") and `test-commemorative-presentation-dispatch.php`
+	 * ("preview context resolves the package").
+	 */
+	$row   = (array) $resolution['event'];
+	$event = isset( $row['event'] ) && is_array( $row['event'] ) ? (array) $row['event'] : $row;
 	$content = Conexao_Commemorative_Repository::content( $event );
 
-	return new Conexao_Commemorative_Event( $event, $content, ! empty( $resolution['preview'] ) );
+	if ( isset( $row['event'] ) ) {
+		return new Conexao_Commemorative_Event( $row, $content, ! empty( $resolution['preview'] ) );
+	}
+
+	// Preview shape: resolve the window/occurrence year for display only.
+	$window = class_exists( 'Conexao_Commemorative_Schedule' )
+		? Conexao_Commemorative_Schedule::resolve( $event, $now )
+		: null;
+
+	if ( null === $window && class_exists( 'Conexao_Commemorative_Schedule' ) ) {
+		$window = Conexao_Commemorative_Schedule::next_window( $event, $now );
+	}
+
+	$evaluation = array(
+		'event'           => $event,
+		'window'          => $window,
+		'occurrence_year' => $window ? (int) $window['occurrence_year'] : null,
+		'eligible'        => true,
+		'preview'         => true,
+	);
+
+	return new Conexao_Commemorative_Event( $evaluation, $content, ! empty( $resolution['preview'] ) );
 }
 
 /**

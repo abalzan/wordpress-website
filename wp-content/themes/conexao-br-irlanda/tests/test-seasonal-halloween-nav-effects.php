@@ -84,23 +84,40 @@ test_section( 'Dismissal is independent of eligibility' );
 // The welcome-greeting dismissal key (sessionStorage) is separate from the
 // occasion eligibility state. Dismissing the greeting does not change the
 // occasion's active/enabled status, so nav effects remain available.
-assert_true( $halloween->is_active(), 'Halloween occasion reports itself active' );
+assert_true( $halloween->is_active( new DateTimeImmutable( '2026-10-20 12:00:00', wp_timezone() ) ), 'Halloween occasion reports itself active inside its window (injected clock)' );
+assert_true( ! $halloween->is_active( new DateTimeImmutable( '2026-11-20 12:00:00', wp_timezone() ) ), 'Halloween occasion reports itself inactive outside its window (injected clock)' );
 assert_true( $halloween->enabled, 'Halloween occasion reports itself enabled' );
 
 test_section( 'Navigation continuity contract' );
 
 $theme_root = dirname( __DIR__ );
-$nav_script = file_get_contents( $theme_root . '/assets/js/main.js' );
-$nav_styles = file_get_contents( $theme_root . '/assets/css/main.css' );
-$dark_styles = file_get_contents( $theme_root . '/assets/css/dark-mode.css' );
-$header_src = file_get_contents( $theme_root . '/header.php' );
-$witch_asset = file_get_contents( $theme_root . '/assets/images/halloween/witch-broom.svg' );
+
+/*
+ * Stage 4 moved the Halloween presentation out of the global bundles (r10 §7.9).
+ * These assertions are unchanged in what they verify; only the file each one
+ * reads moved to the package home:
+ *   assets/js/main.js            -> assets/js/presentations/halloween/halloween.js
+ *   assets/css/main.css          -> assets/css/presentations/halloween.css
+ *   assets/css/dark-mode.css     -> assets/css/presentations/halloween.css (dark block)
+ *   header.php (marker)          -> template-parts/commemorative/halloween/ambient.php
+ */
+$nav_script    = file_get_contents( $theme_root . '/assets/js/presentations/halloween/halloween.js' );
+$nav_styles    = file_get_contents( $theme_root . '/assets/css/presentations/halloween.css' );
+$dark_styles   = $nav_styles;
+$global_script = file_get_contents( $theme_root . '/assets/js/main.js' );
+$global_style  = file_get_contents( $theme_root . '/assets/css/main.css' );
+$global_dark   = file_get_contents( $theme_root . '/assets/css/dark-mode.css' );
+$ambient_src   = file_get_contents( $theme_root . '/template-parts/commemorative/halloween/ambient.php' );
+$header_src    = file_get_contents( $theme_root . '/header.php' );
+$witch_asset   = file_get_contents( $theme_root . '/assets/images/presentations/halloween/decorations/witch-broom.svg' );
 
 assert_true( is_string( $nav_script ), 'Halloween navigation script is readable' );
 assert_true( is_string( $nav_styles ), 'Halloween navigation styles are readable' );
 assert_true( is_string( $dark_styles ), 'Halloween dark-mode styles are readable' );
+assert_true( is_string( $ambient_src ), 'The ambient placement template is readable' );
 assert_true( is_string( $header_src ), 'Header source is readable' );
 assert_true( is_string( $witch_asset ), 'The witch illustration is readable' );
+
 
 assert_contains(
 	"var TRANSITION_KEY = 'conexao-halloween-nav-effect-v1';",
@@ -349,18 +366,42 @@ assert_contains(
 	'External links do not trigger or persist the effect'
 );
 assert_contains(
-	"'halloween' === conexao_seasonal_variant()",
-	$header_src,
-	'Only the selected Halloween occasion emits the navigation eligibility marker'
+	'seasonal-halloween-active-marker',
+	$ambient_src,
+	'The package marker is emitted by the site-wide ambient placement'
 );
 assert_contains(
-	'data-witch-asset="<?php echo esc_url( get_template_directory_uri() . \'/assets/images/halloween/witch-broom.svg\' ); ?>"',
-	$header_src,
+	"'halloween' !== \$ce['package']['slug']",
+	$ambient_src,
+	'Only the Halloween package emits the navigation eligibility marker'
+);
+assert_contains(
+	'data-witch-asset="<?php echo esc_url( get_template_directory_uri() . \'/assets/images/presentations/halloween/decorations/witch-broom.svg\' ); ?>"',
+	$ambient_src,
 	'The active marker exposes only the locally stored, escaped witch illustration URL'
 );
 assert_true(
-	file_exists( $theme_root . '/assets/images/halloween/witch-broom.svg' ),
-	'The broom-riding witch illustration is stored in the theme assets'
+	false === strpos( $header_src, 'halloween' ),
+	'header.php no longer contains any Halloween identity (the dispatcher owns the marker)'
+);
+assert_true(
+	file_exists( $theme_root . '/assets/images/presentations/halloween/decorations/witch-broom.svg' ),
+	'The broom-riding witch illustration is stored in the package asset directory'
+);
+assert_not_contains(
+	'seasonal-halloween',
+	$global_script,
+	'The global main.js bundle no longer ships the Halloween code'
+);
+assert_not_contains(
+	'seasonal-halloween',
+	$global_style,
+	'The global main.css bundle no longer ships the Halloween styles'
+);
+assert_not_contains(
+	'halloween',
+	$global_dark,
+	'The global dark-mode.css bundle no longer ships the Halloween tokens'
 );
 assert_contains(
 	'seasonal-halloween-witch-nav flying',

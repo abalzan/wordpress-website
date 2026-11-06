@@ -1,0 +1,21 @@
+== Stage L i18n catalogue freshness gate ==
+   repo:  /home/andrei/IdeaProjects/wordpress-website
+   signal: git commit time per file (mtime is not reproducible in CI)
+   conexao-br-irlanda       catalogue=1793828441 newest-source=1793958998 (wp-content/themes/conexao-br-irlanda/inc/commemorative-presentations.php) STALE
+   conexao-data-model       catalogue=1791787669 newest-source=1790335165 (wp-content/plugins/conexao-data-model/includes/class-agency.php) fresh
+   conexao-content          catalogue=1791787669 newest-source=1790699556 (wp-content/plugins/conexao-content/conexao-content.php) fresh
+   conexao-admin-ux         catalogue=1793823820 newest-source=1793958998 (wp-content/plugins/conexao-admin-ux/includes/class-editor.php) STALE
+   conexao-event-runtime    catalogue=1791787669 newest-source=1791205894 (wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php) fresh
+   conexao-commemorative    catalogue=1793958998 newest-source=1793958998 (wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php) fresh
+   conexao-event-importer   catalogue=1792653196 newest-source=1792616365 (wp-content/plugins/conexao-event-importer/includes/class-event-cleanup.php) fresh
+   conexao-leisure-migration catalogue=1791787669 newest-source=1790325155 (wp-content/plugins/conexao-leisure-migration/includes/class-leisure-exporter.php) fresh
+   conexao-sponsor-migration catalogue=1791787669 newest-source=1789994211 (wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-importer.php) fresh
+   conexao-translation-automation catalogue=1791787669 newest-source=1790861950 (wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-batch-control.php) fresh
+
+   stale catalogues: 2
+FAIL: conexao-br-irlanda: wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot is older than wp-content/themes/conexao-br-irlanda/inc/commemorative-presentations.php by 130557s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)
+FAIL: conexao-admin-ux: wp-content/plugins/conexao-admin-ux/languages/conexao-admin-ux.pot is older than wp-content/plugins/conexao-admin-ux/includes/class-editor.php by 135178s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)
+3 passed, 2 failed
+  stale catalogues: 2 pre-existing, 0 new
+GATE-RESULT {"gate": "i18n_freshness", "status": "fail", "passed": 3, "failed": 2, "violations": 2, "pre_existing": 2, "new": 0, "details": [{"component": "conexao-br-irlanda", "catalogue": "wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot", "newest_source": "wp-content/themes/conexao-br-irlanda/inc/commemorative-presentations.php", "catalogue_ts": 1793828441, "newest_source_ts": 1793958998, "lag_seconds": 130557}, {"component": "conexao-admin-ux", "catalogue": "wp-content/plugins/conexao-admin-ux/languages/conexao-admin-ux.pot", "newest_source": "wp-content/plugins/conexao-admin-ux/includes/class-editor.php", "catalogue_ts": 1793823820, "newest_source_ts": 1793958998, "lag_seconds": 135178}]}
+EXIT=1

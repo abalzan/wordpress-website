@@ -142,13 +142,14 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 		</div>
 	</div>
 	<?php
-	$active_occasion = function_exists( 'ocons_get_primary_active' ) ? ocons_get_primary_active() : null;
-	if ( $active_occasion && 'halloween' === $active_occasion->id && $active_occasion->enabled ) {
-		get_template_part(
-			'template-parts/halloween-hero',
-			null,
-			array( 'seasonal_occasion' => $active_occasion )
-		);
+	/*
+	 * One generic dispatch call — the template no longer knows any event identity
+	 * (r10 §7.11). The engine selects the event, the theme resolves its package and
+	 * renders only the placements that belong on this route; with no active event
+	 * this prints nothing at all.
+	 */
+	if ( function_exists( 'conexao_commemorative_render_placement' ) ) {
+		conexao_commemorative_render_placement( 'homepage_hero' );
 	}
 	?>
 </section>

@@ -1,0 +1,47 @@
+conexao test harness
+  repository:    /home/andrei/IdeaProjects/wordpress-website
+  php:           8.5.4
+  environment:   host (docker compose exec)
+  base url:      http://localhost:8080
+
+In-process PHP suites (serial, one process per suite)
+[PASS] plugin/conexao-admin-ux/test-leisure-coordinates.php — 29 passed, 0 failed
+[PASS] plugin/conexao-admin-ux/test-recurrence-admin.php — 60 passed, 0 failed
+[PASS] plugin/conexao-admin-ux/test-translation-state.php — 23 passed, 0 failed
+[PASS] plugin/conexao-commemorative/test-commemorative-admin.php — 41 passed, 0 failed
+[PASS] plugin/conexao-commemorative/test-commemorative-cache-boundary.php — 40 passed, 0 failed
+[PASS] plugin/conexao-commemorative/test-commemorative-migration.php — 25 passed, 0 failed
+[PASS] plugin/conexao-commemorative/test-commemorative-preview.php — 20 passed, 0 failed
+[PASS] plugin/conexao-commemorative/test-commemorative-resolution.php — 27 passed, 0 failed
+[PASS] plugin/conexao-commemorative/test-commemorative-schedule.php — 56 passed, 0 failed
+[PASS] plugin/conexao-data-model/test-leisure-coordinate-rest-permissions.php — 74 passed, 0 failed
+[PASS] plugin/conexao-en-translation/test-shared-slug-newsletter.php — 39 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-county-registry.php — 482 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-error-handling.php — 55 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-event-address.php — 76 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-event-cleanup-purge.php — 715 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-event-image-sync.php — 30 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-eventbrite-api-contract.php — 110 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-eventbrite-checkpoint.php — 77 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-eventbrite-importer.php — 68 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-eventbrite-rate-limit.php — 73 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-eventbrite-source-expansion.php — 65 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-eventbrite-token-retirement.php — 42 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-eventbrite-volatility.php — 77 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-export-language.php — 58 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-ics-occurrence-dates.php — 172 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-import-continuation.php — 272 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-import-log-run-correlation.php — 21 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-import-log.php — 55 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-ivvcc-importer.php — 46 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-language-identity.php — 29 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-mondello-park-importer.php — 142 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-motorsport-ireland-importer.php — 90 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-multi-file-import-ui.php — 41 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-multi-file-import.php — 149 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-past-event-filter.php — 29 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-reappearing-event-lifecycle.php — 5 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-request-budget.php — 33 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-request-retry-policy.php — 59 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-request-reuse.php — 53 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-source-county-hint.php — 18 passed, 0 failed

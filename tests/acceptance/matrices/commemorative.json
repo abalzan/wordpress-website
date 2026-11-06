@@ -1,0 +1,162 @@
+{
+  "description": "Commemorative presentations: no-event negative proof, the opt-in Christmas landing page in PT and EN, the CPT privacy invariants, the sitemap archival policy and the public-query activation negative proof. The authenticated admin preview rows live in verify-commemorative-http.py because they need a real session and a derived nonce.",
+  "base_url_default": "http://localhost:8080",
+  "rows": [
+    {
+      "id": "pt-home-no-commemorative-bytes",
+      "url": "/",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"pt-BR\">"
+      ],
+      "expect_absent": [
+        "ce-placement",
+        "ce-active-marker",
+        "conexao-commemorative",
+        "presentations/halloween",
+        "presentations/christmas"
+      ],
+      "note": "r10 §7.9 / gate (a): with no active event the homepage emits zero commemorative markup and requests zero commemorative CSS/JS."
+    },
+    {
+      "id": "pt-internal-no-commemorative-bytes",
+      "url": "/guias/",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"pt-BR\">"
+      ],
+      "expect_absent": [
+        "ce-placement",
+        "conexao-commemorative",
+        "presentations/halloween",
+        "presentations/christmas"
+      ],
+      "note": "Gate (a) on an internal route: no event means no ambient layer and no package asset."
+    },
+    {
+      "id": "pt-cpt-route-is-not-public",
+      "url": "/commemorative_event/",
+      "expect_status": 404,
+      "expect_contains": [],
+      "expect_absent": [
+        "ce-package--"
+      ],
+      "note": "r10 §3.7 / gate (c): the commemorative_event CPT has no public singular route or archive."
+    },
+    {
+      "id": "pt-cpt-rest-is-locked",
+      "url": "/wp-json/wp/v2/commemorative_event",
+      "expect_status": 404,
+      "expect_contains": [],
+      "expect_absent": [
+        "_ce_event_key",
+        "commemorative_event"
+      ],
+      "note": "r10 §9.8: an unauthenticated REST collection request returns no records and the route does not exist."
+    },
+    {
+      "id": "pt-sitemap-does-not-publish-commemorative-urls",
+      "url": "/sitemap.xml",
+      "expect_status": 200,
+      "expect_contains": [
+        "sitemap"
+      ],
+      "expect_absent": [
+        "/natal/",
+        "/en/christmas/",
+        "commemorative_event"
+      ],
+      "note": "r10 §7.13 / gate (c): the commemorative URLs are not published. The theme sitemap is the producer of that exclusion; in this local stack Jetpack serves /sitemap.xml, so the exclusion decision itself is proven in-process by the cpt_privacy gate (see docs/evidence, 'sitemap producer' limitation)."
+    },
+    {
+      "id": "pt-landing-page",
+      "url": "/natal/",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"pt-BR\">",
+        "<link rel=\"canonical\" href=\"http://localhost:8080/natal/\" />",
+        "hreflang=\"en\" href=\"http://localhost:8080/en/christmas/\"",
+        "<h1 class=\"ce-landing__title\">Natal</h1>",
+        "data-ce-motif=\"bauble_ornament\"",
+        "ce-module--agenda",
+        "ce-module--lugar",
+        "ce-module--bem-estar",
+        "ce-module--leituras",
+        "ce-module--guias",
+        "conexao-ce-css-presentations-christmas"
+      ],
+      "expect_absent": [
+        "presentations/halloween",
+        "data-preview=\"1\"",
+        "ce-package--halloween"
+      ],
+      "note": "r10 §7.5/§7.13: the opt-in PT landing page renders five real modules, its own canonical/hreflang, and only the Christmas package assets."
+    },
+    {
+      "id": "en-landing-page",
+      "url": "/en/christmas/",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"en-US\">",
+        "<link rel=\"canonical\" href=\"http://localhost:8080/en/christmas/\" />",
+        "hreflang=\"pt-BR\" href=\"http://localhost:8080/natal/\"",
+        "<h1 class=\"ce-landing__title\">Christmas</h1>",
+        "ce-module--agenda",
+        "ce-module--leituras"
+      ],
+      "expect_absent": [
+        "presentations/halloween",
+        "data-preview=\"1\""
+      ],
+      "note": "The EN record is a real linked translation with its own canonical and the mirrored hreflang pair."
+    },
+    {
+      "id": "en-landing-is-not-a-redirect",
+      "url": "/en/christmas/",
+      "expect_status": 200,
+      "expect_contains": [
+        "ce-package--christmas"
+      ],
+      "expect_absent": [
+        "<html lang=\"pt-BR\">"
+      ],
+      "note": "Redirect precedence: the EN landing route serves 200 in English instead of redirecting to PT."
+    },
+    {
+      "id": "public-preview-query-does-not-activate",
+      "url": "/?conexao_preview=halloween&_wpnonce=deadbeefdead&_ce_ts=1",
+      "expect_status": 200,
+      "expect_contains": [],
+      "expect_absent": [
+        "data-preview=\"1\"",
+        "ce-package--halloween",
+        "conexao-preview-banner",
+        "presentations/halloween"
+      ],
+      "note": "r10 §5.4 / gate (b): an unauthenticated request with a preview key and a bogus nonce activates nothing and renders no banner."
+    },
+    {
+      "id": "public-package-parameter-does-not-activate",
+      "url": "/?ce_package=halloween&ce_placement=homepage_hero",
+      "expect_status": 200,
+      "expect_contains": [],
+      "expect_absent": [
+        "ce-package--halloween",
+        "ce-placement--homepage_hero"
+      ],
+      "note": "Gate (b): there is no public activation override; unknown query parameters are inert."
+    },
+    {
+      "id": "public-landing-preview-query-does-not-activate",
+      "url": "/natal/?conexao_preview=christmas&_wpnonce=deadbeefdead&_ce_ts=1",
+      "expect_status": 200,
+      "expect_contains": [
+        "ce-module--agenda"
+      ],
+      "expect_absent": [
+        "data-preview=\"1\""
+      ],
+      "note": "The landing page keeps serving its archival content while refusing an unauthenticated preview attempt."
+    }
+  ]
+}

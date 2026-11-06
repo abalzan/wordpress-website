@@ -1,0 +1,455 @@
+[06-Nov-2026 10:20:24 UTC] PHP Notice:  $_SERVER['HTTP_HOST'] or $_SERVER['REQUEST_URI'] are required but not set. in /var/www/html/wp-content/plugins/polylang/src/functions.php on line 81
+script: scripts/diagnostics/commemorative-content-inventory.php
+target: http://localhost:8080 (local, local)
+mode:   read-only
+scope:  read-only
+
+Notice: $_SERVER['HTTP_HOST'] or $_SERVER['REQUEST_URI'] are required but not set. in /var/www/html/wp-content/plugins/polylang/src/functions.php on line 81
+public post types: post, page, attachment, guide, event, job, sponsor, course_provider, leisure
+
+== page (published=44) ==
+  1       pt   about                                      About
+  15      pt   anuncie                                    Anuncie Aqui
+  25      pt   beneficios                                 Benefícios
+  10      pt   blog                                       Blog
+  19      pt   search                                     Buscar
+  64      pt   categorias                                 Categorias
+  31      pt   compras                                    Compras
+  39      pt   cork                                       Condado de Cork
+  38      pt   dublin                                     Condado de Dublin
+  40      pt   galway                                     Condado de Galway
+  42      pt   kildare                                    Condado de Kildare
+  37      pt   laois                                      Condado de Laois
+  41      pt   limerick                                   Condado de Limerick
+  43      pt   meath                                      Condado de Meath
+  45      pt   waterford                                  Condado de Waterford
+  44      pt   wicklow                                    Condado de Wicklow
+  12      pt   contato                                    Contato
+  27      pt   documentos                                 Documentos
+  26      pt   educacao                                   Educação
+  11086   pt   empregos-2                                 Empregos
+  36      pt   europa                                     Europa para Brasileiros
+  22      pt   familia                                    Família
+  24      pt   financas                                   Finanças
+  9       pt   inicio                                     Início
+  35      pt   irlanda                                    Irlanda para Brasileiros
+  22201   pt   jobs-2                                     Jobs
+  29      pt   lazer                                      Lazer
+  20      pt   moradia                                    Moradia
+  32      pt   negocios                                   Negócios
+  13      pt   newsletter                                 Newsletter
+  28      pt   onde-comer                                 Onde Comer
+  18      pt   cookies                                    Política de Cookies
+  16      pt   politica-de-privacidade                    Política de Privacidade
+  61      pt   privacidade                                Privacidade
+  14      pt   revista                                    Revista Digital
+  21      pt   saude                                      Saúde
+  33      pt   servicos                                   Serviços
+  63      pt   sobre                                      Sobre
+  11      pt   sobre-nos                                  Sobre Nós
+  62      pt   termos                                     Termos
+  17      pt   termos-de-uso                              Termos de Uso
+  23      pt   transporte                                 Transporte
+  30      pt   turismo                                    Turismo
+  34      pt   voluntariado                               Voluntariado
+
+== post (published=43) ==
+  10373   pt   auxilios-e-apoio-relacionados-a-saude-e-bem-estar-na-irlanda Auxílios e Apoio Relacionados a Saúde e Bem-Estar na Irlanda
+  10374   pt   auxilios-para-familias-atipicas-na-irlanda Auxílios para Famílias Atípicas na Irlanda
+  10358   pt   1-cuidando-de-si-em-terra-estrangeira      Blog CI: 1 Cuidando De Si Em Terra Estrangeira
+  10359   pt   2-saude-mental-e-imigracao-o-que-ninguem-conta Blog CI: 2 Saude Mental E Imigracao O Que Ninguem Conta
+  10381   pt   a-caneta-emagrece-e-o-espirito-corre-atras Blog CI: A Caneta Emagrece E O Espirito Corre Atras
+  10385   pt   a-medicacao-pode-ajudar-a-abrir-a-porta-mas-o-treino-e-a-mudanca-de-habitos-que-vao-manter-os-resul Blog CI: A Medicacao Pode Ajudar A Abrir A Porta Mas O Treino E A Muda…
+  10363   pt   alinhar-o-invisivel-para-harmonizar-o-cotidiano Blog CI: Alinhar O Invisivel Para Harmonizar O Cotidiano
+  10387   pt   as-relacoes-de-casal-na-nova-era           Blog CI: As Relacoes De Casal Na Nova Era
+  10380   pt   atividade-fisica-nao-deve-ser-um-projeto-de-verao-deve-ser-um-projeto-de-vida Blog CI: Atividade Fisica Nao Deve Ser Um Projeto De Verao Deve Ser Um…
+  10372   pt   bolo-cocada-molhadinho                     Blog CI: Bolo Cocada Molhadinho
+  10382   pt   canetas-emagrecedoras-emagrecer-ficou-mais-facil-mas-e-a-saude Blog CI: Canetas Emagrecedoras Emagrecer Ficou Mais Facil Mas E A Saud…
+  10368   pt   capacitacao-em-laois-irlanda-capacitacao-em-laois-irlanda Blog CI: Capacitacao Em Laois Irlanda Capacitacao Em Laois Irlanda
+  10360   pt   como-voce-se-sente-nessa-epoca-do-ano      Blog CI: Como Voce Se Sente Nessa Epoca Do Ano
+  10361   pt   construindo-rede-de-apoio-longe-de-casa    Blog CI: Construindo Rede De Apoio Longe De Casa
+  10357   pt   coragem-a-estrela-que-ilumina-o-caminho-do-empreendedor-especial-de-natal Blog CI: Coragem A Estrela Que Ilumina O Caminho Do Empreendedor Espec…
+  10383   pt   cupcake-da-granny                          Blog CI: Cupcake Da Granny
+  10369   pt   cursos-e-apoio-para-empreendedores         Blog CI: Cursos E Apoio Para Empreendedores
+  10356   pt   dois-anos-novos-um-medido-pelo-homem-outro-sentido-pela-terra Blog CI: Dois Anos Novos Um Medido Pelo Homem Outro Sentido Pela Terra
+  10388   pt   dois-fatores-que-fazem-o-seu-negocio-ter-consistencia-nas-vendas Blog CI: Dois Fatores Que Fazem O Seu Negocio Ter Consistencia Nas Ven…
+  10365   pt   entre-o-silencio-do-inverno-e-o-primeiro-sopro-da-primavera Blog CI: Entre O Silencio Do Inverno E O Primeiro Sopro Da Primavera
+  10379   pt   escalar-e-necessario-crescer-com-consistencia-e-o-proximo-nivel-do-seu-negocio Blog CI: Escalar E Necessario Crescer Com Consistencia E O Proximo Niv…
+  10370   pt   gestao-financeira-o-alicerce-invisivel-de-todo-negocio-que-prospera Blog CI: Gestao Financeira O Alicerce Invisivel De Todo Negocio Que Pr…
+  10355   pt   movimento-e-medicina                       Blog CI: Movimento E Medicina
+  10352   pt   o-calor-que-nasce-do-inverno               Blog CI: O Calor Que Nasce Do Inverno
+  10349   pt   o-inverno-do-ego-um-renascimento-poetico   Blog CI: O Inverno Do Ego Um Renascimento Poetico
+  10386   pt   o-que-todo-pequeno-empreendedor-precisa-aprender-para-fazer-o-negocio-crescer-por-que-entender-toda Blog CI: O Que Todo Pequeno Empreendedor Precisa Aprender Para Fazer O…
+  10350   pt   o-sol-que-habita-em-nos                    Blog CI: O Sol Que Habita Em Nos
+  10384   pt   papo-de-empreendedor-com-um-toque-criativo-leve-e-motivador-para-inspirar-quem-pensa-em-empreende-13 Blog CI: Papo De Empreendedor Com Um Toque Criativo Leve E Motivador P…
+  10354   pt   preparando-o-corpo-para-o-inverno          Blog CI: Preparando O Corpo Para O Inverno
+  10378   pt   primavera-chegou-um-convite-para-renovar-tambem-a-sua-alimentacao Blog CI: Primavera Chegou Um Convite Para Renovar Tambem A Sua Aliment…
+  10377   pt   primavera-o-chamado-silencioso-para-florescer-com-consciencia Blog CI: Primavera O Chamado Silencioso Para Florescer Com Consciencia
+  10364   pt   proposito-o-sentido-que-nos-move-por-dentro Blog CI: Proposito O Sentido Que Nos Move Por Dentro
+  10366   pt   quando-a-terra-desperta-a-primavera-e-o-novo-ano-astrologico-1 Blog CI: Quando A Terra Desperta A Primavera E O Novo Ano Astrologico…
+  10389   pt   quem-voce-se-tornou-longe-de-casa          Blog CI: Quem Voce Se Tornou Longe De Casa
+  10348   pt   sol-e-lua-equilibrando-consciencia-e-emocoesdurante-o-inverno-norte-europeu Blog CI: Sol E Lua Equilibrando Consciencia E Emocoesdurante O Inverno…
+  10371   pt   trabalho-em-laoistrabalho-em-laois         Blog CI: Trabalho Em Laoistrabalho Em Laois
+  10362   pt   carne-refogada-ao-estilo-korean-bbq        Carne Refogada ao Estilo Korean BBQ
+  115362  pt   comunidade-celebra-festa-junina-em-dublin  Comunidade celebra Festa Junina em Dublin (sintético)
+  10367   pt   dica-de-saude-para-quem-viaja              Dica de Saúde Para Quem Viaja
+  10375   pt   guia-para-quem-esta-com-dificuldades-financeiras Guia Para quem está com Dificuldades Financeiras
+  10376   pt   guia-pratico-para-brasileiros-em-laois     Guia Prático para Brasileiros em Laois
+  10353   pt   informacoes-para-as-mulheres-na-irlanda    Informações para as Mulheres na Irlanda
+  10351   pt   turismo-e-lazer-em-co-laois-na-irlanda     Turismo e Lazer em Co. Laois na Irlanda
+
+== guide (published=55) ==
+  22183   pt   stage32-editorial-source                   [STAGE32-EDITORIAL] source
+  463     pt   carteira-de-motorista-2                    Carteira de Motorista na Irlanda: Como Trocar a CNH
+  10009   pt   learner-permit-theory-test-irlanda-cnh-brasileira CNH brasileira na Irlanda: quando você precisa fazer theory test e lea…
+  115360  pt   como-tirar-o-pps-number                    Como tirar o PPS Number (sintético)
+  460     pt   abrir-conta-bancaria-2                     Guia CI: Abrir Conta Bancaria 2
+  469     pt   abrir-empresa-2                            Guia CI: Abrir Empresa 2
+  461     pt   alugar-casa-2                              Guia CI: Alugar Casa 2
+  10011   pt   assistencia-juridica-legal-aid-irlanda-brasileiros Guia CI: Assistencia Juridica Legal Aid Irlanda Brasileiros
+  5000    pt   autismo-na-irlanda-diagnostico-hse-apoio   Guia CI: Autismo Na Irlanda Diagnostico Hse Apoio
+  5001    pt   autismo-viagem-aviao-irlanda-dublin-cork-airport Guia CI: Autismo Viagem Aviao Irlanda Dublin Cork Airport
+  11161   pt   beneficios-pais-solteiros-irlanda          Guia CI: Beneficios Pais Solteiros Irlanda
+  482     pt   cao                                        Guia CI: Cao
+  115267  pt   carteira-motorista-brasileiros             Guia CI: Carteira Motorista Brasileiros
+  10012   pt   casamento-registro-nascimento-irlanda-brasileiros Guia CI: Casamento Registro Nascimento Irlanda Brasileiros
+  10015   pt   checklist-viagem-internacional-irlanda-brasileiros-irp Guia CI: Checklist Viagem Internacional Irlanda Brasileiros Irp
+  467     pt   child-benefit-2                            Guia CI: Child Benefit 2
+  465     pt   cidadania-irlandesa-2                      Guia CI: Cidadania Irlandesa 2
+  462     pt   comprar-carro-2                            Guia CI: Comprar Carro 2
+  483     pt   direitos-consumidor                        Guia CI: Direitos Consumidor
+  473     pt   direitos-trabalhistas                      Guia CI: Direitos Trabalhistas
+  10007   pt   ehic-irlanda-brasileiros-residentes        Guia CI: Ehic Irlanda Brasileiros Residentes
+  479     pt   eircode                                    Guia CI: Eircode
+  10003   pt   employment-permit-irlanda-brasileiros      Guia CI: Employment Permit Irlanda Brasileiros
+  485     pt   garda                                      Guia CI: Garda
+  459     pt   gp-registration-2                          Guia CI: Gp Registration 2
+  480     pt   hap                                        Guia CI: Hap
+  10006   pt   hse-irlanda-gp-out-of-hours-injury-unit-emergency-department Guia CI: Hse Irlanda Gp Out Of Hours Injury Unit Emergency Department
+  464     pt   impostos-2                                 Guia CI: Impostos 2
+  11277   pt   inverno-irlanda-depressao-sazonal-saude-mental Guia CI: Inverno Irlanda Depressao Sazonal Saude Mental
+  471     pt   irp-renewal-2                              Guia CI: Irp Renewal 2
+  10010   pt   leap-card-irlanda-como-usar                Guia CI: Leap Card Irlanda Como Usar
+  458     pt   medical-card-2                             Guia CI: Medical Card 2
+  478     pt   motor-tax                                  Guia CI: Motor Tax
+  472     pt   mygovid                                    Guia CI: Mygovid
+  477     pt   nct                                        Guia CI: Nct
+  466     pt   passaporte-irlandes-2                      Guia CI: Passaporte Irlandes 2
+  457     pt   pps-number-2                               Guia CI: Pps Number 2
+  10001   pt   primeira-inscricao-irp-irlanda-brasileiros Guia CI: Primeira Inscricao Irp Irlanda Brasileiros
+  10004   pt   primeiro-emprego-irlanda-emergency-tax     Guia CI: Primeiro Emprego Irlanda Emergency Tax
+  484     pt   protecao-dados                             Guia CI: Protecao Dados
+  10016   pt   reclamacao-trabalhista-wrc-irlanda-brasileiros Guia CI: Reclamacao Trabalhista Wrc Irlanda Brasileiros
+  10013   pt   reclamar-banco-seguro-servico-financeiro-irlanda Guia CI: Reclamar Banco Seguro Servico Financeiro Irlanda
+  10014   pt   reclamar-servico-publico-irlanda-ombudsman Guia CI: Reclamar Servico Publico Irlanda Ombudsman
+  10008   pt   reconhecer-diploma-brasileiro-na-irlanda-naric-qqi Guia CI: Reconhecer Diploma Brasileiro Na Irlanda Naric Qqi
+  486     pt   revenue-myaccount                          Guia CI: Revenue Myaccount
+  481     pt   rtb                                        Guia CI: Rtb
+  476     pt   servicos-emergencia                        Guia CI: Servicos Emergencia
+  468     pt   social-welfare-2                           Guia CI: Social Welfare 2
+  10005   pt   sole-trader-autonomo-irlanda-brasileiros   Guia CI: Sole Trader Autonomo Irlanda Brasileiros
+  475     pt   susi                                       Guia CI: Susi
+  474     pt   transporte-publico                         Guia CI: Transporte Publico
+  10002   pt   viajar-fora-irlanda-com-irp-brasileiros    Guia CI: Viajar Fora Irlanda Com Irp Brasileiros
+  11166   pt   violencia-domestica-irlanda-onde-encontrar-ajuda Guia CI: Violencia Domestica Irlanda Onde Encontrar Ajuda
+  470     pt   visto-irlanda-2                            Guia CI: Visto Irlanda 2
+  22415   pt   outono-irlanda-alimentacao-bem-estar       O outono chegou à Irlanda… e o nosso corpo também sente essa mudança
+
+== event (published=40) ==
+  16422   pt   crest-of-a-wave-rory-gallagher-tribute-show-live-at-the-pavilion-cork 'Crest of a Wave' - Rory Gallagher Tribute show - Live at The Pavilion…
+  17897   pt   rebel-rebel-david-bowies-greatest-hits-live-at-the-purty-kitchen 'REBEL REBEL' David Bowies Greatest Hits - Live at The Purty Kitchen
+  17372   pt   whos-that-girl-eurythmics-annie-lennox-experience-live-in-concert-2 'Who's That Girl'- Eurythmics &amp; Annie Lennox Experience - Live in…
+  107191  pt   cleanup-test-manual-past-no-_event_imported-4 [CLEANUP TEST] manual past (no _event_imported)
+  107174  pt   cleanup-test-manual-past-no-_event_imported-3 [CLEANUP TEST] manual past (no _event_imported)
+  107162  pt   cleanup-test-manual-past-no-_event_imported-2 [CLEANUP TEST] manual past (no _event_imported)
+  107150  pt   cleanup-test-manual-past-no-_event_imported [CLEANUP TEST] manual past (no _event_imported)
+  107473  pt   cleanup-test-no-date-7                     [CLEANUP TEST] no date
+  107190  pt   cleanup-test-no-date-5                     [CLEANUP TEST] no date
+  107185  pt   cleanup-test-no-date-4                     [CLEANUP TEST] no date
+  107173  pt   cleanup-test-no-date-3                     [CLEANUP TEST] no date
+  107161  pt   cleanup-test-no-date-2                     [CLEANUP TEST] no date
+  107149  pt   cleanup-test-no-date                       [CLEANUP TEST] no date
+  111047  pt   cleanup-test-no-date-8                     [CLEANUP TEST] no date
+  112623  pt   cleanup-test-no-date-6                     [CLEANUP TEST] no date
+  112849  pt   cleanup-test-no-date-9                     [CLEANUP TEST] no date
+  113328  pt   cleanup-test-no-date-11                    [CLEANUP TEST] no date
+  114249  pt   cleanup-test-no-date-12                    [CLEANUP TEST] no date
+  115484  pt   rec-test-1-one-time-future                 [REC-TEST] 1. One-time future
+  115485  pt   rec-test-2-one-time-past-2                 [REC-TEST] 2. One-time past
+  115486  pt   rec-test-3-weekly-wednesday-active-today   [REC-TEST] 3. Weekly Wednesday active today
+  115487  pt   rec-test-4-weekly-monday-not-started       [REC-TEST] 4. Weekly Monday not started
+  115488  pt   rec-test-5-weekly-wednesday-ended          [REC-TEST] 5. Weekly Wednesday ended
+  115489  pt   rec-test-6-weekly-twice-wednesday-friday   [REC-TEST] 6. Weekly twice (Wednesday + Friday)
+  115490  pt   rec-test-7-weekly-open-ended-wednesday     [REC-TEST] 7. Weekly open-ended Wednesday
+  115491  pt   rec-test-8-weekly-weekday-mismatch-wednesday-started-monday [REC-TEST] 8. Weekly weekday mismatch (Wednesday, started Monday)
+  115492  pt   rec-test-9-normal-event-no-recurrence-meta [REC-TEST] 9. Normal event (no recurrence meta)
+  25441   pt   stage32-exp-en                             [STAGE32-EXP] English source
+  19504   pt   1-day-wellbeing-for-women-retreat          1 Day Wellbeing for Women Retreat
+  20072   pt   2026-solstice-newgrange-circle-of-peace-and-overnight-dowth 2026 Solstice: Newgrange Circle of Peace and overnight Dowth
+  18718   pt   5th-carlow-town-scouts-95th-anniversary-gala-dinner 5th Carlow Town Scouts 95th Anniversary Gala Dinner
+  17299   pt   6-tracks-wrap-party-with-khakikid          6 Tracks Wrap Party with Khakikid
+  19468   pt   80s-90s-disco                              80s 90s Disco
+  20752   pt   a-journey-inwards-winter-day-retreat-at-anam-kara-wellness A Journey Inwards - Winter Day Retreat at Anam Kara Wellness
+  19995   pt   a-talk-tour-of-kells-printing-works        A Talk &amp; Tour of Kells Printing Works
+  21555   pt   abba-bottomless-drag-brunch-with-mockie-ah-2 ABBA Bottomless Drag Brunch with Mockie Ah!
+  18781   pt   abba-christmas-experience-cavan            ABBA Christmas Experience : CAVAN
+  19981   pt   abba-day-party                             ABBA Day Party
+  19629   pt   abba-esque-irelands-number-one-tribute-show-at-the-longcourt-house-hotel ABBA ESQUE- Ireland's Number One Tribute Show at the Longcourt House H…
+  17987   pt   abba-interactive-live-at-walters-venue-dun-laoghaire ABBA Interactive - Live at Walters Venue Dun Laoghaire
+
+== leisure (published=200) ==
+  22734   pt   ph3c-test-lazer-alfa                       [PH3C TEST] Lazer Alfa
+  22739   pt   ph3c-test-lazer-externo                    [PH3C TEST] Lazer externo
+  22737   pt   ph3c-test-lazer-sem-condado                [PH3C TEST] Lazer sem condado
+  22738   pt   ph3c-test-lazer-zeta                       [PH3C TEST] Lazer Zeta
+  10631   pt   abbeyleix-heritage-house                   Abbeyleix Heritage House
+  10748   pt   achill-island                              Achill Island
+  10682   pt   acres-lake-floating-boardwalk              Acres Lake Floating Boardwalk
+  10841   pt   adare-village                              Adare
+  20931   pt   desmond-castle-adare                       Adare Castle
+  10180   pt   aillwee-caves                              Aillwee Caves
+  10879   pt   altamont-gardens                           Altamont Gardens
+  20905   pt   annes-grove-gardens                        Annes Grove Gardens
+  10173   pt   aran-islands                               Aran Islands
+  20926   pt   aras-an-uachtarain                         Áras an Uachtaráin
+  20909   pt   arbour-hill-cemetery                       Arbour Hill Cemetery
+  10656   pt   ardagh-heritage-village                    Ardagh Heritage Village
+  20927   pt   ardfert-cathedral                          Ardfert Cathedral
+  10797   pt   ardmore-round-tower                        Ardmore Round Tower &amp; Cathedral
+  10728   pt   ards-forest-park                           Ards Forest Park
+  10672   pt   arigna-mining-experience                   Arigna Mining Experience
+  20930   pt   askeaton-castle                            Askeaton Castle
+  20933   pt   athenry-castle                             Athenry Castle
+  10647   pt   athlone-castle                             Athlone Castle Visitor Centre
+  20934   pt   aughnanure-castle                          Aughnanure Castle
+  10161   pt   avondale-forest-park                       Avondale Forest Park
+  20936   pt   ballyhack-castle                           Ballyhack Castle
+  10621   pt   banna-strand                               Banna Strand
+  20906   pt   barryscourt-castle                         Barryscourt Castle
+  10168   pt   battle-of-the-boyne-visitor-centre         Battle of the Boyne Visitor Centre
+  10565   pt   bective-abbey                              Bective Abbey
+  10700   pt   belturbet-railway-station                  Belturbet Railway Station
+  10645   pt   belvedere-house-gardens                    Belvedere House Gardens &amp; Park
+  10730   pt   benbulben                                  Benbulben
+  10637   pt   birr-castle-demesne                        Birr Castle Demesne
+  10601   pt   blackrock-castle-observatory               Blackrock Castle Observatory
+  10185   pt   blarney-castle                             Blarney Castle
+  10853   pt   bog-of-allen-nature-centre                 Bog of Allen Nature Centre
+  10885   pt   borris-house                               Borris House
+  10668   pt   boyle-abbey                                Boyle Abbey
+  10158   pt   bray-head                                  Bray Head
+  10577   pt   brigits-garden                             Brigit's Garden
+  10555   pt   brittas-bay-beach                          Brittas Bay Beach
+  10877   pt   brownshill-dolmen                          Brownshill Dolmen
+  10179   pt   bunratty-castle-folk-park                  Bunratty Castle &amp; Folk Park
+  10178   pt   burren-national-park                       Burren National Park
+  10821   pt   cahir-castle                               Cahir Castle
+  10865   pt   carlingford                                Carlingford
+  10873   pt   carlingford-lough-greenway                 Carlingford Lough Greenway
+  10708   pt   carrickmacross-lace-gallery                Carrickmacross Lace Gallery
+  10734   pt   carrowmore-megalithic-cemetery             Carrowmore Megalithic Cemetery
+  20910   pt   casino-marino                              Casino Marino
+  10702   pt   castle-leslie-estate                       Castle Leslie Estate
+  10778   pt   castlecomer-discovery-park                 Castlecomer Discovery Park
+  10851   pt   castletown-house                           Castletown House
+  10690   pt   cavan-burren-park                          Cavan Burren Park
+  13870   pt   cavan-cathedral                            Cavan Cathedral
+  10698   pt   cavan-county-museum                        Cavan County Museum
+  10758   pt   ceide-fields                               Céide Fields
+  10191   pt   charles-fort                               Charles Fort
+  10641   pt   charleville-forest-castle                  Charleville Forest Castle
+  13860   pt   chester-beatty                             Chester Beatty
+  10764   pt   clare-island                               Clare Island
+  10177   pt   cliffs-of-moher                            Cliffs of Moher (sintético)
+  10635   pt   clonmacnoise                               Clonmacnoise
+  10186   pt   cobh                                       Cobh
+  10170   pt   connemara-national-park                    Connemara National Park
+  10579   pt   coole-park                                 Coole Park
+  10791   pt   copper-coast-geopark                       Copper Coast Geopark
+  10599   pt   cork-city-gaol                             Cork City Gaol
+  10654   pt   corlea-trackway                            Corlea Trackway Visitor Centre
+  10799   pt   coumshingaun-loop                          Coumshingaun Loop (Comeragh Mountains)
+  10593   pt   craggaunowen                               Craggaunowen
+  10746   pt   croagh-patrick                             Croagh Patrick
+  10811   pt   curracloe-beach                            Curracloe Beach
+  10847   pt   curraghchase-forest-park                   Curraghchase Forest Park
+  20911   pt   custom-house-visitor-centre                Custom House Visitor Centre
+  13862   pt   derrigimlagh                               Derrigimlagh
+  10615   pt   derrynane-house                            Derrynane House &amp; National Historic Park
+  20907   pt   desmond-castle-kinsale                     Desmond Castle Kinsale
+  20932   pt   desmond-castle-newcastlewest               Desmond Castle Newcastlewest
+  10175   pt   diamond-hill                               Diamond Hill
+  10199   pt   dingle-peninsula                           Dingle Peninsula
+  13865   pt   doagh-famine-village                       Doagh Famine Village
+  20937   pt   doe-castle                                 Doe Castle
+  10859   pt   donadea-forest-park                        Donadea Forest Park
+  10718   pt   donegal-castle                             Donegal Castle
+  10607   pt   doneraile-park                             Doneraile Park
+  10181   pt   doolin-cave                                Doolin Cave
+  10756   pt   downpatrick-head                           Downpatrick Head
+  10571   pt   dowth                                      Dowth Passage Tomb
+  10742   pt   drumcliffe                                 Drumcliffe
+  10147   pt   dublin-castle                              Dublin Castle
+  10151   pt   dublin-zoo                                 Dublin Zoo
+  10881   pt   ducketts-grove                             Duckett's Grove
+  10694   pt   dun-a-ri-forest-park                       Dún a Rí Forest Park
+  10174   pt   dun-aonghasa                               Dún Aonghasa
+  10547   pt   dun-laoghaire-east-pier                    Dún Laoghaire East Pier
+  10807   pt   dunbrody-famine-ship                       Dunbrody Famine Ship
+  20940   pt   dungarvan-castle                           Dungarvan Castle
+  10776   pt   dunmore-cave                               Dunmore Cave
+  13866   pt   dursey-island                              Dursey Island
+  20948   pt   dwyer-mcallister-cottage                   Dwyer McAllister Cottage
+  10744   pt   eagles-flying                              Eagles Flying
+  10563   pt   emerald-park                               Emerald Park
+  10625   pt   emo-court                                  Emo Court
+  10597   pt   english-market-cork                        English Market
+  10585   pt   ennis-friary                               Ennis Friary
+  10541   pt   epic-irish-emigration-museum               EPIC The Irish Emigration Museum
+  10726   pt   errigal                                    Errigal
+  20943   pt   famine-warhouse-1848                       Famine Warhouse 1848
+  10722   pt   fanad-head-lighthouse                      Fanad Head Lighthouse
+  20912   pt   farmleigh-house-and-estate                 Farmleigh House and Gardens
+  10815   pt   ferns-castle                               Ferns Castle
+  20946   pt   fore-abbey                                 Fore Abbey
+  20908   pt   fota-arboretum-and-gardens                 Fota Arboretum and Gardens
+  10188   pt   fota-wildlife-park                         Fota Wildlife Park (sintético)
+  10843   pt   foynes-flying-boat-museum                  Foynes Flying Boat &amp; Maritime Museum
+  10617   pt   gallarus-oratory                           Gallarus Oratory
+  10176   pt   galway-atlantaquaria                       Galway Atlantaquaria
+  10575   pt   galway-city-museum                         Galway City Museum
+  10197   pt   gap-of-dunloe                              Gap of Dunloe
+  20913   pt   garden-of-remembrance                      Garden of Remembrance
+  10603   pt   garnish-island                             Garnish Island
+  10545   pt   glasnevin-cemetery-museum                  Glasnevin Cemetery Museum
+  20938   pt   glebe-house-and-gallery                    Glebe Gallery and Garden – Derek Hill House
+  10825   pt   glen-of-aherlow                            Glen of Aherlow
+  10678   pt   glencar-waterfall                          Glencar Waterfall
+  10155   pt   glendalough                                Glendalough
+  10653   pt   glendeer-pet-farm                          Glendeer Pet Farm
+  10714   pt   glenveagh-national-park                    Glenveagh National Park
+  20914   pt   government-buildings                       Government Buildings
+  10658   pt   granard-motte-bailey                       Granard Motte &amp; Bailey
+  20915   pt   grangegorman-military-cemetery             Grangegorman Military Cemetery
+  10159   pt   great-sugar-loaf                           Great Sugar Loaf
+  10760   pt   great-western-greenway                     Great Western Greenway
+  10724   pt   grianan-of-aileach                         Grianán of Aileach
+  10149   pt   guinness-storehouse                        Guinness Storehouse
+  10627   pt   heywood-gardens                            Heywood Gardens
+  10164   pt   hill-of-tara                               Hill of Tara
+  10833   pt   holy-cross-abbey                           Holy Cross Abbey
+  10589   pt   holy-island-inis-cealtra                   Holy Island (Inis Cealtra)
+  10805   pt   hook-lighthouse                            Hook Lighthouse
+  10783   pt   house-of-waterford-crystal                 House of Waterford Crystal
+  10152   pt   howth-cliff-walk                           Howth Cliff Walk
+  10837   pt   hunt-museum                                Hunt Museum
+  10883   pt   huntington-castle-gardens                  Huntington Castle &amp; Gardens
+  10200   pt   inch-beach                                 Inch Beach
+  20929   pt   blasket-centre-ionad-an-bhlascaoid         Ionad an Bhlascaoid – The Blasket Centre
+  20935   pt   ionad-culturtha-an-phiarsaigh-pearses-cottage Ionad Cultúrtha an Phiarsaigh Conamara- Pearse’s Cottage and Visitor C…
+  10801   pt   irish-national-heritage-park               Irish National Heritage Park
+  10849   pt   irish-national-stud-japanese-gardens       Irish National Stud &amp; Japanese Gardens
+  20916   pt   irish-national-war-memorial-gardens        Irish National War Memorial Gardens
+  20917   pt   iveagh-gardens                             Iveagh Gardens
+  13863   pt   joyce-tower-museum                         James Joyce Tower Museum
+  10189   pt   jameson-distillery-midleton                Jameson Distillery Midleton
+  10770   pt   jerpoint-abbey                             Jerpoint Abbey
+  10779   pt   jerpoint-park                              Jerpoint Park (Newtown Jerpoint)
+  10803   pt   johnstown-castle                           Johnstown Castle
+  10750   pt   keem-bay                                   Keem Bay
+  10567   pt   kells-historic-town                        Kells Historic Town
+  20941   pt   kells-priory                               Kells Priory
+  10613   pt   kerry-cliffs                               Kerry Cliffs
+  10649   pt   kilbeggan-distillery                       Kilbeggan Distillery Experience
+  10184   pt   kilkee-cliffs                              Kilkee Cliffs
+  10766   pt   kilkenny-castle                            Kilkenny Castle
+  10193   pt   killarney-national-park                    Killarney National Park
+  10557   pt   killruddery-house-gardens                  Killruddery House &amp; Gardens
+  10692   pt   killykeen-forest-park                      Killykeen Forest Park
+  10148   pt   kilmainham-gaol                            Kilmainham Gaol
+  10835   pt   king-johns-castle-limerick                 King John's Castle
+  10891   pt   king-johns-castle-carlingford              King John's Castle (Carlingford)
+  10190   pt   kinsale                                    Kinsale
+  10163   pt   knowth                                     Knowth
+  10169   pt   kylemore-abbey                             Kylemore Abbey
+  10183   pt   lahinch-beach                              Lahinch Beach
+  10795   pt   lismore-castle-gardens                     Lismore Castle Gardens
+  10740   pt   lissadell-house                            Lissadell House
+  20928   pt   listowel-castle                            Listowel Castle
+  10182   pt   loop-head                                  Loop Head
+  10684   pt   lough-allen                                Lough Allen
+  10639   pt   lough-boora-discovery-park                 Lough Boora Discovery Park
+  10845   pt   lough-gur                                  Lough Gur
+  10674   pt   lough-key-forest-park                      Lough Key Forest &amp; Activity Park
+  13868   pt   lough-muckno-leisure-park                  Lough Muckno Leisure Park
+  10664   pt   lough-ree                                  Lough Ree
+  10686   pt   lough-rynn-castle-gardens                  Lough Rynn Castle Gardens
+  10167   pt   loughcrew                                  Loughcrew
+  10861   pt   lullymore-heritage-park                    Lullymore Heritage &amp; Discovery Park
+  10153   pt   malahide-castle-gardens                    Malahide Castle &amp; Gardens
+  10720   pt   malin-head                                 Malin Head
+  10857   pt   maynooth-castle                            Maynooth Castle
+  10768   pt   medieval-mile-museum                       Medieval Mile Museum
+  10871   pt   mellifont-abbey                            Mellifont Abbey
+  10875   pt   millmount-fort-museum                      Millmount Fort &amp; Museum
+  10831   pt   mitchelstown-cave                          Mitchelstown Cave
+  10192   pt   mizen-head                                 Mizen Head
+  10706   pt   monaghan-county-museum                     Monaghan County Museum
+  10869   pt   monasterboice                              Monasterboice
+  10863   pt   mondello-park                              Mondello Park
+  10793   pt   mount-congreve-gardens                     Mount Congreve Gardens
+
+== sponsor (published=7) ==
+  11111   pt   ademicon-consorcio                         Ademicon | Consórcio
+  115345  pt   apoiador-ci-sintetico-alfa                 Apoiador CI sintético Alfa
+  115346  pt   apoiador-ci-sintetico-beta                 Apoiador CI sintético Beta
+  115347  pt   apoiador-ci-sintetico-gama                 Apoiador CI sintético Gama
+  115366  pt   brasil-market-dublin                       Brasil Market Dublin (sintético)
+  11127   pt   janine-meira-escritora                     Janine Meira - Escritora
+  10966   pt   outside-the-chambers                       Outside The Chambers
+
+== keyword matches (title/excerpt/content) ==
+  post     natal=1 christmas=0 ano_novo=0 new_year=0 reveillon=0
+  page     natal=0 christmas=0 ano_novo=0 new_year=0 reveillon=0
+  guide    natal=0 christmas=0 ano_novo=0 new_year=0 reveillon=0
+  event    natal=0 christmas=28 ano_novo=0 new_year=0 reveillon=0
+  leisure  natal=2 christmas=0 ano_novo=0 new_year=0 reveillon=0
+
+== candidate landing-page slugs (pages) ==
+  free   /natal/
+  free   /christmas/
+  free   /ano-novo/
+  free   /new-year/
+  free   /halloween/
+  free   /pascoa/
+  free   /carnaval/
+  free   /festa-junina/
+  free   /st-patricks-day/
+  free   /independencia/
+
+== commemorative_event records ==
+  id=124581 key=valentines_day     package=                 lang=en  status=publish  title=Valentine's Day
+  id=124580 key=valentines_day     package=valentines_day   lang=pt  status=publish  title=Dia dos Namorados
+  id=124287 key=easter             package=                 lang=en  status=publish  title=Easter
+  id=124286 key=easter             package=easter           lang=pt  status=publish  title=Páscoa
+  id=124281 key=new_year           package=                 lang=en  status=publish  title=New Year
+  id=124282 key=st_patricks_day    package=st_patricks_day  lang=pt  status=publish  title=Dia de São Patrício
+  id=124283 key=st_patricks_day    package=                 lang=en  status=publish  title=St Patrick's Day
+  id=124279 key=halloween          package=                 lang=en  status=publish  title=Halloween
+  id=124280 key=new_year           package=new_year         lang=pt  status=publish  title=Ano Novo
+  id=124277 key=christmas          package=                 lang=en  status=publish  title=Christmas
+  id=124278 key=halloween          package=halloween        lang=pt  status=publish  title=Halloween
+  id=124276 key=christmas          package=christmas        lang=pt  status=publish  title=Natal
+
+== registered presentation packages (theme filter) ==
+  halloween          placements=[]
+  christmas          placements=[]
+  new_year           placements=[]
+  st_patricks_day    placements=[]
+  valentines_day     placements=[]
+  easter             placements=[]
+
+== active event now ==
+  none
+
+summary: read-only inventory complete

@@ -105,10 +105,12 @@ class Conexao_Seasonal_Occasion {
 		return $date;
 	}
 
-	public function resolve_occurrence_date(): ?DateTime {
+	public function resolve_occurrence_date( ?DateTimeInterface $now = null ): ?DateTime {
 		$timezone = $this->get_timezone();
-		$now      = new DateTime( 'now', $timezone );
-		$year     = (int) $now->format( 'Y' );
+		$clock    = $now instanceof DateTimeInterface
+			? DateTimeImmutable::createFromInterface( $now )
+			: new DateTimeImmutable( 'now', $timezone );
+		$year     = (int) $clock->setTimezone( $timezone )->format( 'Y' );
 
 		switch ( $this->date_rule ) {
 			case Occasion_Date_Rule::FIXED_ANNUAL:
@@ -144,8 +146,8 @@ class Conexao_Seasonal_Occasion {
 		}
 	}
 
-	public function resolve_start_date(): ?DateTime {
-		$occurrence = $this->resolve_occurrence_date();
+	public function resolve_start_date( ?DateTimeInterface $now = null ): ?DateTime {
+		$occurrence = $this->resolve_occurrence_date( $now );
 		if ( ! $occurrence ) {
 			return null;
 		}
@@ -155,8 +157,8 @@ class Conexao_Seasonal_Occasion {
 		return $start;
 	}
 
-	public function resolve_end_date(): ?DateTime {
-		$occurrence = $this->resolve_occurrence_date();
+	public function resolve_end_date( ?DateTimeInterface $now = null ): ?DateTime {
+		$occurrence = $this->resolve_occurrence_date( $now );
 		if ( ! $occurrence ) {
 			return null;
 		}
@@ -165,17 +167,29 @@ class Conexao_Seasonal_Occasion {
 		return $end;
 	}
 
-	public function is_active(): bool {
-		$start = $this->resolve_start_date();
-		$end   = $this->resolve_end_date();
+	/**
+	 * Whether the occasion is inside its window.
+	 *
+	 * r10 §9.1: every scheduling assertion must inject the clock, so this method
+	 * accepts an optional `$now` instead of always reading the wall clock. The
+	 * default (`null`) keeps the historical behaviour for every existing caller.
+	 *
+	 * @param DateTimeInterface|null $now Injected clock (site timezone assumed).
+	 * @return bool
+	 */
+	public function is_active( ?DateTimeInterface $now = null ): bool {
+		$start = $this->resolve_start_date( $now );
+		$end   = $this->resolve_end_date( $now );
 
 		if ( ! $start || ! $end ) {
 			return false;
 		}
 
-		$now = new DateTime( 'now', $this->get_timezone() );
+		$clock = $now instanceof DateTimeInterface
+			? DateTime::createFromInterface( $now )->setTimezone( $this->get_timezone() )
+			: new DateTime( 'now', $this->get_timezone() );
 
-		return ( $now >= $start && $now <= $end );
+		return ( $clock >= $start && $clock <= $end );
 	}
 
 	public function get_display_content(): array {
