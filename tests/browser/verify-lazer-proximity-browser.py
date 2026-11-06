@@ -1,15 +1,20 @@
 #!/usr/bin/env python3
 """Browser acceptance: Lazer proximity ordering + distance estimates.
 
-Verifies the OPTIONAL location feature on /lazer/ end to end in a real
-browser (Chromium via Playwright), with browser geolocation mocked:
+Verifies the location feature on /lazer/ end to end in a real browser
+(Chromium via Playwright), with browser geolocation mocked. Since the
+2026-11-05 header cleanup there is NO in-header control: the service starts on
+its own with exactly one request per page load, and the archive header is never
+modified at runtime.
 
   1. permission granted, valid position  -> global nearest-first ordering,
-     distances on geolocated cards, "Ordenado por proximidade" note,
-     pre-permission explanation removed, no console errors;
-  2. permission denied                   -> page unchanged, no distances;
+     distances on geolocated cards, "Ordenado por proximidade" note above the
+     results grid, nothing injected into .page-header, no console errors;
+  2. permission denied                   -> page unchanged, no distances, one
+     friendly note above the results grid, no automatic retry;
   3. position timeout (mocked code 3)    -> page unchanged, no distances;
-  4. geolocation API unavailable         -> page unchanged, no distances.
+  4. geolocation API unavailable         -> page unchanged, no distances, no
+     request attempted at all.
 
 It seeds four temporary published leisure attractions (three with known
 coordinates at increasing distance from the mock position, one without any),
@@ -164,12 +169,13 @@ def distance_texts(page):
 
 
 def scenario(page, base_url, expect_proximity):
-    """Load /lazer/, prove NOTHING is requested automatically, then activate
-    the explicit opt-in control and read the contract.
+    """Load /lazer/ and read the proximity contract.
 
-    `__geoRequests` counts every navigator.geolocation.getCurrentPosition()
-    call, so "no automatic request before an explicit visitor action" is
-    provable rather than assumed.
+    The service starts on its own (the header's opt-in control was removed on
+    2026-11-05). `__geoRequests` counts every
+    navigator.geolocation.getCurrentPosition() call, so "exactly one automatic
+    request per page load" is provable rather than assumed; the header is read
+    back to prove nothing is ever injected into it.
     """
     page.add_init_script(
         "window.__geoRequests = 0;"
@@ -184,20 +190,6 @@ def scenario(page, base_url, expect_proximity):
 
     page.goto(f"{base_url}/lazer/", wait_until="domcontentloaded")
 
-    # The explanation and the opt-in control must be in the document, and NO
-    # position request may have been made yet.
-    page.wait_for_timeout(150)
-    explanation_present = page.eval_on_selector_all(
-        "[data-leisure-proximity='leisure-proximity-explanation']", "els => els.length"
-    )
-    control_selector = "[data-leisure-proximity='leisure-proximity-control'] button"
-    control_present = page.eval_on_selector_all(control_selector, "els => els.length")
-    requests_before_click = page.evaluate("() => window.__geoRequests || 0")
-
-    # Explicit opt-in: the visitor activates the control.
-    if control_present:
-        page.click(control_selector)
-
     if expect_proximity:
         page.wait_for_selector("[data-leisure-proximity='leisure-proximity-note']", timeout=20000)
         page.wait_for_timeout(500)
@@ -205,26 +197,24 @@ def scenario(page, base_url, expect_proximity):
         page.wait_for_timeout(3000)
 
     return {
-        "explanation_present": explanation_present,
-        "control_present": control_present,
-        "requests_before_click": requests_before_click,
-        "requests_after_click": page.evaluate("() => window.__geoRequests || 0"),
-        "error_present": page.eval_on_selector_all(
-            "[data-leisure-proximity='leisure-proximity-error']", "els => els.length"
+        "header_proximity_nodes": page.eval_on_selector_all(
+            ".page-header [data-leisure-proximity]",
+            "els => els.map(e => e.getAttribute('data-leisure-proximity'))",
         ),
-        "control_after": page.eval_on_selector_all(
+        "control_present": page.eval_on_selector_all(
             "[data-leisure-proximity='leisure-proximity-control']", "els => els.length"
         ),
-        "retry_label": (
-            page.eval_on_selector(control_selector, "el => el.textContent.trim()")
-            if page.eval_on_selector_all(control_selector, "els => els.length")
-            else ""
+        "requests_on_load": page.evaluate("() => window.__geoRequests || 0"),
+        "error_present": page.eval_on_selector_all(
+            "[data-leisure-proximity='leisure-proximity-error']", "els => els.length"
         ),
         "note_count": page.eval_on_selector_all(
             "[data-leisure-proximity='leisure-proximity-note']", "els => els.length"
         ),
-        "explanation_after": page.eval_on_selector_all(
-            "[data-leisure-proximity='leisure-proximity-explanation']", "els => els.length"
+        "note_above_grid": page.evaluate(
+            "() => { const n = document.querySelector(\"[data-leisure-proximity='leisure-proximity-note']\");"
+            " const g = document.querySelector('[data-infinite-scroll]');"
+            " return !!(n && g && n.nextElementSibling === g); }"
         ),
         "ids": grid_ids(page),
         "distances": distance_texts(page),
@@ -327,14 +317,12 @@ def main():
             result = scenario(page, base_url, expect_proximity=True)
 
             print("\n-- granted --")
-            check(result["explanation_present"] >= 1, "the explanation is rendered before any request is made")
-            check(result["control_present"] == 1, "the explicit opt-in control is offered")
-            check(result["requests_before_click"] == 0, "NO geolocation request is made before the visitor activates the control")
-            check(result["requests_after_click"] == 1, "activating the control makes exactly one geolocation request")
-            check(result["explanation_after"] == 0, "the explanation is removed once the distances are shown")
-            check(result["control_after"] == 0, "the control is removed once the distances are shown")
+            check(result["header_proximity_nodes"] == [], "nothing is injected into .page-header")
+            check(result["control_present"] == 0, "no in-header location control is rendered")
+            check(result["requests_on_load"] == 1, "the automatic start makes exactly one geolocation request")
             check(result["error_present"] == 0, "no failure message on the success path")
             check(result["note_count"] == 1, "exactly one 'Ordenado por proximidade' note is shown")
+            check(result["note_above_grid"], "the note sits directly above the results grid")
 
             # The database now carries real coordinates for hundreds of
             # attractions, so every expectation is derived from the LIVE
@@ -429,14 +417,18 @@ def main():
             page.wait_for_timeout(3500)
             filtered_ids = grid_ids(page)
             check(
-                page.eval_on_selector_all("[data-leisure-proximity='leisure-proximity-note']", "els => els.length") == 0,
-                "a filtered page load shows no proximity note: nothing is requested automatically",
+                page.eval_on_selector_all("[data-leisure-proximity='leisure-proximity-note']", "els => els.length") == 1,
+                "a filtered page load re-applies proximity ordering on its own",
             )
             check(
                 page.eval_on_selector_all(
                     "[data-leisure-proximity='leisure-proximity-control'] button", "els => els.length"
-                ) == 1,
-                "the opt-in control is offered again on the filtered page",
+                ) == 0,
+                "no location control is rendered on the filtered page either",
+            )
+            check(
+                page.eval_on_selector_all(".page-header [data-leisure-proximity]", "els => els.length") == 0,
+                "nothing is injected into .page-header on the filtered page",
             )
             check(len(filtered_ids) == len(set(filtered_ids)), "the filtered page has no duplicate cards")
             browser.close()
@@ -458,30 +450,26 @@ def main():
 
             result = scenario(page, base_url, expect_proximity=False)
             print("\n-- denied --")
-            check(result["control_present"] == 1, "the opt-in control is offered before the request")
-            check(result["requests_before_click"] == 0, "nothing is requested before the visitor activates the control")
-            check(result["requests_after_click"] == 1, "activating the control makes exactly one request (which is denied)")
+            check(result["control_present"] == 0, "no in-header location control is rendered")
+            check(result["header_proximity_nodes"] == [], "nothing is injected into .page-header on denial")
+            check(result["requests_on_load"] == 1, "the automatic start makes exactly one request (which is denied)")
             check(result["note_count"] == 0, "no proximity note when permission is denied")
             check(result["distances"] == [], "no distance is shown when permission is denied")
             check(result["ids"][0] == f"post-{by_title['NoCoords']}", "the default (server) order is preserved when denied")
-            check(result["explanation_after"] == 0, "the explanation is removed after a denial")
             check(result["error_present"] == 1, "a friendly failure message is shown on denial")
-            check(result["control_after"] == 1, "the control stays available as a retry after a denial")
-            check(result["retry_label"] == "Tentar novamente", f"the control becomes a retry ({result['retry_label']!r})")
-            check(errors == [], f"no console/page errors (denied): {errors[:3]}")
 
-            # The retry is wired: activating the control again issues a NEW
-            # geolocation request (and the failure message never stacks).
-            page.click("[data-leisure-proximity='leisure-proximity-control'] button")
+            # No retry control exists any more: one attempt per page load, and
+            # the failure message never stacks.
             page.wait_for_timeout(1500)
             check(
-                page.evaluate("() => window.__geoRequests || 0") == 2,
-                "the retry issues a second geolocation request",
+                page.evaluate("() => window.__geoRequests || 0") == 1,
+                "no automatic retry loop: still exactly one geolocation request",
             )
             check(
                 page.eval_on_selector_all("[data-leisure-proximity='leisure-proximity-error']", "els => els.length") == 1,
-                "exactly one failure message after a retry (messages never stack)",
+                "exactly one failure message (messages never stack)",
             )
+            check(errors == [], f"no console/page errors (denied): {errors[:3]}")
             print(f"   note: {len(asset_404s)} unrelated static-resource 404(s) on the page (pre-existing theme assets)")
             browser.close()
 
@@ -502,7 +490,7 @@ def main():
             check(result["distances"] == [], "no distance on a timeout")
             check(result["ids"][0] == f"post-{by_title['NoCoords']}", "the default order is preserved on a timeout")
             check(result["error_present"] == 1, "a friendly failure message is shown on a timeout")
-            check(result["control_after"] == 1, "the control stays available as a retry on a timeout")
+            check(result["header_proximity_nodes"] == [], "nothing is injected into .page-header on a timeout")
             check(errors == [], f"no page errors (timeout): {errors[:3]}")
             browser.close()
 
@@ -525,10 +513,10 @@ def main():
             check(result["note_count"] == 0, "no proximity note when the API is unavailable")
             check(result["distances"] == [], "no distance when the API is unavailable")
             check(result["ids"][0] == f"post-{by_title['NoCoords']}", "the default order is preserved when unsupported")
-            check(result["explanation_after"] == 0, "the explanation is removed when the API is unavailable")
-            check(result["control_present"] == 0, "no control is offered when the browser cannot geolocate")
-            check(result["requests_after_click"] == 0, "no geolocation request is attempted when unsupported")
-            check(result["error_present"] == 0, "no failure message when the control was never offered")
+            check(result["header_proximity_nodes"] == [], "nothing is injected into .page-header when unsupported")
+            check(result["control_present"] == 0, "no control exists when the browser cannot geolocate")
+            check(result["requests_on_load"] == 0, "no geolocation request is attempted when unsupported")
+            check(result["error_present"] == 0, "no failure message when geolocation is impossible")
             check(errors == [], f"no page errors (unsupported): {errors[:3]}")
             browser.close()
     finally:

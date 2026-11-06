@@ -24,16 +24,19 @@ Design constraints (deliberate, see the task brief):
 Scenarios (all against the canonical http://localhost:8080 — the obsolete
 `--connect 127.0.0.1:8081` workaround is not needed and not used):
 
-  1. geolocation GRANTED   -> the control is present and inert until clicked;
-                              a click yields the simulated position, the grid
-                              is re-ordered nearest-first, distances appear and
-                              match the independent calculation, and no
-                              JavaScript error is raised;
+  1. geolocation GRANTED   -> the archive header carries NO location control
+                              (2026-11-05 removal); the service starts on its
+                              own with exactly ONE request, the grid is
+                              re-ordered nearest-first, distances appear and
+                              match the independent calculation, the transient
+                              note sits above the results grid (never in the
+                              header), and no JavaScript error is raised;
   2. geolocation DENIED    -> the page is unchanged, one friendly failure
-                              message is shown, the control stays as a retry;
+                              message is shown above the results grid, and
+                              nothing is retried automatically;
   3. POSITION_UNAVAILABLE  -> same graceful handling (mocked code 2);
   4. TIMEOUT               -> same graceful handling (mocked code 3);
-  5. API UNSUPPORTED       -> no control is offered at all, no request made.
+  5. API UNSUPPORTED       -> no control, no message and no request at all.
 
 Run from the repository root (the local stack must be up):
 
@@ -378,31 +381,34 @@ def scenario_granted(browser, base_url, expected_order, expected_distances, tota
 
     assert_page_contract(page, totals)
 
-    control_name = page.eval_on_selector_all(CONTROL_SELECTOR, "els => els.map(e => e.textContent.trim())")
-    check(control_name == ["Mostrar distância de mim"],
-          f"the opt-in control is offered with its accessible name (got {control_name})")
-    check(page.eval_on_selector_all(EXPLANATION_SELECTOR, "els => els.length") == 1,
-          "the pre-permission explanation is shown before any request")
+    # 2026-11-05: the header's opt-in button was removed, so the service starts
+    # by itself. The archive header must stay the shared archive header.
+    check(page.eval_on_selector_all(CONTROL_SELECTOR, "els => els.length") == 0,
+          "no opt-in control is rendered in the archive header")
+    check(page.eval_on_selector_all(EXPLANATION_SELECTOR, "els => els.length") == 0,
+          "no pre-permission explanation is rendered in the archive header")
+    header_nodes = page.eval_on_selector_all(
+        ".page-header [data-leisure-proximity]",
+        "els => els.map(e => e.getAttribute('data-leisure-proximity'))"
+    )
+    check(header_nodes == [], f"nothing is injected into .page-header (got {header_nodes})")
 
-    # Nothing is requested until the visitor explicitly opts in.
-    check(geo_request_count(page) == 0,
-          "no geolocation request is made automatically on page load")
-
-    # Explicit opt-in.
-    page.click(CONTROL_SELECTOR)
+    # The service starts ON ITS OWN — no click — and asks exactly once.
     page.wait_for_selector(NOTE_SELECTOR, timeout=20000)
     page.wait_for_timeout(700)
 
     check(geo_request_count(page) == 1,
-          f"clicking the control issues exactly one geolocation request (got {geo_request_count(page)})")
+          f"the automatic start issues exactly one geolocation request (got {geo_request_count(page)})")
 
     note = page.eval_on_selector_all(NOTE_SELECTOR, "els => els.map(e => e.textContent.trim())")
     check(note == ["Ordenado por proximidade"],
           f"the 'ordered by proximity' note appears (got {note})")
-    check(page.eval_on_selector_all(CONTROL_SELECTOR, "els => els.length") == 0,
-          "the opt-in control is removed once proximity is active")
-    check(page.eval_on_selector_all(EXPLANATION_SELECTOR, "els => els.length") == 0,
-          "the explanation is removed once proximity is active")
+    note_above_grid = page.evaluate(
+        "() => { const n = document.querySelector(\"[data-leisure-proximity='leisure-proximity-note']\");"
+        " const g = document.querySelector('[data-infinite-scroll]');"
+        " return !!(n && g && n.nextElementSibling === g); }"
+    )
+    check(note_above_grid, "the note sits directly above the results grid, never in the header")
     check(page.eval_on_selector_all(ERROR_SELECTOR, "els => els.length") == 0,
           "no failure message is shown when geolocation succeeds")
 
@@ -500,13 +506,12 @@ def scenario_failure(browser, base_url, label, mock_code):
     page.wait_for_timeout(300)
     check(response is not None and response.status == 200, "the page still loads")
 
-    control_name = page.eval_on_selector_all(CONTROL_SELECTOR, "els => els.map(e => e.textContent.trim())")
-    check(control_name == ["Mostrar distância de mim"],
-          f"the control is offered because the API exists (got {control_name})")
+    check(page.eval_on_selector_all(CONTROL_SELECTOR, "els => els.length") == 0,
+          "no opt-in control is rendered in the archive header")
 
     default_ids = grid_ids(page)
 
-    page.click(CONTROL_SELECTOR)
+    # The service starts by itself; this scenario forces the failure branch.
     page.wait_for_selector(ERROR_SELECTOR, timeout=20000)
     page.wait_for_timeout(400)
 
@@ -523,18 +528,20 @@ def scenario_failure(browser, base_url, label, mock_code):
     check(grid_ids(page) == default_ids,
           "the default server order is preserved (no fake location substituted)")
     check(page.eval_on_selector_all(EXPLANATION_SELECTOR, "els => els.length") == 0,
-          "the explanation is replaced by the failure message")
+          "no explanation is rendered alongside the failure message")
 
-    retry = page.eval_on_selector_all(CONTROL_SELECTOR, "els => els.map(e => e.textContent.trim())")
-    check(retry == ["Tentar novamente"],
-          f"the control stays available as a retry (got {retry})")
-
-    # The retry must issue a fresh request and must never stack messages.
-    page.click(CONTROL_SELECTOR)
-    page.wait_for_timeout(1500)
-    check(geo_request_count(page) == 2, "the retry issues a second geolocation request")
+    # There is no retry control any more: the failure is reported ONCE and a
+    # reload is the retry. One attempt per page load, never a retry loop.
+    page.wait_for_timeout(1200)
+    check(geo_request_count(page) == 1, "still exactly one geolocation attempt (no retry loop)")
     check(page.eval_on_selector_all(ERROR_SELECTOR, "els => els.length") == 1,
-          "exactly one failure message after a retry (messages never stack)")
+          "exactly one failure message (messages never stack)")
+    error_above_grid = page.evaluate(
+        "() => { const e = document.querySelector(\"[data-leisure-proximity='leisure-proximity-error']\");"
+        " const g = document.querySelector('[data-infinite-scroll]');"
+        " return !!(e && g && e.nextElementSibling === g); }"
+    )
+    check(error_above_grid, "the failure message sits above the results grid, never in the header")
 
     diag.report()
     check(not diag.page_errors, f"no JavaScript exception: {diag.page_errors}")

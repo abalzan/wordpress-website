@@ -2720,98 +2720,42 @@ function initHalloweenNavEffects() {
 			}
 		};
 
-		// 1. The opt-in control. The location request is NEVER automatic:
-		//    nothing is asked of the browser until the visitor activates
-		//    this control, so /lazer/ is fully usable without granting
-		//    location permission. The explanation says why access would be
-		//    requested, and it is a polite live region so the loading and
-		//    failure updates are announced without moving focus.
-		var explanation = createNote(
-			'leisure-proximity-explanation',
-			'leisureLocationExplanation',
-			'Permita o acesso à sua localização para calcular a distância aproximada até as atrações.'
-		);
-		explanation.setAttribute('role', 'status');
-		explanation.setAttribute('aria-live', 'polite');
-		insertNearHeading(explanation);
+		// 1. No location control is rendered in the archive header: the
+		//    Lazer header is exactly the shared archive header every other
+		//    listing page renders (eyebrow, title, description, filters).
+		//    The proximity service therefore starts on its own (step 5) —
+		//    the visitor still gets distances and nearest-first ordering
+		//    without pressing anything, and the browser's own permission
+		//    prompt is the only interaction. Feature detection below keeps
+		//    the whole enhancement inert when geolocation is impossible.
 
 		// The friendly, non-technical failure message (one at a time).
 		var message = null;
 
-		// 2. Feature detection BEFORE the control is offered: a browser that
-		//    cannot geolocate — or an insecure context — is never shown a
-		//    control that could not work.
+		// 2. Feature detection BEFORE any location request can be attempted:
+		//    a browser that cannot geolocate — or an insecure context — keeps
+		//    the enhancement completely inert.
 		var support = proximity.classifyGeolocationSupport(
 			navigator,
 			typeof window.isSecureContext === 'boolean' ? window.isSecureContext : undefined
 		);
-		if (support !== 'available') {
-			removeNote(explanation);
-			return;
-		}
+		if (support !== 'available') return;
 
-		var control = createControl();
-		insertNearHeading(control.wrapper);
-
-		function createControl() {
-			var wrapper = document.createElement('p');
-			wrapper.className = 'leisure-proximity-control';
-			wrapper.setAttribute('data-leisure-proximity', 'leisure-proximity-control');
-
-			var button = document.createElement('button');
-			button.type = 'button';
-			// Reuses the design-system secondary button (and its
-			// `:focus-visible` ring and 44 px minimum touch target)
-			// instead of inventing a new style.
-			button.className = 'btn btn-outline-dark leisure-proximity-toggle';
-			button.textContent = t('leisureDistanceControl', 'Mostrar distância de mim');
-			button.addEventListener('click', requestPosition);
-
-			wrapper.appendChild(button);
-			return { wrapper: wrapper, button: button };
-		}
-
-		// The control's three states. Its label is always the accessible
-		// name, so the control is never icon-only and never unlabelled.
-		function setControlState(state) {
-			var busy = 'busy' === state;
-			control.button.disabled = busy;
-
-			if (busy) {
-				control.button.setAttribute('aria-busy', 'true');
-			} else {
-				control.button.removeAttribute('aria-busy');
-			}
-
-			var labels = {
-				busy: ['leisureLocationLoading', 'Obtendo sua localização…'],
-				retry: ['retry', 'Tentar novamente'],
-				idle: ['leisureDistanceControl', 'Mostrar distância de mim']
-			};
-			var label = labels[state] || labels.idle;
-			control.button.textContent = t(label[0], label[1]);
-		}
-
-		// 3. One-shot geolocation, requested ONLY by activating the control.
-		//    getCurrentPosition() only — never watchPosition(), and never an
-		//    automatic second request. `enableHighAccuracy: false` asks for
-		//    an approximate fix, which is all a straight-line estimate
-		//    needs; `maximumAge: 0` guarantees a fresh fix, so a visitor who
-		//    has moved and retries gets a new position.
+		// 3. The one-shot geolocation entry point — started automatically by
+		//    step 5, so the service keeps working without an in-page control.
+		//    getCurrentPosition() only — never watchPosition(), and never a
+		//    second automatic request. `enableHighAccuracy: false` asks for
+		//    an approximate fix, which is all a straight-line estimate needs;
+		//    `maximumAge: 0` guarantees a fresh fix, so a reload after the
+		//    visitor has moved gets a new position.
+		//
+		//    NOTE (2026-11-05): the header's opt-in button was removed
+		//    (docs/reports/2026-11-05-lazer-proximity-button-removal.md).
+		//    Any future location affordance must call this same function, so
+		//    the request stays explicit and one-shot.
 		function requestPosition() {
-			setControlState('busy');
 			removeNote(message);
 			message = null;
-
-			// The loading state is visible and announced on every attempt,
-			// including a retry (a retry follows a failure, which removed
-			// the explanation, so it is re-attached above the control).
-			explanation.textContent = t('leisureLocationLoading', 'Obtendo sua localização…');
-			if (control.wrapper.parentNode) {
-				control.wrapper.parentNode.insertBefore(explanation, control.wrapper);
-			} else {
-				insertNearHeading(explanation);
-			}
 
 			try {
 				navigator.geolocation.getCurrentPosition(onPosition, onPositionError, {
@@ -2843,21 +2787,17 @@ function initHalloweenNavEffects() {
 
 		function onActivated() {
 			// The list has been reordered and every distance is in place:
-			// the explanation and the control have done their job.
-			removeNote(explanation);
+			// the transient failure message (if any) has done its job.
 			removeNote(message);
-			removeNote(control.wrapper);
 			message = null;
 		}
 
 		function onPositionError() {
 			// Denied, previously denied, revoked, unavailable, timeout, or a
-			// failed dataset/card fetch — ONE friendly, non-technical message
-			// and the control stays available as a retry. The default server
-			// order, the filters, the pagination and every other page feature
-			// are untouched, so browsing never depends on the permission.
-			setControlState('retry');
-			removeNote(explanation);
+			// failed dataset/card fetch — ONE friendly, non-technical
+			// message. The default server order, the filters, the pagination
+			// and every other page feature are untouched, so browsing never
+			// depends on the permission.
 			removeNote(message);
 
 			message = createNote(
@@ -2867,7 +2807,7 @@ function initHalloweenNavEffects() {
 			);
 			message.setAttribute('role', 'status');
 			message.setAttribute('aria-live', 'polite');
-			insertNearHeading(message);
+			insertAboveResults(message);
 		}
 
 		// 4. Fetch the complete coordinate dataset, sort it globally, load the
@@ -3115,12 +3055,12 @@ function initHalloweenNavEffects() {
 			return note;
 		}
 
-		function insertNearHeading(node) {
-			var header = document.querySelector('.page-header');
-			if (header) {
-				header.appendChild(node);
-				return;
-			}
+		// Transient proximity notes (the friendly failure message and the
+		// "Ordenado por proximidade" note) are placed directly ABOVE the
+		// results grid, never inside .page-header: the Lazer archive header
+		// stays the shared archive header of every listing page, and nothing
+		// is injected into it at runtime.
+		function insertAboveResults(node) {
 			if (grid.parentElement) {
 				grid.parentElement.insertBefore(node, grid);
 				return;
@@ -3140,8 +3080,8 @@ function initHalloweenNavEffects() {
 				removeNote
 			);
 
-			// Visible, low-prominence note near the heading.
-			insertNearHeading(createNote(
+			// Visible, low-prominence note above the results grid.
+			insertAboveResults(createNote(
 				'leisure-proximity-note',
 				'leisureOrderedByProximity',
 				'Ordenado por proximidade'
@@ -3164,6 +3104,16 @@ function initHalloweenNavEffects() {
 				}, 1500);
 			}, 50);
 		}
+
+		// 5. Start the service. The archive header has no control to activate
+		//    any more, so the one-shot request runs once per page load — a
+		//    returning visitor whose permission is already granted gets the
+		//    distances immediately, and a first-time visitor sees the
+		//    browser's own permission prompt. It never runs on a filter swap
+		//    (that reuses this position through
+		//    window.ConexaoLeisureProximityReapply), and a refusal simply
+		//    leaves the server-rendered order untouched.
+		requestPosition();
 	}
 
 	// ===== Manual Load More (progressive enhancement) =====

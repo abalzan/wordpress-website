@@ -618,6 +618,16 @@ used. Their browserless halves are blocking: the in-process suite
 the Node suite above, and the admin-field suite
 `wp-content/plugins/conexao-admin-ux/tests/test-leisure-coordinates.php`.
 
+> **UI contract since 2026-11-05.** The header's `Mostrar distância de mim`
+> opt-in button was removed (see
+> `docs/reports/2026-11-05-lazer-proximity-button-removal.md`); both browser
+> suites now assert the **automatic** start instead: no control/explanation is
+> rendered, the archive header receives no injected node, exactly one geolocation
+> request is made per page load, and the transient notes sit above the results
+> grid. Neither suite was weakened: the header-injection, single-request and
+> note-placement assertions were added, and only the assertions about the removed
+> retry relabel were retired.
+
 ### What lives where
 
 | Path | Class | In the default runner? |
@@ -774,3 +784,5 @@ _Last verified: 2026-10-08 by the Apoiadores single-page directory change (opt-i
 _Last verified: 2026-10-08 by the Featured Apoiadores carousel mobile-compactness fix (opt-in browser regression `tests/browser/verify-sponsor-carousel-mobile-browser.py` documented: 236 assertions / 25-mutation negative control)_
 
 _Last verified: 2026-11-04 by the Lazer proximity feature (opt-in Node layer `tests/js/` and the two Lazer proximity browser suites documented; browserless halves named)_
+
+_Last verified: 2026-11-05 by the Lazer header cleanup (proximity control removed; the two Lazer proximity browser suites marked as encoding the removed button)_

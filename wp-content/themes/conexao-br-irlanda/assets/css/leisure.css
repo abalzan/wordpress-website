@@ -885,48 +885,25 @@
  *
  * The distance reuses the existing .leisure-card-detail tokens so it sits
  * naturally in the county · town row and stays visually secondary to the
- * title. It is inserted by JavaScript only, and only after the visitor has
- * activated the opt-in control and their location has been resolved — PHP
- * never renders a distance.
+ * title. It is inserted by JavaScript only, and only once a visitor position
+ * has been resolved — PHP never renders a distance. The archive header itself
+ * carries no location control (.leisure-page keeps the shared .page-header).
  */
 .leisure-card-distance {
 	font-variant-numeric: tabular-nums;
 	white-space: nowrap;
 }
 
-.leisure-proximity-explanation,
 .leisure-proximity-error,
 .leisure-proximity-note {
-	margin: 8px 0 0;
+	margin: 8px 0 12px;
 	font-size: 0.88rem;
 	line-height: 1.5;
 	color: var(--conexao-text-muted, #6b7280);
 }
 
-.leisure-proximity-explanation {
-	max-width: 60ch;
-}
-
 .leisure-proximity-note {
 	font-weight: 600;
-}
-
-/* The explicit opt-in control ("Mostrar distância de mim"). The wrapper only
- * owns the spacing: the button itself reuses the design-system secondary
- * button, so its colour, hover, disabled state, 44 px touch target and
- * `:focus-visible` ring are the site's existing conventions. It wraps rather
- * than overflowing when the heading column is narrow. */
-.leisure-proximity-control {
-	margin: 12px 0 0;
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	gap: 8px;
-}
-
-.leisure-proximity-toggle {
-	max-width: 100%;
-	white-space: normal;
 }
 
 .leisure-card-excerpt {
