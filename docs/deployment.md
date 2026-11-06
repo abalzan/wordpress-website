@@ -42,10 +42,11 @@ The filtered subset of the registry load order where `production: true`. It cont
 2. `conexao-content`
 3. `conexao-admin-ux`
 4. `conexao-event-runtime`
-5. `conexao-translation-rollout`
-6. `conexao-translation-automation`
+5. `conexao-commemorative`
+6. `conexao-translation-rollout`
+7. `conexao-translation-automation`
 
-Production needs exactly these 6 platform plugins. They are the only
+Production needs exactly these 7 platform plugins. They are the only
 plugins that must be installed **and active** on production.
 
 ### Release build output
@@ -54,12 +55,13 @@ plugins that must be installed **and active** on production.
 ./scripts/build-plugins-zip.sh
 ```
 
-Produces one ZIP per `build: true` entry (9 files), in registry order:
+Produces one ZIP per `build: true` entry (10 files), in registry order:
 
 - `dist/conexao-data-model.zip`
 - `dist/conexao-content.zip`
 - `dist/conexao-admin-ux.zip`
 - `dist/conexao-event-runtime.zip`
+- `dist/conexao-commemorative.zip`
 - `dist/conexao-event-importer.zip`
 - `dist/conexao-leisure-migration.zip`
 - `dist/conexao-sponsor-migration.zip`

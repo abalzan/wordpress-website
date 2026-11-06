@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Conexão BR Irlanda Data Model
  * Description: Content types, shared taxonomies, and editorial fields for the Conexão BR Irlanda portal.
- * Version: 1.6.3
+ * Version: 1.7.0
  * Text Domain: conexao-data-model
  *
  * @package Conexao_BR_Irlanda_Data_Model
@@ -17,10 +17,11 @@ require_once CONEXAO_DATA_MODEL_DIR . 'includes/class-relationships.php';
 require_once CONEXAO_DATA_MODEL_DIR . 'includes/class-meta.php';
 require_once CONEXAO_DATA_MODEL_DIR . 'includes/class-contacts.php';
 require_once CONEXAO_DATA_MODEL_DIR . 'includes/class-agency.php';
+require_once CONEXAO_DATA_MODEL_DIR . 'includes/class-conexao-data-model-commemorative.php';
 
 final class Conexao_Data_Model {
 
-	const VERSION = '1.6.3';
+	const VERSION = '1.7.0';
 
 	/** @var Conexao_Data_Model|null */
 	private static $instance = null;
@@ -41,6 +42,53 @@ final class Conexao_Data_Model {
 		add_action( 'init', array( $this, 'register_sponsor_contacts_meta' ), 0 );
 		add_action( 'init', array( $this, 'register_agency_meta' ), 0 );
 		add_action( 'init', array( $this, 'register_permit_employer_meta' ), 0 );
+		add_action( 'init', array( $this, 'register_commemorative_post_type' ), 0 );
+		add_action( 'init', array( 'Conexao_Data_Model_Commemorative', 'register_meta' ), 0 );
+	}
+
+	/**
+	 * Register the `commemorative_event` configuration container.
+	 *
+	 * A pure wp-admin configuration container (architecture proposal r10 §3.2):
+	 * no public URL, no archive, no rewrite rule and no sitemap entry, so it
+	 * cannot leak or create routing/SEO surface. Registered here — like every
+	 * other managed entity — because `conexao-data-model` owns the schema.
+	 *
+	 * @return void
+	 */
+	public function register_commemorative_post_type() {
+		register_post_type(
+			Conexao_Data_Model_Commemorative::POST_TYPE,
+			array(
+				'labels' => array(
+					'name'               => 'Eventos Comemorativos',
+					'singular_name'      => 'Evento Comemorativo',
+					'menu_name'          => 'Eventos Comemorativos',
+					'add_new'            => 'Adicionar Evento',
+					'add_new_item'       => 'Adicionar Evento Comemorativo',
+					'edit_item'          => 'Editar Evento Comemorativo',
+					'new_item'           => 'Novo Evento Comemorativo',
+					'view_item'          => 'Ver Evento Comemorativo',
+					'search_items'       => 'Buscar Eventos Comemorativos',
+					'not_found'          => 'Nenhum evento comemorativo encontrado',
+					'not_found_in_trash' => 'Nenhum evento comemorativo encontrado na lixeira',
+					'all_items'          => 'Todos os Eventos Comemorativos',
+				),
+				'public'             => false,
+				'publicly_queryable' => false,
+				'has_archive'        => false,
+				'rewrite'            => false,
+				'query_var'          => false,
+				'exclude_from_search' => true,
+				'show_ui'            => true,
+				'show_in_menu'       => true,
+				'show_in_rest'       => true,
+				'menu_icon'          => 'dashicons-star-filled',
+				'supports'           => array( 'title', 'revisions', 'custom-fields' ),
+				'capability_type'    => 'post',
+				'map_meta_cap'       => true,
+			)
+		);
 	}
 
 	public function register_content_types() {
@@ -464,6 +512,8 @@ final class Conexao_Data_Model {
 		$plugin->register_taxonomies();
 		$plugin->register_provider_meta();
 		$plugin->register_agency_meta();
+		$plugin->register_commemorative_post_type();
+		Conexao_Data_Model_Commemorative::register_meta();
 		Conexao_Data_Model_Relationships::seed_terms();
 		flush_rewrite_rules();
 	}

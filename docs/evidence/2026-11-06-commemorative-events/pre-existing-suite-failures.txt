@@ -1,0 +1,17 @@
+Experiment: run the two failing suites with `conexao-commemorative` DEACTIVATED.
+
+  deactivate_plugins('conexao-commemorative/conexao-commemorative.php')
+  php .../conexao-event-runtime/tests/test-event-query.php     -> FAILURES PERSIST
+      FAIL: flush_cache() deletes the date-keyed transient
+      FAIL: O: in-progress multi-day event is in the list
+      FAIL: O: multi-day event starting today is in the list
+      FAIL: O: future multi-day event is in the list
+      FAIL: P: multi-day event appears exactly once
+      FAIL: in-progress multi-day: next occurrence is today
+  php .../conexao-event-importer/tests/test-town-sanitization.php -> SAME 1 FAILURE
+      FAIL: no Eircode-contaminated or non-town terms in conexao_town
+      82 passed, 1 failed
+
+Conclusion: both failures are PRE-EXISTING local database state / date-dependent
+fixture failures in components this change does not touch. The plugin was then
+re-activated successfully.

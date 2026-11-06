@@ -394,7 +394,7 @@ jobs:
           # Activate the platform and test tooling required by the in-process
           # suites. These local-only plugins are never included in production.
           for slug in conexao-data-model conexao-content conexao-event-runtime \
-                      conexao-admin-ux conexao-event-importer conexao-leisure-migration \
+                      conexao-admin-ux conexao-commemorative conexao-event-importer conexao-leisure-migration \
                       conexao-sponsor-migration; do
             wp plugin activate "$slug"
           done

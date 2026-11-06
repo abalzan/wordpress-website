@@ -1,0 +1,14 @@
+[06-Nov-2026 09:44:22 UTC] PHP Notice:  $_SERVER['HTTP_HOST'] or $_SERVER['REQUEST_URI'] are required but not set. in /var/www/html/wp-content/plugins/polylang/src/functions.php on line 81
+
+Notice: $_SERVER['HTTP_HOST'] or $_SERVER['REQUEST_URI'] are required but not set. in /var/www/html/wp-content/plugins/polylang/src/functions.php on line 81
+now(site)=2026-11-06 09:44:22 tz=Europe/Dublin
+active=none
+boundary=christmas start @ 2026-12-10T00:00:00+00:00
+  christmas => outside_window
+  easter => outside_window
+  halloween => outside_window
+  new_year => outside_window
+  st_patricks_day => outside_window
+  valentines_day => outside_window
+at-2026-12-10=christmas
+at-2027-01-01T00:30=new_year occ=2027

@@ -36,16 +36,17 @@ compose.yaml
 Generated from [`plugins.json`](../plugins.json) by `scripts/generate-registry-docs.php`.
 Plugins load in registry order, and dependencies always precede their dependents.
 
-1. **conexao-data-model** (`platform`, active) v1.6.3. **Required on production.**
+1. **conexao-data-model** (`platform`, active) v1.7.0. **Required on production.**
 2. **conexao-content** (`platform`, active) v1.0.1. **Required on production.**
-3. **conexao-admin-ux** (`platform`, active) v1.0.8. **Required on production.**
+3. **conexao-admin-ux** (`platform`, active) v1.0.9. **Required on production.**
 4. **conexao-event-runtime** (`platform`, active) v1.2.3. **Required on production.** Declared dependencies (`Requires Plugins` header): `conexao-data-model`.
-5. **conexao-event-importer** (`tooling`, active) v1.9.0. **Never required on production.** Declared dependencies (`Requires Plugins` header): `conexao-data-model`, `conexao-event-runtime`.
-6. **conexao-leisure-migration** (`tooling`, active) v2.1.0. **Never required on production.**
-7. **conexao-sponsor-migration** (`tooling`, active) v1.1.0. **Never required on production.**
-8. **conexao-translation-rollout** (`platform`, active) v1.2.0. **Required on production.**
-9. **conexao-en-translation** (`tooling`, active) v1.5.0. **Never required on production.** Declared dependencies (`Requires Plugins` header): `conexao-translation-rollout`.
-10. **conexao-translation-automation** (`platform`, active) v0.6.0. **Required on production.** Declared dependencies (`Requires Plugins` header): `conexao-translation-rollout`.
+5. **conexao-commemorative** (`platform`, active) v1.0.0. **Required on production.** Declared dependencies (`Requires Plugins` header): `conexao-data-model`.
+6. **conexao-event-importer** (`tooling`, active) v1.9.0. **Never required on production.** Declared dependencies (`Requires Plugins` header): `conexao-data-model`, `conexao-event-runtime`.
+7. **conexao-leisure-migration** (`tooling`, active) v2.1.0. **Never required on production.**
+8. **conexao-sponsor-migration** (`tooling`, active) v1.1.0. **Never required on production.**
+9. **conexao-translation-rollout** (`platform`, active) v1.2.0. **Required on production.**
+10. **conexao-en-translation** (`tooling`, active) v1.5.0. **Never required on production.** Declared dependencies (`Requires Plugins` header): `conexao-translation-rollout`.
+11. **conexao-translation-automation** (`platform`, active) v0.6.0. **Required on production.** Declared dependencies (`Requires Plugins` header): `conexao-translation-rollout`.
 
 The authoritative registry is [`plugins.json`](../plugins.json): the load order, the
 production activation order, the release build list and the local Compose mount list are

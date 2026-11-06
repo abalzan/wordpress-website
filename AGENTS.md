@@ -183,14 +183,15 @@ authoritative registry. Edit the registry and run
 | 2 | `conexao-content` | platform | active | yes | yes | yes | `docs/plugins/conexao-content.md` |
 | 3 | `conexao-admin-ux` | platform | active | yes | yes | yes | `docs/plugins/conexao-admin-ux.md` |
 | 4 | `conexao-event-runtime` | platform | active | yes | yes | yes | `docs/plugins/conexao-event-runtime.md` |
-| 5 | `conexao-event-importer` | tooling | active | no | yes | yes | `docs/plugins/conexao-event-importer.md` |
-| 6 | `conexao-leisure-migration` | tooling | active | no | yes | yes | `docs/plugins/conexao-leisure-migration.md` |
-| 7 | `conexao-sponsor-migration` | tooling | active | no | yes | yes | `docs/plugins/conexao-sponsor-migration.md` |
-| 8 | `conexao-translation-rollout` | platform | active | yes | yes | yes | `docs/plugins/conexao-translation-rollout.md` |
-| 9 | `conexao-en-translation` | tooling | active | no | no | yes | `docs/plugins/conexao-en-translation.md` |
-| 10 | `conexao-translation-automation` | platform | active | yes | yes | yes | `docs/plugins/conexao-translation-automation.md` |
+| 5 | `conexao-commemorative` | platform | active | yes | yes | yes | `docs/plugins/conexao-commemorative.md` |
+| 6 | `conexao-event-importer` | tooling | active | no | yes | yes | `docs/plugins/conexao-event-importer.md` |
+| 7 | `conexao-leisure-migration` | tooling | active | no | yes | yes | `docs/plugins/conexao-leisure-migration.md` |
+| 8 | `conexao-sponsor-migration` | tooling | active | no | yes | yes | `docs/plugins/conexao-sponsor-migration.md` |
+| 9 | `conexao-translation-rollout` | platform | active | yes | yes | yes | `docs/plugins/conexao-translation-rollout.md` |
+| 10 | `conexao-en-translation` | tooling | active | no | no | yes | `docs/plugins/conexao-en-translation.md` |
+| 11 | `conexao-translation-automation` | platform | active | yes | yes | yes | `docs/plugins/conexao-translation-automation.md` |
 
-**Production steady state** (platform, `production: true`) - activate in this order: conexao-data-model -> conexao-content -> conexao-admin-ux -> conexao-event-runtime -> conexao-translation-rollout -> conexao-translation-automation.
+**Production steady state** (platform, `production: true`) - activate in this order: conexao-data-model -> conexao-content -> conexao-admin-ux -> conexao-event-runtime -> conexao-commemorative -> conexao-translation-rollout -> conexao-translation-automation.
 
 **Local-only tooling** (never production): conexao-event-importer, conexao-leisure-migration, conexao-sponsor-migration, conexao-en-translation.
 

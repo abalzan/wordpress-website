@@ -736,7 +736,7 @@ case 'radio':
 	 * @return bool
 	 */
 	public static function is_virtual( $key ) {
-		$virtual = array( '_event_title', '_event_description', '_news_title', '_news_content', '_guide_title', '_guide_content', '_job_title', '_job_description', '_sponsor_name', '_sponsor_description', '_provider_name', '_provider_description', '_leisure_name', '_leisure_description', '_agency_name', '_employer_name' );
+		$virtual = array( '_event_title', '_event_description', '_news_title', '_news_content', '_guide_title', '_guide_content', '_job_title', '_job_description', '_sponsor_name', '_sponsor_description', '_provider_name', '_provider_description', '_leisure_name', '_leisure_description', '_agency_name', '_employer_name', '_ce_name' );
 		return in_array( $key, $virtual, true );
 	}
 
@@ -962,6 +962,7 @@ case 'radio':
 			case '_leisure_name':
 			case '_agency_name':
 			case '_employer_name':
+			case '_ce_name':
 				return $post->post_title;
 			case '_event_description':
 			case '_news_content':

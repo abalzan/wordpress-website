@@ -118,6 +118,11 @@ require_once CONEXAO_THEME_DIR . '/inc/search.php';
 // -- Seasonal/commemorative occasion foundation ----------------------------
 require_once CONEXAO_THEME_DIR . '/inc/occasion.php';
 
+// -- Commemorative experience-package registry + private-preview shell ------
+// The theme owns the presentation registry (architecture proposal r10 §7.4):
+// the plugin only ever sees package KEYS, never template or asset paths.
+require_once CONEXAO_THEME_DIR . '/inc/commemorative-presentations.php';
+
 // -- Theme modules (were the body of the old functions.php) ------------------
 // The order below is the original source order of the old functions.php body,
 // so hook registration order on shared hooks (init, delete_post) is unchanged.

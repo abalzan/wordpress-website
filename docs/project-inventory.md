@@ -9,10 +9,11 @@ source. Do not hand-edit this table.
 
 | Slug | Version | Class | Status | Production | Build | Mount | Path |
 |------|---------|-------|--------|------------|-------|-------|------|
-| conexao-data-model | 1.6.3 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-data-model/` |
+| conexao-data-model | 1.7.0 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-data-model/` |
 | conexao-content | 1.0.1 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-content/` |
-| conexao-admin-ux | 1.0.8 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-admin-ux/` |
+| conexao-admin-ux | 1.0.9 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-admin-ux/` |
 | conexao-event-runtime | 1.2.3 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-event-runtime/` |
+| conexao-commemorative | 1.0.0 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-commemorative/` |
 | conexao-event-importer | 1.9.0 | tooling | active | no | yes | yes | `wp-content/plugins/conexao-event-importer/` |
 | conexao-leisure-migration | 2.1.0 | tooling | active | no | yes | yes | `wp-content/plugins/conexao-leisure-migration/` |
 | conexao-sponsor-migration | 1.1.0 | tooling | active | no | yes | yes | `wp-content/plugins/conexao-sponsor-migration/` |
@@ -20,7 +21,7 @@ source. Do not hand-edit this table.
 | conexao-en-translation | 1.5.0 | tooling | active | no | no | yes | `wp-content/plugins/conexao-en-translation/` |
 | conexao-translation-automation | 0.6.0 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-translation-automation/` |
 
-**Production steady state** (platform, `production: true`) - activate in this order: conexao-data-model -> conexao-content -> conexao-admin-ux -> conexao-event-runtime -> conexao-translation-rollout -> conexao-translation-automation.
+**Production steady state** (platform, `production: true`) - activate in this order: conexao-data-model -> conexao-content -> conexao-admin-ux -> conexao-event-runtime -> conexao-commemorative -> conexao-translation-rollout -> conexao-translation-automation.
 
 **Local-only tooling** (never production): conexao-event-importer, conexao-leisure-migration, conexao-sponsor-migration, conexao-en-translation.
 
