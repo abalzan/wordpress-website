@@ -777,23 +777,22 @@ function conexao_commemorative_has_placement( $placement_id ) {
 /**
  * The render context for one placement, or null when it does not render here.
  *
+ * The `landing_page` placement is PAGE-owned, never event-owned (r10 §7.5/§7.13):
+ * its identity, copy and archival behaviour come from the opted-in page. When the
+ * package declares `landing_page` on the `landing` route, the same placement id is
+ * also present in `$plan['placements']` while its event is active, and that copy
+ * carries no page identity (`page_id = 0`) — enough for the shared landing shell to
+ * return early and blank the route. The resolved page opt-in therefore takes
+ * precedence. This is a precedence rule, not a bypass: `$plan['landing']` is only
+ * populated for a page whose slug matches the package's slug for the current
+ * language, so a page without the opt-in still resolves nothing here.
+ *
  * @param string $placement_id Placement identifier.
  * @return array|null
  */
 function conexao_commemorative_placement_context( $placement_id ) {
 	$plan         = conexao_commemorative_request_plan();
 	$placement_id = (string) $placement_id;
-
-	if ( isset( $plan['placements'][ $placement_id ] ) && null !== $plan['package'] ) {
-		return array(
-			'placement_id' => $placement_id,
-			'placement'    => $plan['placements'][ $placement_id ],
-			'package'      => $plan['package'],
-			'event'        => $plan['event'],
-			'source'       => 'event',
-			'page_id'      => 0,
-		);
-	}
 
 	if ( ! empty( $plan['landing'] ) && 'landing_page' === $placement_id ) {
 		return array(
@@ -803,6 +802,17 @@ function conexao_commemorative_placement_context( $placement_id ) {
 			'event'        => $plan['event'],
 			'source'       => 'landing',
 			'page_id'      => (int) $plan['landing']['page_id'],
+		);
+	}
+
+	if ( isset( $plan['placements'][ $placement_id ] ) && null !== $plan['package'] ) {
+		return array(
+			'placement_id' => $placement_id,
+			'placement'    => $plan['placements'][ $placement_id ],
+			'package'      => $plan['package'],
+			'event'        => $plan['event'],
+			'source'       => 'event',
+			'page_id'      => 0,
 		);
 	}
 

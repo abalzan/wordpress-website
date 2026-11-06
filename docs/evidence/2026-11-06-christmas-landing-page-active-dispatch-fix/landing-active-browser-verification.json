@@ -1,0 +1,295 @@
+{
+  "base_url": "http://localhost:8080",
+  "state": "active (signed preview of the christmas event)",
+  "routes": {
+    "pt": {
+      "path": "/natal/",
+      "profiles": {
+        "320x568": {
+          "status": 200,
+          "heading": "Natal",
+          "modules": 5,
+          "welcome_locators": 0,
+          "overflow": [
+            320,
+            320
+          ],
+          "broken_images": [],
+          "ctas": [
+            "http://localhost:8080/eventos/handmade-wreath-making-class-2026/",
+            "http://localhost:8080/eventos/pioneer-ministry-gathering-2026/",
+            "http://localhost:8080/eventos/christmas-o-holy-night-live-with-the-three-tenors-live-killucan-church/",
+            "http://localhost:8080/eventos/setu-christmas-media-gala/",
+            "http://localhost:8080/eventos/santa-land-christmas-experience-2026/",
+            "http://localhost:8080/eventos/mamma-mia-the-christmas-experience-evening-hotel-kilmore-cavan/",
+            "http://localhost:8080/lazer/newgrange/",
+            "http://localhost:8080/guias/inverno-irlanda-depressao-sazonal-saude-mental/",
+            "http://localhost:8080/2026/01/08/coragem-a-estrela-que-ilumina-o-caminho-do-empreendedor-especial-de-natal/",
+            "http://localhost:8080/2026/01/04/o-calor-que-nasce-do-inverno/",
+            "http://localhost:8080/2026/01/05/preparando-o-corpo-para-o-inverno/",
+            "http://localhost:8080/guias/checklist-viagem-internacional-irlanda-brasileiros-irp/",
+            "http://localhost:8080/guias/viajar-fora-irlanda-com-irp-brasileiros/",
+            "http://localhost:8080/guias/servicos-emergencia/",
+            "http://localhost:8080/eventos/"
+          ],
+          "console": [],
+          "pageerror": [],
+          "requestfailed": [],
+          "screenshot": "landing-active-pt-320x568.png"
+        },
+        "390x844": {
+          "status": 200,
+          "heading": "Natal",
+          "modules": 5,
+          "welcome_locators": 0,
+          "overflow": [
+            390,
+            390
+          ],
+          "broken_images": [],
+          "ctas": [
+            "http://localhost:8080/eventos/handmade-wreath-making-class-2026/",
+            "http://localhost:8080/eventos/pioneer-ministry-gathering-2026/",
+            "http://localhost:8080/eventos/christmas-o-holy-night-live-with-the-three-tenors-live-killucan-church/",
+            "http://localhost:8080/eventos/setu-christmas-media-gala/",
+            "http://localhost:8080/eventos/santa-land-christmas-experience-2026/",
+            "http://localhost:8080/eventos/mamma-mia-the-christmas-experience-evening-hotel-kilmore-cavan/",
+            "http://localhost:8080/lazer/newgrange/",
+            "http://localhost:8080/guias/inverno-irlanda-depressao-sazonal-saude-mental/",
+            "http://localhost:8080/2026/01/08/coragem-a-estrela-que-ilumina-o-caminho-do-empreendedor-especial-de-natal/",
+            "http://localhost:8080/2026/01/04/o-calor-que-nasce-do-inverno/",
+            "http://localhost:8080/2026/01/05/preparando-o-corpo-para-o-inverno/",
+            "http://localhost:8080/guias/checklist-viagem-internacional-irlanda-brasileiros-irp/",
+            "http://localhost:8080/guias/viajar-fora-irlanda-com-irp-brasileiros/",
+            "http://localhost:8080/guias/servicos-emergencia/",
+            "http://localhost:8080/eventos/"
+          ],
+          "console": [],
+          "pageerror": [],
+          "requestfailed": [],
+          "screenshot": "landing-active-pt-390x844.png"
+        },
+        "768x1024": {
+          "status": 200,
+          "heading": "Natal",
+          "modules": 5,
+          "welcome_locators": 0,
+          "overflow": [
+            768,
+            768
+          ],
+          "broken_images": [],
+          "ctas": [
+            "http://localhost:8080/eventos/handmade-wreath-making-class-2026/",
+            "http://localhost:8080/eventos/pioneer-ministry-gathering-2026/",
+            "http://localhost:8080/eventos/christmas-o-holy-night-live-with-the-three-tenors-live-killucan-church/",
+            "http://localhost:8080/eventos/setu-christmas-media-gala/",
+            "http://localhost:8080/eventos/santa-land-christmas-experience-2026/",
+            "http://localhost:8080/eventos/mamma-mia-the-christmas-experience-evening-hotel-kilmore-cavan/",
+            "http://localhost:8080/lazer/newgrange/",
+            "http://localhost:8080/guias/inverno-irlanda-depressao-sazonal-saude-mental/",
+            "http://localhost:8080/2026/01/08/coragem-a-estrela-que-ilumina-o-caminho-do-empreendedor-especial-de-natal/",
+            "http://localhost:8080/2026/01/04/o-calor-que-nasce-do-inverno/",
+            "http://localhost:8080/2026/01/05/preparando-o-corpo-para-o-inverno/",
+            "http://localhost:8080/guias/checklist-viagem-internacional-irlanda-brasileiros-irp/",
+            "http://localhost:8080/guias/viajar-fora-irlanda-com-irp-brasileiros/",
+            "http://localhost:8080/guias/servicos-emergencia/",
+            "http://localhost:8080/eventos/"
+          ],
+          "console": [],
+          "pageerror": [],
+          "requestfailed": [],
+          "screenshot": "landing-active-pt-768x1024.png"
+        },
+        "1366x768": {
+          "status": 200,
+          "heading": "Natal",
+          "modules": 5,
+          "welcome_locators": 0,
+          "overflow": [
+            1366,
+            1366
+          ],
+          "broken_images": [],
+          "ctas": [
+            "http://localhost:8080/eventos/handmade-wreath-making-class-2026/",
+            "http://localhost:8080/eventos/pioneer-ministry-gathering-2026/",
+            "http://localhost:8080/eventos/christmas-o-holy-night-live-with-the-three-tenors-live-killucan-church/",
+            "http://localhost:8080/eventos/setu-christmas-media-gala/",
+            "http://localhost:8080/eventos/santa-land-christmas-experience-2026/",
+            "http://localhost:8080/eventos/mamma-mia-the-christmas-experience-evening-hotel-kilmore-cavan/",
+            "http://localhost:8080/lazer/newgrange/",
+            "http://localhost:8080/guias/inverno-irlanda-depressao-sazonal-saude-mental/",
+            "http://localhost:8080/2026/01/08/coragem-a-estrela-que-ilumina-o-caminho-do-empreendedor-especial-de-natal/",
+            "http://localhost:8080/2026/01/04/o-calor-que-nasce-do-inverno/",
+            "http://localhost:8080/2026/01/05/preparando-o-corpo-para-o-inverno/",
+            "http://localhost:8080/guias/checklist-viagem-internacional-irlanda-brasileiros-irp/",
+            "http://localhost:8080/guias/viajar-fora-irlanda-com-irp-brasileiros/",
+            "http://localhost:8080/guias/servicos-emergencia/",
+            "http://localhost:8080/eventos/"
+          ],
+          "console": [],
+          "pageerror": [],
+          "requestfailed": [],
+          "screenshot": "landing-active-pt-1366x768.png"
+        }
+      },
+      "cta_navigation": {
+        "href": "http://localhost:8080/eventos/",
+        "status": 200
+      },
+      "no_javascript": {
+        "status": 200,
+        "hero": 1,
+        "modules": 5,
+        "banner": 1
+      }
+    },
+    "en": {
+      "path": "/en/christmas/",
+      "profiles": {
+        "320x568": {
+          "status": 200,
+          "heading": "Christmas",
+          "modules": 5,
+          "welcome_locators": 0,
+          "overflow": [
+            320,
+            320
+          ],
+          "broken_images": [],
+          "ctas": [
+            "http://localhost:8080/eventos/handmade-wreath-making-class-2026/",
+            "http://localhost:8080/eventos/pioneer-ministry-gathering-2026/",
+            "http://localhost:8080/eventos/christmas-o-holy-night-live-with-the-three-tenors-live-killucan-church/",
+            "http://localhost:8080/eventos/setu-christmas-media-gala/",
+            "http://localhost:8080/eventos/santa-land-christmas-experience-2026/",
+            "http://localhost:8080/eventos/mamma-mia-the-christmas-experience-evening-hotel-kilmore-cavan/",
+            "http://localhost:8080/lazer/newgrange/",
+            "http://localhost:8080/en/guias/winter-in-ireland-and-mental-health-seasonal-depression-loneliness-and-where-to-find-help/",
+            "http://localhost:8080/en/2026/01/19/courage-the-star-that-lights-the-entrepreneurs-path-christmas-special/",
+            "http://localhost:8080/en/2026/01/03/the-warmth-born-of-winter/",
+            "http://localhost:8080/en/2026/01/03/preparing-the-body-for-winter/",
+            "http://localhost:8080/en/guias/first-international-trip-with-irp-documents-checklist-for-brazilians/",
+            "http://localhost:8080/en/guias/travelling-outside-ireland-with-irp-what-brazilians-need-to-know/",
+            "http://localhost:8080/en/guias/emergency-services-in-ireland-112-and-999/",
+            "http://localhost:8080/en/eventos/"
+          ],
+          "console": [],
+          "pageerror": [],
+          "requestfailed": [],
+          "screenshot": "landing-active-en-320x568.png"
+        },
+        "390x844": {
+          "status": 200,
+          "heading": "Christmas",
+          "modules": 5,
+          "welcome_locators": 0,
+          "overflow": [
+            390,
+            390
+          ],
+          "broken_images": [],
+          "ctas": [
+            "http://localhost:8080/eventos/handmade-wreath-making-class-2026/",
+            "http://localhost:8080/eventos/pioneer-ministry-gathering-2026/",
+            "http://localhost:8080/eventos/christmas-o-holy-night-live-with-the-three-tenors-live-killucan-church/",
+            "http://localhost:8080/eventos/setu-christmas-media-gala/",
+            "http://localhost:8080/eventos/santa-land-christmas-experience-2026/",
+            "http://localhost:8080/eventos/mamma-mia-the-christmas-experience-evening-hotel-kilmore-cavan/",
+            "http://localhost:8080/lazer/newgrange/",
+            "http://localhost:8080/en/guias/winter-in-ireland-and-mental-health-seasonal-depression-loneliness-and-where-to-find-help/",
+            "http://localhost:8080/en/2026/01/19/courage-the-star-that-lights-the-entrepreneurs-path-christmas-special/",
+            "http://localhost:8080/en/2026/01/03/the-warmth-born-of-winter/",
+            "http://localhost:8080/en/2026/01/03/preparing-the-body-for-winter/",
+            "http://localhost:8080/en/guias/first-international-trip-with-irp-documents-checklist-for-brazilians/",
+            "http://localhost:8080/en/guias/travelling-outside-ireland-with-irp-what-brazilians-need-to-know/",
+            "http://localhost:8080/en/guias/emergency-services-in-ireland-112-and-999/",
+            "http://localhost:8080/en/eventos/"
+          ],
+          "console": [],
+          "pageerror": [],
+          "requestfailed": [],
+          "screenshot": "landing-active-en-390x844.png"
+        },
+        "768x1024": {
+          "status": 200,
+          "heading": "Christmas",
+          "modules": 5,
+          "welcome_locators": 0,
+          "overflow": [
+            768,
+            768
+          ],
+          "broken_images": [],
+          "ctas": [
+            "http://localhost:8080/eventos/handmade-wreath-making-class-2026/",
+            "http://localhost:8080/eventos/pioneer-ministry-gathering-2026/",
+            "http://localhost:8080/eventos/christmas-o-holy-night-live-with-the-three-tenors-live-killucan-church/",
+            "http://localhost:8080/eventos/setu-christmas-media-gala/",
+            "http://localhost:8080/eventos/santa-land-christmas-experience-2026/",
+            "http://localhost:8080/eventos/mamma-mia-the-christmas-experience-evening-hotel-kilmore-cavan/",
+            "http://localhost:8080/lazer/newgrange/",
+            "http://localhost:8080/en/guias/winter-in-ireland-and-mental-health-seasonal-depression-loneliness-and-where-to-find-help/",
+            "http://localhost:8080/en/2026/01/19/courage-the-star-that-lights-the-entrepreneurs-path-christmas-special/",
+            "http://localhost:8080/en/2026/01/03/the-warmth-born-of-winter/",
+            "http://localhost:8080/en/2026/01/03/preparing-the-body-for-winter/",
+            "http://localhost:8080/en/guias/first-international-trip-with-irp-documents-checklist-for-brazilians/",
+            "http://localhost:8080/en/guias/travelling-outside-ireland-with-irp-what-brazilians-need-to-know/",
+            "http://localhost:8080/en/guias/emergency-services-in-ireland-112-and-999/",
+            "http://localhost:8080/en/eventos/"
+          ],
+          "console": [],
+          "pageerror": [],
+          "requestfailed": [],
+          "screenshot": "landing-active-en-768x1024.png"
+        },
+        "1366x768": {
+          "status": 200,
+          "heading": "Christmas",
+          "modules": 5,
+          "welcome_locators": 0,
+          "overflow": [
+            1366,
+            1366
+          ],
+          "broken_images": [],
+          "ctas": [
+            "http://localhost:8080/eventos/handmade-wreath-making-class-2026/",
+            "http://localhost:8080/eventos/pioneer-ministry-gathering-2026/",
+            "http://localhost:8080/eventos/christmas-o-holy-night-live-with-the-three-tenors-live-killucan-church/",
+            "http://localhost:8080/eventos/setu-christmas-media-gala/",
+            "http://localhost:8080/eventos/santa-land-christmas-experience-2026/",
+            "http://localhost:8080/eventos/mamma-mia-the-christmas-experience-evening-hotel-kilmore-cavan/",
+            "http://localhost:8080/lazer/newgrange/",
+            "http://localhost:8080/en/guias/winter-in-ireland-and-mental-health-seasonal-depression-loneliness-and-where-to-find-help/",
+            "http://localhost:8080/en/2026/01/19/courage-the-star-that-lights-the-entrepreneurs-path-christmas-special/",
+            "http://localhost:8080/en/2026/01/03/the-warmth-born-of-winter/",
+            "http://localhost:8080/en/2026/01/03/preparing-the-body-for-winter/",
+            "http://localhost:8080/en/guias/first-international-trip-with-irp-documents-checklist-for-brazilians/",
+            "http://localhost:8080/en/guias/travelling-outside-ireland-with-irp-what-brazilians-need-to-know/",
+            "http://localhost:8080/en/guias/emergency-services-in-ireland-112-and-999/",
+            "http://localhost:8080/en/eventos/"
+          ],
+          "console": [],
+          "pageerror": [],
+          "requestfailed": [],
+          "screenshot": "landing-active-en-1366x768.png"
+        }
+      },
+      "cta_navigation": {
+        "href": "http://localhost:8080/en/eventos/",
+        "status": 200
+      },
+      "no_javascript": {
+        "status": 200,
+        "hero": 1,
+        "modules": 5,
+        "banner": 1
+      }
+    }
+  },
+  "browser": "chromium 151.0.7922.34",
+  "failures": [],
+  "status": "pass"
+}

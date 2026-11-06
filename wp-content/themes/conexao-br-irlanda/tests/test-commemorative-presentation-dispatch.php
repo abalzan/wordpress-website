@@ -249,6 +249,53 @@ assert_contains( 'ce-module--agenda', $landing_markup, 'the landing page renders
 assert_contains( 'ce-package--christmas', $landing_markup, 'the landing page uses its package identity' );
 assert_true( substr_count( $landing_markup, 'ce-module--' ) >= 3, 'at least three modules are rendered (empty-page rule)' );
 
+test_section( 'The landing placement owns its context while its own event is active' );
+
+/*
+ * Regression (`2026-11-06-christmas-landing-page-active-dispatch-fix`).
+ *
+ * While Christmas is active its package ALSO plans `landing_page` on the
+ * `landing` route, and that event-driven copy carries no page identity
+ * (`page_id = 0`). Resolving it made the shared landing shell return early and
+ * blank `/natal/`. The resolved page opt-in must win, and the event must keep
+ * its own placements on the same request.
+ */
+$active_plan = conexao_dispatch_test_plan( '2026-12-15 12:00:00', 'landing', $landing_id );
+
+assert_true( null !== $active_plan['event'] && 'christmas' === $active_plan['event']->event_key, 'christmas is the active event inside its window' );
+assert_true( ! empty( $active_plan['landing'] ), 'the page opt-in resolves its landing entry while the event is active' );
+assert_equals( $landing_id, (int) $active_plan['landing']['page_id'], 'the landing entry carries the queried page id' );
+assert_true( isset( $active_plan['placements']['landing_page'] ), 'precondition: the active package also plans landing_page on this route' );
+assert_true( isset( $active_plan['placements']['site_wide_ambient'] ), 'the active event keeps its own ambient placement' );
+assert_true( ! isset( $active_plan['placements']['homepage_hero'] ), 'the landing route still does not plan the homepage hero' );
+
+$active_context = conexao_commemorative_placement_context( 'landing_page' );
+
+assert_true( null !== $active_context, 'the landing placement resolves a context while its event is active' );
+assert_equals( 'landing', $active_context['source'], 'the page-owned landing entry wins over the event-driven copy of the same placement' );
+assert_equals( $landing_id, (int) $active_context['page_id'], 'the landing context carries the queried page id, never 0' );
+assert_equals( 'christmas', $active_context['package']['slug'], 'the landing context keeps its package identity' );
+assert_true( conexao_commemorative_has_placement( 'landing_page' ), 'has_placement() reports the landing placement on the active route' );
+
+ob_start();
+$active_rendered = conexao_commemorative_render_placement( 'landing_page' );
+$active_markup   = (string) ob_get_clean();
+
+assert_true( $active_rendered, 'the landing placement renders while its event is active' );
+assert_true( '' !== trim( $active_markup ), 'the landing placement is not blank while its event is active' );
+assert_equals( 1, substr_count( $active_markup, 'ce-landing__title' ), 'the landing hero renders exactly once' );
+assert_contains( 'data-ce-landing="' . $landing_id . '"', $active_markup, 'the shell is attributed to the queried page' );
+assert_not_contains( 'data-ce-welcome', $active_markup, 'the landing route never renders the homepage welcome' );
+assert_not_contains( 'ce-christmas-hero', $active_markup, 'the landing route never duplicates the homepage hero' );
+assert_not_contains( 'data-ce-ambient-config', $active_markup, 'the landing placement never renders the ambient layer twice' );
+
+preg_match_all( '/id="(ce-module-[a-z\-]+)"/', $active_markup, $active_module_ids );
+
+$active_modules = isset( $active_module_ids[1] ) ? $active_module_ids[1] : array();
+
+assert_true( count( $active_modules ) >= 3, 'at least three landing modules render while the event is active' );
+assert_equals( count( $active_modules ), count( array_unique( $active_modules ) ), 'no landing module renders twice while the event is active' );
+
 test_section( 'A page without the opt-in is not a landing page' );
 
 $plain = get_page_by_path( 'documentos', OBJECT, 'page' );

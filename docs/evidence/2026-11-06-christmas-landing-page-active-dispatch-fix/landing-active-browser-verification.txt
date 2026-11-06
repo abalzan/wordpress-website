@@ -1,0 +1,173 @@
+base url: http://localhost:8080
+evidence: /home/andrei/IdeaProjects/wordpress-website/docs/evidence/2026-11-06-christmas-landing-page-active-dispatch-fix
+browser: chromium 151.0.7922.34
+
+== pt: /natal/ (event active, signed preview) ==
+  PASS: pt/320x568: the route answers 200
+  PASS: pt/320x568: the signed preview is authorised (the event is active)
+  PASS: pt/320x568: exactly one h1
+  PASS: pt/320x568: the landing page hero is rendered exactly once
+  PASS: pt/320x568: the hero is the PT page title (Natal)
+  PASS: pt/320x568: the shell is attributed to the queried page
+  PASS: pt/320x568: at least three landing modules render (5)
+  PASS: pt/320x568: the two-sky journey renders once
+  PASS: pt/320x568: the homepage welcome is absent from the landing route
+  PASS: pt/320x568: no dialog auto-opens on the landing route
+  PASS: pt/320x568: no horizontal overflow (320 <= 320)
+  PASS: pt/320x568: no broken image (0 broken)
+  PASS: pt/320x568: the landing copy is in the route language
+  PASS: pt/320x568: the other language copy never leaks in
+  PASS: pt/320x568: the page exposes real CTA links
+  PASS: pt/320x568: every CTA has a real destination
+  PASS: pt/320x568: no console error
+  PASS: pt/320x568: no uncaught page error
+  PASS: pt/320x568: no failed request
+  PASS: pt/390x844: the route answers 200
+  PASS: pt/390x844: the signed preview is authorised (the event is active)
+  PASS: pt/390x844: exactly one h1
+  PASS: pt/390x844: the landing page hero is rendered exactly once
+  PASS: pt/390x844: the hero is the PT page title (Natal)
+  PASS: pt/390x844: the shell is attributed to the queried page
+  PASS: pt/390x844: at least three landing modules render (5)
+  PASS: pt/390x844: the two-sky journey renders once
+  PASS: pt/390x844: the homepage welcome is absent from the landing route
+  PASS: pt/390x844: no dialog auto-opens on the landing route
+  PASS: pt/390x844: no horizontal overflow (390 <= 390)
+  PASS: pt/390x844: no broken image (0 broken)
+  PASS: pt/390x844: the landing copy is in the route language
+  PASS: pt/390x844: the other language copy never leaks in
+  PASS: pt/390x844: the page exposes real CTA links
+  PASS: pt/390x844: every CTA has a real destination
+  PASS: pt/390x844: no console error
+  PASS: pt/390x844: no uncaught page error
+  PASS: pt/390x844: no failed request
+  PASS: pt/768x1024: the route answers 200
+  PASS: pt/768x1024: the signed preview is authorised (the event is active)
+  PASS: pt/768x1024: exactly one h1
+  PASS: pt/768x1024: the landing page hero is rendered exactly once
+  PASS: pt/768x1024: the hero is the PT page title (Natal)
+  PASS: pt/768x1024: the shell is attributed to the queried page
+  PASS: pt/768x1024: at least three landing modules render (5)
+  PASS: pt/768x1024: the two-sky journey renders once
+  PASS: pt/768x1024: the homepage welcome is absent from the landing route
+  PASS: pt/768x1024: no dialog auto-opens on the landing route
+  PASS: pt/768x1024: no horizontal overflow (768 <= 768)
+  PASS: pt/768x1024: no broken image (0 broken)
+  PASS: pt/768x1024: the landing copy is in the route language
+  PASS: pt/768x1024: the other language copy never leaks in
+  PASS: pt/768x1024: the page exposes real CTA links
+  PASS: pt/768x1024: every CTA has a real destination
+  PASS: pt/768x1024: no console error
+  PASS: pt/768x1024: no uncaught page error
+  PASS: pt/768x1024: no failed request
+  PASS: pt/1366x768: the route answers 200
+  PASS: pt/1366x768: the signed preview is authorised (the event is active)
+  PASS: pt/1366x768: exactly one h1
+  PASS: pt/1366x768: the landing page hero is rendered exactly once
+  PASS: pt/1366x768: the hero is the PT page title (Natal)
+  PASS: pt/1366x768: the shell is attributed to the queried page
+  PASS: pt/1366x768: at least three landing modules render (5)
+  PASS: pt/1366x768: the two-sky journey renders once
+  PASS: pt/1366x768: the homepage welcome is absent from the landing route
+  PASS: pt/1366x768: no dialog auto-opens on the landing route
+  PASS: pt/1366x768: no horizontal overflow (1366 <= 1366)
+  PASS: pt/1366x768: no broken image (0 broken)
+  PASS: pt/1366x768: the landing copy is in the route language
+  PASS: pt/1366x768: the other language copy never leaks in
+  PASS: pt/1366x768: the page exposes real CTA links
+  PASS: pt/1366x768: every CTA has a real destination
+  PASS: pt/1366x768: no console error
+  PASS: pt/1366x768: no uncaught page error
+  PASS: pt/1366x768: no failed request
+  PASS: pt: the closing CTA has a real destination (http://localhost:8080/eventos/)
+  PASS: pt: the closing CTA lands on a page that answers 200 (200)
+  PASS: pt: no-js route answers 200
+  PASS: pt: no-js renders the page hero
+  PASS: pt: no-js renders the landing modules
+  PASS: pt: no-js keeps the preview banner
+
+== en: /en/christmas/ (event active, signed preview) ==
+  PASS: en/320x568: the route answers 200
+  PASS: en/320x568: the signed preview is authorised (the event is active)
+  PASS: en/320x568: exactly one h1
+  PASS: en/320x568: the landing page hero is rendered exactly once
+  PASS: en/320x568: the hero is the EN page title (Christmas)
+  PASS: en/320x568: the shell is attributed to the queried page
+  PASS: en/320x568: at least three landing modules render (5)
+  PASS: en/320x568: the two-sky journey renders once
+  PASS: en/320x568: the homepage welcome is absent from the landing route
+  PASS: en/320x568: no dialog auto-opens on the landing route
+  PASS: en/320x568: no horizontal overflow (320 <= 320)
+  PASS: en/320x568: no broken image (0 broken)
+  PASS: en/320x568: the landing copy is in the route language
+  PASS: en/320x568: the other language copy never leaks in
+  PASS: en/320x568: the page exposes real CTA links
+  PASS: en/320x568: every CTA has a real destination
+  PASS: en/320x568: no console error
+  PASS: en/320x568: no uncaught page error
+  PASS: en/320x568: no failed request
+  PASS: en/390x844: the route answers 200
+  PASS: en/390x844: the signed preview is authorised (the event is active)
+  PASS: en/390x844: exactly one h1
+  PASS: en/390x844: the landing page hero is rendered exactly once
+  PASS: en/390x844: the hero is the EN page title (Christmas)
+  PASS: en/390x844: the shell is attributed to the queried page
+  PASS: en/390x844: at least three landing modules render (5)
+  PASS: en/390x844: the two-sky journey renders once
+  PASS: en/390x844: the homepage welcome is absent from the landing route
+  PASS: en/390x844: no dialog auto-opens on the landing route
+  PASS: en/390x844: no horizontal overflow (390 <= 390)
+  PASS: en/390x844: no broken image (0 broken)
+  PASS: en/390x844: the landing copy is in the route language
+  PASS: en/390x844: the other language copy never leaks in
+  PASS: en/390x844: the page exposes real CTA links
+  PASS: en/390x844: every CTA has a real destination
+  PASS: en/390x844: no console error
+  PASS: en/390x844: no uncaught page error
+  PASS: en/390x844: no failed request
+  PASS: en/768x1024: the route answers 200
+  PASS: en/768x1024: the signed preview is authorised (the event is active)
+  PASS: en/768x1024: exactly one h1
+  PASS: en/768x1024: the landing page hero is rendered exactly once
+  PASS: en/768x1024: the hero is the EN page title (Christmas)
+  PASS: en/768x1024: the shell is attributed to the queried page
+  PASS: en/768x1024: at least three landing modules render (5)
+  PASS: en/768x1024: the two-sky journey renders once
+  PASS: en/768x1024: the homepage welcome is absent from the landing route
+  PASS: en/768x1024: no dialog auto-opens on the landing route
+  PASS: en/768x1024: no horizontal overflow (768 <= 768)
+  PASS: en/768x1024: no broken image (0 broken)
+  PASS: en/768x1024: the landing copy is in the route language
+  PASS: en/768x1024: the other language copy never leaks in
+  PASS: en/768x1024: the page exposes real CTA links
+  PASS: en/768x1024: every CTA has a real destination
+  PASS: en/768x1024: no console error
+  PASS: en/768x1024: no uncaught page error
+  PASS: en/768x1024: no failed request
+  PASS: en/1366x768: the route answers 200
+  PASS: en/1366x768: the signed preview is authorised (the event is active)
+  PASS: en/1366x768: exactly one h1
+  PASS: en/1366x768: the landing page hero is rendered exactly once
+  PASS: en/1366x768: the hero is the EN page title (Christmas)
+  PASS: en/1366x768: the shell is attributed to the queried page
+  PASS: en/1366x768: at least three landing modules render (5)
+  PASS: en/1366x768: the two-sky journey renders once
+  PASS: en/1366x768: the homepage welcome is absent from the landing route
+  PASS: en/1366x768: no dialog auto-opens on the landing route
+  PASS: en/1366x768: no horizontal overflow (1366 <= 1366)
+  PASS: en/1366x768: no broken image (0 broken)
+  PASS: en/1366x768: the landing copy is in the route language
+  PASS: en/1366x768: the other language copy never leaks in
+  PASS: en/1366x768: the page exposes real CTA links
+  PASS: en/1366x768: every CTA has a real destination
+  PASS: en/1366x768: no console error
+  PASS: en/1366x768: no uncaught page error
+  PASS: en/1366x768: no failed request
+  PASS: en: the closing CTA has a real destination (http://localhost:8080/en/eventos/)
+  PASS: en: the closing CTA lands on a page that answers 200 (200)
+  PASS: en: no-js route answers 200
+  PASS: en: no-js renders the page hero
+  PASS: en: no-js renders the landing modules
+  PASS: en: no-js keeps the preview banner
+
+PASS: 0 failure(s)

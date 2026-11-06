@@ -1,0 +1,8 @@
+# Captured at the very start of the task (before any edit), 2026-11-06 ~19:2x
+# Re-run at the end of the task as git-state-end.txt.
+root: /home/andrei/IdeaProjects/wordpress-website
+branch: commemorative-events
+head: 411d16706bfe2821f0962451c638cf17fccf0eae
+stashes: 9
+worktree: clean (git status --porcelain=v1 returned no entries)
+ignored files present (not touched): .env, .idea/, .local/, .venv/, dist/, docs/evidence/*.log (pre-existing logs)
