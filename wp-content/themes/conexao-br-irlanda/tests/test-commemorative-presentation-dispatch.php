@@ -187,7 +187,7 @@ $plan = conexao_dispatch_test_plan( '2026-12-15 12:00:00', 'homepage' );
 
 assert_equals( 'christmas', $plan['event']->event_key, 'the engine selects christmas inside its window' );
 assert_equals( 'christmas', $plan['package']['slug'], 'the christmas package resolves' );
-assert_equals( 'bauble_ornament', $plan['package']['motif'], 'christmas declares a different signature motif' );
+assert_equals( 'shared_star', $plan['package']['motif'], 'christmas declares a different signature motif' );
 assert_equals( 'calm', $plan['package']['energy'], 'christmas declares a different energy level' );
 assert_true( in_array( 'homepage_hero', array_keys( $plan['placements'] ), true ), 'christmas renders a homepage hero' );
 assert_true( in_array( 'site_wide_ambient', array_keys( $plan['placements'] ), true ), 'christmas renders the ambient layer' );
@@ -202,7 +202,7 @@ conexao_commemorative_render_placement( 'homepage_hero' );
 $christmas_hero = (string) ob_get_clean();
 
 assert_contains( 'ce-christmas-hero', $christmas_hero, 'the christmas hero renders its own component' );
-assert_contains( 'data-ce-motif="bauble_ornament"', $christmas_hero, 'the christmas motif is exposed' );
+assert_contains( 'data-ce-motif="shared_star"', $christmas_hero, 'the christmas motif is exposed' );
 assert_not_contains( 'seasonal-halloween', $christmas_hero, 'no Halloween markup leaks into the christmas hero' );
 assert_not_contains( 'data-dismiss-key', $christmas_hero, 'the christmas hero is not a dismissible overlay' );
 

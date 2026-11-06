@@ -128,8 +128,8 @@ assert_equals( 7, $halloween_ambient['session_cap'], 'the playful session cap is
 $christmas_ambient = conexao_commemorative_ambient_options( $packages['christmas']['placements']['site_wide_ambient'] );
 
 assert_equals( 'calm', $christmas_ambient['energy'], 'Christmas uses the calm energy row' );
-assert_equals( 60000, $christmas_ambient['interval_min_ms'], 'a Christmas bauble appears every 60 s at the earliest' );
-assert_equals( 120000, $christmas_ambient['interval_max_ms'], 'a Christmas bauble appears every 120 s at the latest' );
+assert_equals( 60000, $christmas_ambient['interval_min_ms'], 'a Christmas star appears every 60 s at the earliest' );
+assert_equals( 120000, $christmas_ambient['interval_max_ms'], 'a Christmas star appears every 120 s at the latest' );
 assert_equals( 2000, $christmas_ambient['duration_min_ms'], 'Christmas decorations last 2–4 s' );
 assert_equals( 4000, $christmas_ambient['duration_max_ms'], 'Christmas decorations last 2–4 s' );
 assert_equals( 3, $christmas_ambient['session_cap'], 'the calm session cap is 3 decorations' );

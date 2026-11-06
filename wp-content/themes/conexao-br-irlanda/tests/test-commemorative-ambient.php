@@ -92,10 +92,10 @@ $christmas = conexao_ambient_test_render( '2026-12-15 12:00:00' );
 assert_true( '' !== $christmas['markup'], 'the ambient placement renders inside the Christmas window' );
 assert_contains( 'aria-hidden="true"', $christmas['markup'], 'the Christmas layer is decorative too' );
 assert_equals( 'calm', $christmas['config']['energy'], 'the calm energy profile is published' );
-assert_equals( 60000, $christmas['config']['intervalMinMs'], 'a bauble appears every 60 s at the earliest' );
-assert_equals( 120000, $christmas['config']['intervalMaxMs'], 'a bauble appears every 120 s at the latest' );
-assert_equals( 2000, $christmas['config']['durationMinMs'], 'the bauble lasts 2 s at the shortest' );
-assert_equals( 4000, $christmas['config']['durationMaxMs'], 'the bauble lasts 4 s at the longest' );
+assert_equals( 60000, $christmas['config']['intervalMinMs'], 'a star appears every 60 s at the earliest' );
+assert_equals( 120000, $christmas['config']['intervalMaxMs'], 'a star appears every 120 s at the latest' );
+assert_equals( 2000, $christmas['config']['durationMinMs'], 'the star lasts 2 s at the shortest' );
+assert_equals( 4000, $christmas['config']['durationMaxMs'], 'the star lasts 4 s at the longest' );
 assert_equals( 3, $christmas['config']['sessionCap'], 'the calm session cap is three decorations' );
 assert_not_contains( 'seasonal-halloween', $christmas['markup'], 'no Halloween marker leaks into the Christmas layer' );
 

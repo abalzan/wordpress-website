@@ -146,6 +146,9 @@ function conexao_commemorative_module_from_records( array $args ) {
  *     @type string   $id       Module id.
  *     @type string   $title    Module heading, always present.
  *     @type string   $intro    Optional intro.
+ *     @type string   $label    Optional type label for each item; the caller supplies a
+ *                              localised value so a package is never forced to render the
+ *                              default label in the wrong language.
  *     @type string[] $keywords Case-insensitive title keywords used as an
  *                              EDITORIAL filter (never a date rule).
  *     @type int      $limit    Maximum items.
@@ -167,6 +170,7 @@ function conexao_commemorative_module_upcoming_events( array $args ) {
 	$items    = array();
 	$limit    = isset( $args['limit'] ) ? max( 1, (int) $args['limit'] ) : 6;
 	$keywords = isset( $args['keywords'] ) && is_array( $args['keywords'] ) ? $args['keywords'] : array();
+	$label    = isset( $args['label'] ) && '' !== (string) $args['label'] ? (string) $args['label'] : __( 'Evento', 'conexao-br-irlanda' );
 	$upcoming = Conexao_Event_Query::upcoming_events();
 
 	foreach ( $upcoming as $event_id => $date ) {
@@ -196,7 +200,7 @@ function conexao_commemorative_module_upcoming_events( array $args ) {
 
 		$items[] = conexao_commemorative_record_item(
 			$post,
-			__( 'Evento', 'conexao-br-irlanda' ),
+			$label,
 			(string) $date
 		);
 

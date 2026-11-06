@@ -1,0 +1,33 @@
+# Preservation snapshot — TASK START (captured before any edit)
+
+branch:              commemorative-events
+HEAD:                657c3340f85f7b9f783edc85c43805ee8a35347c
+stashes:             9
+working tree:        intentionally dirty (pre-existing optimisation/remediation work)
+
+## git status --short at start
+ M docs/README.md
+ M docs/commemorative-events.md
+ M docs/content-model.md
+ M docs/plugins/conexao-commemorative.md
+ M docs/releases.md
+ M docs/reports/README.md
+ M docs/testing.md
+ M scripts/verify-permanent-gates.py
+ M tests/acceptance/matrices/commemorative.json
+ M tests/acceptance/verify-commemorative-http.py
+ M wp-content/plugins/conexao-admin-ux/includes/class-editor.php
+ M wp-content/plugins/conexao-admin-ux/includes/class-fields.php
+ M wp-content/plugins/conexao-admin-ux/includes/class-list.php
+ M wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php
+ M wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-repository.php
+ M wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative.php
+ M wp-content/plugins/conexao-data-model/includes/class-conexao-data-model-commemorative.php
+ M wp-content/themes/conexao-br-irlanda/assets/js/commemorative.js
+ M wp-content/themes/conexao-br-irlanda/inc/occasion.php
+?? docs/evidence/2026-11-06-commemorative-local-remediation/
+?? docs/evidence/2026-11-06-commemorative-precedence/
+?? docs/reports/2026-11-06-commemorative-events-local-remediation.md
+?? docs/reports/2026-11-06-commemorative-events-r10-final-review.md
+?? wp-content/themes/conexao-br-irlanda/inc/class-conexao-seasonal-occasion.php
+?? wp-content/themes/conexao-br-irlanda/tests/test-commemorative-gate-translation-ownership.php

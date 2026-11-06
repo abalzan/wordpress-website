@@ -71,7 +71,7 @@ git ls-files docs/evidence | wc -l
 | 2026-11-03 | `leisure-coordinate-research` |
 | 2026-11-04 | `lazer-proximity-release` · `leisure-distance-optin` · `leisure-proximity-geolocation` |
 | 2026-11-05 | `lazer-proximity-button-removal` · `leisure-coordinate-rest-permission` · `leisure-location-production-audit` · `leisure-location-stage-7` · `leisure-location-stage-8` · `leisure-location-stage-9` |
-| 2026-11-06 | `evidence-directory-audit` |
+| 2026-11-06 | `evidence-directory-audit` · `christmas-signature-experience` |
 | undated | `lazer-wikimedia-image-seed` · `stage-4-1-rest-matrix` |
 
 Two dated pairs are easy to confuse and are **different records**:

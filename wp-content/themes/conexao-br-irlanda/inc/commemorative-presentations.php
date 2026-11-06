@@ -261,43 +261,49 @@ function conexao_commemorative_package_definitions() {
 			'label'      => __( 'Experiência de Natal', 'conexao-br-irlanda' ),
 			'status'     => 'implemented',
 			'design'     => array(
-				'motif'  => 'bauble_ornament',
+				// "One Christmas, Two Skies": the shared star of the supplied GPT Images
+				// collection replaces the former single-bauble motif. One motif, drawn in
+				// SVG/CSS, recurring in the hero, the signature journey and the ambient layer.
+				'motif'  => 'shared_star',
 				'energy' => 'calm',
 				'tokens' => array(
-					'primary'   => '#0f5132',
-					'secondary' => '#b3202c',
-					'accent'    => '#c8a243',
-					'surface'   => '#fdf8ef',
+					'primary'   => '#1b2447',
+					'secondary' => '#b34a37',
+					'accent'    => '#d9a441',
+					'surface'   => '#fdf7ee',
 				),
 				'motion' => array(
-					'duration_ms' => 2600,
+					'duration_ms' => 700,
 					'easing'      => 'cubic-bezier(0.22, 0.61, 0.36, 1)',
-					'entry'       => 'one slow settle downwards',
-					'exit'        => 'a slow fade while still descending',
+					'entry'       => 'one user-initiated 700 ms travel of the shared star towards the chosen sky',
+					'exit'        => 'one 700 ms return to the seam between the two skies; never a loop, never autoplay',
 				),
 				'voice'  => array(
-					'tone'       => 'warm, reflective, community-minded',
+					'tone'       => 'warm, inclusive and quietly wondrous; it acknowledges that not every household celebrates the same way',
 					'formality'  => 'informal "você" (PT) / direct "you" (EN)',
 					'example_pt' => array(
-						'headline' => 'Um Natal com sabor de casa',
-						'cta'      => 'Ver a agenda de Natal',
+						'headline' => 'Um Natal, dois céus',
+						'cta'      => 'Explorar os dois céus',
 					),
 					'example_en' => array(
-						'headline' => 'A Christmas that feels like home',
-						'cta'      => 'See the Christmas calendar',
+						'headline' => 'One Christmas, two skies',
+						'cta'      => 'Explore both skies',
 					),
 				),
 				'do_not' => array(
-					'No tropical beach imagery that clashes with an Irish winter.',
-					'Do not ignore the religious dimension of the season.',
+					'Never present either country as culturally uniform.',
+					'Never place copy over the artwork: every heading, sentence and button is real localised HTML.',
 					'Never reuse the Halloween motif, palette or motion language.',
 					'No countdown timers and no auto-playing music.',
 				),
 			),
 			'assets'     => array(
 				'base_path'   => 'assets/images/presentations/christmas/',
+				// The ambient decoration is the only file request. The hero, the journey
+				// and the landing pages use the art below through <img srcset>, never as a
+				// CSS background, so the browser can pick a size and lazy-load it.
 				'decorations' => array(
-					'bauble' => 'assets/images/presentations/christmas/decorations/bauble.svg',
+					'star' => 'assets/images/presentations/christmas/decorations/star.svg',
 				),
 			),
 			'placements' => array(

@@ -32,7 +32,14 @@ REPO_ROOT = os.environ.get("CONEXAO_REPO_ROOT") or os.path.abspath(
 )
 
 GATE_ID = "commemorative_ambient_runtime"
-TEST_FILE = os.path.join("tests", "node", "commemorative-ambient.test.js")
+
+# Every Node runtime case of the commemorative surface, in one gate: the shared
+# ambient scheduler and the Christmas two-sky journey controller. A new runtime test
+# joins this tuple rather than adding a second runner.
+TEST_FILES = (
+    {"path": os.path.join("tests", "node", "commemorative-ambient.test.js"), "min_cases": 11},
+    {"path": os.path.join("tests", "node", "christmas-journey.test.js"), "min_cases": 8},
+)
 
 PASS_RE = re.compile(r"^(?:# |ℹ )pass (\d+)$", re.M)
 FAIL_RE = re.compile(r"^(?:# |ℹ )fail (\d+)$", re.M)
@@ -59,12 +66,16 @@ def emit(status: str, passed: int, failed: int, details: list[str]) -> int:
 
 def main() -> int:
     print("\n== PERMANENT GATE: " + GATE_ID + " ==")
-    print("The shared ambient scheduler is executed under node --test.")
+    print("The commemorative runtime behaviours are executed under node --test:")
+    for entry in TEST_FILES:
+        print("  - " + entry["path"])
     print("  prerequisites: node")
 
-    if not os.path.isfile(os.path.join(REPO_ROOT, TEST_FILE)):
-        print("FAIL: the runtime test file is missing: " + TEST_FILE)
-        return emit("blocked", 0, 0, ["missing_test_file"])
+    missing = [entry["path"] for entry in TEST_FILES if not os.path.isfile(os.path.join(REPO_ROOT, entry["path"]))]
+
+    if missing:
+        print("FAIL: runtime test file(s) missing: " + ", ".join(missing))
+        return emit("blocked", 0, 0, ["missing_test_file:" + name for name in missing])
 
     node = shutil.which("node")
 
@@ -73,38 +84,56 @@ def main() -> int:
         print("         An unevaluated invariant is NOT a pass.")
         return emit("blocked", 0, 0, ["node_unavailable"])
 
-    proc = subprocess.run(
-        [node, "--test", TEST_FILE],
-        cwd=REPO_ROOT,
-        capture_output=True,
-        text=True,
-        check=False,
-    )
+    total_passed = 0
+    total_failed = 0
+    details: list[str] = []
 
-    output = proc.stdout + proc.stderr
+    for entry in TEST_FILES:
+        print("\n   -- " + entry["path"] + " --")
 
-    passed = int(PASS_RE.search(output).group(1)) if PASS_RE.search(output) else 0
-    failed = int(FAIL_RE.search(output).group(1)) if FAIL_RE.search(output) else 0
+        proc = subprocess.run(
+            [node, "--test", entry["path"]],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
 
-    # Node prints per-test tick marks; a zero-exit run with no parsed counters is
-    # still a pass, but assert the expected number of runtime cases ran.
-    if proc.returncode == 0:
-        cases = len(re.findall(r"^✔", output, re.M))
-        print(f"  runtime cases executed: {cases}")
-        print(f"  assertions passed:      {passed}")
-        if cases < 11:
-            print("FAIL: fewer runtime cases ran than the suite defines.")
-            return emit("fail", passed, 1, ["runtime_cases_missing"])
+        output = proc.stdout + proc.stderr
 
-        print(f"{passed + cases} passed, 0 failed")
-        return emit("pass", passed + cases, 0, [])
+        passed = int(PASS_RE.search(output).group(1)) if PASS_RE.search(output) else 0
+        failed = int(FAIL_RE.search(output).group(1)) if FAIL_RE.search(output) else 0
 
-    print("FAIL: the runtime suite reported failures.")
-    for line in output.splitlines():
-        if line.startswith("✖") or "AssertionError" in line:
-            print("  " + line.strip())
+        # Node prints per-test tick marks; a zero-exit run with no parsed counters is
+        # still a pass, but assert the expected number of runtime cases ran.
+        if proc.returncode == 0:
+            cases = len(re.findall(r"^✔", output, re.M))
+            print(f"   runtime cases executed: {cases}")
+            print(f"   assertions passed:      {passed}")
 
-    return emit("fail", passed, max(1, failed), ["runtime_assertion_failure"])
+            if cases < entry["min_cases"]:
+                print("FAIL: fewer runtime cases ran than the suite defines.")
+                total_failed += 1
+                details.append("runtime_cases_missing:" + entry["path"])
+                continue
+
+            total_passed += passed + cases
+            continue
+
+        print("FAIL: the runtime suite reported failures.")
+        for line in output.splitlines():
+            if line.startswith("✖") or "AssertionError" in line:
+                print("  " + line.strip())
+
+        total_passed += passed
+        total_failed += max(1, failed)
+        details.append("runtime_assertion_failure:" + entry["path"])
+
+    if total_failed:
+        return emit("fail", total_passed, total_failed, details)
+
+    print(f"\n{total_passed} passed, 0 failed")
+    return emit("pass", total_passed, 0, [])
 
 
 if __name__ == "__main__":

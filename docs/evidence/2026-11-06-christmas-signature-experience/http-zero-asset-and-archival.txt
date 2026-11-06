@@ -1,0 +1,14 @@
+# Commemorative asset dispatch, measured over HTTP (2026-11-06, local stack)
+# The local stack concatenates CSS, so the stylesheet is detected by its HANDLE
+# (data-handles="... conexao-ce-css-presentations-christmas") and the script by src.
+
+## Ordinary routes, NO active Christmas event -> must ship zero commemorative assets
+/            status=200 commemorative=NONE
+/guias/      status=200 commemorative=NONE
+/lazer/      status=200 commemorative=NONE
+/empregos/   status=200 commemorative=NONE
+/en/         status=200 commemorative=NONE
+
+## The opted-in landing pages (archival exception) keep their own package assets
+/natal/          status=200 css_handle=True js=True images=4 journey_panels=2 controls_hidden=True
+/en/christmas/   status=200 css_handle=True js=True images=4 journey_panels=2 controls_hidden=True

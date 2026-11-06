@@ -139,7 +139,7 @@ this section is the theme-internals map.
 | Package registry + placement catalogue + dispatcher + conditional enqueue + preview banner | `inc/commemorative-presentations.php` |
 | Landing-page content modules (records by slug, upcoming events) | `inc/commemorative-modules.php` |
 | Shared components | `template-parts/commemorative/{homepage-hero,ambient-layer,landing-page}.php`, `template-parts/commemorative/modules/module.php` |
-| Package content | `template-parts/commemorative/halloween/`, `template-parts/commemorative/christmas/` |
+| Package content | `template-parts/commemorative/halloween/`, `template-parts/commemorative/christmas/` (hero, ambient, landing, plus the reusable `star` motif and the `journey` signature scene) |
 | Shared framework assets | `assets/css/commemorative.css`, `assets/js/commemorative.js` |
 | Package assets | `assets/css/presentations/*.css`, `assets/js/presentations/*`, `assets/images/presentations/*` |
 | Landing page template | `page-commemorative-landing.php` (assigned template + `_ce_landing_package`) |
@@ -155,6 +155,25 @@ this section is the theme-internals map.
   ~24 KB of JS and ~19 KB of CSS and no longer contain the word `halloween`.
 - Every asset is conditional on the placement that needs it, so a request with no
   active commemorative event ships **no** commemorative bytes.
+
+### The Christmas signature scene (theme internals)
+
+`christmas` is the only package with a user-controlled feature, so its internals are
+worth knowing before touching it:
+
+| Piece | Where | Contract |
+|---|---|---|
+| Shared star motif | `template-parts/commemorative/christmas/star.php` | Code-drawn SVG (8-point star, optional light trails). Decorative by default (`aria-hidden`, `focusable="false"`); a unique `id` per instance keeps the gradient ids from colliding. Never a raster cut-out of the panorama. |
+| Signature scene | `template-parts/commemorative/christmas/journey.php` | Both skies are server-rendered in full (heading, paragraph, three details, nuance note) from ONE two-key data structure. The tab control ships inside a `hidden` container and **no** tab roles are emitted, so a visitor without JavaScript reads both skies and never meets an unusable control. |
+| Scene controller | `assets/js/presentations/christmas/christmas.js` → `createJourney()` | Upgrades that pair into a WAI-ARIA tabs widget (roles, `aria-controls`/`aria-labelledby`, `aria-selected`, roving tabindex, Arrow/Home/End, focus follow). It creates **no** timer, interval, storage entry, request or analytics event; an incomplete scene fails closed and is left as plain markup. Proven at runtime by `tests/node/christmas-journey.test.js`. |
+| Artwork | `assets/images/presentations/christmas/two-skies/` | Six WebP derivatives of the three supplied GPT Images panoramas, served through `<img srcset>` with intrinsic width/height. The multi-megabyte PNG masters are deliberately **not** shipped. The ambient `decorations/star.svg` is the only other image request. |
+| Per-language copy | the package templates | Copy is resolved with `$ce_english ? __( … ) : __( … )` (the package's existing convention) so the English page is never left showing Portuguese headings while a `.pot` regeneration is pending. |
+
+`body.ce-active.ce-package-christmas.ce-placement-homepage-hero` reserves the hero band
+height server-side, and the band keeps art and copy as siblings — no sentence is ever
+placed on top of the photograph.
+
+_Last verified: 2026-11-06 by the Christmas signature experience_
 
 ## Homepage Apoiadores Carousel
 

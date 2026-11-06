@@ -14,7 +14,7 @@ not.
 | Package | Status | Motif | Palette | Energy |
 |---|---|---|---|---|
 | `halloween` | **implemented** | one carved pumpkin | dark purple, orange, black, muted green | playful (bounded) |
-| `christmas` | **implemented** | one bauble ornament | deep green, red, gold, warm white | calm |
+| `christmas` | **implemented** | one shared star | midnight indigo, candle gold, terracotta warmth, warm ivory | calm |
 | `new_year` | planned | one four-point sparkle | white, gold, silver, midnight blue | playful (bounded) |
 | `st_patricks_day` | planned | one shamrock | green, gold, white | moderate |
 | `valentines_day` | planned (one package, two occasions) | one heart | pink, red, cream | calm |
@@ -42,12 +42,12 @@ not.
 | Field | Content |
 |---|---|
 | **Occasion summary** | An Irish Christmas for the Brazilian community: concerts, markets and community gatherings, the Newgrange winter solstice, looking after yourself through the dark months, and reading for the long nights. Window: 10–25 December. |
-| **Signature motif** | **One bauble ornament.** Rendered as the hero across the band, the ambient decoration and the landing-page header. |
-| **Palette / tokens** | `--ce-primary #0f5132` (deep green) · `--ce-secondary #b3202c` (red) · `--ce-accent #c8a243` (gold) · `--ce-surface #fdf8ef` (warm white). |
-| **Motion / energy** | **calm**: one slow settle downwards, 2.6 s, `cubic-bezier(0.22, 0.61, 0.36, 1)`, never repeated; ambient 60–120 s apart, 2–4 s per bauble, one at a time, **session cap 3**. |
-| **Copy voice** | Warm, reflective, community-minded; informal *você* / direct *you*. PT: “**Um Natal com sabor de casa** — Concertos, feiras e encontros da comunidade por toda a Irlanda.” CTA: **Ver a agenda de Natal**. EN: “**A Christmas that feels like home** — Concerts, markets and community gatherings across Ireland.” CTA: **See the Christmas calendar**. |
-| **Modules (the reuse map)** | The landing page `/natal/` (`/en/christmas/`) renders five modules, all backed by EXISTING records: (1) **Agenda de Natal** — the shared upcoming-events engine, filtered by an editorial Christmas keyword list; (2) **Um lugar para o solstício** — the `newgrange` leisure record; (3) **Cuidar do inverno** — the `inverno-irlanda-depressao-sazonal-saude-mental` guide; (4) **Leituras de inverno** — three winter blog posts; (5) **Guias úteis para as festas** — the travel and emergency-services guides. |
-| **Do not** | No tropical beach imagery that clashes with an Irish winter. Do not ignore the religious dimension of the season. Never reuse the Halloween motif, palette or motion language. No countdown timers, no auto-playing music. |
+| **Signature motif** | **One shared star.** Drawn as SVG/CSS (`template-parts/commemorative/christmas/star.php`), never cut out of the photograph. It appears in the hero band, as the control of the two-sky journey, in the closing panel and as the ambient decoration. The whole experience is “One Christmas, Two Skies”: a Brazilian summer evening and an Irish winter night joined by the same light. |
+| **Palette / tokens** | `--ce-primary #1b2447` (midnight indigo) · `--ce-secondary #b34a37` (terracotta) · `--ce-accent #d9a441` (candle gold) · `--ce-surface #fdf7ee` (warm ivory). Evergreen, deep teal and soft amber live in the private `--ce-xmas-*` art tokens inside the package stylesheet. Brazilian warmth is coral/terracotta; Irish coolness is evergreen/teal. |
+| **Motion / energy** | **calm**: one user-initiated 700 ms travel of the star towards the chosen sky, `cubic-bezier(0.22, 0.61, 0.36, 1)`, never a loop and never autoplay; ambient 60–120 s apart, 2–4 s per star, one at a time, **session cap 3**. Reduced motion removes both. |
+| **Copy voice** | Warm, inclusive, quietly wondrous; informal *você* / direct *you*. It says how the season **can** feel, never how a country “is”, and each perspective closes with a note that says so. PT: “**Um Natal, dois céus** — No Brasil, a luz fica até tarde e a noite chega devagar.” CTA: **Explorar os dois céus**. EN: “**One Christmas, two skies**.” CTA: **Explore both skies**. |
+| **Modules (the reuse map)** | The landing page `/natal/` (`/en/christmas/`) opens with the **signature two-sky journey** (“The Christmas Star: a journey between two skies”, server-rendered, complete without JavaScript), then **O que atravessa os dois céus** (four shared threads + the master panorama), then five modules backed by EXISTING records: (1) **Agenda de Natal** — the shared upcoming-events engine, filtered by an editorial Christmas keyword list; (2) **Um lugar para o solstício** — the `newgrange` leisure record; (3) **Cuidar do inverno** — the `inverno-irlanda-depressao-sazonal-saude-mental` guide; (4) **Leituras de inverno** — three winter blog posts; (5) **Guias úteis para as festas** — the travel and emergency-services guides. It closes with **Uma luz que continua depois de dezembro**. |
+| **Do not** | Never present either country as culturally uniform. Never place copy over the artwork — every heading, sentence and button is real localised HTML. Never reuse the Halloween motif, palette or motion language. No countdown timers, no auto-playing music, no snow in Brazil. |
 
 ## 2. Planned briefs (not implemented)
 
@@ -186,4 +186,5 @@ orders already-eligible events, it never changes a date or an eligibility.
 | Christmas and New Year | before December | no normal overlap is expected; verify the 25/26 December handover and the New Year occurrence year |
 
 _Last verified: 2026-11-06 by the commemorative-events Stages 4–6 implementation_
+_Last verified: 2026-11-06 by the Christmas signature experience (the `christmas` brief now describes the shared star, the twilight palette and the two-sky journey)_
 

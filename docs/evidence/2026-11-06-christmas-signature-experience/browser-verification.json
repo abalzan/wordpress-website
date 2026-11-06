@@ -1,0 +1,112 @@
+{
+  "base_url": "http://localhost:8080",
+  "routes": {
+    "pt": {
+      "path": "/natal/",
+      "tabs": 2,
+      "panels": 2,
+      "tablist_role": "tablist",
+      "panel_roles": [
+        "tabpanel",
+        "tabpanel"
+      ],
+      "panel_labels": [
+        "ce-christmas-journey-tab-brasil",
+        "ce-christmas-journey-tab-irlanda"
+      ],
+      "visible_panels": 1,
+      "details_per_panel": [
+        3,
+        3
+      ],
+      "img_in_scenes": 0,
+      "star_hidden": true,
+      "star_focusable": false,
+      "state_after_click": "irlanda",
+      "selected_after_click": [
+        "false",
+        "true"
+      ],
+      "state_after_arrow": "brasil",
+      "focus_after_keyboard": "ce-christmas-journey-tab-irlanda",
+      "overflow_320": [
+        320,
+        320
+      ],
+      "overflow_390": [
+        390,
+        390
+      ],
+      "overflow_768": [
+        768,
+        768
+      ],
+      "overflow_1366": [
+        1366,
+        1366
+      ],
+      "reduced_motion": [
+        "0s",
+        "0s"
+      ],
+      "console": [],
+      "pageerror": [],
+      "requestfailed": []
+    },
+    "en": {
+      "path": "/en/christmas/",
+      "tabs": 2,
+      "panels": 2,
+      "tablist_role": "tablist",
+      "panel_roles": [
+        "tabpanel",
+        "tabpanel"
+      ],
+      "panel_labels": [
+        "ce-christmas-journey-tab-brasil",
+        "ce-christmas-journey-tab-irlanda"
+      ],
+      "visible_panels": 1,
+      "details_per_panel": [
+        3,
+        3
+      ],
+      "img_in_scenes": 0,
+      "star_hidden": true,
+      "star_focusable": false,
+      "state_after_click": "irlanda",
+      "selected_after_click": [
+        "false",
+        "true"
+      ],
+      "state_after_arrow": "brasil",
+      "focus_after_keyboard": "ce-christmas-journey-tab-irlanda",
+      "overflow_320": [
+        320,
+        320
+      ],
+      "overflow_390": [
+        390,
+        390
+      ],
+      "overflow_768": [
+        768,
+        768
+      ],
+      "overflow_1366": [
+        1366,
+        1366
+      ],
+      "reduced_motion": [
+        "0s",
+        "0s"
+      ],
+      "console": [],
+      "pageerror": [],
+      "requestfailed": []
+    }
+  },
+  "browser": "chromium 151.0.7922.34",
+  "failures": [],
+  "status": "pass"
+}
