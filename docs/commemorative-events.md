@@ -119,10 +119,14 @@ renders nothing until its placement map ships.
   fallback card** in the flow under the hero content carries the heading and the
   same CTA; the dialog is never left open as a non-modal inline card, and after
   dismissal nothing is rendered inline at all (no band, no reserved hero height).
-  The signed private preview sets a package attribute that **suppresses** the
-  auto-open and never touches the dismissal key, so the non-dismissible preview
-  banner stays visible; the fallback card then exposes a preview trigger that
-  opens the same modal on demand. Only `christmas` does this today
+  The open card is pinned to the **top** of the viewport — horizontally centred,
+  below the safe area and below any top obstruction (admin bar, signed-preview
+  notice, sticky header) — never vertically centred. The signed private preview
+  sets a package attribute that auto-opens the SAME modal (so an editor inspects
+  the exact visitor experience) while never touching the dismissal key — a
+  reload shows the popup again — and its card is positioned so the
+  non-dismissible preview banner, the admin bar and the header all stay visible
+  above it. Only `christmas` does this today
   ([theme internals](../themes/conexao-br-irlanda.md#the-homepage-welcome--display-frequency-and-failure-behaviour)).
 
 ## 3. Timing and caps
@@ -238,4 +242,5 @@ landing pages in its sitemap is **NOT VERIFIED** — see
 
 _Last verified: 2026-11-06 by the commemorative-events local remediation_
 _Last verified: 2026-11-06 by the Christmas homepage popup UI fix (the welcome dialog ships closed; the compact fallback and preview trigger replace the inline band)_
+_Last verified: 2026-11-07 by the Christmas welcome top-of-screen popup fix (the welcome auto-opens in the signed preview and pins below every top obstruction)_
 

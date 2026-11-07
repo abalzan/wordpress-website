@@ -10,9 +10,12 @@
  *      TAB-SESSION dismissal (never from a signed preview). It creates no timer, no
  *      interval, no `requestAnimationFrame` loop and no network request, reads no
  *      clock and never decides whether the event is active (the server does that).
- *      The signed private preview is never auto-opened — a hidden-until-wired
- *      preview trigger opens the same modal instead — so its banner stays visible.
- *      Nothing is ever rendered inline: no band, no reserved hero height.
+ *      The card opens at the TOP of the screen, pinned below whatever occupies the
+ *      top of the viewport (WordPress admin bar, signed-preview notice, sticky
+ *      header), and the signed private preview auto-opens the SAME modal — an
+ *      editor sees the exact visitor experience, while the preview close never
+ *      writes the dismissal key, so a reload shows the popup again. Nothing is
+ *      ever rendered inline: no band, no reserved hero height.
  *   2. `createJourney()` — upgrades the server-rendered "two skies" pair into an
  *      accessible WAI-ARIA tabs widget (roving tabindex, Arrow/Home/End, one visible
  *      panel, the shared star travelling once towards the chosen sky). It is NOT a
@@ -364,9 +367,12 @@
 	 *   - everything fails closed: no dialog, no close control or no `showModal()`
 	 *     keeps the dialog closed, hides the close button and leaves the compact
 	 *     fallback card as the usable state;
-	 *   - the signed preview never auto-opens: the controller reveals the fallback's
-	 *     preview trigger instead, and closing the modal returns to that trigger
-	 *     without ever touching the visitor dismissal key;
+	 *   - the signed preview auto-opens exactly like the public view — same modal,
+	 *     same top layer — but closing it NEVER touches the visitor dismissal key,
+	 *     so reloading the preview shows the popup again; its card is pinned below
+	 *     the preview notice, the admin bar and the sticky header, and the server
+	 *     marks the dialog itself so the preview backdrop is tinted lighter and the
+	 *     notice stays readable above the card;
 	 *   - claiming is idempotent: a root claimed once yields no second controller,
 	 *     no second set of listeners and never a second `showModal()`.
 	 *
@@ -558,9 +564,86 @@
 				dialog.removeAttribute('open');
 			}
 
+			// The obstruction offset only matters while the card is open.
+			clearObstructionOffset();
+
+			if (view && typeof view.removeEventListener === 'function') {
+				view.removeEventListener('resize', applyObstructionOffset);
+				view.removeEventListener('load', reapplyObstructionOffset);
+			}
+
 			setState(isPreview() ? 'preview' : 'dismissed');
 			unlockScroll();
 			restoreFocus();
+		}
+
+		/**
+		 * Pin the card below whatever occupies the top of the viewport.
+		 *
+		 * The WordPress admin bar, the signed-preview notice and the sticky site
+		 * header must all stay visible ABOVE the card, so the lowest of their
+		 * bottom edges (plus a gap) is written to the dialog as
+		 * `--ce-xmas-welcome-obstruction-top`; the stylesheet folds that value
+		 * into the same `max()` as `env(safe-area-inset-top)`. Nothing is
+		 * scheduled here — it runs once per open and once per resize while open.
+		 */
+		function applyObstructionOffset() {
+			if (
+				!doc ||
+				typeof doc.querySelector !== 'function' ||
+				!dialog ||
+				!dialog.style ||
+				typeof dialog.style.setProperty !== 'function'
+			) {
+				return;
+			}
+
+			var obstructionSelectors = [ '#wpadminbar', '.site-header', '.conexao-preview-banner' ];
+			var bottom = 0;
+
+			for (var index = 0; index < obstructionSelectors.length; index++) {
+				var obstruction = null;
+
+				try {
+					obstruction = doc.querySelector( obstructionSelectors[ index ] );
+				} catch (error) {
+					obstruction = null;
+				}
+
+				if (!obstruction || typeof obstruction.getBoundingClientRect !== 'function') {
+					continue;
+				}
+
+				var rect = obstruction.getBoundingClientRect();
+
+				// A notice scrolled out of view (or absent) never pins the card.
+				if (!rect || typeof rect.bottom !== 'number' || rect.bottom <= 0) {
+					continue;
+				}
+
+				bottom = Math.max( bottom, rect.bottom );
+			}
+
+			if (bottom > 0) {
+				dialog.style.setProperty(
+					'--ce-xmas-welcome-obstruction-top',
+					Math.ceil( bottom + 12 ) + 'px'
+				);
+			}
+		}
+
+		function clearObstructionOffset() {
+			if (dialog && dialog.style && typeof dialog.style.removeProperty === 'function') {
+				dialog.style.removeProperty( '--ce-xmas-welcome-obstruction-top' );
+			}
+		}
+
+		function reapplyObstructionOffset() {
+			// Only while the modal is actually open: a late `load`/fonts callback
+			// must never leave a stale offset on a settled (closed) dialog.
+			if (modal) {
+				applyObstructionOffset();
+			}
 		}
 
 		function open() {
@@ -588,6 +671,10 @@
 				dialog.removeAttribute('open');
 			}
 
+			// Top-of-screen placement: the card starts below the admin bar, the
+			// preview notice and the sticky header for the whole time it is open.
+			applyObstructionOffset();
+
 			try {
 				dialog.showModal();
 			} catch (error) {
@@ -599,6 +686,7 @@
 				if (typeof dialog.removeAttribute === 'function') {
 					dialog.removeAttribute('open');
 				}
+				clearObstructionOffset();
 				hideClose();
 				setState('fallback');
 				return false;
@@ -607,6 +695,20 @@
 			modal = true;
 			lockScroll();
 			focusQuietly(dialog);
+
+			// The obstructions can still grow AFTER this first measurement (the
+			// header reflows when web fonts and late images settle), so re-measure
+			// when the document finishes loading, when the fonts are ready and on
+			// every resize — plain listeners and one promise, never a timer,
+			// interval or animation frame; all removed again on settle.
+			if (view && typeof view.addEventListener === 'function') {
+				view.addEventListener('resize', applyObstructionOffset);
+				view.addEventListener('load', reapplyObstructionOffset);
+			}
+
+			if (doc && doc.fonts && doc.fonts.ready && typeof doc.fonts.ready.then === 'function') {
+				doc.fonts.ready.then(reapplyObstructionOffset, reapplyObstructionOffset);
+			}
 
 			return true;
 		}
@@ -683,19 +785,17 @@
 			closeButton.addEventListener('click', onCloseClick);
 		}
 
-		// The preview trigger: wired always, revealed ONLY in an authorised signed
-		// preview (it ships `hidden`), where it is the accessible way to open the
-		// exact same modal through showModal().
+		// The preview trigger ships `hidden` and stays hidden: the signed preview
+		// auto-opens the same modal, so no click is ever required to inspect it.
+		// It stays wired for a maintainer who reveals it by hand — never for a
+		// visitor, because the fallback card it lives in is hidden in every state
+		// a wired controller owns.
 		var previewTrigger = typeof root.querySelector === 'function'
 			? root.querySelector(WELCOME_PREVIEW_OPEN_SELECTOR)
 			: null;
 
 		if (previewTrigger && typeof previewTrigger.addEventListener === 'function') {
 			previewTrigger.addEventListener('click', onPreviewTriggerClick);
-
-			if (isPreview() && typeof previewTrigger.removeAttribute === 'function') {
-				previewTrigger.removeAttribute('hidden');
-			}
 		}
 
 		// Claimed exactly once: a repeated boot creates no second controller, adds
@@ -760,11 +860,11 @@
 	 * Enhance every homepage welcome rendered on this page.
 	 *
 	 * There is at most one: the placement is homepage-only and the dispatcher renders
-	 * a single package. Auto-open is decided HERE and only here — the signed private
-	 * preview is wired but never auto-opened (its banner stays visible and its close
-	 * never touches the dismissal key), a dismissal already recorded for this tab
-	 * session leaves the welcome closed with nothing inline, and every other eligible
-	 * view opens the modal exactly once.
+	 * a single package. Auto-open is decided HERE and only here — a dismissal already
+	 * recorded for this tab session leaves the public welcome closed with nothing
+	 * inline, while every other eligible view (the signed private preview included)
+	 * opens the modal exactly once; the preview close never touches the dismissal
+	 * key, so reloading the preview shows the popup again.
 	 *
 	 * @param {Object} scope Optional window-like object (the runtime tests inject one).
 	 * @returns {Array} The controllers that were created.
@@ -792,16 +892,16 @@
 
 			controllers.push(controller);
 
-			if (controller.isPreview()) {
-				// Signed preview: the trigger is already revealed and wired; the
-				// banner must stay visible, so never auto-open and never touch the
-				// visitor dismissal key.
-				controller.setState('preview');
-			} else if (controller.isDismissed()) {
-				// A dismissal in THIS tab session suppresses the welcome and leaves
-				// nothing inline: no band, no reserved height, no residue.
+			if (!controller.isPreview() && controller.isDismissed()) {
+				// A dismissal in THIS tab session suppresses the public welcome and
+				// leaves nothing inline: no band, no reserved height, no residue.
 				controller.setState('dismissed');
 			} else {
+				// Every other eligible view opens the modal exactly once — the
+				// signed private preview included, so an editor inspects the exact
+				// visitor experience without clicking anything. The preview close
+				// never writes the dismissal key (see `close()`), so reloading the
+				// preview shows the popup again.
 				controller.open();
 			}
 		}

@@ -1,0 +1,171 @@
+
+== Christmas homepage welcome ==
+  PASS: the christmas package is registered
+
+=== The package identity and its three placements are untouched ===
+  PASS: no new placement was invented for the welcome
+  PASS: the motif is still the one shared star
+  PASS: the energy level is unchanged
+  PASS: the event key is unchanged
+  PASS: the package assignment is unchanged
+  PASS: the rule is unchanged
+  PASS: the date is unchanged
+
+=== One node is emitted for the homepage hero placement ===
+  PASS: the engine selects christmas inside its window
+  PASS: the homepage hero placement is planned
+  PASS: the placement renders
+  PASS: it is the existing homepage hero placement
+  PASS: it belongs to the christmas package
+  PASS: exactly one welcome dialog is emitted
+  PASS: exactly one welcome root is emitted
+  PASS: the hero component itself is emitted once
+  PASS: one figure only
+  PASS: one image only — the modal is not a second copy
+  PASS: one heading only (the fallback title is a plain paragraph)
+  PASS: one paragraph only
+  PASS: exactly two links: the modal CTA and the fallback CTA (same destination)
+  PASS: the modal control is the hero CTA
+  PASS: the fallback control is its own single CTA
+  PASS: rendering writes nothing to the event record
+
+=== The dialog semantics are unique and correctly paired ===
+  PASS: the dialog has its stable id
+  PASS: the dialog id appears once
+  PASS: the dialog is named by the localised heading
+  PASS: the dialog is described by the welcome copy
+  PASS: the heading carries the referenced id
+  PASS: the paragraph carries the referenced id
+  PASS: the title id is unique
+  PASS: the description id is unique
+  PASS: the close control has its stable id
+  PASS: exactly one close control is emitted
+  PASS: the accessible name comes from real text, not an image
+  PASS: modality is the engine's job, never a hand-written claim
+  PASS: the shared star stays decorative
+  PASS: the star can never take the focus
+  PASS: the star gradient id is unique on the page
+
+=== The dialog ships CLOSED and a compact fallback covers the no-JS path ===
+  PASS: the hero is rendered inside a native dialog
+  PASS: the dialog tag is extractable
+  PASS: no server-rendered `open` attribute: a non-modal open dialog is the broken inline card this contract forbids
+  PASS: the compact fallback card is rendered for no-JS / failed-open
+  PASS: exactly one fallback card is emitted
+  PASS: the preview trigger button exists once
+  PASS: the preview trigger ships hidden and stays hidden (the preview auto-opens)
+  PASS: the close control is withheld until a controller owns it
+  PASS: nothing is hidden by an inline style hack
+  PASS: the heading is server-rendered text
+  PASS: the copy is server-rendered text
+  PASS: the parse-time guard uses its own state attribute
+  PASS: the guard reveals the fallback if the controller never arrives
+  PASS: the guard has a deterministic fallback reveal
+  PASS: the guard is a capability test, not a decision
+  PASS: no date is computed in the template
+  PASS: the guard never marks the page as an inline band
+
+=== Image and links are generated local URLs ===
+  PASS: the template hard-codes no host
+  PASS: the template hard-codes no absolute URL
+  PASS: the panorama is a generated theme URL
+  PASS: the 840w derivative is offered
+  PASS: the 1200w derivative is offered
+  PASS: the image declares its intrinsic width
+  PASS: the image declares its intrinsic height
+  PASS: the welcome image is not lazy
+  PASS: the homepage LCP image keeps its priority
+  PASS: the CTA leads to the existing PT landing page
+
+=== English is written, not poured from the Portuguese text ===
+  PASS: the English heading is real English
+  PASS: no Portuguese heading leaks into the English rendering
+  PASS: no Portuguese copy leaks into the English rendering
+  PASS: the kicker is translated
+  PASS: the close control is labelled in English
+  PASS: no Portuguese label leaks into the English rendering
+  PASS: the CTA label is translated
+  PASS: the alt text is translated
+  PASS: the English CTA leads to the English landing page
+  PASS: the Portuguese rendering keeps its Portuguese label
+  PASS: no English label leaks into the Portuguese rendering
+  PASS: the Portuguese alt text is the written one
+  PASS: both locales carry the same single image (parity, not truncation)
+
+=== The signed private preview never renders an inline dialog ===
+  PASS: a public view carries no preview attribute
+  PASS: the private preview can be simulated in-process
+  PASS: the engine accepts the signed preview
+  PASS: the preview marks the welcome root for the preview contract
+  PASS: the preview still renders the dialog
+  PASS: the preview dialog tag is extractable
+  PASS: the preview never renders a non-modal open dialog as a broken inline card
+  PASS: the preview hosts the compact fallback card
+  PASS: the preview still ships the hidden trigger markup for the fallback card
+  PASS: the preview dialog tag is extractable
+  PASS: the dialog itself carries the preview mark (the lighter backdrop keeps the notice readable above the card)
+  PASS: the preview capability is untouched by this template
+  PASS: the banner stays where the engine prints it, never duplicated inside the hero
+  PASS: the simulated preview is fully released
+
+=== No welcome markup outside the homepage hero placement ===
+  PASS: the hero does not render on an internal route
+  PASS: no welcome markup on an internal route
+  PASS: no dialog on an internal route
+  PASS: the hero does not render outside the event window
+  PASS: no welcome markup when the placement is absent
+  PASS: the landing composition renders
+  PASS: the landing page never carries the homepage welcome
+  PASS: the landing page is a page, not a dialog
+  PASS: no welcome CSS hooks reach the landing page
+  PASS: the landing placement still renders outside the window (archival)
+  PASS: the archival landing page has content
+  PASS: the archival landing page never opens the homepage welcome
+  PASS: the archival landing page is a page, not a dialog
+
+=== The behaviour stays a bounded, session-scoped enhancement ===
+  PASS: the dismissal key is namespaced and versioned
+  PASS: the cap is the tab session, not a persistent profile
+  PASS: no cross-session storage is used
+  PASS: no cookie is written
+  PASS: no network request is made
+  PASS: the welcome introduces no setInterval( call
+  PASS: the welcome introduces no setTimeout( call
+  PASS: the welcome introduces no requestAnimationFrame( call
+  PASS: the modal presentation is the native dialog top layer
+  PASS: reduced motion is handled in the package stylesheet
+  PASS: the card respects the device safe areas
+  PASS: the card uses the dynamic viewport height
+  PASS: the close control is a 44 px target
+  PASS: the close control is a 44 px target
+  PASS: the entrance motion is the package's own, not a global animation
+
+=== The layout contract: no reserved band, in-flow placement, scoped states ===
+  PASS: the hero reserves no band height: nothing renders inline, so no gap can remain after dismissal
+  PASS: the welcome placement is in normal flow at every width (no absolute band inside the hero)
+  PASS: the guard state hides the fallback before first paint
+  PASS: the dismissed state leaves nothing visible
+  PASS: the fallback card is styled in the package stylesheet
+  PASS: no global dialog selector leaks onto unrelated site overlays
+  PASS: the controller exposes the fallback state
+  PASS: the controller exposes the dismissed state
+  PASS: the controller exposes the preview state
+  PASS: claiming a root is idempotent
+  PASS: the preview trigger is wired by the controller
+  PASS: the preview never reveals the fallback trigger — the preview auto-opens, so no click is required
+  PASS: the parse-time guard hands off deterministically
+  PASS: the controller never re-opens the dialog as a non-modal inline card
+
+=== The card opens at the TOP of the screen, below every top obstruction ===
+  PASS: the open card hangs from the top edge — never vertically centred
+  PASS: the card keeps horizontal centring between the pinned edges
+  PASS: the top frame folds in the controller-measured obstruction
+  PASS: safe areas and obstructions share one max()
+  PASS: the WordPress admin bar is measured
+  PASS: the sticky site header is measured
+  PASS: the signed-preview notice is measured
+  PASS: the measurement lands on the dialog as its top offset
+  PASS: a closed signed preview leaves NOTHING in the flow — no card, no trigger
+  PASS: the preview backdrop is its own lighter tint so the notice stays readable
+
+commemorative-christmas-welcome: 145 passed, 0 failed

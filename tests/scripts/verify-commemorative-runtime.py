@@ -40,7 +40,7 @@ GATE_ID = "commemorative_ambient_runtime"
 TEST_FILES = (
     {"path": os.path.join("tests", "node", "commemorative-ambient.test.js"), "min_cases": 11},
     {"path": os.path.join("tests", "node", "christmas-journey.test.js"), "min_cases": 8},
-    {"path": os.path.join("tests", "node", "christmas-welcome.test.js"), "min_cases": 18},
+    {"path": os.path.join("tests", "node", "christmas-welcome.test.js"), "min_cases": 19},
 )
 
 PASS_RE = re.compile(r"^(?:# |ℹ )pass (\d+)$", re.M)

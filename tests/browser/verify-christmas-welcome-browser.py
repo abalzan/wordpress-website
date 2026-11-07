@@ -13,17 +13,20 @@ Four phases:
 dialog, no commemorative asset request, and the normal homepage still works.
   B. LANDING PAGES — `/natal/` and `/en/christmas/` never carry the homepage
 welcome modal.
-  C. SIGNED PRIVATE PREVIEW — the REAL server-rendered placement: the preview
-banner stays visible, the dialog stays CLOSED (never an inline card), the compact
-fallback card carries the hidden-until-wired preview trigger, the modal does NOT
-auto-open, and clicking that trigger opens the exact same modal through
-showModal() without ever touching the visitor dismissal key (that is how every
-layout profile below is measured on real markup).
+  C. SIGNED PRIVATE PREVIEW — the REAL server-rendered placement: the dialog
+AUTO-OPENS as a real top-layer modal on the initial view (no click, no
+trigger), the preview notice, the WordPress admin bar and the sticky header
+all stay visible ABOVE the card, closing leaves NOTHING in the hero flow, a
+reload in the same session shows the popup again (the visitor dismissal key
+is never written), and the fallback trigger stays hidden. Every layout
+profile below is measured on this real markup with the modal open.
   D. GENERATED HARNESS — the same placement markup, captured verbatim from the
-preview page, with the preview flag removed so the AUTO-OPEN path can be measured
-without weakening preview authentication: open-without-gesture, once-per-tab-
-session dismissal leaving NOTHING inline, a fresh session, denied storage,
-reduced motion, light/dark, and the no-JavaScript fallback card.
+preview page while it is CLOSED (server truth), with the preview flag removed
+so the PUBLIC auto-open path can be measured without weakening preview
+authentication: open-without-gesture, once-per-tab-session dismissal leaving
+NOTHING inline, a fresh session, denied storage, reduced motion, light/dark,
+and the no-JavaScript fallback card. The preview-flag harness proves the
+preview auto-opens too, with its own lighter backdrop.
 
 Viewport matrix (required for acceptance): 320x568, 375x667, 390x844, 768x1024,
 1024x768, 1366x768, 1440x900 and landscape 844x390.
@@ -117,6 +120,13 @@ def modal_state(page) -> dict:
             const trigger = document.querySelector('[data-ce-welcome-preview-open]');
             const box = dialog ? dialog.getBoundingClientRect() : null;
             const visible = (el) => !!el && !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
+            const rectOf = (selector) => {
+                const el = document.querySelector(selector);
+                if (!el) return null;
+                const r = el.getBoundingClientRect();
+                if (!r.width && !r.height) return null;
+                return { y: Math.round(r.y), bottom: Math.round(r.bottom), h: Math.round(r.height) };
+            };
             return {
                 present: !!dialog,
                 isModal: dialog ? dialog.matches(':modal') : false,
@@ -126,10 +136,15 @@ def modal_state(page) -> dict:
                 closeHidden: close ? close.hasAttribute('hidden') : null,
                 closeVisible: close ? !!(close.offsetWidth || close.offsetHeight) : null,
                 bandVisible: band ? visible(band) : null,
+                inlineCopies: Array.from(document.querySelectorAll('.ce-christmas-hero'))
+                    .filter((el) => !el.closest('dialog')).length,
                 fallbackVisible: visible(fallback),
                 triggerVisible: visible(trigger),
                 bodyPosition: document.body.style.position,
                 scrollY: window.scrollY,
+                banner: rectOf('.conexao-preview-banner'),
+                header: rectOf('.site-header'),
+                adminBar: rectOf('#wpadminbar'),
                 box: box ? { x: Math.round(box.x), y: Math.round(box.y), w: Math.round(box.width), h: Math.round(box.height) } : null,
             };
         }"""
@@ -185,6 +200,9 @@ def profile_checks(page, label: str, expected_open: bool, out_dir: str, prefix: 
                 close: rect(close),
                 cta: rect(cta),
                 image: rect(image),
+                banner: rect(document.querySelector('.conexao-preview-banner')),
+                header: rect(document.querySelector('.site-header')),
+                adminBar: rect(document.querySelector('#wpadminbar')),
                 imageRatio: { natural: Math.round(natural * 1000) / 1000, rendered: Math.round(rendered * 1000) / 1000 },
                 heroScroll: hero ? { client: hero.clientHeight, scroll: hero.scrollHeight } : null,
                 activeInside: dialog ? dialog.contains(document.activeElement) : false,
@@ -215,6 +233,28 @@ def profile_checks(page, label: str, expected_open: bool, out_dir: str, prefix: 
     check(box["x"] >= 0 and box["right"] <= vw, f"{prefix}: the dialog is fully inside the viewport horizontally")
     check(box["y"] >= 0 and box["bottom"] <= vh, f"{prefix}: the dialog is fully inside the viewport vertically ({box['y']}..{box['bottom']} of {vh})")
     check(abs((box["x"] + box["w"] / 2) - vw / 2) <= 2, f"{prefix}: the dialog is horizontally centred")
+
+    # TOP-of-screen placement: the card hangs from the top frame — below the
+    # admin bar, the preview notice and the sticky header when they exist —
+    # and is never vertically centred in the viewport.
+    reference = 0
+    for obstruction_key in ("adminBar", "banner", "header"):
+        if metrics.get(obstruction_key):
+            reference = max(reference, metrics[obstruction_key]["bottom"])
+    expected_frame = max(16, reference + 12) if reference else 16
+    check(
+        abs(box["y"] - expected_frame) <= 4,
+        f"{prefix}: the card is pinned to the top frame (y={box['y']}, expected ≈{expected_frame})",
+    )
+    check(
+        box["y"] < vh / 2,
+        f"{prefix}: the card opens in the top half of the screen, never vertically centred (y={box['y']} of {vh})",
+    )
+    if reference:
+        check(
+            box["y"] >= reference,
+            f"{prefix}: the card sits below every top obstruction (y={box['y']} >= {reference})",
+        )
 
     # The image keeps its 16:9 frame, so Brazil and Ireland both stay visible.
     check(
@@ -379,24 +419,39 @@ def preview_phase(browser, preview: str, out_dir: str, storage_state: dict) -> d
 
     check(state["present"], "preview: the real placement renders the welcome component")
     check(state["preview"] is True, "preview: the template marks the view as a private preview")
-    check(state["state"] == "preview", f"preview: the controller claims the page into the preview state ({state['state']})")
-    check(state["isModal"] is False, "preview: the welcome does NOT auto-open (banner stays visible)")
-    check(state["hasOpen"] is False, "preview: the dialog stays CLOSED — never a non-modal inline card")
-    check(state["bandVisible"] is False, "preview: the full Natal card is never rendered inline")
-    check(state["fallbackVisible"] is True, "preview: the compact fallback card hosts the preview trigger")
-    check(state["triggerVisible"] is True, "preview: the preview trigger is revealed by the wired controller")
-    check(state["closeHidden"] is True, "preview: no dead close control is offered before the modal opens")
+    check(state["state"] == "open", f"preview: the page state is open ({state['state']})")
+    check(state["isModal"] is True, "preview: the welcome AUTO-OPENS as a real top-layer modal — no click, no trigger")
+    check(state["hasOpen"] is True, "preview: the open dialog carries the open attribute")
+    check(state["inlineCopies"] == 0, f"preview: no Natal card exists outside the dialog ({state['inlineCopies']})")
+    check(state["fallbackVisible"] is False, "preview: no fallback card sits in the hero flow while the modal operates")
+    check(state["triggerVisible"] is False, "preview: the preview trigger stays hidden — no click is ever required")
+    check(
+        state["closeHidden"] is False and state["closeVisible"] is True,
+        "preview: the close control is revealed and visible with the modal",
+    )
 
-    # A maintainer opens the REAL modal through the preview trigger — the only
-    # preview affordance — never through an inline dialog.
-    trigger = page.locator("[data-ce-welcome-preview-open]")
-    check(trigger.is_visible(), "preview: the preview trigger is visible and clickable")
-    trigger.click()
-    page.wait_for_timeout(300)
-    state = modal_state(page)
-    result["opened"] = {"state": state}
-
-    check(state["isModal"] is True, "preview: the trigger opens a real modal (top layer)")
+    # The notice, the admin bar and the sticky header must all stay visible and
+    # clear ABOVE the card: the card is pinned below them, never over them.
+    check(
+        state["banner"] is not None and state["banner"]["bottom"] <= state["box"]["y"],
+        f"preview: the notice sits above the card (notice bottom {state['banner'] and state['banner']['bottom']} <= card y {state['box']['y']})",
+    )
+    check(
+        state["header"] is not None and state["header"]["bottom"] <= state["box"]["y"],
+        f"preview: the sticky header sits above the card (header bottom {state['header'] and state['header']['bottom']} <= card y {state['box']['y']})",
+    )
+    check(
+        state["adminBar"] is not None and state["adminBar"]["bottom"] <= state["box"]["y"],
+        "preview: the admin bar sits above the card",
+    )
+    backdrop = page.evaluate(
+        "() => getComputedStyle(document.querySelector('.ce-xmas-welcome__dialog'), '::backdrop').backgroundColor"
+    )
+    result["backdrop"] = backdrop
+    check(
+        backdrop == "rgba(8, 12, 34, 0.45)",
+        f"preview: the notice-safe lighter backdrop keeps the notice readable ({backdrop})",
+    )
     result["lcp_modal"] = page.evaluate("() => window.__ceLcp")
 
     profiles = {}
@@ -417,36 +472,25 @@ def preview_phase(browser, preview: str, out_dir: str, storage_state: dict) -> d
 
     check(state["isModal"] is False, "preview: Escape dismisses the welcome")
     check(state["hasOpen"] is False, "preview: the dialog is closed again — never an inline card")
-    check(state["state"] == "preview", f"preview: closing returns to the preview trigger card ({state['state']})")
-    check(state["fallbackVisible"] is True and state["triggerVisible"] is True, "preview: the fallback card and its trigger are visible again")
+    check(state["state"] == "preview", f"preview: closing returns to the closed-preview state ({state['state']})")
+    check(
+        state["fallbackVisible"] is False and state["triggerVisible"] is False,
+        "preview: closing leaves NOTHING in the hero flow — no card, no trigger",
+    )
+    check(state["inlineCopies"] == 0, "preview: no Natal card exists outside the dialog after closing")
     check(state["bodyPosition"] != "fixed", "preview: the scroll lock is released")
-    check(page.locator(".conexao-preview-banner").is_visible(), "preview: the banner is still visible")
+    check(page.locator(".conexao-preview-banner").is_visible(), "preview: the banner is still visible after closing")
+    page.screenshot(path=os.path.join(out_dir, "preview-closed-390x844.png"))
     check(
         page.evaluate(f"() => sessionStorage.getItem('{SESSION_KEY}')") is None,
         "preview: opening and closing the preview NEVER writes the visitor dismissal key",
     )
 
-    page.reload(wait_until="networkidle")
-    page.wait_for_timeout(300)
-    state = modal_state(page)
-    result["after_reload"] = state
-    check(state["isModal"] is False, "preview: a reload in the same session does not reopen it")
-    check(state["hasOpen"] is False, "preview: the reloaded page renders the dialog closed")
-    check(state["triggerVisible"] is True, "preview: the reloaded page offers the preview trigger again")
-    check(
-        page.evaluate(f"() => sessionStorage.getItem('{SESSION_KEY}')") is None,
-        "preview: a preview reload still leaves the visitor dismissal key untouched",
-    )
-
-    errors = real_errors(observed)
-    result["errors"] = errors
-    check(not errors["console"], "preview: no console error or warning")
-    check(not errors["pageerror"], "preview: no uncaught page error")
-    check(not errors["requestfailed"], "preview: no failed request")
-
-    # Everything the harness phase needs: the placement markup EXACTLY as the server
-    # rendered it, and the asset stack it depends on. Captured on the PORTUGUESE
-    # preview — before any language switch below — so the harness stays PT-BR.
+    # Everything the harness phase needs: the placement markup EXACTLY as the
+    # server rendered it — captured HERE, with the modal closed, so the dialog
+    # carries its server truth again — and the asset stack it depends on.
+    # Captured on the PORTUGUESE preview — before any language switch below — so
+    # the harness stays PT-BR.
     result["markup"] = page.eval_on_selector(root, "el => el.outerHTML")
     # The local WordPress.com-style stack serves ONE concatenated stylesheet
     # (`/_static/??…`) with the enqueued handles in `data-handles`, so the harness
@@ -460,6 +504,26 @@ def preview_phase(browser, preview: str, out_dir: str, storage_state: dict) -> d
                 .filter((src) => src.indexOf('commemorative.js') !== -1 || src.indexOf('christmas.js') !== -1),
         })"""
     )
+
+    # Because the preview close writes NOTHING, a reload in the same session
+    # shows the popup again — the editor re-inspects without a new session.
+    page.reload(wait_until="networkidle")
+    page.wait_for_timeout(400)
+    state = modal_state(page)
+    result["after_reload"] = state
+    check(state["isModal"] is True, "preview: a reload in the same session AUTO-OPENS the popup again")
+    check(state["state"] == "open", f"preview: the reloaded page is open again ({state['state']})")
+    check(state["fallbackVisible"] is False, "preview: the reloaded page still shows no card in the flow")
+    check(
+        page.evaluate(f"() => sessionStorage.getItem('{SESSION_KEY}')") is None,
+        "preview: a preview reload still leaves the visitor dismissal key untouched",
+    )
+
+    errors = real_errors(observed)
+    result["errors"] = errors
+    check(not errors["console"], "preview: no console error or warning")
+    check(not errors["pageerror"], "preview: no uncaught page error")
+    check(not errors["requestfailed"], "preview: no failed request")
 
     # English signed preview: same identity, same contract, English strings and
     # the English landing destination. The nonce is per event_key, not per language.
@@ -476,12 +540,16 @@ def preview_phase(browser, preview: str, out_dir: str, storage_state: dict) -> d
     )
     result["en_preview"] = {"state": en_state, "texts": en_texts}
     check(en_state["preview"] is True, "en preview: the English homepage renders the signed preview")
-    check(en_state["isModal"] is False and en_state["hasOpen"] is False, "en preview: the dialog stays closed, no inline card")
-    check(en_state["state"] == "preview", f"en preview: the preview state is claimed ({en_state['state']})")
+    check(en_state["isModal"] is True and en_state["hasOpen"] is True, "en preview: the English homepage AUTO-OPENS the same modal")
+    check(en_state["state"] == "open", f"en preview: the open state is claimed ({en_state['state']})")
+    check(
+        en_state["fallbackVisible"] is False and en_state["triggerVisible"] is False,
+        "en preview: no card or trigger in the English hero flow",
+    )
     check("One Christmas, two skies" in en_texts["heading"], f"en preview: the heading is English ({en_texts['heading']})")
     check("One Christmas, two skies" in en_texts["fallback"], "en preview: the fallback heading is English")
     check(en_texts["ctaHref"].endswith("/en/christmas/"), f"en preview: the CTA leads to the English landing page ({en_texts['ctaHref']})")
-    page.screenshot(path=os.path.join(out_dir, "preview-en-closed-390x844.png"))
+    page.screenshot(path=os.path.join(out_dir, "preview-en-modal-390x844.png"))
 
     context.close()
 
@@ -536,8 +604,9 @@ def write_harness(out_dir: str, markup: str, assets: dict) -> dict:
     # The capture is the LIVE DOM after the preview controller wired it, so two
     # controller-owned mutations must be reverted to the server-rendered truth:
     #   - `data-ce-welcome-claimed` would make the harness controller refuse the root;
-    #   - the revealed preview trigger must ship `hidden` again (a no-JS visitor must
-    #     never meet a dead button; the preview harness re-reveals it at boot).
+    #   - the preview trigger must ship `hidden` (it is never revealed any more —
+    #     the preview auto-opens — and a no-JS visitor must never meet a dead
+    #     button; the restore keeps the capture honest either way).
     markup = markup.replace(' data-ce-welcome-claimed="1"', "")
 
     def _restore_trigger_hidden(match) -> str:
@@ -565,7 +634,8 @@ def write_harness(out_dir: str, markup: str, assets: dict) -> dict:
             page(
                 markup,
                 "Generated harness: the same real markup WITH the private-preview "
-                "attribute, proving the flag suppresses the auto-open.",
+                "attribute, proving the flag auto-opens the same modal with the "
+                "notice-safe presentation.",
             )
         )
 
@@ -616,7 +686,7 @@ def harness_phase(browser, base: str, names: dict, out_dir: str) -> dict:
     page.screenshot(path=os.path.join(out_dir, "welcome-harness-no-javascript-390x844.png"))
     context.close()
 
-    # --- the preview flag still suppresses the auto-open ---
+    # --- the preview flag auto-opens the same modal, with its own backdrop ---
     context = browser.new_context(viewport={"width": 390, "height": 844})
     page = context.new_page()
     observed = watch(page)
@@ -626,12 +696,20 @@ def harness_phase(browser, base: str, names: dict, out_dir: str) -> dict:
     result["preview_harness"] = state
 
     check(state["present"], "harness(preview): the welcome component renders")
-    check(state["isModal"] is False, "harness(preview): the preview flag suppresses the auto-open")
-    check(state["hasOpen"] is False, "harness(preview): the dialog stays closed — never an inline card")
-    check(state["state"] == "preview", f"harness(preview): the preview state is claimed ({state['state']})")
+    check(state["isModal"] is True, "harness(preview): the preview flag AUTO-OPENS the same modal — no click")
+    check(state["hasOpen"] is True, "harness(preview): the dialog is open in the top layer")
+    check(state["state"] == "open", f"harness(preview): the open state is claimed ({state['state']})")
     check(
-        state["fallbackVisible"] is True and state["triggerVisible"] is True,
-        "harness(preview): the trigger card is visible instead of an inline dialog",
+        state["fallbackVisible"] is False and state["triggerVisible"] is False,
+        "harness(preview): no fallback card or trigger while the modal operates",
+    )
+    preview_backdrop = page.evaluate(
+        "() => getComputedStyle(document.querySelector('.ce-xmas-welcome__dialog'), '::backdrop').backgroundColor"
+    )
+    result["preview_backdrop"] = preview_backdrop
+    check(
+        preview_backdrop == "rgba(8, 12, 34, 0.45)",
+        f"harness(preview): the notice-safe lighter backdrop is applied ({preview_backdrop})",
     )
     preview_errors = real_errors(observed)
     check(not preview_errors["console"] and not preview_errors["pageerror"], "harness(preview): no console error")
@@ -686,6 +764,10 @@ def harness_phase(browser, base: str, names: dict, out_dir: str) -> dict:
 
     locked = page.evaluate("() => [document.body.style.position, window.scrollY]")
     hero_open = page.evaluate(hero_geometry)
+    public_backdrop = page.evaluate(
+        "() => getComputedStyle(document.querySelector('.ce-xmas-welcome__dialog'), '::backdrop').backgroundColor"
+    )
+    result["public_backdrop"] = public_backdrop
 
     page.locator(close_button).click()
     page.wait_for_timeout(400)
@@ -695,6 +777,10 @@ def harness_phase(browser, base: str, names: dict, out_dir: str) -> dict:
     result["dismissal"] = {"locked": locked, "after": after_close, "hero_open": hero_open, "hero_closed": hero_closed}
 
     check(locked[0] == "fixed", "harness: the background is locked while open")
+    check(
+        public_backdrop == "rgba(8, 12, 34, 0.66)",
+        f"harness: the public backdrop stays the approved tint ({public_backdrop})",
+    )
     check(after_close["isModal"] is False, "harness: the close button dismisses")
     check(after_close["hasOpen"] is False, "harness: the dialog is closed, never re-opened as an inline card")
     check(after_close["state"] == "dismissed", f"harness: the dismissed state is exposed ({after_close['state']})")
@@ -892,7 +978,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Christmas homepage welcome browser verification.")
     parser.add_argument(
         "--out",
-        default=os.path.join("docs", "evidence", "2026-11-06-christmas-homepage-popup-fix"),
+        default=os.path.join("docs", "evidence", "2026-11-07-christmas-welcome-top-popup", "after"),
     )
     args = parser.parse_args()
 

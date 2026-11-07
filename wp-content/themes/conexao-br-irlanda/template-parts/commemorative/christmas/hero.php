@@ -27,12 +27,14 @@
  *     guarded, with an in-memory fallback) and never persisted beyond it: no
  *     cookie, option, post meta, account or remote storage. After dismissal
  *     NOTHING is rendered inline — no band, no reserved hero height, no residue;
- *   - the signed private preview (see the preview attribute below) never
- *     auto-opens: the non-dismissible preview banner must stay visible. The
- *     fallback card then carries an extra, hidden-until-wired preview trigger
- *     that opens the exact same modal through `showModal()`. Preview close never
- *     reads or writes the visitor dismissal key. Preview authorisation is not
- *     touched by this template.
+ *   - the signed private preview (see the preview attribute below) auto-opens
+ *     the SAME modal, so the editor inspects the exact visitor experience; the
+ *     card is pinned below the preview notice, the admin bar and the sticky
+ *     header (a controller-measured top offset), the dialog itself carries the
+ *     preview mark so its backdrop is tinted lighter and the notice stays
+ *     readable above it, and the preview close never reads or writes the
+ *     visitor dismissal key — a reload shows the popup again. Preview
+ *     authorisation is not touched by this template.
  *
  * The inline guard script below runs at parse time, before this dialog is laid
  * out, and is a CAPABILITY TEST (does the browser really implement `showModal()`?),
@@ -107,8 +109,9 @@ $ce_kicker = $ce_english ? __( 'Christmas · Brazil and Ireland', 'conexao-br-ir
 $ce_close_label = $ce_english ? __( 'Close', 'conexao-br-irlanda' ) : __( 'Fechar', 'conexao-br-irlanda' );
 
 // The preview-only trigger that opens the real modal from the fallback card.
-// It ships `hidden` and is revealed by the controller only in an authorised
-// signed preview, so a visitor without JavaScript never meets a dead button.
+// It ships `hidden` and stays hidden: the signed preview auto-opens the same
+// modal, so no click is ever required to inspect it. A visitor without
+// JavaScript never meets a dead button either.
 $ce_preview_label = $ce_english
 	? __( 'Open the welcome preview', 'conexao-br-irlanda' )
 	: __( 'Abrir a pré-visualização do boas-vindas', 'conexao-br-irlanda' );
@@ -155,7 +158,7 @@ $ce_is_preview = function_exists( 'conexao_commemorative_is_preview' ) && conexa
 	<dialog
 		class="ce-xmas-welcome__dialog"
 		id="ce-christmas-welcome-dialog"
-		data-ce-welcome-dialog
+		data-ce-welcome-dialog<?php echo $ce_is_preview ? ' data-ce-welcome-preview="1"' : ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static attribute, no user data. ?>
 		aria-labelledby="ce-christmas-welcome-title"
 		aria-describedby="ce-christmas-welcome-desc"
 	>
@@ -224,10 +227,9 @@ $ce_is_preview = function_exists( 'conexao_commemorative_is_preview' ) && conexa
 	 * The compact fallback (r10 §7.8, revised): visible BY DEFAULT so a visitor
 	 * without JavaScript still meets a working Natal card, hidden by the guard's
 	 * `pending` state before first paint and by the controller for every state it
-	 * owns (open / dismissed). The preview trigger ships `hidden` and is revealed
-	 * only by a wired controller in an authorised signed preview, where it opens
-	 * the exact same dialog through `showModal()` — the preview never renders the
-	 * dialog itself as an inline card.
+	 * owns (open / dismissed / closed preview). The preview trigger ships
+	 * `hidden` and stays hidden — the signed preview auto-opens the same modal,
+	 * so no click is ever required to inspect it.
 	 */
 	?>
 	<div class="ce-xmas-welcome__fallback" data-ce-welcome-fallback>

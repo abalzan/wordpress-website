@@ -963,7 +963,7 @@ body.ce-active.ce-package-christmas.ce-placement-homepage-hero .ce-placement--ho
   display: none;
 }
 
-/* --- The compact fallback card (no JS / no modal API / failed open / preview host) --- */
+/* --- The compact fallback card (no JS / no modal API / failed open) --- */
 /* Visible by default (no state yet = JavaScript never ran). Positioned above the
    hero's absolutely-positioned background image and centred in the flow UNDER the
    hero content: it can never cover the copy or the sponsor carousel, and with
@@ -1013,16 +1013,21 @@ body.ce-active.ce-package-christmas.ce-placement-homepage-hero .ce-placement--ho
   margin-inline-start: auto;
 }
 
-/* The states where the fallback must NOT show (the modal owns the page, or the
-   visitor dismissed it this session). "fallback" and "preview" keep it visible. */
+/* The states where the fallback must NOT show: the modal owns the page, the
+   visitor dismissed it this session, or the signed preview is closed and left
+   NOTHING in the flow. Only "fallback" — and a page where JavaScript never ran
+   (no state attribute at all) — keeps the card visible. */
 :root[data-ce-welcome-state="pending"] .ce-xmas-welcome__fallback,
 :root[data-ce-welcome-state="open"] .ce-xmas-welcome__fallback,
-:root[data-ce-welcome-state="dismissed"] .ce-xmas-welcome__fallback {
+:root[data-ce-welcome-state="dismissed"] .ce-xmas-welcome__fallback,
+:root[data-ce-welcome-state="preview"] .ce-xmas-welcome__fallback {
   display: none;
 }
 
-/* The preview trigger ships `hidden` and is revealed only by a wired controller in
-   an authorised signed preview; it opens the same dialog through showModal(). */
+/* The preview trigger ships `hidden` and is NEVER revealed automatically: the
+   signed preview auto-opens the same modal, so no click is ever required to
+   inspect it. It stays wired (and styled for the hand-revealed case) so a
+   maintainer can still drive the exact same modal from the fallback card. */
 .ce-xmas-welcome__preview-trigger {
   flex: 1 0 100%;
   display: inline-flex;
@@ -1091,20 +1096,34 @@ body.ce-active.ce-package-christmas.ce-placement-homepage-hero .ce-placement--ho
 
 /* --- The card --- */
 .ce-xmas-welcome__dialog.is-welcome-open {
-  --ce-xmas-welcome-frame-top: max(16px, env(safe-area-inset-top, 0px));
+  /* TOP-of-screen placement (the Halloween welcome's own reading of the hero):
+     the card is horizontally centred and pinned below the safe area AND below
+     whatever occupies the top of the viewport — admin bar, signed-preview
+     notice, sticky header. The controller measures those while the modal is
+     open and writes `--ce-xmas-welcome-obstruction-top`; both values share one
+     `max()` so a notched device and a logged-in editor compose correctly. */
+  --ce-xmas-welcome-obstruction-top: 0px;
+  --ce-xmas-welcome-frame-top: max(16px, env(safe-area-inset-top, 0px), var(--ce-xmas-welcome-obstruction-top));
   --ce-xmas-welcome-frame-bottom: max(16px, env(safe-area-inset-bottom, 0px));
 
   position: fixed;
-  inset: 0;
+  /* Top edge at the frame, bottom free: the card hangs from the top instead of
+     being vertically centred (`inset: 0` + `margin: auto` used to centre it). */
+  inset: var(--ce-xmas-welcome-frame-top) 0 auto 0;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
   width: min(94vw, 960px);
   max-width: calc(100vw - 2 * max(12px, env(safe-area-inset-left, 0px)));
   height: fit-content;
-  margin: auto;
+  /* Left/right auto margins keep the card horizontally centred between the
+     pinned edges; there is no vertical centring any more. */
+  margin-inline: auto;
   padding: 0;
-  /* `vh` first as the fallback for engines without dynamic viewport units. */
-  max-height: calc(100vh - 32px);
+  /* `vh` first as the fallback for engines without dynamic viewport units.
+     Both lines subtract the WHOLE top frame (safe area + measured
+     obstruction), so a tall header/notice on a short viewport can never push
+     the card past the bottom edge. */
+  max-height: calc(100vh - var(--ce-xmas-welcome-frame-top) - var(--ce-xmas-welcome-frame-bottom));
   max-height: min(calc(100dvh - var(--ce-xmas-welcome-frame-top) - var(--ce-xmas-welcome-frame-bottom)), 820px);
   border: 1px solid color-mix(in srgb, var(--ce-accent, #d9a441) 46%, transparent);
   border-radius: 22px;
@@ -1120,6 +1139,15 @@ body.ce-active.ce-package-christmas.ce-placement-homepage-hero .ce-placement--ho
 .ce-xmas-welcome__dialog.is-welcome-open::backdrop {
   background: rgba(8, 12, 34, 0.66);
   animation: ce-xmas-welcome-fade 220ms linear both;
+}
+
+/* Signed preview only (the server marks the DIALOG itself with
+   `data-ce-welcome-preview`, so this rule can never reach a public page): the
+   non-dismissible notice sits above the card and must stay readable through
+   the tint, so the backdrop is lighter here — and only here. The public
+   backdrop stays the approved 66%. */
+.ce-xmas-welcome__dialog[data-ce-welcome-preview].is-welcome-open::backdrop {
+  background: rgba(8, 12, 34, 0.45);
 }
 
 /* The close control sits in the dialog's own first row, outside the scrolling area,
@@ -1233,7 +1261,10 @@ body.ce-package-christmas .ce-xmas-welcome__dialog.is-welcome-open .ce-christmas
    content scrolls, while the close control keeps its own row. */
 @media (max-height: 560px) {
   .ce-xmas-welcome__dialog.is-welcome-open {
-    max-height: calc(100dvh - 12px);
+    /* Frame-aware even here: with the card pinned to the top, a short
+       viewport must cap the height against the SAME frame, or the bottom
+       edge would overflow (measured: 844x390 signed preview). */
+    max-height: calc(100dvh - var(--ce-xmas-welcome-frame-top) - var(--ce-xmas-welcome-frame-bottom));
     border-radius: 14px;
   }
 

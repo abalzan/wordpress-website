@@ -16,9 +16,11 @@
  *     the no-JS / failed-open path with the same localised heading and CTA;
  *   - every URL is a generated local theme URL, never a hard-coded `localhost`;
  *   - PT and EN are separate, natural, correctly paired strings;
- *   - the signed private preview carries the non-auto-open attribute, keeps the
- *     dialog CLOSED and offers the hidden-until-wired preview trigger instead of
- *     an inline card, so its banner can never be covered;
+ *   - the signed private preview marks BOTH the root and the dialog (auto-open
+ *     parity with the public view, a lighter backdrop for the notice, a close
+ *     that never touches the dismissal key), the card is pinned below the
+ *     notice / admin bar / sticky header, and nothing that must stay visible is
+ *     ever covered;
  *   - no welcome markup is emitted on an internal route, with no active event, or on
  *     the landing page;
  *   - rendering writes NOTHING: the canonical record's meta is byte-identical.
@@ -223,7 +225,7 @@ assert_equals(
 	preg_match( '/<button\b[^>]*data-ce-welcome-preview-open[^>]*>/', $ce_welcome_markup, $ce_welcome_trigger_tag ),
 	'the preview trigger button exists once'
 );
-assert_contains( 'hidden', $ce_welcome_trigger_tag[0], 'the preview trigger ships hidden until a wired controller reveals it' );
+assert_contains( 'hidden', $ce_welcome_trigger_tag[0], 'the preview trigger ships hidden and stays hidden (the preview auto-opens)' );
 
 assert_contains( 'hidden', $ce_welcome_markup, 'the close control is withheld until a controller owns it' );
 assert_not_contains( 'style="display:none"', $ce_welcome_markup, 'nothing is hidden by an inline style hack' );
@@ -332,7 +334,7 @@ assert_true( conexao_commemorative_is_preview(), 'the engine accepts the signed 
 
 $ce_welcome_markup_preview = conexao_welcome_test_placement();
 
-assert_contains( 'data-ce-welcome-preview="1"', $ce_welcome_markup_preview, 'the preview marks the welcome as non-auto-open' );
+assert_contains( 'data-ce-welcome-preview="1"', $ce_welcome_markup_preview, 'the preview marks the welcome root for the preview contract' );
 assert_contains( '<dialog', $ce_welcome_markup_preview, 'the preview still renders the dialog' );
 assert_equals(
 	1,
@@ -344,7 +346,17 @@ assert_true(
 	'the preview never renders a non-modal open dialog as a broken inline card'
 );
 assert_contains( 'data-ce-welcome-fallback', $ce_welcome_markup_preview, 'the preview hosts the compact fallback card' );
-assert_contains( 'data-ce-welcome-preview-open', $ce_welcome_markup_preview, 'the preview offers the trigger that opens the real modal' );
+assert_contains( 'data-ce-welcome-preview-open', $ce_welcome_markup_preview, 'the preview still ships the hidden trigger markup for the fallback card' );
+assert_equals(
+	1,
+	preg_match( '/<dialog\b[^>]*>/', $ce_welcome_markup_preview, $ce_welcome_preview_dialog_tag ),
+	'the preview dialog tag is extractable'
+);
+assert_contains(
+	'data-ce-welcome-preview="1"',
+	$ce_welcome_preview_dialog_tag[0],
+	'the dialog itself carries the preview mark (the lighter backdrop keeps the notice readable above the card)'
+);
 assert_contains( 'conexao_commemorative_preview', 'conexao_commemorative_preview', 'the preview capability is untouched by this template' );
 assert_not_contains( 'conexao-preview-banner', $ce_welcome_markup_preview, 'the banner stays where the engine prints it, never duplicated inside the hero' );
 
@@ -458,10 +470,55 @@ assert_contains( "'dismissed'", $ce_welcome_js, 'the controller exposes the dism
 assert_contains( "'preview'", $ce_welcome_js, 'the controller exposes the preview state' );
 assert_contains( 'data-ce-welcome-claimed', $ce_welcome_js, 'claiming a root is idempotent' );
 assert_contains( 'data-ce-welcome-preview-open', $ce_welcome_js, 'the preview trigger is wired by the controller' );
+assert_true(
+	false === strpos( $ce_welcome_js, 'previewTrigger.removeAttribute' ),
+	'the preview never reveals the fallback trigger — the preview auto-opens, so no click is required'
+);
 assert_contains( 'revealFallback', $ce_welcome_source, 'the parse-time guard hands off deterministically' );
 assert_true(
 	false === strpos( $ce_welcome_js, "setAttribute('open'" ),
 	'the controller never re-opens the dialog as a non-modal inline card'
+);
+
+test_section( 'The card opens at the TOP of the screen, below every top obstruction' );
+
+assert_contains(
+	'inset: var(--ce-xmas-welcome-frame-top) 0 auto 0',
+	$ce_welcome_css,
+	'the open card hangs from the top edge — never vertically centred'
+);
+assert_contains(
+	'margin-inline: auto',
+	$ce_welcome_css,
+	'the card keeps horizontal centring between the pinned edges'
+);
+assert_contains(
+	'var(--ce-xmas-welcome-obstruction-top)',
+	$ce_welcome_css,
+	'the top frame folds in the controller-measured obstruction'
+);
+assert_contains(
+	'env(safe-area-inset-top, 0px), var(--ce-xmas-welcome-obstruction-top)',
+	$ce_welcome_css,
+	'safe areas and obstructions share one max()'
+);
+assert_contains( '#wpadminbar', $ce_welcome_js, 'the WordPress admin bar is measured' );
+assert_contains( '.site-header', $ce_welcome_js, 'the sticky site header is measured' );
+assert_contains( '.conexao-preview-banner', $ce_welcome_js, 'the signed-preview notice is measured' );
+assert_contains(
+	'--ce-xmas-welcome-obstruction-top',
+	$ce_welcome_js,
+	'the measurement lands on the dialog as its top offset'
+);
+assert_contains(
+	':root[data-ce-welcome-state="preview"] .ce-xmas-welcome__fallback',
+	$ce_welcome_css,
+	'a closed signed preview leaves NOTHING in the flow — no card, no trigger'
+);
+assert_contains(
+	'data-ce-welcome-preview].is-welcome-open::backdrop',
+	$ce_welcome_css,
+	'the preview backdrop is its own lighter tint so the notice stays readable'
 );
 
 conexao_commemorative_flush_plan();

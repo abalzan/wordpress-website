@@ -23,8 +23,11 @@
  *     fallback state, no dead close button);
  *   - a `showModal()` that throws leaves the same safe fallback, never a
  *     half-initialized dialog;
- *   - the signed private preview is never auto-opened, exposes its preview
- *     trigger, stays driveable, and its close NEVER touches the dismissal key;
+ *   - the signed private preview auto-opens the same modal (no click, no
+ *     trigger), its close NEVER touches the dismissal key, and a reload in the
+ *     same session shows the popup again;
+ *   - the open card is pinned below the admin bar, the sticky header and the
+ *     preview notice through one measured top offset that is cleared on close;
  *   - a repeated boot claims nothing twice (one controller, one showModal(),
  *     no duplicate listeners), and a late controller legitimately overrides the
  *     guard's timeout state instead of racing it;
@@ -68,12 +71,24 @@ function element(attributes, behaviour) {
 	const store = Object.assign({}, attributes || {});
 	const listeners = {};
 	const options = behaviour || {};
+	const styleProps = {};
 
 	const node = {
 		attributes: store,
 		focused: 0,
 		showModalCount: 0,
 		closeCount: 0,
+		style: {
+			setProperty(name, value) {
+				styleProps[name] = String(value);
+			},
+			removeProperty(name) {
+				delete styleProps[name];
+			},
+			getPropertyValue(name) {
+				return Object.prototype.hasOwnProperty.call(styleProps, name) ? styleProps[name] : '';
+			}
+		},
 		classList: {
 			names: new Set(),
 			add(name) {
@@ -238,19 +253,56 @@ function scene(options) {
 	};
 
 	const scrolls = [];
+	const viewListeners = {};
 	const doc = {
 		documentElement: html,
 		body: body,
 		activeElement: null,
 		readyState: 'interactive',
-		querySelector: (selector) => ('main, [role="main"], #primary' === selector ? null : null),
+		// Only the obstruction selectors ever answer: `opts.obstructions` maps a
+		// selector to the bottom edge of that top-of-viewport element (0 = absent
+		// or scrolled away). The focus landmark stays null like the real page's.
+		querySelector: (selector) => {
+			if (opts.obstructions && Object.prototype.hasOwnProperty.call(opts.obstructions, selector)) {
+				const bottom = opts.obstructions[selector];
+				const obstruction = element({});
+
+				obstruction.getBoundingClientRect = () => ({
+					top: 0,
+					bottom: bottom,
+					left: 0,
+					right: 0,
+					width: 0,
+					height: bottom
+				});
+
+				return obstruction;
+			}
+
+			return null;
+		},
 		querySelectorAll: (selector) => ('.ce-xmas-welcome[data-ce-welcome]' === selector ? (opts.detached ? [] : [root]) : [])
 	};
 
 	const view = {
 		document: doc,
 		pageYOffset: 240,
-		scrollTo: (x, y) => scrolls.push([x, y])
+		scrollTo: (x, y) => scrolls.push([x, y]),
+		addEventListener(type, handler) {
+			(viewListeners[type] = viewListeners[type] || []).push(handler);
+		},
+		removeEventListener(type, handler) {
+			if (!viewListeners[type]) {
+				return;
+			}
+			viewListeners[type] = viewListeners[type].filter((registered) => registered !== handler);
+		},
+		dispatch(type) {
+			(viewListeners[type] || []).forEach((handler) => handler({ type: type }));
+		},
+		listenerCount(type) {
+			return (viewListeners[type] || []).length;
+		}
 	};
 
 	view.sessionStorage = opts.store || storage(false);
@@ -497,32 +549,76 @@ test('a late controller legitimately overrides the guard timeout instead of raci
 	assert.strictEqual(parts.dialog.showModalCount, 1, 'exactly one showModal()');
 });
 
-test('the signed preview is never auto-opened, exposes its trigger, and never touches dismissal state', () => {
+test('the signed preview auto-opens the real modal, never reveals the trigger, and never touches dismissal state', () => {
 	const store = storage(false);
 	const parts = scene({ preview: true, store: store });
 	const created = boot(parts)[0];
 
-	assert.strictEqual(parts.dialog.showModalCount, 0, 'a preview never auto-opens (banner visible)');
-	assert.strictEqual(parts.html.getAttribute('data-ce-welcome-state'), 'preview', 'the preview state hosts the trigger card');
 	assert.strictEqual(created.isPreview(), true, 'the controller knows it is a preview');
-	assert.strictEqual(parts.previewTrigger.hasAttribute('hidden'), false, 'the preview trigger is revealed');
+	assert.strictEqual(parts.dialog.showModalCount, 1, 'a preview auto-opens the same modal — no gesture, no trigger click');
+	assert.strictEqual(parts.dialog.hasAttribute('open'), true, 'the preview dialog is open');
+	assert.strictEqual(parts.html.getAttribute('data-ce-welcome-state'), 'open', 'the preview is in the open state like the public view');
+	assert.strictEqual(parts.closeButton.hasAttribute('hidden'), false, 'the close control is revealed with the modal');
+	assert.strictEqual(parts.previewTrigger.hasAttribute('hidden'), true, 'the preview trigger stays hidden — no click is ever required');
 	assert.strictEqual(created.isDismissed(), false, 'merely viewing the preview records nothing');
-
-	assert.strictEqual(created.open(), true, 'a maintainer can still drive it explicitly');
-	assert.strictEqual(parts.dialog.showModalCount, 1, 'and only then does the modal dialog appear');
 
 	parts.closeButton.dispatch('click', { detail: 1 });
 
 	assert.strictEqual(created.isOpen(), false, 'the close works');
-	assert.strictEqual(parts.html.getAttribute('data-ce-welcome-state'), 'preview', 'closing returns to the preview trigger card');
+	assert.strictEqual(parts.html.getAttribute('data-ce-welcome-state'), 'preview', 'closing returns to the closed-preview state');
 	assert.strictEqual(store.getItem(KEY), null, 'a preview close NEVER writes the visitor dismissal key');
 	assert.strictEqual(parts.dialog.hasAttribute('open'), false, 'no inline dialog after the preview close');
-	assert.strictEqual(parts.previewTrigger.hasAttribute('hidden'), false, 'the preview trigger stays available');
+	assert.strictEqual(parts.previewTrigger.hasAttribute('hidden'), true, 'the trigger stays hidden after the close too');
 
-	parts.previewTrigger.dispatch('click', { detail: 1 });
+	// The key was never written, so a reload of the preview shows the popup
+	// again — and a preview opened AFTER a public dismissal in the same
+	// session still shows it, because an editor must always see the real
+	// experience (while a public reload would stay closed).
+	const reloaded = scene({ preview: true, store: store });
+	boot(reloaded);
+	assert.strictEqual(reloaded.dialog.showModalCount, 1, 'a preview reload in the same session shows the popup again');
 
-	assert.strictEqual(parts.dialog.showModalCount, 2, 'the preview trigger opens the same modal again');
-	assert.strictEqual(created.isOpen(), true, 'and it is modal again');
+	store.setItem(KEY, '1');
+	const afterPublicDismissal = scene({ preview: true, store: store });
+	boot(afterPublicDismissal);
+	assert.strictEqual(
+		afterPublicDismissal.dialog.showModalCount,
+		1,
+		'the preview ignores a recorded public dismissal — the editor always sees the popup'
+	);
+
+	const publicScene = scene({ store: store });
+	boot(publicScene);
+	assert.strictEqual(publicScene.dialog.showModalCount, 0, 'the public view still honours the same recorded dismissal');
+	assert.strictEqual(publicScene.html.getAttribute('data-ce-welcome-state'), 'dismissed', 'the public view settles dismissed with nothing inline');
+});
+
+test('the open card is pinned below the admin bar, the sticky header and the preview notice', () => {
+	const parts = scene({
+		obstructions: {
+			'#wpadminbar': 32,
+			'.site-header': 116,
+			'.conexao-preview-banner': 160
+		}
+	});
+	const created = boot(parts)[0];
+
+	assert.strictEqual(created.isOpen(), true, 'the modal is open');
+	assert.strictEqual(
+		parts.dialog.style.getPropertyValue('--ce-xmas-welcome-obstruction-top'),
+		'172px',
+		'the lowest bottom edge (160) plus the 12 px gap pins the card below every obstruction'
+	);
+	assert.strictEqual(parts.view.listenerCount('resize'), 1, 'a resize re-measures while the card is open');
+
+	parts.closeButton.dispatch('click', { detail: 1 });
+
+	assert.strictEqual(
+		parts.dialog.style.getPropertyValue('--ce-xmas-welcome-obstruction-top'),
+		'',
+		'the offset is cleared when the modal settles — nothing is left behind'
+	);
+	assert.strictEqual(parts.view.listenerCount('resize'), 0, 'the resize listener is removed on close');
 });
 
 test('focus enters the dialog on open and returns to the previously focused element on close', () => {

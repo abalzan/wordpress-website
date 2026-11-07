@@ -1,0 +1,570 @@
+127.0.0.1 - - [07/Nov/2026 11:01:09] "GET /welcome-harness-public.html HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:01:09] "GET /welcome-harness-preview.html HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:01:10] "GET /welcome-harness-public.html HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:01:11] "GET /welcome-harness-public.html HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:01:13] "GET /welcome-harness-public.html HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:01:14] "GET /welcome-harness-public.html HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:01:15] "GET /welcome-harness-public.html HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:01:16] "GET /welcome-harness-public.html HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:01:18] "GET /welcome-harness-public.html HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:01:19] "GET /welcome-harness-public.html HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:01:20] "GET /welcome-harness-public.html HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:01:21] "GET /welcome-harness-public.html HTTP/1.1" 304 -
+127.0.0.1 - - [07/Nov/2026 11:01:22] "GET /welcome-harness-public.html HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:01:24] "GET /welcome-harness-public.html HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:01:25] "GET /welcome-harness-public.html HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:01:27] "GET /welcome-harness-public.html HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:01:28] "GET /welcome-harness-public.html HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:01:30] "GET /welcome-harness-public.html HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:01:31] "GET /welcome-harness-public.html HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:01:32] "GET /welcome-harness-public.html HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 11:01:33] "GET /welcome-harness-public.html HTTP/1.1" 200 -
+base url: http://localhost:8080
+evidence: /home/andrei/IdeaProjects/wordpress-website/docs/evidence/2026-11-07-christmas-welcome-top-popup/before
+browser: chromium 151.0.7922.34
+
+== pt: / ==
+  PASS: pt: the route answers 200
+  PASS: pt: no welcome component is emitted
+  PASS: pt: no dialog element is emitted
+  PASS: pt: no Christmas asset is requested
+  PASS: pt: the header is present
+  PASS: pt: no console error or warning
+  PASS: pt: no uncaught page error
+  PASS: pt: no failed request
+
+== en: /en/ ==
+  PASS: en: the route answers 200
+  PASS: en: no welcome component is emitted
+  PASS: en: no dialog element is emitted
+  PASS: en: no Christmas asset is requested
+  PASS: en: the header is present
+  PASS: en: no console error or warning
+  PASS: en: no uncaught page error
+  PASS: en: no failed request
+
+== pt-landing: /natal/ ==
+  PASS: pt-landing: the route answers 200
+  PASS: pt-landing: no welcome component is emitted
+  PASS: pt-landing: no dialog element is emitted
+  PASS: pt-landing: only the Christmas package assets load (archival exception)
+  PASS: pt-landing: the header is present
+  PASS: pt-landing: no console error or warning
+  PASS: pt-landing: no uncaught page error
+  PASS: pt-landing: no failed request
+
+== en-landing: /en/christmas/ ==
+  PASS: en-landing: the route answers 200
+  PASS: en-landing: no welcome component is emitted
+  PASS: en-landing: no dialog element is emitted
+  PASS: en-landing: only the Christmas package assets load (archival exception)
+  PASS: en-landing: the header is present
+  PASS: en-landing: no console error or warning
+  PASS: en-landing: no uncaught page error
+  PASS: en-landing: no failed request
+
+== C: signed private preview (real markup) ==
+  PASS: preview: the previewed homepage answers 200
+  PASS: preview: exactly one preview banner
+  PASS: preview: the banner is visible
+  PASS: preview: the real placement renders the welcome component
+  PASS: preview: the template marks the view as a private preview
+  PASS: preview: the controller claims the page into the preview state (preview)
+  PASS: preview: the welcome does NOT auto-open (banner stays visible)
+  PASS: preview: the dialog stays CLOSED — never a non-modal inline card
+  PASS: preview: the full Natal card is never rendered inline
+  PASS: preview: the compact fallback card hosts the preview trigger
+  PASS: preview: the preview trigger is revealed by the wired controller
+  PASS: preview: no dead close control is offered before the modal opens
+  PASS: preview: the preview trigger is visible and clickable
+  PASS: preview: the trigger opens a real modal (top layer)
+
+  -- iphone-small-320x568 --
+  PASS: preview: the welcome dialog is in the DOM
+  PASS: preview: modal state is open (top layer)
+  PASS: preview: an open dialog carries the open attribute
+  PASS: preview: the fallback card is hidden while the modal is open
+  PASS: preview: no second Natal card exists outside the dialog (0)
+  PASS: preview: the modal backdrop is visible (rgba(8, 12, 34, 0.66))
+  PASS: preview: no horizontal page overflow
+  PASS: preview: the dialog is not wider than the viewport (296 <= 320)
+  PASS: preview: the dialog is fully inside the viewport horizontally
+  PASS: preview: the dialog is fully inside the viewport vertically (19..549 of 568)
+  PASS: preview: the dialog is horizontally centred
+  PASS: preview: the panorama is not cropped or stretched ({'natural': 1.771, 'rendered': 1.778})
+  PASS: preview: the panorama is rendered
+  PASS: preview: the page behind the modal cannot scroll
+  PASS: preview: focus is inside the dialog
+  PASS: preview: the close control is at least 44x44
+  PASS: preview: the close control stays inside the card
+  PASS: preview: the close control is inside the viewport
+  PASS: preview: the close control is labelled (Fechar)
+  PASS: preview: the CTA is a 44 px touch target (48px)
+  PASS: preview: the CTA is reachable inside the dialog
+  PASS: preview: the CTA still points at a real URL (http://localhost:8080/natal/)
+
+  -- iphone-se-375x667 --
+  PASS: preview: the welcome dialog is in the DOM
+  PASS: preview: modal state is open (top layer)
+  PASS: preview: an open dialog carries the open attribute
+  PASS: preview: the fallback card is hidden while the modal is open
+  PASS: preview: no second Natal card exists outside the dialog (0)
+  PASS: preview: the modal backdrop is visible (rgba(8, 12, 34, 0.66))
+  PASS: preview: no horizontal page overflow
+  PASS: preview: the dialog is not wider than the viewport (351 <= 375)
+  PASS: preview: the dialog is fully inside the viewport horizontally
+  PASS: preview: the dialog is fully inside the viewport vertically (78..589 of 667)
+  PASS: preview: the dialog is horizontally centred
+  PASS: preview: the panorama is not cropped or stretched ({'natural': 1.777, 'rendered': 1.778})
+  PASS: preview: the panorama is rendered
+  PASS: preview: the page behind the modal cannot scroll
+  PASS: preview: focus is inside the dialog
+  PASS: preview: the close control is at least 44x44
+  PASS: preview: the close control stays inside the card
+  PASS: preview: the close control is inside the viewport
+  PASS: preview: the close control is labelled (Fechar)
+  PASS: preview: the CTA is a 44 px touch target (48px)
+  PASS: preview: the CTA is reachable inside the dialog
+  PASS: preview: the CTA still points at a real URL (http://localhost:8080/natal/)
+
+  -- iphone-modern-390x844 --
+  PASS: preview: the welcome dialog is in the DOM
+  PASS: preview: modal state is open (top layer)
+  PASS: preview: an open dialog carries the open attribute
+  PASS: preview: the fallback card is hidden while the modal is open
+  PASS: preview: no second Natal card exists outside the dialog (0)
+  PASS: preview: the modal backdrop is visible (rgba(8, 12, 34, 0.66))
+  PASS: preview: no horizontal page overflow
+  PASS: preview: the dialog is not wider than the viewport (366 <= 390)
+  PASS: preview: the dialog is fully inside the viewport horizontally
+  PASS: preview: the dialog is fully inside the viewport vertically (163..681 of 844)
+  PASS: preview: the dialog is horizontally centred
+  PASS: preview: the panorama is not cropped or stretched ({'natural': 1.781, 'rendered': 1.778})
+  PASS: preview: the panorama is rendered
+  PASS: preview: the page behind the modal cannot scroll
+  PASS: preview: focus is inside the dialog
+  PASS: preview: the close control is at least 44x44
+  PASS: preview: the close control stays inside the card
+  PASS: preview: the close control is inside the viewport
+  PASS: preview: the close control is labelled (Fechar)
+  PASS: preview: the CTA is a 44 px touch target (48px)
+  PASS: preview: the CTA is reachable inside the dialog
+  PASS: preview: the CTA still points at a real URL (http://localhost:8080/natal/)
+
+  -- tablet-768x1024 --
+  PASS: preview: the welcome dialog is in the DOM
+  PASS: preview: modal state is open (top layer)
+  PASS: preview: an open dialog carries the open attribute
+  PASS: preview: the fallback card is hidden while the modal is open
+  PASS: preview: no second Natal card exists outside the dialog (0)
+  PASS: preview: the modal backdrop is visible (rgba(8, 12, 34, 0.66))
+  PASS: preview: no horizontal page overflow
+  PASS: preview: the dialog is not wider than the viewport (560 <= 768)
+  PASS: preview: the dialog is fully inside the viewport horizontally
+  PASS: preview: the dialog is fully inside the viewport vertically (210..814 of 1024)
+  PASS: preview: the dialog is horizontally centred
+  PASS: preview: the panorama is not cropped or stretched ({'natural': 1.778, 'rendered': 1.778})
+  PASS: preview: the panorama is rendered
+  PASS: preview: the page behind the modal cannot scroll
+  PASS: preview: focus is inside the dialog
+  PASS: preview: the close control is at least 44x44
+  PASS: preview: the close control stays inside the card
+  PASS: preview: the close control is inside the viewport
+  PASS: preview: the close control is labelled (Fechar)
+  PASS: preview: the CTA is a 44 px touch target (48px)
+  PASS: preview: the CTA is reachable inside the dialog
+  PASS: preview: the CTA still points at a real URL (http://localhost:8080/natal/)
+
+  -- laptop-1024x768 --
+  PASS: preview: the welcome dialog is in the DOM
+  PASS: preview: modal state is open (top layer)
+  PASS: preview: an open dialog carries the open attribute
+  PASS: preview: the fallback card is hidden while the modal is open
+  PASS: preview: no second Natal card exists outside the dialog (0)
+  PASS: preview: the modal backdrop is visible (rgba(8, 12, 34, 0.66))
+  PASS: preview: no horizontal page overflow
+  PASS: preview: the dialog is not wider than the viewport (960 <= 1024)
+  PASS: preview: the dialog is fully inside the viewport horizontally
+  PASS: preview: the dialog is fully inside the viewport vertically (221..547 of 768)
+  PASS: preview: the dialog is horizontally centred
+  PASS: preview: the panorama is not cropped or stretched ({'natural': 1.778, 'rendered': 1.778})
+  PASS: preview: the panorama is rendered
+  PASS: preview: the page behind the modal cannot scroll
+  PASS: preview: focus is inside the dialog
+  PASS: preview: the close control is at least 44x44
+  PASS: preview: the close control stays inside the card
+  PASS: preview: the close control is inside the viewport
+  PASS: preview: the close control is labelled (Fechar)
+  PASS: preview: the CTA is a 44 px touch target (44px)
+  PASS: preview: the CTA is reachable inside the dialog
+  PASS: preview: the CTA still points at a real URL (http://localhost:8080/natal/)
+
+  -- desktop-1366x768 --
+  PASS: preview: the welcome dialog is in the DOM
+  PASS: preview: modal state is open (top layer)
+  PASS: preview: an open dialog carries the open attribute
+  PASS: preview: the fallback card is hidden while the modal is open
+  PASS: preview: no second Natal card exists outside the dialog (0)
+  PASS: preview: the modal backdrop is visible (rgba(8, 12, 34, 0.66))
+  PASS: preview: no horizontal page overflow
+  PASS: preview: the dialog is not wider than the viewport (960 <= 1366)
+  PASS: preview: the dialog is fully inside the viewport horizontally
+  PASS: preview: the dialog is fully inside the viewport vertically (218..550 of 768)
+  PASS: preview: the dialog is horizontally centred
+  PASS: preview: the panorama is not cropped or stretched ({'natural': 1.778, 'rendered': 1.778})
+  PASS: preview: the panorama is rendered
+  PASS: preview: the page behind the modal cannot scroll
+  PASS: preview: focus is inside the dialog
+  PASS: preview: the close control is at least 44x44
+  PASS: preview: the close control stays inside the card
+  PASS: preview: the close control is inside the viewport
+  PASS: preview: the close control is labelled (Fechar)
+  PASS: preview: the CTA is a 44 px touch target (44px)
+  PASS: preview: the CTA is reachable inside the dialog
+  PASS: preview: the CTA still points at a real URL (http://localhost:8080/natal/)
+
+  -- wide-1440x900 --
+  PASS: preview: the welcome dialog is in the DOM
+  PASS: preview: modal state is open (top layer)
+  PASS: preview: an open dialog carries the open attribute
+  PASS: preview: the fallback card is hidden while the modal is open
+  PASS: preview: no second Natal card exists outside the dialog (0)
+  PASS: preview: the modal backdrop is visible (rgba(8, 12, 34, 0.66))
+  PASS: preview: no horizontal page overflow
+  PASS: preview: the dialog is not wider than the viewport (960 <= 1440)
+  PASS: preview: the dialog is fully inside the viewport horizontally
+  PASS: preview: the dialog is fully inside the viewport vertically (284..616 of 900)
+  PASS: preview: the dialog is horizontally centred
+  PASS: preview: the panorama is not cropped or stretched ({'natural': 1.778, 'rendered': 1.778})
+  PASS: preview: the panorama is rendered
+  PASS: preview: the page behind the modal cannot scroll
+  PASS: preview: focus is inside the dialog
+  PASS: preview: the close control is at least 44x44
+  PASS: preview: the close control stays inside the card
+  PASS: preview: the close control is inside the viewport
+  PASS: preview: the close control is labelled (Fechar)
+  PASS: preview: the CTA is a 44 px touch target (44px)
+  PASS: preview: the CTA is reachable inside the dialog
+  PASS: preview: the CTA still points at a real URL (http://localhost:8080/natal/)
+
+  -- landscape-844x390 --
+  PASS: preview: the welcome dialog is in the DOM
+  PASS: preview: modal state is open (top layer)
+  PASS: preview: an open dialog carries the open attribute
+  PASS: preview: the fallback card is hidden while the modal is open
+  PASS: preview: no second Natal card exists outside the dialog (0)
+  PASS: preview: the modal backdrop is visible (rgba(8, 12, 34, 0.66))
+  PASS: preview: no horizontal page overflow
+  PASS: preview: the dialog is not wider than the viewport (793 <= 844)
+  PASS: preview: the dialog is fully inside the viewport horizontally
+  PASS: preview: the dialog is fully inside the viewport vertically (45..345 of 390)
+  PASS: preview: the dialog is horizontally centred
+  PASS: preview: the panorama is not cropped or stretched ({'natural': 1.778, 'rendered': 1.778})
+  PASS: preview: the panorama is rendered
+  PASS: preview: the page behind the modal cannot scroll
+  PASS: preview: focus is inside the dialog
+  PASS: preview: the close control is at least 44x44
+  PASS: preview: the close control stays inside the card
+  PASS: preview: the close control is inside the viewport
+  PASS: preview: the close control is labelled (Fechar)
+  PASS: preview: the CTA is a 44 px touch target (44px)
+  PASS: preview: the CTA is reachable inside the dialog
+  PASS: preview: the CTA still points at a real URL (http://localhost:8080/natal/)
+  PASS: preview: Escape dismisses the welcome
+  PASS: preview: the dialog is closed again — never an inline card
+  PASS: preview: closing returns to the preview trigger card (preview)
+  PASS: preview: the fallback card and its trigger are visible again
+  PASS: preview: the scroll lock is released
+  PASS: preview: the banner is still visible
+  PASS: preview: opening and closing the preview NEVER writes the visitor dismissal key
+  PASS: preview: a reload in the same session does not reopen it
+  PASS: preview: the reloaded page renders the dialog closed
+  PASS: preview: the reloaded page offers the preview trigger again
+  PASS: preview: a preview reload still leaves the visitor dismissal key untouched
+  PASS: preview: no console error or warning
+  PASS: preview: no uncaught page error
+  PASS: preview: no failed request
+  PASS: en preview: the English homepage renders the signed preview
+  PASS: en preview: the dialog stays closed, no inline card
+  PASS: en preview: the preview state is claimed (preview)
+  PASS: en preview: the heading is English (One Christmas, two skies)
+  PASS: en preview: the fallback heading is English
+  PASS: en preview: the CTA leads to the English landing page (http://localhost:8080/en/christmas/)
+
+== D: generated harness (auto-open, frequency, failure) ==
+  PASS: harness(no-js): the dialog stays closed — no inline dialog banner
+  PASS: harness(no-js): the compact fallback card is visible
+  PASS: harness(no-js): the fallback CTA is visible and usable
+  PASS: harness(no-js): no dead close control is offered
+  PASS: harness(no-js): no dead preview trigger is offered
+  PASS: harness(no-js): no horizontal page overflow
+  PASS: harness(no-js): the fallback heading is real server text (Um Natal, dois céus)
+  PASS: harness(no-js): the fallback CTA leads to the landing page (http://localhost:8080/natal/)
+  PASS: harness(preview): the welcome component renders
+  PASS: harness(preview): the preview flag suppresses the auto-open
+  PASS: harness(preview): the dialog stays closed — never an inline card
+  PASS: harness(preview): the preview state is claimed (preview)
+  PASS: harness(preview): the trigger card is visible instead of an inline dialog
+  PASS: harness(preview): no console error
+  PASS: harness(iphone-small-320x568): the welcome opens with no user gesture
+
+  -- iphone-small-320x568 --
+  PASS: harness: the welcome dialog is in the DOM
+  PASS: harness: modal state is open (top layer)
+  PASS: harness: an open dialog carries the open attribute
+  PASS: harness: the fallback card is hidden while the modal is open
+  PASS: harness: no second Natal card exists outside the dialog (0)
+  PASS: harness: the modal backdrop is visible (rgba(8, 12, 34, 0.66))
+  PASS: harness: no horizontal page overflow
+  PASS: harness: the dialog is not wider than the viewport (296 <= 320)
+  PASS: harness: the dialog is fully inside the viewport horizontally
+  PASS: harness: the dialog is fully inside the viewport vertically (31..537 of 568)
+  PASS: harness: the dialog is horizontally centred
+  PASS: harness: the panorama is not cropped or stretched ({'natural': 1.771, 'rendered': 1.778})
+  PASS: harness: the panorama is rendered
+  PASS: harness: the page behind the modal cannot scroll
+  PASS: harness: focus is inside the dialog
+  PASS: harness: the close control is at least 44x44
+  PASS: harness: the close control stays inside the card
+  PASS: harness: the close control is inside the viewport
+  PASS: harness: the close control is labelled (Fechar)
+  PASS: harness: the CTA is a 44 px touch target (48px)
+  PASS: harness: the CTA is reachable inside the dialog
+  PASS: harness: the CTA still points at a real URL (http://localhost:8080/natal/)
+  PASS: harness(iphone-small-320x568): no console error or warning
+  PASS: harness(iphone-small-320x568): no uncaught page error
+  PASS: harness(iphone-small-320x568): no failed request
+  PASS: harness(iphone-se-375x667): the welcome opens with no user gesture
+
+  -- iphone-se-375x667 --
+  PASS: harness: the welcome dialog is in the DOM
+  PASS: harness: modal state is open (top layer)
+  PASS: harness: an open dialog carries the open attribute
+  PASS: harness: the fallback card is hidden while the modal is open
+  PASS: harness: no second Natal card exists outside the dialog (0)
+  PASS: harness: the modal backdrop is visible (rgba(8, 12, 34, 0.66))
+  PASS: harness: no horizontal page overflow
+  PASS: harness: the dialog is not wider than the viewport (351 <= 375)
+  PASS: harness: the dialog is fully inside the viewport horizontally
+  PASS: harness: the dialog is fully inside the viewport vertically (78..589 of 667)
+  PASS: harness: the dialog is horizontally centred
+  PASS: harness: the panorama is not cropped or stretched ({'natural': 1.777, 'rendered': 1.778})
+  PASS: harness: the panorama is rendered
+  PASS: harness: the page behind the modal cannot scroll
+  PASS: harness: focus is inside the dialog
+  PASS: harness: the close control is at least 44x44
+  PASS: harness: the close control stays inside the card
+  PASS: harness: the close control is inside the viewport
+  PASS: harness: the close control is labelled (Fechar)
+  PASS: harness: the CTA is a 44 px touch target (48px)
+  PASS: harness: the CTA is reachable inside the dialog
+  PASS: harness: the CTA still points at a real URL (http://localhost:8080/natal/)
+  PASS: harness(iphone-se-375x667): no console error or warning
+  PASS: harness(iphone-se-375x667): no uncaught page error
+  PASS: harness(iphone-se-375x667): no failed request
+  PASS: harness(iphone-modern-390x844): the welcome opens with no user gesture
+
+  -- iphone-modern-390x844 --
+  PASS: harness: the welcome dialog is in the DOM
+  PASS: harness: modal state is open (top layer)
+  PASS: harness: an open dialog carries the open attribute
+  PASS: harness: the fallback card is hidden while the modal is open
+  PASS: harness: no second Natal card exists outside the dialog (0)
+  PASS: harness: the modal backdrop is visible (rgba(8, 12, 34, 0.66))
+  PASS: harness: no horizontal page overflow
+  PASS: harness: the dialog is not wider than the viewport (366 <= 390)
+  PASS: harness: the dialog is fully inside the viewport horizontally
+  PASS: harness: the dialog is fully inside the viewport vertically (163..681 of 844)
+  PASS: harness: the dialog is horizontally centred
+  PASS: harness: the panorama is not cropped or stretched ({'natural': 1.781, 'rendered': 1.778})
+  PASS: harness: the panorama is rendered
+  PASS: harness: the page behind the modal cannot scroll
+  PASS: harness: focus is inside the dialog
+  PASS: harness: the close control is at least 44x44
+  PASS: harness: the close control stays inside the card
+  PASS: harness: the close control is inside the viewport
+  PASS: harness: the close control is labelled (Fechar)
+  PASS: harness: the CTA is a 44 px touch target (48px)
+  PASS: harness: the CTA is reachable inside the dialog
+  PASS: harness: the CTA still points at a real URL (http://localhost:8080/natal/)
+  PASS: harness(iphone-modern-390x844): no console error or warning
+  PASS: harness(iphone-modern-390x844): no uncaught page error
+  PASS: harness(iphone-modern-390x844): no failed request
+  PASS: harness(tablet-768x1024): the welcome opens with no user gesture
+
+  -- tablet-768x1024 --
+  PASS: harness: the welcome dialog is in the DOM
+  PASS: harness: modal state is open (top layer)
+  PASS: harness: an open dialog carries the open attribute
+  PASS: harness: the fallback card is hidden while the modal is open
+  PASS: harness: no second Natal card exists outside the dialog (0)
+  PASS: harness: the modal backdrop is visible (rgba(8, 12, 34, 0.66))
+  PASS: harness: no horizontal page overflow
+  PASS: harness: the dialog is not wider than the viewport (560 <= 768)
+  PASS: harness: the dialog is fully inside the viewport horizontally
+  PASS: harness: the dialog is fully inside the viewport vertically (210..814 of 1024)
+  PASS: harness: the dialog is horizontally centred
+  PASS: harness: the panorama is not cropped or stretched ({'natural': 1.778, 'rendered': 1.778})
+  PASS: harness: the panorama is rendered
+  PASS: harness: the page behind the modal cannot scroll
+  PASS: harness: focus is inside the dialog
+  PASS: harness: the close control is at least 44x44
+  PASS: harness: the close control stays inside the card
+  PASS: harness: the close control is inside the viewport
+  PASS: harness: the close control is labelled (Fechar)
+  PASS: harness: the CTA is a 44 px touch target (48px)
+  PASS: harness: the CTA is reachable inside the dialog
+  PASS: harness: the CTA still points at a real URL (http://localhost:8080/natal/)
+  PASS: harness(tablet-768x1024): no console error or warning
+  PASS: harness(tablet-768x1024): no uncaught page error
+  PASS: harness(tablet-768x1024): no failed request
+  PASS: harness(laptop-1024x768): the welcome opens with no user gesture
+
+  -- laptop-1024x768 --
+  PASS: harness: the welcome dialog is in the DOM
+  PASS: harness: modal state is open (top layer)
+  PASS: harness: an open dialog carries the open attribute
+  PASS: harness: the fallback card is hidden while the modal is open
+  PASS: harness: no second Natal card exists outside the dialog (0)
+  PASS: harness: the modal backdrop is visible (rgba(8, 12, 34, 0.66))
+  PASS: harness: no horizontal page overflow
+  PASS: harness: the dialog is not wider than the viewport (960 <= 1024)
+  PASS: harness: the dialog is fully inside the viewport horizontally
+  PASS: harness: the dialog is fully inside the viewport vertically (221..547 of 768)
+  PASS: harness: the dialog is horizontally centred
+  PASS: harness: the panorama is not cropped or stretched ({'natural': 1.778, 'rendered': 1.778})
+  PASS: harness: the panorama is rendered
+  PASS: harness: the page behind the modal cannot scroll
+  PASS: harness: focus is inside the dialog
+  PASS: harness: the close control is at least 44x44
+  PASS: harness: the close control stays inside the card
+  PASS: harness: the close control is inside the viewport
+  PASS: harness: the close control is labelled (Fechar)
+  PASS: harness: the CTA is a 44 px touch target (44px)
+  PASS: harness: the CTA is reachable inside the dialog
+  PASS: harness: the CTA still points at a real URL (http://localhost:8080/natal/)
+  PASS: harness(laptop-1024x768): no console error or warning
+  PASS: harness(laptop-1024x768): no uncaught page error
+  PASS: harness(laptop-1024x768): no failed request
+  PASS: harness(desktop-1366x768): the welcome opens with no user gesture
+
+  -- desktop-1366x768 --
+  PASS: harness: the welcome dialog is in the DOM
+  PASS: harness: modal state is open (top layer)
+  PASS: harness: an open dialog carries the open attribute
+  PASS: harness: the fallback card is hidden while the modal is open
+  PASS: harness: no second Natal card exists outside the dialog (0)
+  PASS: harness: the modal backdrop is visible (rgba(8, 12, 34, 0.66))
+  PASS: harness: no horizontal page overflow
+  PASS: harness: the dialog is not wider than the viewport (960 <= 1366)
+  PASS: harness: the dialog is fully inside the viewport horizontally
+  PASS: harness: the dialog is fully inside the viewport vertically (218..550 of 768)
+  PASS: harness: the dialog is horizontally centred
+  PASS: harness: the panorama is not cropped or stretched ({'natural': 1.778, 'rendered': 1.778})
+  PASS: harness: the panorama is rendered
+  PASS: harness: the page behind the modal cannot scroll
+  PASS: harness: focus is inside the dialog
+  PASS: harness: the close control is at least 44x44
+  PASS: harness: the close control stays inside the card
+  PASS: harness: the close control is inside the viewport
+  PASS: harness: the close control is labelled (Fechar)
+  PASS: harness: the CTA is a 44 px touch target (44px)
+  PASS: harness: the CTA is reachable inside the dialog
+  PASS: harness: the CTA still points at a real URL (http://localhost:8080/natal/)
+  PASS: harness(desktop-1366x768): no console error or warning
+  PASS: harness(desktop-1366x768): no uncaught page error
+  PASS: harness(desktop-1366x768): no failed request
+  PASS: harness(wide-1440x900): the welcome opens with no user gesture
+
+  -- wide-1440x900 --
+  PASS: harness: the welcome dialog is in the DOM
+  PASS: harness: modal state is open (top layer)
+  PASS: harness: an open dialog carries the open attribute
+  PASS: harness: the fallback card is hidden while the modal is open
+  PASS: harness: no second Natal card exists outside the dialog (0)
+  PASS: harness: the modal backdrop is visible (rgba(8, 12, 34, 0.66))
+  PASS: harness: no horizontal page overflow
+  PASS: harness: the dialog is not wider than the viewport (960 <= 1440)
+  PASS: harness: the dialog is fully inside the viewport horizontally
+  PASS: harness: the dialog is fully inside the viewport vertically (284..616 of 900)
+  PASS: harness: the dialog is horizontally centred
+  PASS: harness: the panorama is not cropped or stretched ({'natural': 1.778, 'rendered': 1.778})
+  PASS: harness: the panorama is rendered
+  PASS: harness: the page behind the modal cannot scroll
+  PASS: harness: focus is inside the dialog
+  PASS: harness: the close control is at least 44x44
+  PASS: harness: the close control stays inside the card
+  PASS: harness: the close control is inside the viewport
+  PASS: harness: the close control is labelled (Fechar)
+  PASS: harness: the CTA is a 44 px touch target (44px)
+  PASS: harness: the CTA is reachable inside the dialog
+  PASS: harness: the CTA still points at a real URL (http://localhost:8080/natal/)
+  PASS: harness(wide-1440x900): no console error or warning
+  PASS: harness(wide-1440x900): no uncaught page error
+  PASS: harness(wide-1440x900): no failed request
+  PASS: harness(landscape-844x390): the welcome opens with no user gesture
+
+  -- landscape-844x390 --
+  PASS: harness: the welcome dialog is in the DOM
+  PASS: harness: modal state is open (top layer)
+  PASS: harness: an open dialog carries the open attribute
+  PASS: harness: the fallback card is hidden while the modal is open
+  PASS: harness: no second Natal card exists outside the dialog (0)
+  PASS: harness: the modal backdrop is visible (rgba(8, 12, 34, 0.66))
+  PASS: harness: no horizontal page overflow
+  PASS: harness: the dialog is not wider than the viewport (793 <= 844)
+  PASS: harness: the dialog is fully inside the viewport horizontally
+  PASS: harness: the dialog is fully inside the viewport vertically (45..345 of 390)
+  PASS: harness: the dialog is horizontally centred
+  PASS: harness: the panorama is not cropped or stretched ({'natural': 1.778, 'rendered': 1.778})
+  PASS: harness: the panorama is rendered
+  PASS: harness: the page behind the modal cannot scroll
+  PASS: harness: focus is inside the dialog
+  PASS: harness: the close control is at least 44x44
+  PASS: harness: the close control stays inside the card
+  PASS: harness: the close control is inside the viewport
+  PASS: harness: the close control is labelled (Fechar)
+  PASS: harness: the CTA is a 44 px touch target (44px)
+  PASS: harness: the CTA is reachable inside the dialog
+  PASS: harness: the CTA still points at a real URL (http://localhost:8080/natal/)
+  PASS: harness(landscape-844x390): no console error or warning
+  PASS: harness(landscape-844x390): no uncaught page error
+  PASS: harness(landscape-844x390): no failed request
+  PASS: harness: the background is locked while open
+  PASS: harness: the close button dismisses
+  PASS: harness: the dialog is closed, never re-opened as an inline card
+  PASS: harness: the dismissed state is exposed (dismissed)
+  PASS: harness: NO inline Natal card remains after the dismissal
+  PASS: harness: the fallback stays hidden for a JavaScript visitor
+  PASS: harness: the scroll lock is released
+  PASS: harness: the dismissal is stored in the tab session
+  PASS: harness: nothing is written to the persistent storage
+  PASS: harness: a reload in the same session does not reopen it
+  PASS: harness: nothing is rendered inline after the dismissal
+  PASS: harness: the fallback stays hidden after the dismissal
+  PASS: harness: hero geometry is identical at open, after close and after reload — no gap, no shift ({'height': 620, 'paddingBottom': '16px'} / {'height': 620, 'paddingBottom': '16px'} / {'height': 620, 'paddingBottom': '16px'})
+  PASS: harness: the hero keeps only the harness's own padding — no 286 px band reservation (16px)
+  PASS: harness: a recorded dismissal keeps the welcome closed
+  PASS: harness: the page was scrolled before opening (260)
+  PASS: harness: the lock pins the page at its own offset (['fixed', '-260px', 0])
+  PASS: harness: the exact previous scroll position is restored (260)
+  PASS: harness: a brand-new session is eligible again
+  PASS: harness(storage-denied): the welcome still opens
+  PASS: harness(storage-denied): the close still works
+  PASS: harness(storage-denied): the dialog stays closed, never an inline card
+  PASS: harness(storage-denied): the in-memory flag caps this document (dismissed)
+  PASS: harness(storage-denied): nothing is rendered inline
+  PASS: harness(storage-denied): no uncaught error
+  PASS: harness: reduced motion removes the entrance animation
+  PASS: harness: reduced motion removes the backdrop animation
+  PASS: harness: the light and dark palettes differ
+  PASS: harness: dark mode uses the twilight ink (rgb(253, 247, 238))
+  PASS: harness: the CTA keeps the gold surface in both themes (rgb(232, 194, 115) / rgb(232, 194, 115))
+  PASS: harness: the CTA label is deep ink on gold (rgb(8, 12, 34))
+  PASS: harness: the CTA navigates to its landing page (http://localhost:8080/natal/)
+  PASS: harness(image mobile dpr1): exactly one panorama derivative is fetched
+  PASS: harness(image desktop dpr1): exactly one panorama derivative is fetched
+  PASS: harness(image mobile dpr2): exactly one panorama derivative is fetched
+  PASS: harness(image desktop dpr2): exactly one panorama derivative is fetched
+
+PASS: 0 failure(s)
