@@ -9,14 +9,16 @@
  *   - exactly one welcome component is emitted for the existing `homepage_hero`
  *     placement, and the package keeps its three approved placement identities;
  *   - the hero is rendered ONCE: one dialog, one image, one heading, one paragraph,
- *     one call to action — no second, editable copy for the modal;
+ *     one modal CTA — no second, editable copy for the modal;
  *   - the dialog title/description/close ids exist once each and are paired;
- *   - the no-JS contract holds (the dialog ships `open`, the close control ships
- *     `hidden`, and the copy stays readable);
+ *   - the dialog ships CLOSED (a server-rendered `open` would be the broken
+ *     non-modal card this contract forbids) and the compact fallback card covers
+ *     the no-JS / failed-open path with the same localised heading and CTA;
  *   - every URL is a generated local theme URL, never a hard-coded `localhost`;
  *   - PT and EN are separate, natural, correctly paired strings;
- *   - the signed private preview carries the non-auto-open attribute and renders
- *     inline, so its banner can never be covered;
+ *   - the signed private preview carries the non-auto-open attribute, keeps the
+ *     dialog CLOSED and offers the hidden-until-wired preview trigger instead of
+ *     an inline card, so its banner can never be covered;
  *   - no welcome markup is emitted on an internal route, with no active event, or on
  *     the landing page;
  *   - rendering writes NOTHING: the canonical record's meta is byte-identical.
@@ -175,10 +177,11 @@ assert_equals( 1, substr_count( $ce_welcome_markup, 'class="ce-xmas-welcome"' ),
 assert_equals( 1, substr_count( $ce_welcome_markup, 'class="ce-christmas-hero ce-hero"' ), 'the hero component itself is emitted once' );
 assert_equals( 1, substr_count( $ce_welcome_markup, '<figure' ), 'one figure only' );
 assert_equals( 1, substr_count( $ce_welcome_markup, '<img' ), 'one image only — the modal is not a second copy' );
-assert_equals( 1, substr_count( $ce_welcome_markup, '<h2' ), 'one heading only' );
+assert_equals( 1, substr_count( $ce_welcome_markup, '<h2' ), 'one heading only (the fallback title is a plain paragraph)' );
 assert_equals( 1, substr_count( $ce_welcome_markup, 'ce-christmas-hero__copy' ), 'one paragraph only' );
-assert_equals( 1, substr_count( $ce_welcome_markup, '<a ' ), 'one call to action only' );
-assert_equals( 1, substr_count( $ce_welcome_markup, 'ce-christmas-hero__cta' ), 'the single control is the hero CTA' );
+assert_equals( 2, substr_count( $ce_welcome_markup, '<a ' ), 'exactly two links: the modal CTA and the fallback CTA (same destination)' );
+assert_equals( 1, substr_count( $ce_welcome_markup, 'ce-christmas-hero__cta' ), 'the modal control is the hero CTA' );
+assert_equals( 1, substr_count( $ce_welcome_markup, 'ce-xmas-welcome__fallback-cta' ), 'the fallback control is its own single CTA' );
 
 $ce_welcome_meta_after = isset( $ce_welcome_id ) ? get_post_meta( $ce_welcome_id ) : array();
 
@@ -204,21 +207,36 @@ assert_contains( 'aria-hidden="true"', $ce_welcome_markup, 'the shared star stay
 assert_contains( 'focusable="false"', $ce_welcome_markup, 'the star can never take the focus' );
 assert_equals( 1, substr_count( $ce_welcome_markup, 'id="ce-xmas-star-glow-hero"' ), 'the star gradient id is unique on the page' );
 
-test_section( 'The no-JavaScript contract: the hero is usable inline' );
+test_section( 'The dialog ships CLOSED and a compact fallback covers the no-JS path' );
 
 assert_contains( '<dialog', $ce_welcome_markup, 'the hero is rendered inside a native dialog' );
-assert_contains( "\t\topen\n", $ce_welcome_markup, 'the dialog ships open, so the band is visible without JavaScript' );
+assert_equals( 1, preg_match( '/<dialog\b[^>]*>/', $ce_welcome_markup, $ce_welcome_dialog_tag ), 'the dialog tag is extractable' );
+assert_true(
+	1 !== preg_match( '/\sopen(?=[\s>=])/', $ce_welcome_dialog_tag[0] ),
+	'no server-rendered `open` attribute: a non-modal open dialog is the broken inline card this contract forbids'
+);
+
+assert_contains( 'data-ce-welcome-fallback', $ce_welcome_markup, 'the compact fallback card is rendered for no-JS / failed-open' );
+assert_equals( 1, substr_count( $ce_welcome_markup, 'data-ce-welcome-fallback' ), 'exactly one fallback card is emitted' );
+assert_equals(
+	1,
+	preg_match( '/<button\b[^>]*data-ce-welcome-preview-open[^>]*>/', $ce_welcome_markup, $ce_welcome_trigger_tag ),
+	'the preview trigger button exists once'
+);
+assert_contains( 'hidden', $ce_welcome_trigger_tag[0], 'the preview trigger ships hidden until a wired controller reveals it' );
+
 assert_contains( 'hidden', $ce_welcome_markup, 'the close control is withheld until a controller owns it' );
-assert_not_contains( 'style="display:none"', $ce_welcome_markup, 'the hero is never inlined as the only hidden copy' );
+assert_not_contains( 'style="display:none"', $ce_welcome_markup, 'nothing is hidden by an inline style hack' );
 assert_contains( 'Um Natal, dois céus', $ce_welcome_markup, 'the heading is server-rendered text' );
 assert_contains( 'a mesma estrela', $ce_welcome_markup, 'the copy is server-rendered text' );
 assert_contains( 'data-ce-welcome-state', $ce_welcome_source, 'the parse-time guard uses its own state attribute' );
-assert_contains( 'DOMContentLoaded', $ce_welcome_source, 'the guard reveals the band if the controller never arrives' );
+assert_contains( 'DOMContentLoaded', $ce_welcome_source, 'the guard reveals the fallback if the controller never arrives' );
 
-$ce_welcome_reveal = strpos( $ce_welcome_source, 'revealInline' );
-assert_true( false !== $ce_welcome_reveal, 'the guard has an inline fallback' );
+$ce_welcome_reveal = strpos( $ce_welcome_source, 'revealFallback' );
+assert_true( false !== $ce_welcome_reveal, 'the guard has a deterministic fallback reveal' );
 assert_contains( "probe.showModal", $ce_welcome_source, 'the guard is a capability test, not a decision' );
 assert_not_contains( 'new Date', $ce_welcome_source, 'no date is computed in the template' );
+assert_not_contains( "'inline'", $ce_welcome_source, 'the guard never marks the page as an inline band' );
 
 test_section( 'Image and links are generated local URLs' );
 
@@ -282,9 +300,9 @@ assert_equals(
 	'both locales carry the same single image (parity, not truncation)'
 );
 
-test_section( 'The signed private preview keeps the band inline' );
+test_section( 'The signed private preview never renders an inline dialog' );
 
-assert_not_contains( 'data-ce-welcome-preview', $ce_welcome_markup, 'a public view carries no preview attribute' );
+assert_not_contains( 'data-ce-welcome-preview="1"', $ce_welcome_markup, 'a public view carries no preview attribute' );
 
 $ce_welcome_admins = get_users(
 	array(
@@ -315,8 +333,18 @@ assert_true( conexao_commemorative_is_preview(), 'the engine accepts the signed 
 $ce_welcome_markup_preview = conexao_welcome_test_placement();
 
 assert_contains( 'data-ce-welcome-preview="1"', $ce_welcome_markup_preview, 'the preview marks the welcome as non-auto-open' );
-assert_contains( '<dialog', $ce_welcome_markup_preview, 'the preview still renders the hero' );
-assert_contains( 'open', $ce_welcome_markup_preview, 'the preview keeps the band inline so the banner stays visible' );
+assert_contains( '<dialog', $ce_welcome_markup_preview, 'the preview still renders the dialog' );
+assert_equals(
+	1,
+	preg_match( '/<dialog\b[^>]*>/', $ce_welcome_markup_preview, $ce_welcome_preview_dialog_tag ),
+	'the preview dialog tag is extractable'
+);
+assert_true(
+	1 !== preg_match( '/\sopen(?=[\s>=])/', $ce_welcome_preview_dialog_tag[0] ),
+	'the preview never renders a non-modal open dialog as a broken inline card'
+);
+assert_contains( 'data-ce-welcome-fallback', $ce_welcome_markup_preview, 'the preview hosts the compact fallback card' );
+assert_contains( 'data-ce-welcome-preview-open', $ce_welcome_markup_preview, 'the preview offers the trigger that opens the real modal' );
 assert_contains( 'conexao_commemorative_preview', 'conexao_commemorative_preview', 'the preview capability is untouched by this template' );
 assert_not_contains( 'conexao-preview-banner', $ce_welcome_markup_preview, 'the banner stays where the engine prints it, never duplicated inside the hero' );
 
@@ -405,6 +433,36 @@ assert_contains( 'dvh', $ce_welcome_css, 'the card uses the dynamic viewport hei
 assert_contains( 'min-width: 44px', $ce_welcome_css, 'the close control is a 44 px target' );
 assert_contains( 'min-height: 44px', $ce_welcome_css, 'the close control is a 44 px target' );
 assert_contains( 'ce-xmas-welcome-in', $ce_welcome_css, 'the entrance motion is the package\'s own, not a global animation' );
+
+test_section( 'The layout contract: no reserved band, in-flow placement, scoped states' );
+
+assert_true(
+	false === strpos( $ce_welcome_css, 'padding-bottom: clamp(286px' ),
+	'the hero reserves no band height: nothing renders inline, so no gap can remain after dismissal'
+);
+assert_contains(
+	'body.ce-active.ce-package-christmas.ce-placement-homepage-hero .ce-placement--homepage_hero',
+	$ce_welcome_css,
+	'the welcome placement is in normal flow at every width (no absolute band inside the hero)'
+);
+assert_contains( 'data-ce-welcome-state="pending"', $ce_welcome_css, 'the guard state hides the fallback before first paint' );
+assert_contains( 'data-ce-welcome-state="dismissed"', $ce_welcome_css, 'the dismissed state leaves nothing visible' );
+assert_contains( '.ce-xmas-welcome__fallback', $ce_welcome_css, 'the fallback card is styled in the package stylesheet' );
+assert_true(
+	1 !== preg_match( '/(^|\n)\s*dialog\s*[,{]/', $ce_welcome_css ),
+	'no global dialog selector leaks onto unrelated site overlays'
+);
+
+assert_contains( "'fallback'", $ce_welcome_js, 'the controller exposes the fallback state' );
+assert_contains( "'dismissed'", $ce_welcome_js, 'the controller exposes the dismissed state' );
+assert_contains( "'preview'", $ce_welcome_js, 'the controller exposes the preview state' );
+assert_contains( 'data-ce-welcome-claimed', $ce_welcome_js, 'claiming a root is idempotent' );
+assert_contains( 'data-ce-welcome-preview-open', $ce_welcome_js, 'the preview trigger is wired by the controller' );
+assert_contains( 'revealFallback', $ce_welcome_source, 'the parse-time guard hands off deterministically' );
+assert_true(
+	false === strpos( $ce_welcome_js, "setAttribute('open'" ),
+	'the controller never re-opens the dialog as a non-modal inline card'
+);
 
 conexao_commemorative_flush_plan();
 

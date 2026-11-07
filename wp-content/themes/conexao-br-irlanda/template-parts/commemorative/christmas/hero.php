@@ -6,33 +6,40 @@
  * evening on the left, Irish winter village on the right, one shared star between
  * them) carries the visual message; ALL copy stays real, localised HTML beside it.
  *
- * THE HOMEPAGE WELCOME. This one node is both the seasonal band and the welcome
- * dialog, so there is exactly one source of the headline, the paragraph, the star,
- * the artwork and the call to action:
+ * THE HOMEPAGE WELCOME. This one node is the welcome dialog, and a compact
+ * fallback card covers the no-JS / no-`showModal()` / failed-open cases, so there
+ * is exactly one source of the headline, the paragraph, the star, the artwork and
+ * the call to action — and never a second visible copy of the Natal card:
  *
- *   - the hero is rendered ONCE inside a native <dialog> that ships `open`, so a
- *     visitor without JavaScript — or with a package script that never ran — reads
- *     the whole hero inline in its usual place;
+ *   - the hero is rendered ONCE inside a native `<dialog>` that ships CLOSED (no
+ *     `open` attribute): a server-rendered non-modal `open` dialog is an in-flow
+ *     card, which is exactly the broken banner this contract forbids;
  *   - `assets/js/presentations/christmas/christmas.js` → `createWelcome()` calls
  *     `showModal()` on the first eligible homepage view of a tab session, which
- *     gives the browser's own top layer, background inertness and focus
- *     containment without a hand-built focus trap;
+ *     gives the browser's own top layer, viewport backdrop, background inertness
+ *     and focus containment without a hand-built focus trap;
+ *   - without JavaScript — or with a package script that never ran, or when
+ *     `showModal()` is unavailable or throws — the compact fallback card below
+ *     the dialog stays visible: a heading and the same landing-page CTA, in the
+ *     normal flow under the hero content, never covering the copy or the sponsor
+ *     carousel. The controller hides it the moment it owns the welcome;
  *   - dismissal is capped to the TAB SESSION (`sessionStorage`, every access
  *     guarded, with an in-memory fallback) and never persisted beyond it: no
- *     cookie, option, post meta, account or remote storage;
- *   - after dismissal the dialog returns to its inline band, so the height the
- *     theme reserves on `.hero-section` stays truthful and the visitor keeps the
- *     seasonal content instead of a 300 px hole;
- *   - the signed private preview renders the band INLINE (see the preview
- *     attribute below): the non-dismissible preview banner must stay visible and
- *     can never be covered by a modal top layer. Preview authorisation is not
+ *     cookie, option, post meta, account or remote storage. After dismissal
+ *     NOTHING is rendered inline — no band, no reserved hero height, no residue;
+ *   - the signed private preview (see the preview attribute below) never
+ *     auto-opens: the non-dismissible preview banner must stay visible. The
+ *     fallback card then carries an extra, hidden-until-wired preview trigger
+ *     that opens the exact same modal through `showModal()`. Preview close never
+ *     reads or writes the visitor dismissal key. Preview authorisation is not
  *     touched by this template.
  *
  * The inline guard script below runs at parse time, before this dialog is laid
  * out, and is a CAPABILITY TEST (does the browser really implement `showModal()`?),
  * never a decision: no date, no event window and no dismissal rule is evaluated
- * in JavaScript. If the package script never claims the node, the same guard's
- * DOMContentLoaded fallback reveals the band inline again.
+ * in JavaScript. When the modal API exists it marks the page `pending`, which
+ * hides the fallback before first paint (no flash); if the package script never
+ * claims the node by `DOMContentLoaded`, the same guard reveals the fallback.
  *
  * Layout contract: the art and the copy are two siblings, never layered, so no
  * sentence is ever placed on top of the photograph (contrast is guaranteed by
@@ -99,16 +106,24 @@ $ce_kicker = $ce_english ? __( 'Christmas · Brazil and Ireland', 'conexao-br-ir
 // accessible name in both languages (WCAG 2.4.6 / 2.5.3).
 $ce_close_label = $ce_english ? __( 'Close', 'conexao-br-irlanda' ) : __( 'Fechar', 'conexao-br-irlanda' );
 
+// The preview-only trigger that opens the real modal from the fallback card.
+// It ships `hidden` and is revealed by the controller only in an authorised
+// signed preview, so a visitor without JavaScript never meets a dead button.
+$ce_preview_label = $ce_english
+	? __( 'Open the welcome preview', 'conexao-br-irlanda' )
+	: __( 'Abrir a pré-visualização do boas-vindas', 'conexao-br-irlanda' );
+
 $ce_is_preview = function_exists( 'conexao_commemorative_is_preview' ) && conexao_commemorative_is_preview();
 ?>
 <div class="ce-xmas-welcome" data-ce-welcome<?php echo $ce_is_preview ? ' data-ce-welcome-preview="1"' : ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static attribute, no user data. ?>>
 	<script>
 	/*
 	 * Progressive-enhancement guard. Parse-time only: it asks the browser whether a
-	 * modal dialog is really available and, if so, claims the band so the visitor
-	 * never sees it painted inline and then jump into the dialog. If the package
-	 * script never takes the claim, the DOMContentLoaded fallback puts the band back
-	 * inline. Nothing is stored, calculated or decided here.
+	 * modal dialog is really available and, if so, marks the page `pending` so the
+	 * compact fallback card is hidden before first paint (no flash of a card that
+	 * is about to become a modal). If the package script never takes the claim by
+	 * DOMContentLoaded, the same guard reveals the fallback instead. Nothing is
+	 * stored, calculated or decided here: never a date, never a dismissal rule.
 	 */
 	(function () {
 		try {
@@ -121,19 +136,19 @@ $ce_is_preview = function_exists( 'conexao_commemorative_is_preview' ) && conexa
 
 			html.setAttribute('data-ce-welcome-state', 'pending');
 
-			var revealInline = function () {
+			var revealFallback = function () {
 				if ('pending' === html.getAttribute('data-ce-welcome-state')) {
-					html.setAttribute('data-ce-welcome-state', 'inline');
+					html.setAttribute('data-ce-welcome-state', 'fallback');
 				}
 			};
 
 			if ('loading' === document.readyState) {
-				document.addEventListener('DOMContentLoaded', revealInline);
+				document.addEventListener('DOMContentLoaded', revealFallback);
 			} else {
-				revealInline();
+				revealFallback();
 			}
 		} catch (error) {
-			/* No dialog support: the band stays inline, exactly as rendered. */
+			/* No dialog support: the fallback card stays visible, exactly as rendered. */
 		}
 	}());
 	</script>
@@ -141,7 +156,6 @@ $ce_is_preview = function_exists( 'conexao_commemorative_is_preview' ) && conexa
 		class="ce-xmas-welcome__dialog"
 		id="ce-christmas-welcome-dialog"
 		data-ce-welcome-dialog
-		open
 		aria-labelledby="ce-christmas-welcome-title"
 		aria-describedby="ce-christmas-welcome-desc"
 	>
@@ -205,4 +219,29 @@ $ce_is_preview = function_exists( 'conexao_commemorative_is_preview' ) && conexa
 			</div>
 		</div>
 	</dialog>
+	<?php
+	/*
+	 * The compact fallback (r10 §7.8, revised): visible BY DEFAULT so a visitor
+	 * without JavaScript still meets a working Natal card, hidden by the guard's
+	 * `pending` state before first paint and by the controller for every state it
+	 * owns (open / dismissed). The preview trigger ships `hidden` and is revealed
+	 * only by a wired controller in an authorised signed preview, where it opens
+	 * the exact same dialog through `showModal()` — the preview never renders the
+	 * dialog itself as an inline card.
+	 */
+	?>
+	<div class="ce-xmas-welcome__fallback" data-ce-welcome-fallback>
+		<p class="ce-xmas-welcome__fallback-title"><?php echo esc_html( $ce_heading ); ?></p>
+		<a class="btn btn-primary ce-xmas-welcome__fallback-cta" href="<?php echo esc_url( $ce_cta_href ); ?>">
+			<?php echo esc_html( $ce_cta ); ?>
+		</a>
+		<button
+			type="button"
+			class="ce-xmas-welcome__preview-trigger"
+			data-ce-welcome-preview-open
+			hidden
+		>
+			<?php echo esc_html( $ce_preview_label ); ?>
+		</button>
+	</div>
 </div>

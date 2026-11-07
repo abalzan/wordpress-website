@@ -111,14 +111,18 @@ renders nothing until its placement map ships.
   schedule, so it survives the window), and is excluded from the sitemap.
 - **A hero may be presented as a welcome, not as a second experience.** The
   `homepage_hero` placement of a package may be rendered once inside a native
-  `<dialog>` that the package script promotes to a modal (`showModal()`) on the first
-  eligible homepage view of a **tab session**, capped by a `sessionStorage` dismissal.
-  This is still the SAME placement, template, record and asset plan: no new event,
-  package, placement, scheduler or route. Without JavaScript the dialog's `open`
-  attribute leaves the band inline and usable; after dismissal the node returns to the
-  band. The signed private preview sets a package attribute that **suppresses** the
-  auto-open, so the non-dismissible preview banner can never be covered by the top
-  layer. Only `christmas` does this today
+  `<dialog>` that ships **closed**, which the package script promotes to a modal
+  (`showModal()`) on the first eligible homepage view of a **tab session**, capped
+  by a `sessionStorage` dismissal. This is still the SAME placement, template,
+  record and asset plan: no new event, package, placement, scheduler or route.
+  Without JavaScript — or if `showModal()` is unavailable or throws — a **compact
+  fallback card** in the flow under the hero content carries the heading and the
+  same CTA; the dialog is never left open as a non-modal inline card, and after
+  dismissal nothing is rendered inline at all (no band, no reserved hero height).
+  The signed private preview sets a package attribute that **suppresses** the
+  auto-open and never touches the dismissal key, so the non-dismissible preview
+  banner stays visible; the fallback card then exposes a preview trigger that
+  opens the same modal on demand. Only `christmas` does this today
   ([theme internals](../themes/conexao-br-irlanda.md#the-homepage-welcome--display-frequency-and-failure-behaviour)).
 
 ## 3. Timing and caps
@@ -233,4 +237,5 @@ landing pages in its sitemap is **NOT VERIFIED** — see
 [`testing.md`](testing.md) §"Sitemap evidence semantics".
 
 _Last verified: 2026-11-06 by the commemorative-events local remediation_
+_Last verified: 2026-11-06 by the Christmas homepage popup UI fix (the welcome dialog ships closed; the compact fallback and preview trigger replace the inline band)_
 

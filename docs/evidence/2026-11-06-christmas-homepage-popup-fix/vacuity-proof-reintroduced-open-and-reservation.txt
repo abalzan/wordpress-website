@@ -1,0 +1,4 @@
+  FAIL: no server-rendered `open` attribute: a non-modal open dialog is the broken inline card this contract forbids
+  FAIL: the preview never renders a non-modal open dialog as a broken inline card
+  FAIL: the hero reserves no band height: nothing renders inline, so no gap can remain after dismissal
+commemorative-christmas-welcome: 129 passed, 3 failed

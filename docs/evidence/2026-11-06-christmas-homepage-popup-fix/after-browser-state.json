@@ -1,0 +1,79 @@
+{
+  "base_url": "http://localhost:8080",
+  "after_preview_1366x768": {
+    "readyState": "complete",
+    "state": "preview",
+    "preview": true,
+    "dialogOpen": false,
+    "isModal": false,
+    "closeHidden": true,
+    "fallbackVisible": true,
+    "triggerVisible": true,
+    "bodyClasses": "home wp-singular page-template-default page page-id-9 logged-in admin-bar wp-custom-logo wp-embed-responsive wp-theme-conexao-br-irlanda ce-active ce-package-christmas ce-placement-homepage-hero ce-placement-site-wide-ambient singular front-page customize-support",
+    "dialog": {
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "position": "static",
+      "zIndex": "auto",
+      "display": "none",
+      "paddingBottom": "0px"
+    },
+    "placement": {
+      "rect": {
+        "x": 0,
+        "y": 701,
+        "w": 1366,
+        "h": 138
+      },
+      "position": "static",
+      "zIndex": "20",
+      "display": "block",
+      "paddingBottom": "0px"
+    },
+    "hero": {
+      "rect": {
+        "x": 0,
+        "y": 139,
+        "w": 1366,
+        "h": 701
+      },
+      "position": "relative",
+      "zIndex": "auto",
+      "display": "block",
+      "paddingBottom": "0px"
+    },
+    "bannerVisible": true,
+    "sessionStorage": null
+  },
+  "after_preview_modal_1366x768": {
+    "isModal": true,
+    "hasOpen": true,
+    "state": "open",
+    "rect": {
+      "x": 203,
+      "y": 218,
+      "w": 960,
+      "h": 332
+    },
+    "backdrop": "rgba(8, 12, 34, 0.66)",
+    "sessionStorage": null
+  },
+  "after_preview_reclosed_1366x768": {
+    "isModal": false,
+    "state": "preview",
+    "sessionStorage": null
+  },
+  "public_homepage": {
+    "welcomeRoots": 0,
+    "dialogs": 0,
+    "bodyClasses": "home wp-singular page-template-default page page-id-9 wp-custom-logo wp-embed-responsive wp-theme-conexao-br-irlanda singular front-page"
+  },
+  "observed": {
+    "console": [],
+    "pageerror": []
+  }
+}

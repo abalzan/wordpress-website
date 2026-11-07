@@ -157,7 +157,18 @@ $ce_hero = (string) ob_get_clean();
 
 assert_true( '' !== trim( $ce_hero ), 'the christmas hero renders inside its window' );
 assert_contains( 'ce-christmas-hero', $ce_hero, 'the package hero component renders' );
-assert_equals( 1, substr_count( $ce_hero, '<a ' ), 'the band offers exactly one call to action' );
+assert_equals( 2, substr_count( $ce_hero, '<a ' ), 'the welcome offers exactly two anchors: the modal CTA and the fallback CTA' );
+assert_equals( 1, substr_count( $ce_hero, 'ce-christmas-hero__cta' ), 'the hero component itself keeps exactly one CTA' );
+assert_equals( 1, substr_count( $ce_hero, 'ce-xmas-welcome__fallback-cta' ), 'the fallback card keeps exactly one CTA' );
+
+preg_match_all( '/<a [^>]*href="([^"]+)"/', $ce_hero, $ce_hero_hrefs );
+
+assert_equals( 2, count( $ce_hero_hrefs[1] ), 'both anchors carry an href' );
+assert_equals(
+	$ce_hero_hrefs[1][0],
+	$ce_hero_hrefs[1][1],
+	'one call to action: both CTAs lead to the SAME destination (modal state and fallback state)'
+);
 assert_contains( 'btn btn-primary', $ce_hero, 'the single control is the primary button' );
 assert_contains( 'two-skies-hero-1200.webp', $ce_hero, 'the hero uses the warm-evening panorama' );
 assert_contains( 'srcset=', $ce_hero, 'the hero art is responsive' );

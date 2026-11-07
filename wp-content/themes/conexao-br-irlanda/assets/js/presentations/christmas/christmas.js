@@ -4,13 +4,15 @@
  * Four responsibilities, all small and all local to this package:
  *
  *   1. `createWelcome()` — the homepage welcome dialog. The server renders the whole
- *      hero ONCE inside `<dialog open>`; this controller calls `showModal()` on the
- *      first eligible homepage view of a tab session, locks the background scroll,
- *      restores focus on close and records the TAB-SESSION dismissal. It creates no
- *      timer, no interval, no `requestAnimationFrame` loop and no network request,
- *      reads no clock and never decides whether the event is active (the server does
- *      that). The signed private preview is never auto-opened, so its banner stays
- *      visible.
+ *      hero ONCE inside a CLOSED `<dialog>` plus a compact fallback card; this
+ *      controller calls `showModal()` on the first eligible homepage view of a tab
+ *      session, locks the background scroll, restores focus on close and records the
+ *      TAB-SESSION dismissal (never from a signed preview). It creates no timer, no
+ *      interval, no `requestAnimationFrame` loop and no network request, reads no
+ *      clock and never decides whether the event is active (the server does that).
+ *      The signed private preview is never auto-opened — a hidden-until-wired
+ *      preview trigger opens the same modal instead — so its banner stays visible.
+ *      Nothing is ever rendered inline: no band, no reserved hero height.
  *   2. `createJourney()` — upgrades the server-rendered "two skies" pair into an
  *      accessible WAI-ARIA tabs widget (roving tabindex, Arrow/Home/End, one visible
  *      panel, the shared star travelling once towards the chosen sky). It is NOT a
@@ -48,8 +50,10 @@
 	var WELCOME_SELECTOR = '.ce-xmas-welcome[data-ce-welcome]';
 	var WELCOME_DIALOG_SELECTOR = '[data-ce-welcome-dialog]';
 	var WELCOME_CLOSE_SELECTOR = '[data-ce-welcome-close]';
+	var WELCOME_PREVIEW_OPEN_SELECTOR = '[data-ce-welcome-preview-open]';
 	var WELCOME_STATE = 'data-ce-welcome-state';
 	var WELCOME_PREVIEW = 'data-ce-welcome-preview';
+	var WELCOME_CLAIMED = 'data-ce-welcome-claimed';
 	var WELCOME_OPEN_CLASS = 'is-welcome-open';
 	var WELCOME_LOCK_CLASS = 'ce-xmas-welcome-locked';
 	var WELCOME_STORAGE_KEY = 'ce_christmas_welcome_dismissed_v1';
@@ -345,19 +349,26 @@
 	/**
 	 * Build the homepage welcome controller for one `[data-ce-welcome]` root.
 	 *
-	 * The server renders the WHOLE hero once, inside `<dialog open>`, so the node is
-	 * already the band a visitor without JavaScript reads. This controller only adds
-	 * the modal presentation:
+	 * The server renders the WHOLE hero once inside a CLOSED `<dialog>`, plus a
+	 * compact fallback card. This controller owns every page state:
 	 *
 	 *   - `open()` → `showModal()`: the browser's own top layer makes the page behind
 	 *     inert and keeps sequential focus inside the dialog, so there is no
 	 *     hand-written focus trap to get wrong;
 	 *   - the background scroll position is captured and restored exactly (iOS
 	 *     included, via `position: fixed` + a negative `top`);
-	 *   - `close()` records the TAB-SESSION dismissal and puts the node back in the
-	 *     flow as the band it was rendered as, so no reserved height goes to waste;
+	 *   - `close()` records the TAB-SESSION dismissal (never in a signed preview)
+	 *     and leaves NOTHING inline: the dialog stays closed and the fallback stays
+	 *     hidden, so the hero keeps its exact original geometry — no band, no
+	 *     reserved height, no residue;
 	 *   - everything fails closed: no dialog, no close control or no `showModal()`
-	 *     leaves the band inline and hides the close button.
+	 *     keeps the dialog closed, hides the close button and leaves the compact
+	 *     fallback card as the usable state;
+	 *   - the signed preview never auto-opens: the controller reveals the fallback's
+	 *     preview trigger instead, and closing the modal returns to that trigger
+	 *     without ever touching the visitor dismissal key;
+	 *   - claiming is idempotent: a root claimed once yields no second controller,
+	 *     no second set of listeners and never a second `showModal()`.
 	 *
 	 * It is NOT a scheduler: no timer, no interval, no `requestAnimationFrame`, no
 	 * network, no analytics. Eligibility is decided by the server (the placement is
@@ -377,6 +388,11 @@
 			return null;
 		}
 
+		// Idempotence: a repeated boot on an already-claimed root adds nothing.
+		if (typeof root.getAttribute === 'function' && '1' === root.getAttribute(WELCOME_CLAIMED)) {
+			return null;
+		}
+
 		var dialog = root.querySelector(WELCOME_DIALOG_SELECTOR);
 		var closeButton = root.querySelector(WELCOME_CLOSE_SELECTOR);
 
@@ -392,8 +408,21 @@
 			}
 		}
 
+		function isPreview() {
+			return '1' === attr(root, WELCOME_PREVIEW);
+		}
+
+		function onPreviewTriggerClick(event) {
+			if (event && typeof event.preventDefault === 'function') {
+				event.preventDefault();
+			}
+
+			open();
+		}
+
 		// Fail closed: incomplete markup, or an engine without a modal dialog, keeps
-		// the band inline and never offers a control that cannot work.
+		// the dialog CLOSED (never an inline card) and leaves the compact fallback
+		// card as the usable state — with no control that cannot work.
 		if (
 			!dialog ||
 			!closeButton ||
@@ -401,7 +430,7 @@
 			typeof dialog.close !== 'function'
 		) {
 			hideClose();
-			setState('inline');
+			setState('fallback');
 			return null;
 		}
 
@@ -522,14 +551,14 @@
 
 			hideClose();
 
-			// Back to the band the server rendered: `open` on a non-modal <dialog> is a
-			// normal block, so the hero keeps its content and the reserved height keeps
-			// its purpose. It is deliberately NOT left closed (that would be display:none).
-			if (typeof dialog.setAttribute === 'function') {
-				dialog.setAttribute('open', '');
+			// The dialog stays CLOSED: a non-modal `open` dialog is an in-flow card,
+			// which is the broken banner this welcome must never show. Nothing is left
+			// in the flow, so the hero keeps its exact original geometry after dismissal.
+			if (typeof dialog.removeAttribute === 'function') {
+				dialog.removeAttribute('open');
 			}
 
-			setState('inline');
+			setState(isPreview() ? 'preview' : 'dismissed');
 			unlockScroll();
 			restoreFocus();
 		}
@@ -552,9 +581,9 @@
 			}
 
 			// A dialog that still carries `open` is NON-modal, and the engine refuses to
-			// upgrade it in place ("already open as a non-modal dialog"), so the band is
-			// released for the instant it takes to hand the node to the top layer. Both
-			// steps happen in one task, so nothing is painted in between.
+			// upgrade it in place ("already open as a non-modal dialog"), so any stale
+			// `open` is released for the instant it takes to hand the node to the top
+			// layer. Both steps happen in one task, so nothing is painted in between.
 			if (typeof dialog.removeAttribute === 'function') {
 				dialog.removeAttribute('open');
 			}
@@ -562,15 +591,16 @@
 			try {
 				dialog.showModal();
 			} catch (error) {
-				// No modal dialog here: put the band back and stop pretending.
+				// No modal dialog here: keep the dialog CLOSED (never a half-open or
+				// inline card) and fall back to the compact fallback card instead.
 				if (dialog.classList && typeof dialog.classList.remove === 'function') {
 					dialog.classList.remove(WELCOME_OPEN_CLASS);
 				}
-				if (typeof dialog.setAttribute === 'function') {
-					dialog.setAttribute('open', '');
+				if (typeof dialog.removeAttribute === 'function') {
+					dialog.removeAttribute('open');
 				}
 				hideClose();
-				setState('inline');
+				setState('fallback');
 				return false;
 			}
 
@@ -588,14 +618,17 @@
 
 			modal = false;
 
-			if (false !== remember) {
+			// The signed preview must never mutate the visitor's dismissal state:
+			// viewing (and closing) a preview changes nothing outside this document.
+			if (false !== remember && !isPreview()) {
 				flag.write();
 			}
 
 			try {
 				dialog.close();
 			} catch (error) {
-				// Already closed by the engine: settle() below still restores the band.
+				// Already closed by the engine: settle() below still restores the
+				// final state (dismissed, or back to the preview trigger).
 			}
 
 			settle();
@@ -650,8 +683,26 @@
 			closeButton.addEventListener('click', onCloseClick);
 		}
 
-		// Claimed: from here the band is inline until open() says otherwise.
-		setState('inline');
+		// The preview trigger: wired always, revealed ONLY in an authorised signed
+		// preview (it ships `hidden`), where it is the accessible way to open the
+		// exact same modal through showModal().
+		var previewTrigger = typeof root.querySelector === 'function'
+			? root.querySelector(WELCOME_PREVIEW_OPEN_SELECTOR)
+			: null;
+
+		if (previewTrigger && typeof previewTrigger.addEventListener === 'function') {
+			previewTrigger.addEventListener('click', onPreviewTriggerClick);
+
+			if (isPreview() && typeof previewTrigger.removeAttribute === 'function') {
+				previewTrigger.removeAttribute('hidden');
+			}
+		}
+
+		// Claimed exactly once: a repeated boot creates no second controller, adds
+		// no second set of listeners and can never open the dialog twice.
+		if (typeof root.setAttribute === 'function') {
+			root.setAttribute(WELCOME_CLAIMED, '1');
+		}
 
 		return {
 			root: root,
@@ -660,15 +711,14 @@
 			storageKey: flag.key,
 			open: open,
 			close: close,
+			setState: setState,
 			isOpen: function () {
 				return modal;
 			},
 			isDismissed: function () {
 				return flag.read();
 			},
-			isPreview: function () {
-				return '1' === attr(root, WELCOME_PREVIEW);
-			}
+			isPreview: isPreview
 		};
 	}
 
@@ -711,8 +761,10 @@
 	 *
 	 * There is at most one: the placement is homepage-only and the dispatcher renders
 	 * a single package. Auto-open is decided HERE and only here — the signed private
-	 * preview is skipped so its banner stays visible, and a dismissal already recorded
-	 * for this tab session keeps the band inline.
+	 * preview is wired but never auto-opened (its banner stays visible and its close
+	 * never touches the dismissal key), a dismissal already recorded for this tab
+	 * session leaves the welcome closed with nothing inline, and every other eligible
+	 * view opens the modal exactly once.
 	 *
 	 * @param {Object} scope Optional window-like object (the runtime tests inject one).
 	 * @returns {Array} The controllers that were created.
@@ -740,12 +792,25 @@
 
 			controllers.push(controller);
 
-			if (!controller.isPreview() && !controller.isDismissed()) {
+			if (controller.isPreview()) {
+				// Signed preview: the trigger is already revealed and wired; the
+				// banner must stay visible, so never auto-open and never touch the
+				// visitor dismissal key.
+				controller.setState('preview');
+			} else if (controller.isDismissed()) {
+				// A dismissal in THIS tab session suppresses the welcome and leaves
+				// nothing inline: no band, no reserved height, no residue.
+				controller.setState('dismissed');
+			} else {
 				controller.open();
 			}
 		}
 
-		welcome = controllers.length ? controllers[0] : null;
+		// A repeated boot finds every root already claimed and yields no new
+		// controller; keep the first controller alive instead of clobbering it.
+		if (controllers.length) {
+			welcome = controllers[0];
+		}
 
 		return controllers;
 	}
@@ -758,7 +823,7 @@
 		function start() {
 			// The welcome goes first: it is the only part of this package that must
 			// happen before the visitor can interact with the page, and nothing later
-			// may stop it from claiming the band.
+			// may stop it from claiming the welcome.
 			bootWelcome();
 			bootJourneys();
 			bootAmbient();

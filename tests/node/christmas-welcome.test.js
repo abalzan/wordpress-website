@@ -10,16 +10,24 @@
  * Covered:
  *   - it opens immediately on the first eligible view, with the close control
  *     revealed, the background locked and the dialog focused;
- *   - it does nothing when the placement is absent;
- *   - dismissal is capped to the tab session and survives a reload in that session;
+ *   - it does nothing when the placement is absent, and the dialog keeps its
+ *     server-rendered CLOSED state (never an inline card);
+ *   - dismissal is capped to the tab session and survives a reload in that session,
+ *     leaving NOTHING inline (no band, no open attribute, dismissed state);
  *   - a fresh session is eligible again;
  *   - a storage that throws never breaks the page and still caps this document;
  *   - the close button, Escape and a genuine backdrop click all dismiss;
  *   - no resize/orientation/focus change can reopen it;
  *   - the CTA keeps its normal navigation;
- *   - incomplete markup or a missing `showModal()` fails closed (band inline, no
- *     dead close button);
- *   - the signed private preview is never auto-opened but stays driveable;
+ *   - incomplete markup or a missing `showModal()` fails closed (dialog closed,
+ *     fallback state, no dead close button);
+ *   - a `showModal()` that throws leaves the same safe fallback, never a
+ *     half-initialized dialog;
+ *   - the signed private preview is never auto-opened, exposes its preview
+ *     trigger, stays driveable, and its close NEVER touches the dismissal key;
+ *   - a repeated boot claims nothing twice (one controller, one showModal(),
+ *     no duplicate listeners), and a late controller legitimately overrides the
+ *     guard's timeout state instead of racing it;
  *   - IT IS NOT A SCHEDULER: no timer, interval or requestAnimationFrame.
  */
 
@@ -169,9 +177,10 @@ function storage(throws) {
 }
 
 /**
- * Build one complete welcome, exactly as the server renders it.
+ * Build one complete welcome, exactly as the server renders it: a CLOSED dialog,
+ * the compact fallback card and the hidden-until-wired preview trigger.
  *
- * @param {Object} options `{preview, dialog, close, showModal}`.
+ * @param {Object} options `{preview, dialog, close, showModal, showModalThrows}`.
  * @returns {Object} The parts plus a document/window pair.
  */
 function scene(options) {
@@ -181,13 +190,24 @@ function scene(options) {
 
 	body.style = { position: '', top: '', left: '', right: '', width: '', overflow: '' };
 
-	const dialog = element({ 'data-ce-welcome-dialog': '', open: '', id: 'ce-christmas-welcome-dialog' });
+	// The server renders the dialog CLOSED: an `open` attribute here would be the
+	// broken inline card the fix removed.
+	const dialog = element({ 'data-ce-welcome-dialog': '', id: 'ce-christmas-welcome-dialog' });
 
 	if (!opts.showModal) {
 		delete dialog.showModal;
 	}
 
+	if (opts.showModalThrows) {
+		dialog.showModal = function () {
+			dialog.showModalCount += 1;
+			throw new Error('simulated showModal() failure');
+		};
+	}
+
 	const closeButton = element({ 'data-ce-welcome-close': '', hidden: 'hidden' });
+	const previewTrigger = element({ 'data-ce-welcome-preview-open': '', hidden: 'hidden' });
+	const fallback = element({ 'data-ce-welcome-fallback': '' });
 	const cta = element({});
 	const rootAttributes = { 'data-ce-welcome': '' };
 
@@ -204,6 +224,14 @@ function scene(options) {
 
 		if ('[data-ce-welcome-close]' === selector) {
 			return opts.close ? closeButton : null;
+		}
+
+		if ('[data-ce-welcome-preview-open]' === selector) {
+			return previewTrigger;
+		}
+
+		if ('[data-ce-welcome-fallback]' === selector) {
+			return fallback;
 		}
 
 		return null;
@@ -227,7 +255,7 @@ function scene(options) {
 
 	view.sessionStorage = opts.store || storage(false);
 
-	return { root, dialog, closeButton, cta, doc, view, html, body, scrolls };
+	return { root, dialog, closeButton, previewTrigger, fallback, cta, doc, view, html, body, scrolls };
 }
 
 /**
@@ -282,10 +310,10 @@ test('no placement on the page means no controller and no error', () => {
 
 	assert.deepStrictEqual(boot(parts), [], 'nothing is enhanced');
 	assert.strictEqual(parts.dialog.showModalCount, 0, 'nothing opens');
-	assert.strictEqual(parts.dialog.hasAttribute('open'), true, 'the band keeps its server-rendered state');
+	assert.strictEqual(parts.dialog.hasAttribute('open'), false, 'the dialog keeps its server-rendered CLOSED state');
 });
 
-test('dismissal is remembered for the tab session and the band returns', () => {
+test('dismissal is remembered for the tab session and nothing stays inline', () => {
 	const store = storage(false);
 	const parts = scene({ store: store });
 	const created = boot(parts)[0];
@@ -294,7 +322,8 @@ test('dismissal is remembered for the tab session and the band returns', () => {
 
 	assert.strictEqual(created.isOpen(), false, 'the dialog is no longer modal');
 	assert.strictEqual(store.getItem(KEY), '1', 'the tab-session dismissal key is written');
-	assert.strictEqual(parts.dialog.hasAttribute('open'), true, 'the node returns to the inline band');
+	assert.strictEqual(parts.dialog.hasAttribute('open'), false, 'the dialog stays closed — no inline band');
+	assert.strictEqual(parts.html.getAttribute('data-ce-welcome-state'), 'dismissed', 'the dismissed state hides the fallback too');
 	assert.strictEqual(parts.dialog.classList.contains('is-welcome-open'), false, 'the card state is gone');
 	assert.strictEqual(parts.closeButton.hasAttribute('hidden'), true, 'the close control is hidden again');
 	assert.strictEqual(parts.body.style.position, '', 'the background scroll lock is released');
@@ -305,7 +334,8 @@ test('dismissal is remembered for the tab session and the band returns', () => {
 	boot(again);
 
 	assert.strictEqual(again.dialog.showModalCount, 0, 'a dismissal in this session suppresses the auto-open');
-	assert.strictEqual(again.dialog.hasAttribute('open'), true, 'the band is still inline and readable');
+	assert.strictEqual(again.dialog.hasAttribute('open'), false, 'a reload renders nothing inline after the dismissal');
+	assert.strictEqual(again.html.getAttribute('data-ce-welcome-state'), 'dismissed', 'the reload keeps the dismissed state');
 });
 
 test('a fresh session is eligible again', () => {
@@ -341,7 +371,8 @@ test('Escape (the native close event) dismisses and is remembered', () => {
 
 	assert.strictEqual(created.isOpen(), false, 'the dialog is dismissed');
 	assert.strictEqual(store.getItem(KEY), '1', 'the dismissal is recorded');
-	assert.strictEqual(parts.dialog.hasAttribute('open'), true, 'the band is restored inline');
+	assert.strictEqual(parts.dialog.hasAttribute('open'), false, 'the dialog stays closed after Escape');
+	assert.strictEqual(parts.html.getAttribute('data-ce-welcome-state'), 'dismissed', 'the dismissed state is exposed');
 });
 
 test('a genuine backdrop click dismisses, a click inside the card does not', () => {
@@ -408,33 +439,108 @@ test('the CTA keeps its normal navigation', () => {
 	assert.strictEqual(created.isOpen(), true, 'and it never closes the dialog instead');
 });
 
-test('an incomplete welcome fails closed and leaves the band inline', () => {
+test('an incomplete welcome fails closed and never becomes an inline card', () => {
 	const parts = scene({ close: false });
 
 	assert.strictEqual(controller(parts), null, 'no controller without a close control');
 	assert.strictEqual(parts.dialog.showModalCount, 0, 'nothing opens');
-	assert.strictEqual(parts.html.getAttribute('data-ce-welcome-state'), 'inline', 'the band is shown inline');
-	assert.strictEqual(parts.dialog.hasAttribute('open'), true, 'the hero stays readable');
+	assert.strictEqual(parts.html.getAttribute('data-ce-welcome-state'), 'fallback', 'the fallback state is exposed');
+	assert.strictEqual(parts.dialog.hasAttribute('open'), false, 'the dialog never opens as an inline card');
+	assert.strictEqual(parts.closeButton.hasAttribute('hidden'), true, 'no dead close button is offered');
 });
 
 test('an engine without showModal() fails closed instead of faking a dialog', () => {
 	const parts = scene({ showModal: false });
 
 	assert.strictEqual(controller(parts), null, 'no controller without a modal dialog');
-	assert.strictEqual(parts.html.getAttribute('data-ce-welcome-state'), 'inline', 'the band is shown inline');
+	assert.strictEqual(parts.html.getAttribute('data-ce-welcome-state'), 'fallback', 'the fallback state is exposed');
+	assert.strictEqual(parts.dialog.hasAttribute('open'), false, 'the dialog stays closed');
 	assert.strictEqual(parts.closeButton.hasAttribute('hidden'), true, 'no dead close button is offered');
 });
 
-test('the signed preview is never auto-opened, but stays driveable', () => {
-	const parts = scene({ preview: true });
+test('a showModal() that throws leaves the safe fallback, never a half-open dialog', () => {
+	const parts = scene({ showModalThrows: true });
+	const created = boot(parts);
+
+	assert.strictEqual(created.length, 1, 'the controller exists (it may retry explicitly)');
+	assert.strictEqual(parts.dialog.showModalCount, 1, 'showModal() was attempted exactly once');
+	assert.strictEqual(parts.dialog.hasAttribute('open'), false, 'the dialog stays CLOSED, never an inline card');
+	assert.strictEqual(parts.dialog.classList.contains('is-welcome-open'), false, 'no card state is left behind');
+	assert.strictEqual(parts.closeButton.hasAttribute('hidden'), true, 'no dead close control is revealed');
+	assert.strictEqual(parts.html.getAttribute('data-ce-welcome-state'), 'fallback', 'the fallback state is exposed');
+	assert.strictEqual(parts.body.style.position, '', 'the background was never locked');
+});
+
+test('a repeated boot claims nothing twice: one controller, one showModal(), no duplicate listeners', () => {
+	const parts = scene();
+
+	assert.strictEqual(boot(parts).length, 1, 'the first boot claims the root');
+	assert.strictEqual(boot(parts).length, 0, 'a second boot finds the root already claimed');
+	assert.strictEqual(parts.dialog.showModalCount, 1, 'still exactly one showModal()');
+	assert.deepStrictEqual(parts.dialog.listenerTypes(), ['click', 'close'], 'no duplicate dialog listeners');
+	assert.deepStrictEqual(parts.closeButton.listenerTypes(), ['click'], 'no duplicate close listeners');
+	assert.strictEqual(parts.previewTrigger.listenerTypes().length, 1, 'the preview trigger listener is registered once');
+});
+
+test('a late controller legitimately overrides the guard timeout instead of racing it', () => {
+	const parts = scene();
+
+	// The guard's DOMContentLoaded fallback already ran (controller never arrived
+	// in time): the page shows the fallback card...
+	parts.html.setAttribute('data-ce-welcome-state', 'fallback');
+
+	// ...and then the deferred controller finally claims the root.
 	const created = boot(parts)[0];
 
-	assert.strictEqual(parts.dialog.showModalCount, 0, 'a preview keeps the band inline (banner visible)');
-	assert.strictEqual(parts.html.getAttribute('data-ce-welcome-state'), 'inline', 'the band is inline');
+	assert.strictEqual(created.isOpen(), true, 'the late controller still opens the modal');
+	assert.strictEqual(parts.html.getAttribute('data-ce-welcome-state'), 'open', 'the state transitions deterministically to open');
+	assert.strictEqual(parts.dialog.showModalCount, 1, 'exactly one showModal()');
+});
+
+test('the signed preview is never auto-opened, exposes its trigger, and never touches dismissal state', () => {
+	const store = storage(false);
+	const parts = scene({ preview: true, store: store });
+	const created = boot(parts)[0];
+
+	assert.strictEqual(parts.dialog.showModalCount, 0, 'a preview never auto-opens (banner visible)');
+	assert.strictEqual(parts.html.getAttribute('data-ce-welcome-state'), 'preview', 'the preview state hosts the trigger card');
 	assert.strictEqual(created.isPreview(), true, 'the controller knows it is a preview');
+	assert.strictEqual(parts.previewTrigger.hasAttribute('hidden'), false, 'the preview trigger is revealed');
+	assert.strictEqual(created.isDismissed(), false, 'merely viewing the preview records nothing');
 
 	assert.strictEqual(created.open(), true, 'a maintainer can still drive it explicitly');
 	assert.strictEqual(parts.dialog.showModalCount, 1, 'and only then does the modal dialog appear');
+
+	parts.closeButton.dispatch('click', { detail: 1 });
+
+	assert.strictEqual(created.isOpen(), false, 'the close works');
+	assert.strictEqual(parts.html.getAttribute('data-ce-welcome-state'), 'preview', 'closing returns to the preview trigger card');
+	assert.strictEqual(store.getItem(KEY), null, 'a preview close NEVER writes the visitor dismissal key');
+	assert.strictEqual(parts.dialog.hasAttribute('open'), false, 'no inline dialog after the preview close');
+	assert.strictEqual(parts.previewTrigger.hasAttribute('hidden'), false, 'the preview trigger stays available');
+
+	parts.previewTrigger.dispatch('click', { detail: 1 });
+
+	assert.strictEqual(parts.dialog.showModalCount, 2, 'the preview trigger opens the same modal again');
+	assert.strictEqual(created.isOpen(), true, 'and it is modal again');
+});
+
+test('focus enters the dialog on open and returns to the previously focused element on close', () => {
+	const parts = scene();
+	const previous = element({ id: 'somewhere-else' });
+
+	// What the visitor was focused on before the auto-open.
+	parts.doc.activeElement = previous;
+
+	const created = boot(parts)[0];
+
+	assert.strictEqual(parts.dialog.focused, 1, 'focus moves into the dialog when it opens');
+	assert.strictEqual(created.isOpen(), true, 'the modal is open');
+
+	parts.closeButton.dispatch('click', { detail: 1 });
+
+	assert.strictEqual(previous.focused, 1, 'focus returns to the previously focused element');
+	assert.strictEqual(parts.html.getAttribute('data-ce-welcome-state'), 'dismissed', 'the welcome is dismissed');
 });
 
 test('it is not a scheduler: no timer, interval or requestAnimationFrame', () => {
@@ -492,6 +598,11 @@ test('the dismissal key is session-scoped and never persistent', () => {
 	);
 
 	assert.ok(source.includes(KEY), 'the namespaced session key is the documented one');
+	assert.strictEqual(
+		source.includes("setAttribute('open'"),
+		false,
+		'the controller never re-opens the dialog as a non-modal inline card'
+	);
 	assert.strictEqual(/localStorage\s*[.(]/.test(source), false, 'no cross-session storage is used');
 	assert.strictEqual(source.includes('document.cookie'), false, 'no cookie is used');
 	assert.strictEqual(

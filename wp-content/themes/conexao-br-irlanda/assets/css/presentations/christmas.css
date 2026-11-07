@@ -97,15 +97,18 @@
 }
 
 /* ===== 3. Homepage hero band ===== */
-/* The band is reserved server-side (the generic body classes carry the padding), so
-   the hero makes room for it before paint and nothing shifts afterwards. Art and copy
-   are SIBLINGS — no sentence ever sits on top of the photograph, which is why contrast
-   holds in both site themes without a scrim. */
-/* The reserved height tracks the measured band height (243-261 px across the desktop
-   range) plus its bottom margin, so the band can never ride up over the hero copy at
-   any width between the 768 px stack switch and a wide desktop. */
-body.ce-active.ce-package-christmas.ce-placement-homepage-hero .hero-section {
-  padding-bottom: clamp(286px, 21vw, 344px);
+/* NOTHING renders inline for the Christmas welcome any more, so the hero reserves
+   NO padding: with JavaScript the welcome node is an empty wrapper (the dialog is
+   closed and the fallback is hidden) and the hero keeps its exact original
+   geometry — no gap, no layout shift, nothing to restore after dismissal. Without
+   JavaScript the compact fallback card sits in the normal flow UNDER the hero
+   content (the wrapper is static, below), which grows the section only for those
+   visitors and can never cover the copy or the sponsor carousel.
+   Art and copy in the dialog are SIBLINGS — no sentence ever sits on top of the
+   photograph, which is why contrast holds in both site themes without a scrim. */
+body.ce-active.ce-package-christmas.ce-placement-homepage-hero .ce-placement--homepage_hero {
+  position: static;
+  display: block;
 }
 
 .ce-christmas-hero {
@@ -828,21 +831,12 @@ body.ce-active.ce-package-christmas.ce-placement-homepage-hero .hero-section {
 }
 
 @media (max-width: 768px) {
-  /* On phones the hero is a flex row whose copy is bottom-anchored, so a band pinned
-     to the hero's bottom edge would sit on top of the copy. Below 768 px the band joins
-     the normal flow UNDER the hero: the wrapper stops being an overlay and the section
-     reserves no padding for it. Server-rendered, so still no layout shift. */
+  /* On phones the hero is a flex row whose copy is bottom-anchored, so the welcome
+     wrapper joins the normal flow UNDER the hero content: the section stops being a
+     flex container for it (it is static at every width, see §3) and reserves no
+     padding. Server-rendered, so still no layout shift. */
   body.ce-active.ce-package-christmas.ce-placement-homepage-hero .hero-section {
     display: block;
-    padding-bottom: 0;
-  }
-
-  body.ce-active.ce-package-christmas.ce-placement-homepage-hero .ce-placement--homepage_hero {
-    position: static;
-  }
-
-  body.ce-active.ce-package-christmas.ce-placement-homepage-hero .ce-christmas-hero {
-    margin: 12px auto 16px;
   }
 
   .ce-christmas-hero {
@@ -917,21 +911,28 @@ body.ce-active.ce-package-christmas.ce-placement-homepage-hero .hero-section {
 
 /* ===== 11. The homepage welcome dialog ===== */
 /*
- * ONE node, two presentations. The server renders the whole hero once inside a
- * native <dialog open>: without JavaScript that is the seasonal band the package has
- * always shown, and `createWelcome()` only adds `.is-welcome-open` + showModal() to
- * make it the welcome. There is no second copy of the copy, the art or the CTA.
+ * ONE dialog, one fallback, no inline card. The server renders the whole hero once
+ * inside a native <dialog> that ships CLOSED, plus a compact fallback card that is
+ * visible BY DEFAULT. `createWelcome()` claims the node and calls showModal(), which
+ * moves the same dialog to the browser's top layer (`.is-welcome-open`); from then
+ * on the fallback is hidden by the page state. There is no second copy of the art,
+ * and the full Natal card never appears as an in-flow banner.
  *
- * The rules below are split in the same two states:
- *   - no `.is-welcome-open`  → a transparent block in the placement (the band);
- *   - `.is-welcome-open`     → the card, in the browser's top layer.
+ * Page states (`data-ce-welcome-state` on <html>, set only by the guard/controller):
+ *   - (absent)  → no JavaScript: the fallback card is visible, the dialog stays closed;
+ *   - "pending" → the guard owns the page before first paint: nothing visible;
+ *   - "open"    → the modal is in the top layer: nothing visible behind it;
+ *   - "dismissed" → a public visitor closed it this session: nothing visible, no gap;
+ *   - "fallback" → the controller could not open (or never arrived): the fallback card;
+ *   - "preview"  → authorised signed preview, not auto-opened: the fallback card with
+ *                  its hidden-until-wired preview trigger.
  */
 .ce-xmas-welcome {
   display: block;
 }
 
-/* Neutralise the user-agent <dialog> box so the non-modal state is an ordinary
-   block: no absolute positioning, no border, no background, no padding. */
+/* Neutralise the user-agent <dialog> box so a closed dialog is inert chrome and the
+   open state is styled only by `.is-welcome-open` below. */
 .ce-xmas-welcome__dialog {
   position: static;
   inset: auto;
@@ -946,15 +947,106 @@ body.ce-active.ce-package-christmas.ce-placement-homepage-hero .hero-section {
   overflow: visible;
 }
 
+/* A closed dialog is never painted: this is the fail-closed backstop for engines
+   whose UA default was neutralised by the rules above. */
 .ce-xmas-welcome__dialog:not([open]):not(.is-welcome-open) {
   display: none;
 }
 
-/* The parse-time guard claims the band while it waits for the controller, so an
-   eligible visitor never sees it painted inline and then jump into the modal. If the
-   controller never arrives, the guard's DOMContentLoaded fallback clears this. */
+/* The parse-time guard marks the page while it waits for the controller, so the
+   fallback card never flashes before the modal opens. If the controller never
+   arrives, the guard's DOMContentLoaded fallback clears this to "fallback".
+   ONLY "pending" hides the dialog here: every other state is covered by the
+   closed-dialog rule above (the controller always removes `open` when it is not
+   modal), and state "open" must of course KEEP the dialog visible. */
 :root[data-ce-welcome-state="pending"] .ce-xmas-welcome__dialog {
   display: none;
+}
+
+/* --- The compact fallback card (no JS / no modal API / failed open / preview host) --- */
+/* Visible by default (no state yet = JavaScript never ran). Positioned above the
+   hero's absolutely-positioned background image and centred in the flow UNDER the
+   hero content: it can never cover the copy or the sponsor carousel, and with
+   JavaScript the guard/controller hide it before first paint, so a modal visitor
+   never sees both. Scoped to this package only — no global dialog or overlay rule. */
+.ce-xmas-welcome__fallback {
+  position: relative;
+  z-index: 1;
+  /* The shared placement is pointer-events: none; the card itself must answer to
+     the pointer so its own link and button behave like every other control. */
+  pointer-events: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  width: min(720px, calc(100% - 32px));
+  margin: 0 auto clamp(12px, 1.6vw, 20px);
+  padding: 10px 16px;
+  border: 1px solid color-mix(in srgb, var(--ce-accent, #d9a441) 46%, transparent);
+  border-radius: 16px;
+  background:
+    radial-gradient(120% 140% at 100% 0%, rgba(242, 166, 90, 0.16), transparent 58%),
+    linear-gradient(180deg, #fffcf5 0%, var(--ce-surface, #fdf7ee) 100%);
+  color: var(--ce-xmas-ink, #1a2038);
+  box-shadow: 0 12px 30px rgba(8, 12, 34, 0.28);
+}
+
+:root[data-theme="dark"] .ce-xmas-welcome__fallback {
+  background:
+    radial-gradient(120% 140% at 100% 0%, rgba(242, 166, 90, 0.18), transparent 58%),
+    linear-gradient(180deg, #182042 0%, var(--ce-surface, #12162e) 100%);
+}
+
+.ce-xmas-welcome__fallback-title {
+  margin: 0;
+  font-size: clamp(0.98rem, 1.6vw, 1.12rem);
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--ce-primary, #1b2447);
+}
+
+:root[data-theme="dark"] .ce-xmas-welcome__fallback-title {
+  color: var(--ce-xmas-on-night-strong, #fdf7ee);
+}
+
+.ce-xmas-welcome__fallback-cta {
+  margin-inline-start: auto;
+}
+
+/* The states where the fallback must NOT show (the modal owns the page, or the
+   visitor dismissed it this session). "fallback" and "preview" keep it visible. */
+:root[data-ce-welcome-state="pending"] .ce-xmas-welcome__fallback,
+:root[data-ce-welcome-state="open"] .ce-xmas-welcome__fallback,
+:root[data-ce-welcome-state="dismissed"] .ce-xmas-welcome__fallback {
+  display: none;
+}
+
+/* The preview trigger ships `hidden` and is revealed only by a wired controller in
+   an authorised signed preview; it opens the same dialog through showModal(). */
+.ce-xmas-welcome__preview-trigger {
+  flex: 1 0 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 8px 14px;
+  border: 1px dashed color-mix(in srgb, var(--ce-accent, #d9a441) 70%, transparent);
+  border-radius: 999px;
+  background: rgba(27, 36, 71, 0.06);
+  color: var(--ce-xmas-ink, #1a2038);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ce-xmas-welcome__preview-trigger[hidden] {
+  display: none;
+}
+
+.ce-xmas-welcome__preview-trigger:focus-visible {
+  outline: 3px solid var(--ce-accent, #d9a441);
+  outline-offset: 2px;
 }
 
 /* --- Close control: fail-closed, ≥ 44 × 44 px, never inside the scroll area --- */
