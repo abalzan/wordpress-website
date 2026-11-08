@@ -697,7 +697,7 @@ function render_agents_table(array $entries): string {
 	$lines = [
 		'All custom plugins live in `wp-content/plugins/`. **Load order matters.**',
 		'',
-		'This table is generated from [`plugins.json`](../plugins.json) - the single',
+		'This table is generated from [`plugins.json`](plugins.json) - the single',
 		'authoritative registry. Edit the registry and run',
 		'`php scripts/generate-registry-docs.php --write`; never hand-edit this table.',
 		'',
@@ -735,11 +735,16 @@ function lifecycle_summary_sentences(array $entries): string {
 	$rollouts = slugs_where($entries, static fn(array $e): bool => ($e['class'] ?? '') === 'rollout' && ($e['status'] ?? '') === 'retired');
 
 	$out   = [];
+	// An empty group must render as an explicit "none", never as a dangling
+	// separator (the sentence ends with ": <list>." — an empty list used to
+	// produce the broken "… ZIP): ." in four generated regions).
 	$out[] = '**Production steady state** (platform, `production: true`) - activate in this order: '
-		. implode(' -> ', $platform) . '.';
-	$out[] = '**Local-only tooling** (never production): ' . implode(', ', $tooling) . '.';
+		. ($platform === [] ? 'none' : implode(' -> ', $platform)) . '.';
+	$out[] = '**Local-only tooling** (never production): '
+		. ($tooling === [] ? 'none' : implode(', ', $tooling)) . '.';
 	$out[] = '**Retired rollout plugins** (historical tooling, *activate → apply → remove*; not a'
-		. ' production dependency and not in any release ZIP): ' . implode(', ', $rollouts) . '.';
+		. ' production dependency and not in any release ZIP): '
+		. ($rollouts === [] ? 'none' : implode(', ', $rollouts)) . '.';
 	return implode("\n\n", $out);
 }
 
@@ -881,7 +886,7 @@ function render_deployment_orders(array $entries): string {
 	$rollouts   = slugs_where($entries, static fn(array $e): bool => ($e['class'] ?? '') === 'rollout');
 
 	$lines = [
-		'Generated from [`plugins.json`](../../plugins.json) by',
+		'Generated from [`plugins.json`](../plugins.json) by',
 		'`scripts/generate-registry-docs.php`. Do not hand-edit this section.',
 		'',
 		'### Production activation order',

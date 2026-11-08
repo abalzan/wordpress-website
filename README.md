@@ -74,7 +74,7 @@ that one file.
 
 **Local-only tooling** (never production): conexao-event-importer, conexao-leisure-migration, conexao-sponsor-migration, conexao-en-translation.
 
-**Retired rollout plugins** (historical tooling, *activate → apply → remove*; not a production dependency and not in any release ZIP): .
+**Retired rollout plugins** (historical tooling, *activate → apply → remove*; not a production dependency and not in any release ZIP): none.
 
 Versions are **not** duplicated in the registry: the WordPress plugin header is the
 authoritative source, and each entry records only where to read it (`version_source`).
@@ -162,3 +162,4 @@ Never hand-edit a generated block; edit `plugins.json` and re-run `--write`.
 
 See `AGENTS.md` for AI-agent orientation and `docs/` for detailed documentation.
 _Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_
+_Last verified: 2026-11-07 by the agent, skills and documentation audit (generated registry regions regenerated: `plugins.json` link and empty retired-list sentence fixed)_

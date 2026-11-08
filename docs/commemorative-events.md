@@ -127,7 +127,7 @@ renders nothing until its placement map ships.
   reload shows the popup again — and its card is positioned so the
   non-dismissible preview banner, the admin bar and the header all stay visible
   above it. Only `christmas` does this today
-  ([theme internals](../themes/conexao-br-irlanda.md#the-homepage-welcome--display-frequency-and-failure-behaviour)).
+  ([theme internals](themes/conexao-br-irlanda.md#the-homepage-welcome--display-frequency-and-failure-behaviour)).
 
 ## 3. Timing and caps
 
@@ -243,4 +243,5 @@ landing pages in its sitemap is **NOT VERIFIED** — see
 _Last verified: 2026-11-06 by the commemorative-events local remediation_
 _Last verified: 2026-11-06 by the Christmas homepage popup UI fix (the welcome dialog ships closed; the compact fallback and preview trigger replace the inline band)_
 _Last verified: 2026-11-07 by the Christmas welcome top-of-screen popup fix (the welcome auto-opens in the signed preview and pins below every top obstruction)_
+_Last verified: 2026-11-07 by the agent, skills and documentation audit (theme-internals link corrected)_
 

@@ -1,0 +1,24 @@
+FINAL LINK AUDIT (complete, post-report) — links checked: 625 broken: 19
+BROKEN docs/evidence/2026-10-02-ci-fixture-translation-regression/README.md -> ../../../reports/2026-10-02-ci-fixture-translation-regression.md
+BROKEN docs/importers/ivvcc-importer.md -> ivvcc-stage-d-report.md
+BROKEN docs/reports/2026-09-30-en-pt-source-reconciliation.md -> evidence/2026-09-30-en-pt-source-reconciliation/06-en-payload-integrity.txt
+BROKEN docs/reports/2026-09-30-en-pt-source-reconciliation.md -> evidence/2026-09-30-en-pt-source-reconciliation/04-uniqueness-and-rejected-candidates.txt
+BROKEN docs/reports/2026-09-30-en-pt-source-reconciliation.md -> evidence/2026-09-30-en-pt-source-reconciliation/09-safety-ledger.txt
+BROKEN docs/reports/2026-09-30-en-pt-source-reconciliation.md -> evidence/2026-09-30-en-pt-source-reconciliation/00-baseline.txt
+BROKEN docs/reports/2026-09-30-en-pt-source-reconciliation.md -> evidence/2026-09-30-en-pt-source-reconciliation/01-methodology.txt
+BROKEN docs/reports/2026-09-30-en-pt-source-reconciliation.md -> evidence/2026-09-30-en-pt-source-reconciliation/02-historical-pt-identity.txt
+BROKEN docs/reports/2026-09-30-en-pt-source-reconciliation.md -> evidence/2026-09-30-en-pt-source-reconciliation/03-live-pt-corpus-search.txt
+BROKEN docs/reports/2026-09-30-en-pt-source-reconciliation.md -> evidence/2026-09-30-en-pt-source-reconciliation/04-uniqueness-and-rejected-candidates.txt
+BROKEN docs/reports/2026-09-30-en-pt-source-reconciliation.md -> evidence/2026-09-30-en-pt-source-reconciliation/05-production-read-log.txt
+BROKEN docs/reports/2026-09-30-en-pt-source-reconciliation.md -> evidence/2026-09-30-en-pt-source-reconciliation/06-en-payload-integrity.txt
+BROKEN docs/reports/2026-09-30-en-pt-source-reconciliation.md -> evidence/2026-09-30-en-pt-source-reconciliation/07-trash-source-verification.txt
+BROKEN docs/reports/2026-09-30-en-pt-source-reconciliation.md -> evidence/2026-09-30-en-pt-source-reconciliation/08-row1-exhaustive.txt
+BROKEN docs/reports/2026-09-30-en-pt-source-reconciliation.md -> evidence/2026-09-30-en-pt-source-reconciliation/09-safety-ledger.txt
+BROKEN docs/reports/2026-09-30-en-rollout-blocker-resolution.md -> evidence/2026-09-30-en-rollout-blocker-resolution/05-source-resolution-table.txt
+BROKEN docs/reports/2026-09-30-en-rollout-blocker-resolution.md -> evidence/2026-09-30-en-rollout-blocker-resolution/06-newsletter-policy.txt
+BROKEN docs/reports/2026-09-30-en-rollout-blocker-resolution.md -> evidence/2026-09-30-en-rollout-blocker-resolution/
+BROKEN docs/reports/2026-10-05-eventbrite-full-activation.md -> evidence/2026-10-05-eventbrite-g16/06-negative-proofs.txt
+
+BASELINE: 28 broken in the docs+.agents+.github scan (536 links) + 1 in AGENTS.md = 29 total.
+FIXED by this change: 10 (7 living docs + AGENTS.md + 2 in the Copilot instructions).
+REMAINING: 19 - historical reports/evidence + the self-qualifying ivvcc link; deliberately not rewritten (report §2).

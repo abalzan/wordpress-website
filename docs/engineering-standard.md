@@ -644,6 +644,7 @@ a historical measurement, not a current fact.
 | `docs/plugins/<slug>.md` | Per-plugin doc (metadata block per §4.1) | Plugin maintainer |
 | `docs/themes/conexao-br-irlanda.md` | Theme reference | Theme maintainer |
 | `docs/reports/<date>-<stage>-<topic>.md` | Stage/feature history (the root `CONEXAO_*` reports move here) | Change author |
+| `docs/plans/<date>-<topic>.md` | Pre-change plans filled from `docs/templates/plan.md` (scope, impact sections, approach, risks) | Change author |
 | `docs/evidence/<date>-<stage>/` | Machine-readable proof (matrices, `gate.json`, snapshots) | Change author |
 | `docs/audit/` | Audits | Project maintainer |
 | `docs/templates/` | `plan.md`, `report.md` | Project maintainer |
@@ -870,3 +871,4 @@ _Last verified: 2026-09-25 by the WordPress engineering standardisation audit (p
 
 _Last verified: 2026-09-26 by Stage I — Scripts Standardisation_
 _Last verified: 2026-09-30 by the agent skills / documentation migration_
+_Last verified: 2026-11-07 by the agent, skills and documentation audit (§9.1 records the existing `docs/plans/` location; the plan template copy destination now matches it)_

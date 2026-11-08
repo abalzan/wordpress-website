@@ -28,7 +28,7 @@ Load order is the row order. Dependencies always precede their dependents.
 
 **Local-only tooling** (never production): conexao-event-importer, conexao-leisure-migration, conexao-sponsor-migration, conexao-en-translation.
 
-**Retired rollout plugins** (historical tooling, *activate → apply → remove*; not a production dependency and not in any release ZIP): .
+**Retired rollout plugins** (historical tooling, *activate → apply → remove*; not a production dependency and not in any release ZIP): none.
 
 ### Dependency evidence
 

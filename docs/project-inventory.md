@@ -25,7 +25,7 @@ source. Do not hand-edit this table.
 
 **Local-only tooling** (never production): conexao-event-importer, conexao-leisure-migration, conexao-sponsor-migration, conexao-en-translation.
 
-**Retired rollout plugins** (historical tooling, *activate → apply → remove*; not a production dependency and not in any release ZIP): .
+**Retired rollout plugins** (historical tooling, *activate → apply → remove*; not a production dependency and not in any release ZIP): none.
 <!-- END GENERATED PLUGIN REGISTRY: docs/project-inventory.md plugins -->
 
 ## Themes

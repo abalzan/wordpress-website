@@ -34,10 +34,11 @@ is the *proof of invariance* (nothing changed), not a duplicate to remove.
 
 ## Index — every evidence folder
 
-One row per date; the folders for that date follow the row. **139** top-level
-folders and **1,583** files on disk, of which **1,389** are tracked — measured
-2026-11-06 by the Christmas homepage welcome task (the earlier 140/1,445/1,215
-figures were the audit-day snapshot and had drifted). Regenerate the inspection at
+One row per date; the folders for that date follow the row. **143** top-level
+folders and **1,759** files on disk, of which **1,584** are tracked — measured
+2026-11-07 by the agent, skills and documentation audit (the 14 files of that
+audit's own folder were still uncommitted at measurement; the earlier
+139/1,583/1,389 figures were the 2026-11-06 snapshot). Regenerate the inspection at
 any time with:
 
 ```bash
@@ -74,7 +75,8 @@ git ls-files docs/evidence | wc -l
 | 2026-11-03 | `leisure-coordinate-research` |
 | 2026-11-04 | `lazer-proximity-release` · `leisure-distance-optin` · `leisure-proximity-geolocation` |
 | 2026-11-05 | `lazer-proximity-button-removal` · `leisure-coordinate-rest-permission` · `leisure-location-production-audit` · `leisure-location-stage-7` · `leisure-location-stage-8` · `leisure-location-stage-9` |
-| 2026-11-06 | `evidence-directory-audit` · `christmas-signature-experience` · `christmas-homepage-welcome` · `commemorative-events` · `commemorative-local-remediation` · `commemorative-precedence` |
+| 2026-11-06 | `christmas-homepage-popup-fix` · `christmas-homepage-welcome` · `christmas-landing-page-active-dispatch-fix` · `christmas-signature-experience` · `commemorative-events` · `commemorative-local-remediation` · `commemorative-precedence` · `evidence-directory-audit` |
+| 2026-11-07 | `agent-skill-doc-audit` · `christmas-welcome-top-popup` |
 | undated | `lazer-wikimedia-image-seed` · `stage-4-1-rest-matrix` |
 
 Two dated pairs are easy to confuse and are **different records**:
@@ -548,3 +550,5 @@ _Last verified: 2026-10-01 by Stage 15 — Personal production commissioning and
 _Last verified: 2026-10-01 by Stage 14 — secret-scan hardening and production commissioning (Gate A `PASS`; Gate B `NOT PERFORMED`; commissioning readiness `BLOCKED` 18/18, production writes 0)_
 
 _Last verified: 2026-11-06 by the evidence-directory audit and cleanup (complete index of all folders, retention policy, commit prohibitions, add-evidence procedure; one byte-identical `.bak` removed, 8 empty directories removed)_
+
+_Last verified: 2026-11-07 by the agent, skills and documentation audit (the three missing Christmas folders and the audit's own folder indexed; counts re-measured)_

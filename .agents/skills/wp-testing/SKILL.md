@@ -190,5 +190,3 @@ verifiers that could not run. Use `docs/templates/report.md`.
 - [ ] Logs and the comparison are under `docs/evidence/<date>-<stage>/`.
 - [ ] Blocked and not-tested verifiers are named explicitly, not reported as pass.
 
-    recorded as blocked or not tested — never as verified.
-

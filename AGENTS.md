@@ -24,6 +24,7 @@ Then, for the kind of work you are doing, the matching agent skill in
 
 | Skill | Use it for |
 |---|---|
+| [`wp-repository`](.agents/skills/wp-repository/SKILL.md) | orienting in the repository, planning multi-file work, holding scope, and reviewing a change before merge |
 | [`wp-add-content-type`](.agents/skills/wp-add-content-type/SKILL.md) | a new/changed post type, taxonomy, meta field, archive or route |
 | [`wp-add-admin-screen`](.agents/skills/wp-add-admin-screen/SKILL.md) | a maintainer capability operated through wp-admin |
 | [`wp-write-in-process-test`](.agents/skills/wp-write-in-process-test/SKILL.md) | an in-process PHP test suite |
@@ -34,6 +35,9 @@ Then, for the kind of work you are doing, the matching agent skill in
 | [`wp-frontend-perf`](.agents/skills/wp-frontend-perf/SKILL.md) | templates, queries, caching, assets |
 | [`wp-translation-rollout`](.agents/skills/wp-translation-rollout/SKILL.md) | English coverage for a content type |
 | [`wp-plugin-registry`](.agents/skills/wp-plugin-registry/SKILL.md) | adding/re-classifying a plugin, build or mount facts |
+| [`wp-content-change`](.agents/skills/wp-content-change/SKILL.md) | an importer, migration, seed or repair — any content write that is not an English rollout |
+| [`wp-testing`](.agents/skills/wp-testing/SKILL.md) | running, diagnosing or comparing the test contract |
+| [`wp-production-operations`](.agents/skills/wp-production-operations/SKILL.md) | auditing or operating the live WordPress.com site |
 
 ## Scope: what you may and may not touch
 
@@ -151,20 +155,8 @@ are discovered by convention, so there is no second runner. They fail closed.
 See [`docs/testing.md`](docs/testing.md) §"The permanent invariant gates" for
 what each gate proves, how to read a red gate, and where `gate.json` lives.
 
-**CI.** `.github/workflows/ci.yml` is the single CI entrypoint and runs three
-**blocking** jobs on every `push` and `pull_request` (and on
-`workflow_dispatch`): **static quality**, **release integrity** and
-**integration**. The integration job is a required blocking check: it builds the
-deterministic synthetic site from the committed fixtures in an ephemeral
-Docker WordPress and runs `./scripts/run-tests.sh`. It is no longer
-`workflow_dispatch`-only and no longer waits on deterministic fixtures — that
-requirement was satisfied, not dropped (see
-[`docs/reports/2026-09-29-stage-p-ci-readiness.md`](docs/reports/2026-09-29-stage-p-ci-readiness.md)).
-
 Full command reference: [`docs/testing.md`](docs/testing.md) and
 [`scripts/README.md`](scripts/README.md).
-
-## Plugins (custom, this repo)
 
 ## Plugins (custom, this repo)
 
@@ -173,7 +165,7 @@ All under `wp-content/plugins/`. Load order matters:
 <!-- BEGIN GENERATED PLUGIN REGISTRY: AGENTS.md plugin inventory -->
 All custom plugins live in `wp-content/plugins/`. **Load order matters.**
 
-This table is generated from [`plugins.json`](../plugins.json) - the single
+This table is generated from [`plugins.json`](plugins.json) - the single
 authoritative registry. Edit the registry and run
 `php scripts/generate-registry-docs.php --write`; never hand-edit this table.
 
@@ -195,7 +187,7 @@ authoritative registry. Edit the registry and run
 
 **Local-only tooling** (never production): conexao-event-importer, conexao-leisure-migration, conexao-sponsor-migration, conexao-en-translation.
 
-**Retired rollout plugins** (historical tooling, *activate → apply → remove*; not a production dependency and not in any release ZIP): .
+**Retired rollout plugins** (historical tooling, *activate → apply → remove*; not a production dependency and not in any release ZIP): none.
 <!-- END GENERATED PLUGIN REGISTRY: AGENTS.md plugin inventory -->
 
 ## Where to go next
@@ -227,3 +219,5 @@ requirement was satisfied, not dropped (see
 _Last verified: 2026-09-26 by Stage K — Agent Skills + Templates_
 
 _Last verified: 2026-09-30 by the agent skills / documentation migration_
+
+_Last verified: 2026-11-07 by the agent, skills and documentation audit_

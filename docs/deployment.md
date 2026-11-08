@@ -30,7 +30,7 @@
 ### Plugins
 
 <!-- BEGIN GENERATED PLUGIN REGISTRY: docs/deployment.md activation order -->
-Generated from [`plugins.json`](../../plugins.json) by
+Generated from [`plugins.json`](../plugins.json) by
 `scripts/generate-registry-docs.php`. Do not hand-edit this section.
 
 ### Production activation order
@@ -159,8 +159,9 @@ so the srcset ladders include the small derivatives:
 docker compose exec wordpress php wp-cli.phar media regenerate <IDs...> --skip-delete --yes --allow-root
 ```
 
-On WordPress.com production, regenerate thumbnails for the same attachments
-via WP-CLI (`wp media regenerate`) or a plugin equivalent after deploying the
+On WordPress.com production there is **no WP-CLI** (see
+[`releases.md`](releases.md) §Production constraints), so regenerate the same
+attachments with a thumbnail-regeneration plugin equivalent after deploying the
 theme update. The `scripts/generate-logo-derivatives.php` script creates the
 240px header-logo derivatives from the theme assets (already committed; run
 it only if the logo masters are ever replaced).
@@ -264,3 +265,4 @@ See [`docs/plugins/conexao-translation-rollout.md`](plugins/conexao-translation-
 
 _Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_
 _Last verified: 2026-09-30 by the agent skills / documentation migration_
+_Last verified: 2026-11-07 by the agent, skills and documentation audit (generated `plugins.json` link corrected; production WP-CLI recommendation replaced with the admin/plugin path)_
