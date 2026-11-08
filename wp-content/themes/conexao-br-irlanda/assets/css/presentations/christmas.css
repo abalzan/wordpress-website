@@ -1281,3 +1281,119 @@ body.ce-package-christmas .ce-xmas-welcome__dialog.is-welcome-open .ce-christmas
     transform: none !important;
   }
 }
+
+/* ===== 5. Micro-animations (shared Christmas-star language) ===== */
+/* Small, one-shot, bounded motions that reuse the shared star motif and the
+   package's candle-gold palette. Nothing loops, nothing covers copy, nothing
+   shifts layout. All triggered from assets/js/presentations/christmas/christmas.js
+   and scoped to Christmas-package markup so unrelated routes are untouched. */
+
+/* --- 5.1 Welcome star twinkle: runs once when the welcome modal opens ---
+   Hooked on the `.is-welcome-open` class that `createWelcome()` already adds;
+   no JS timer, no delay to `showModal()`, no flash. 1.2 s, two gentle twinkles,
+   then still. */
+@keyframes ce-xmas-welcome-star-twinkle {
+  0%, 40%, 100% {
+    filter: drop-shadow(0 0 6px rgba(255, 236, 180, 0.55));
+  }
+  20% {
+    filter: drop-shadow(0 0 18px rgba(232, 194, 115, 0.95));
+  }
+  70% {
+    filter: drop-shadow(0 0 14px rgba(232, 194, 115, 0.85));
+  }
+}
+
+body.ce-package-christmas
+  .ce-xmas-welcome__dialog.is-welcome-open
+  .ce-xmas-star__body {
+  animation: ce-xmas-welcome-star-twinkle 1.2s ease-out 1;
+}
+
+/* --- 5.2 Selected CTA sparkle: 3-5 golden glints near an activated CTA ---
+   Particles are created by script, positioned at the button's bottom edge (never
+   over the label), float a short distance and fade. `aria-hidden`, out of the
+   tab order, removed once the animation ends. */
+.ce-xmas-sparkle {
+  position: fixed;
+  z-index: 250;
+  width: 5px;
+  height: 5px;
+  background: var(--ce-xmas-gold, #e8c273);
+  box-shadow: 0 0 8px rgba(232, 194, 115, 0.9);
+  border-radius: 50%;
+  opacity: 0.95;
+  pointer-events: none;
+  transform-origin: 50% 50%;
+  animation: ce-xmas-sparkle-float 0.6s ease-out forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes ce-xmas-sparkle-float {
+  0% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+    opacity: 0.95;
+  }
+  100% {
+    transform: translate(var(--ce-sparkle-tx, 0), var(--ce-sparkle-ty, -28px))
+      scale(0) rotate(14deg);
+    opacity: 0;
+  }
+}
+
+/* --- 5.3 Gentle content reveal: landing-page modules and the journey ---
+   `.ce-xmas-reveal-ready` is added by script only (no-JS keeps content visible);
+   the observer swaps it for `.ce-xmas-revealed` once per target. Opacity and
+   translate only — no height, margin or geometry animation. */
+.ce-xmas-reveal-ready {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+.ce-xmas-revealed {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+/* --- 5.4 Shared-star journey pulse: one-time glow when the journey first ---
+   --- becomes visible; glow only, no transform, so it cannot fight the           ---
+   --- user-controlled star travel between the two skies.                        --- */
+.ce-christmas-journey__star-svg.ce-xmas-journey-star--pulse .ce-xmas-star__body {
+  animation: ce-xmas-journey-star-pulse 1s ease-out 1;
+}
+
+@keyframes ce-xmas-journey-star-pulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 6px rgba(255, 236, 180, 0.55));
+  }
+  50% {
+    filter: drop-shadow(0 0 20px rgba(232, 194, 115, 1));
+  }
+}
+
+/* --- 5.5 Reduced motion: suppress all non-essential motion, keep content --- */
+@media (prefers-reduced-motion: reduce) {
+  body.ce-package-christmas
+    .ce-xmas-welcome__dialog.is-welcome-open
+    .ce-xmas-star__body {
+    animation: none !important;
+  }
+  .ce-xmas-sparkle {
+    animation: none !important;
+    display: none !important;
+  }
+  .ce-xmas-reveal-ready {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .ce-xmas-revealed {
+    transition: none !important;
+  }
+  .ce-christmas-journey__star-svg.ce-xmas-journey-star--pulse
+    .ce-xmas-star__body {
+    animation: none !important;
+  }
+}

@@ -41,6 +41,7 @@ TEST_FILES = (
     {"path": os.path.join("tests", "node", "commemorative-ambient.test.js"), "min_cases": 11},
     {"path": os.path.join("tests", "node", "christmas-journey.test.js"), "min_cases": 8},
     {"path": os.path.join("tests", "node", "christmas-welcome.test.js"), "min_cases": 19},
+    {"path": os.path.join("tests", "node", "christmas-micro-animations.test.js"), "min_cases": 14},
 )
 
 PASS_RE = re.compile(r"^(?:# |ℹ )pass (\d+)$", re.M)

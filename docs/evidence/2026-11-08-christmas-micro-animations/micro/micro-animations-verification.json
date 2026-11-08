@@ -1,0 +1,6 @@
+{
+  "base_url": "http://localhost:8080",
+  "failures": [],
+  "preview_url_shape": "http://localhost:8080/?conexao_preview=\u2026",
+  "passed": true
+}

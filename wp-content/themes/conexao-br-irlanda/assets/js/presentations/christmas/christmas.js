@@ -856,6 +856,310 @@
 		});
 	}
 
+
+/* -------------------------------------------------------------------------- */
+/* Micro-animations: welcome star twinkle (CSS), selected CTA sparkle, gentle */
+/* content reveal and the shared-star journey pulse. Small, one-shot, bounded */
+/* and scoped to the Christmas package markup. The welcome twinkle needs no   */
+/* JavaScript: it is driven by the `.is-welcome-open` class `open()` already   */
+/* adds. The rest is orchestrated here with one-shot timers and an observer.  */
+/* -------------------------------------------------------------------------- */
+
+var CTA_SELECTOR = '.ce-christmas-hero__cta, .ce-christmas-closing__cta';
+var SPARKLE_CLASS = 'ce-xmas-sparkle';
+var SPARKLE_LAYER_CLASS = 'ce-xmas-sparkle-layer';
+var MAX_SPARKLES = 6;
+var SPARKLE_MS = 600;
+var BUTTON_COOLDOWN_MS = 1000;
+var MICRO_CLAIMED = 'data-ce-micro-animations-claimed';
+
+/**
+ * The shared reduced-motion query for this package's micro-animations.
+ * Guarded: returns false when the browser or frame lacks `matchMedia`.
+ */
+function prefersReducedMotion(view) {
+	var w = view || win;
+	return !!(w && typeof w.matchMedia === 'function' && w.matchMedia('(prefers-reduced-motion: reduce)').matches);
+}
+
+/**
+ * A one-shot sparkle burst near an activated Christmas CTA.
+ *
+ * Never prevents default, never stops propagation, never delays navigation.
+ * Keyboard activation (Enter/Space) fires a normal `click`, so it receives the
+ * same feedback without pointer coordinates. Particles are decorative,
+ * `aria-hidden`, capped and removed after one cycle.
+ */
+function createCtaSparkle(doc, view) {
+	var attached = false;
+	var layer = null;
+	var active = 0;
+	var recent = [];
+
+	function ensureLayer() {
+		if (layer) {
+			return layer;
+		}
+		var el = doc.createElement('div');
+		el.className = SPARKLE_LAYER_CLASS;
+		el.setAttribute('aria-hidden', 'true');
+		el.style.position = 'fixed';
+		el.style.top = '0';
+		el.style.left = '0';
+		el.style.right = '0';
+		el.style.bottom = '0';
+		el.style.pointerEvents = 'none';
+		el.style.zIndex = '250';
+		doc.body.appendChild(el);
+		layer = el;
+		return layer;
+	}
+
+	function isCooling(button) {
+		var now = Date.now();
+		var kept = [];
+		var cooled = false;
+		for (var i = 0; i < recent.length; i++) {
+			var entry = recent[i];
+			if (now - entry.time < BUTTON_COOLDOWN_MS) {
+				kept.push(entry);
+				if (entry.el === button) {
+					cooled = true;
+				}
+			}
+		}
+		recent = kept;
+		return cooled;
+	}
+
+	function markRecent(button) {
+		recent.push({ el: button, time: Date.now() });
+	}
+
+	function burst(button) {
+		if (!doc || !view || !button) {
+			return;
+		}
+		var rect = typeof button.getBoundingClientRect === 'function' ? button.getBoundingClientRect() : null;
+		if (!rect) {
+			return;
+		}
+		if (doc.visibilityState === 'hidden') {
+			return;
+		}
+		var count = 3 + Math.floor(Math.random() * 3);
+		var startX = rect.left + rect.width / 2;
+		var startY = rect.bottom;
+		var root = ensureLayer();
+		for (var i = 0; i < count; i++) {
+			if (active >= MAX_SPARKLES) {
+				break;
+			}
+			active += 1;
+			let particle = doc.createElement('span');
+			particle.className = SPARKLE_CLASS;
+			particle.setAttribute('aria-hidden', 'true');
+			var spread = (rect.width / 2) * (Math.random() * 2 - 1);
+			var tx = (Math.random() * 2 - 1) * 30;
+			var ty = 20 + Math.random() * 14;
+			particle.style.left = (startX + spread) + 'px';
+			particle.style.top = startY + 'px';
+			particle.style.setProperty('--ce-sparkle-tx', tx + 'px');
+			particle.style.setProperty('--ce-sparkle-ty', ty + 'px');
+			root.appendChild(particle);
+			particle.addEventListener('animationend', function onParticleEnd() {
+				if (particle.parentNode) {
+					particle.parentNode.removeChild(particle);
+				}
+				active = Math.max(0, active - 1);
+			}, { once: true });
+		}
+	}
+
+	function handleClick(event) {
+		try {
+			if (!doc || !view) {
+				return;
+			}
+			if (prefersReducedMotion(view)) {
+				return;
+			}
+			if (event.button !== 0) {
+				return;
+			}
+			if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) {
+				return;
+			}
+			var target = event.target;
+			var button = target && typeof target.closest === 'function' ? target.closest(CTA_SELECTOR) : null;
+			if (!button) {
+				return;
+			}
+			if (isCooling(button)) {
+				return;
+			}
+			markRecent(button);
+			// Navigation continues normally: no preventDefault, no stopPropagation.
+			burst(button);
+		} catch (err) {
+			// Never let a decorative effect break an interaction.
+		}
+	}
+
+	return {
+		attach: function () {
+			if (attached) {
+				return;
+			}
+			attached = true;
+			if (doc && typeof doc.addEventListener === 'function') {
+				doc.addEventListener('click', handleClick, { passive: true });
+			}
+		},
+		detach: function () {
+			if (!attached || !doc || typeof doc.removeEventListener !== 'function') {
+				return;
+			}
+			attached = false;
+			doc.removeEventListener('click', handleClick, { passive: true });
+		}
+	};
+}
+
+
+	/**
+	 * Gentle reveal of Christmas landing-page content on first viewport entry.
+	 *
+	 * `.ce-xmas-reveal-ready` is added by script only: without JavaScript the
+	 * content stays fully visible. The observer swaps it for
+	 * `.ce-xmas-revealed` once per target, then stops watching. Already-visible
+	 * targets reveal immediately so nothing is left hidden waiting for the observer.
+	 * Reduced motion suppresses the animation and reveals content instantly.
+	 */
+	function createContentReveal(deps) {
+		var doc = deps.document || (win && win.document);
+		var view = deps.window || win;
+		var observer = null;
+
+		if (!doc || !view || typeof view.IntersectionObserver !== 'function') {
+			return null;
+		}
+		if (prefersReducedMotion(view)) {
+			return null;
+		}
+		if (!doc.querySelector('.ce-christmas-journey, .ce-module, .ce-christmas-closing')) {
+			return null;
+		}
+
+		var targets = toArray(doc.querySelectorAll('.ce-christmas-journey, .ce-christmas-closing, .ce-module'));
+		if (!targets.length) {
+			return null;
+		}
+
+		function isInViewport(el) {
+			var rect = typeof el.getBoundingClientRect === 'function' ? el.getBoundingClientRect() : null;
+			if (!rect) {
+				return false;
+			}
+			var vh = view.innerHeight || (doc.documentElement && doc.documentElement.clientHeight) || 0;
+			var vw = view.innerWidth || (doc.documentElement && doc.documentElement.clientWidth) || 0;
+			return rect.bottom > 0 && rect.top < vh && rect.right > 0 && rect.left < vw;
+		}
+
+		function onIntersect(entries) {
+			for (var i = 0; i < entries.length; i++) {
+				var entry = entries[i];
+				if (!entry.isIntersecting) {
+					continue;
+				}
+				var el = entry.target;
+				if (el.classList && el.classList.contains('ce-xmas-revealed')) {
+					continue;
+				}
+				if (el.classList) {
+					el.classList.remove('ce-xmas-reveal-ready');
+					el.classList.add('ce-xmas-revealed');
+				}
+				if (observer && typeof observer.unobserve === 'function') {
+					observer.unobserve(el);
+				}
+				if (el.classList && el.classList.contains('ce-christmas-journey')) {
+					pulseJourneyStar(el, doc, view);
+				}
+			}
+		}
+
+		observer = new view.IntersectionObserver(onIntersect, { threshold: 0.1 });
+
+		targets.forEach(function (el) {
+			if (el.classList && el.classList.contains('ce-xmas-revealed')) {
+				return;
+			}
+			if (isInViewport(el)) {
+				if (el.classList) {
+					el.classList.add('ce-xmas-revealed');
+				}
+				if (el.classList && el.classList.contains('ce-christmas-journey')) {
+					pulseJourneyStar(el, doc, view);
+				}
+			} else {
+				if (el.classList) {
+					el.classList.add('ce-xmas-reveal-ready');
+				}
+				observer.observe(el);
+			}
+		});
+
+		return {
+			disconnect: function () {
+				if (observer && typeof observer.disconnect === 'function') {
+					observer.disconnect();
+				}
+			}
+		};
+	}
+
+	/**
+	 * One-time glow pulse of the journey's shared star when it first becomes
+	 * visible. Glow only: no transform, so it cannot fight the user-controlled
+	 * star travel between the two skies. Removed after one cycle.
+	 */
+	function pulseJourneyStar(journey, doc, view) {
+		var star = journey && typeof journey.querySelector === 'function' ? journey.querySelector('.ce-christmas-journey__star-svg') : null;
+		if (!star || !star.classList || star.classList.contains('ce-xmas-journey-star--pulse')) {
+			return;
+		}
+		star.classList.add('ce-xmas-journey-star--pulse');
+		var starBody = typeof star.querySelector === 'function' ? star.querySelector('.ce-xmas-star__body') : null;
+		if (starBody && typeof starBody.addEventListener === 'function') {
+			starBody.addEventListener('animationend', function onPulseEnd() {
+				if (star && star.classList) {
+					star.classList.remove('ce-xmas-journey-star--pulse');
+				}
+			}, { once: true });
+		}
+	}
+
+	/**
+	 * Boot every Christmas micro-animation controller once per page.
+	 * Idempotent: a repeated boot adds no second listener or observer.
+	 */
+	function bootMicroAnimations(scope) {
+		var view = scope || win;
+		if (!view || !view.document) {
+			return;
+		}
+		var doc = view.document;
+		if (doc.documentElement && typeof doc.documentElement.setAttribute === 'function') {
+			if ('1' === doc.documentElement.getAttribute(MICRO_CLAIMED)) {
+				return;
+			}
+			doc.documentElement.setAttribute(MICRO_CLAIMED, '1');
+		}
+		createCtaSparkle(doc, view).attach();
+		createContentReveal({ document: doc, window: view });
+	}
+
 	/**
 	 * Enhance every homepage welcome rendered on this page.
 	 *
@@ -927,6 +1231,7 @@
 			bootWelcome();
 			bootJourneys();
 			bootAmbient();
+			bootMicroAnimations();
 		}
 
 		if ('loading' === win.document.readyState) {
@@ -944,7 +1249,12 @@
 		bootJourneys: bootJourneys,
 		bootWelcome: bootWelcome,
 		bootAmbient: bootAmbient,
+		bootMicroAnimations: bootMicroAnimations,
 		boot: boot,
+		createCtaSparkle: createCtaSparkle,
+		createContentReveal: createContentReveal,
+		pulseJourneyStar: pulseJourneyStar,
+		prefersReducedMotion: prefersReducedMotion,
 		openWelcome: function () {
 			return welcome ? welcome.open() : false;
 		},
