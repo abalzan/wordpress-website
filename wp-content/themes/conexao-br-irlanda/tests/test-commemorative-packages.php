@@ -34,7 +34,7 @@ foreach ( $packages as $slug => $package ) {
 
 test_section( 'Implemented packages carry the full §7.12 brief' );
 
-foreach ( array( 'halloween', 'christmas' ) as $slug ) {
+foreach ( array( 'halloween', 'christmas', 'new_year' ) as $slug ) {
 	$package = $packages[ $slug ];
 
 	assert_equals( 4, count( $package['tokens'] ), $slug . ': the four public tokens are present' );
@@ -59,7 +59,7 @@ foreach ( array( 'halloween', 'christmas' ) as $slug ) {
 
 test_section( 'Registry tokens agree with the package stylesheet' );
 
-foreach ( array( 'halloween', 'christmas' ) as $slug ) {
+foreach ( array( 'halloween', 'christmas', 'new_year' ) as $slug ) {
 	$package = $packages[ $slug ];
 	$css     = (string) file_get_contents( dirname( __DIR__ ) . '/assets/css/presentations/' . $slug . '.css' );
 

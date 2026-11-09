@@ -87,10 +87,13 @@ assert_true( isset( $packages['halloween'], $packages['christmas'] ), 'halloween
 assert_equals( 'implemented', $packages['halloween']['status'], 'halloween is an implemented package' );
 assert_equals( 'implemented', $packages['christmas']['status'], 'christmas is an implemented package' );
 
-foreach ( array( 'new_year', 'st_patricks_day', 'valentines_day', 'easter' ) as $planned ) {
+foreach ( array( 'st_patricks_day', 'valentines_day', 'easter' ) as $planned ) {
 	assert_equals( 'planned', $packages[ $planned ]['status'], $planned . ' is documented as a planned identity' );
 	assert_equals( 0, count( $packages[ $planned ]['placements'] ), $planned . ' registers no placement yet' );
 }
+
+assert_equals( 'implemented', $packages['new_year']['status'], 'new_year is an implemented package' );
+assert_true( count( $packages['new_year']['placements'] ) >= 2, 'new_year declares at least two placements' );
 
 
 test_section( 'No active event: no plan, no markup, no assets' );

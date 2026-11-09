@@ -98,14 +98,14 @@ conexao_commemorative_enqueue_assets();
 
 $leaked = array();
 
-foreach ( array( 'conexao-commemorative', 'conexao-ce-css-presentations-halloween', 'conexao-ce-css-presentations-christmas' ) as $handle ) {
+foreach ( array( 'conexao-commemorative', 'conexao-ce-css-presentations-halloween', 'conexao-ce-css-presentations-christmas', 'conexao-ce-css-presentations-new-year' ) as $handle ) {
 	if ( wp_style_is( $handle, 'enqueued' ) ) {
 		$leaked[] = 'style:' . $handle;
 		wp_dequeue_style( $handle );
 	}
 }
 
-foreach ( array( 'conexao-commemorative', 'conexao-ce-js-presentations-halloween-halloween', 'conexao-ce-js-presentations-christmas-christmas' ) as $handle ) {
+foreach ( array( 'conexao-commemorative', 'conexao-ce-js-presentations-halloween-halloween', 'conexao-ce-js-presentations-christmas-christmas', 'conexao-ce-js-presentations-new-year-new-year' ) as $handle ) {
 	if ( wp_script_is( $handle, 'enqueued' ) ) {
 		$leaked[] = 'script:' . $handle;
 		wp_dequeue_script( $handle );

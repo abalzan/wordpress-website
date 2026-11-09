@@ -342,13 +342,78 @@ function conexao_commemorative_package_definitions() {
 		),
 		'new_year'        => array(
 			'label'      => __( 'Experiência de Ano Novo', 'conexao-br-irlanda' ),
-			'status'     => 'planned',
+			'status'     => 'implemented',
 			'design'     => array(
-				'motif'  => 'four_point_sparkle',
+				'motif'  => 'fireworks_over_shared_sky',
 				'energy' => 'playful',
-				'tokens' => array(),
+				'tokens' => array(
+					'primary'   => '#1b2447',
+					'secondary' => '#b34a37',
+					'accent'    => '#d9a441',
+					'surface'   => '#fdf7ee',
+				),
+				'motion' => array(
+					'duration_ms' => 700,
+					'easing'      => 'cubic-bezier(0.22, 0.61, 0.36, 1)',
+					'entry'       => 'one user-initiated 700 ms welcome dialog opening at the top of the viewport',
+					'exit'        => 'one 700 ms return to the closed state; never a loop, never autoplay',
+				),
+				'voice'  => array(
+					'tone'       => 'warm, inclusive and celebratory; it acknowledges both cultures equally',
+					'formality'  => 'informal "você" (PT) / direct "you" (EN)',
+					'example_pt' => array(
+						'headline' => 'Dois países, um novo começo',
+						'cta'      => 'Ver a página de Ano Novo',
+					),
+					'example_en' => array(
+						'headline' => 'Two countries, one new beginning',
+						'cta'      => 'See the New Year page',
+					),
+				),
+				'do_not' => array(
+					'Never present either country as culturally uniform.',
+					'Never place copy over the artwork: every heading, sentence and button is real localised HTML.',
+					'Never reuse the Christmas motif, palette or motion language.',
+					'No countdown timers and no auto-playing music.',
+				),
 			),
-			'placements' => array(),
+			'assets'     => array(
+				'base_path'   => 'assets/images/presentations/new_year/',
+				'decorations' => array(),
+			),
+			'placements' => array(
+				'homepage_hero'     => array(
+					'template' => 'template-parts/commemorative/homepage-hero',
+					'content'  => 'template-parts/commemorative/new_year/hero',
+					'styles'   => array( 'assets/css/presentations/new_year.css' ),
+					'scripts'  => array( 'assets/js/presentations/new_year/new_year.js' ),
+					'energy'   => 'playful',
+				),
+				'site_wide_ambient' => array(
+					'template' => 'template-parts/commemorative/ambient-layer',
+					'content'  => 'template-parts/commemorative/new_year/ambient',
+					'styles'   => array( 'assets/css/presentations/new_year.css' ),
+					'scripts'  => array( 'assets/js/presentations/new_year/new_year.js' ),
+					'energy'   => 'playful',
+					'options'  => array(
+						'max_simultaneous' => 1,
+						'session_cap'      => 3,
+					),
+				),
+				'landing_page'      => array(
+					'template' => 'template-parts/commemorative/landing-page',
+					'content'  => 'template-parts/commemorative/new_year/landing',
+					'styles'   => array( 'assets/css/presentations/new_year.css' ),
+					'scripts'  => array( 'assets/js/presentations/new_year/new_year.js' ),
+					'energy'   => 'playful',
+					'options'  => array(
+						'page_slugs' => array(
+							'pt' => 'ano-novo',
+							'en' => 'new-year',
+						),
+					),
+				),
+			),
 		),
 		'st_patricks_day' => array(
 			'label'      => __( 'Experiência do Dia de São Patrício', 'conexao-br-irlanda' ),
