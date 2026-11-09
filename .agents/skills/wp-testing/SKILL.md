@@ -48,8 +48,15 @@ for guard review and `wp-frontend-perf` for caching work.
 
 ## Preconditions
 
-- The local stack is up (`docker compose up -d`) for the in-process and
-  acceptance layers. The **script-contract layer needs no stack** and always runs.
+- Inspect the current stack state first (`docker compose ps`; setup documented
+  in `docs/development.md`) and reuse an already-running local environment.
+  The in-process and acceptance layers need the local stack; the
+  **script-contract layer needs no stack** and always runs. Do not automatically
+  start, recreate or rebuild containers, reset volumes, seed data or mint an
+  administrator session — make those side effects deliberate. If the needed
+  environment is unavailable, report the exact blocker and fall back to
+  non-mutating checks; ask before any material environment, database or session
+  change.
 - `CONEXAO_TEST_BASE_URL` points at the local site. A production host is
   **refused** by the runner; never override it with one.
 - You have the **before** result for whatever you are about to change. A
@@ -109,6 +116,9 @@ for guard review and `wp-frontend-perf` for caching work.
    the failing-suite list before vs after, the numeric totals before vs after, and
    an explicit statement of which failures are pre-existing.
 10. **Report honestly.** Paste the real numbers. A verifier that could not run is
+    reported as blocked/not-tested with the reason, never as passing. State
+    pre-existing failures separately from your own, and never write "should work"
+    for something that did not run.
 
 ## Guardrails
 
@@ -190,3 +200,5 @@ verifiers that could not run. Use `docs/templates/report.md`.
 - [ ] Logs and the comparison are under `docs/evidence/<date>-<stage>/`.
 - [ ] Blocked and not-tested verifiers are named explicitly, not reported as pass.
 
+
+_Last verified: 2026-11-09 by the agent skills review and hardening_

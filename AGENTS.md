@@ -139,23 +139,24 @@ Pick the row, read the skill, then read only the canonical documents it names.
 - **Never touch the Flutter/mobile repository.**
 
 ## Running things
-
+Inspect the current stack state first (`docker compose ps`; setup documented in
+`docs/development.md`) and reuse an already-running local environment. Do not
+automatically start, recreate or rebuild containers, reset volumes, seed data
+or mint an administrator session — make those side effects deliberate. The
+script-contract layer needs no stack and always runs; the in-process and
+acceptance layers need the local site.
 ```bash
-docker compose up -d                       # start the local site (see docs/development.md)
 ./scripts/run-tests.sh                     # ALL tests, one aggregate exit code
-./scripts/run-tests.sh --scripts           # script-contract gates only
+./scripts/run-tests.sh --scripts           # script-contract gates only (no stack)
+./scripts/run-tests.sh --acceptance        # HTTP acceptance only (needs local stack)
 ./scripts/lint.sh                          # PHP syntax + PHPCS + PHPStan
 php scripts/generate-registry-docs.php --check   # registry drift gate (0 writes)
 python3 scripts/verify-permanent-gates.py # Stage L permanent invariants -> gate.json
 ./scripts/verify-release.sh                # whole release workflow, proven locally
 ```
-
-The **permanent invariant gates** (Stage L: taxonomy policy, translation
-completeness, language-scoped caching, legacy redirect precedence,
-documentation drift, i18n freshness) run inside `./scripts/run-tests.sh` — they
-are discovered by convention, so there is no second runner. They fail closed.
-See [`docs/testing.md`](docs/testing.md) §"The permanent invariant gates" for
-what each gate proves, how to read a red gate, and where `gate.json` lives.
+The permanent invariant gates (Stage L) run inside `./scripts/run-tests.sh` —
+discovered by convention, no second runner, fail closed. See
+[`docs/testing.md`](docs/testing.md) §"The permanent invariant gates".
 
 Full command reference: [`docs/testing.md`](docs/testing.md) and
 [`scripts/README.md`](scripts/README.md).
@@ -245,4 +246,4 @@ _Last verified: 2026-09-26 by Stage K — Agent Skills + Templates_
 
 _Last verified: 2026-09-30 by the agent skills / documentation migration_
 
-_Last verified: 2026-11-07 by the agent, skills and documentation audit_
+_Last verified: 2026-11-09 by the agent skills review and hardening_

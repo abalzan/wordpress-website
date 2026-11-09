@@ -90,8 +90,9 @@ before shipping.
    follows the existing `wp-content/plugins/conexao-admin-ux/includes/class-list.php` conventions. Notices use
    `add_settings_error()`-style output rather than raw HTML.
 8. **Notices and result reporting.** A completed write reports counts and the
-   numeric gate. A blocked or dry-run-only run says so visibly and exits
-   non-zero. Never claim success for a partial result.
+   numeric gate. A blocked or dry-run-only run says so visibly and is reported
+   as blocked/not-applied rather than as success. Never claim success for a
+   partial result.
 9. **Test it.** Add an in-process suite under the owning plugin's `tests/`
    (see `wp-write-in-process-test`) and, for a user-visible screen change, an
    admin UX regression run. Update `docs/plugins/conexao-admin-ux.md`.
@@ -135,7 +136,7 @@ before shipping.
   defect, not a cosmetic issue.
 - *A page load writes.* Locate the write outside an explicit action branch. A
   refresh must never be a mutation.
-- *The dry run performed writes.* The preview is not a preview. Stop, re-inventor,
+- *The dry run performed writes.* The preview is not a preview. Stop, re-inventory,
   and re-plan before showing anything to a maintainer.
 - *A partial result is reported as success.* Fix the result reporting: counts, the
   numeric gate, and a non-zero exit for a blocked or preview-only run.
@@ -159,7 +160,10 @@ that no production write occurred. Machine evidence goes to
 - [ ] GET/page load performs no write.
 - [ ] A dry-run preview precedes every write; the write is a separate action.
 - [ ] Output is escaped and input sanitised; notices are the shared mechanism.
-- [ ] The result reports counts and the numeric gate; blocked runs exit non-zero.
+- [ ] The result reports counts and the numeric gate; blocked runs are reported
+      as blocked/not-applied, never as verified.
 - [ ] A suite exists, is discovered by convention and passes.
 - [ ] The plugin doc is updated; new strings use the plugin text domain.
 - [ ] No production write occurred; limitations are stated honestly.
+
+_Last verified: 2026-11-09 by the agent skills review and hardening_

@@ -95,7 +95,8 @@ here, but this skill never substitutes for `wp-add-content-type`,
    `docs/reports/site/` for repository-engineering stages) and the machine
    evidence in `docs/evidence/<date>-<stage>/`. **No root-level report or
    evidence file is ever added.**
-6. **Plan multi-file work first** with `docs/templates/plan.md`.
+6. **Plan multi-file work first** by copying `docs/templates/plan.md` to
+   `docs/plans/<date>-<topic>.md` and filling in the copy.
 7. **End every document with its `_Last verified: YYYY-MM-DD by <area>_` line**,
    updated to today and the area that verified it.
 8. **Check for drift before finishing.** `docs/README.md` links every document;
@@ -181,3 +182,5 @@ written for this task goes to `docs/reports/` and its machine output to
       the CI governance gate.
 - [ ] The registry drift gate and the script-contract gate pass.
 - [ ] The report states limitations honestly, with no "fully verified" claim.
+
+_Last verified: 2026-11-09 by the agent skills review and hardening_

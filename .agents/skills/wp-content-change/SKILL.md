@@ -55,8 +55,13 @@ which has additional invariants (PT immutability, B1/B2, completeness gate).
 
 ## Preconditions
 
-- A written plan exists (`docs/templates/plan.md`) with the content/data impact
-  section answered, including the portable-identifier strategy.
+- A written plan exists at `docs/plans/<date>-<topic>.md`, copied from
+  `docs/templates/plan.md`, with the content/data impact section answered,
+  including the portable-identifier strategy.
+- The dataset can be inventoried read-only before anything is written.
+- The change is scoped to a declared set of records. "All events" is not a
+  scope; a filter with printed counts is.
+- A rollback has been thought through before the write, not after.
 
 ## Steps
 
@@ -177,9 +182,4 @@ what it does not cover, and an explicit production-actions statement.
 - [ ] No production write occurred without explicit authorisation.
 - [ ] Permanent documentation reflects the change; no root-level report added.
 
-- Never touch the Flutter/mobile repository from this task.
-
-- The dataset can be **inventoried** read-only before anything is written.
-- The change is scoped to a declared set of records. "All events" is not a scope;
-  a filter with printed counts is.
-- A rollback has been thought through **before** the write, not after.
+_Last verified: 2026-11-09 by the agent skills review and hardening_

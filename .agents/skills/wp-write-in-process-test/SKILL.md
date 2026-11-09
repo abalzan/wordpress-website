@@ -47,8 +47,12 @@ feature work ships **one in-process suite plus one HTTP matrix addition**.
 
 ## Preconditions
 
-- The local stack is up (`docker compose up -d`) — this layer needs a real
-  WordPress.
+- Inspect the current stack state first (`docker compose ps`; setup documented
+  in `docs/development.md`) and reuse an already-running local environment —
+  this layer needs a real WordPress. Do not automatically start, recreate or
+  rebuild containers, reset volumes, seed data or mint an administrator
+  session; make those side effects deliberate. If the environment is
+  unavailable, report the blocker and fall back to non-mutating checks.
 - You know what the change does, so you can name the assertion that would fail if
   it were reverted.
 - Any data the suite depends on has a declared prerequisite and is seeded.
@@ -170,3 +174,5 @@ output goes to `docs/evidence/<date>-<stage>/`.
 - [ ] Guards are proven negatively.
 - [ ] `docs/testing.md` reflects any new prerequisite or layer inventory.
 - [ ] The real pass/fail numbers appear in the report.
+
+_Last verified: 2026-11-09 by the agent skills review and hardening_

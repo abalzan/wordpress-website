@@ -60,14 +60,16 @@ Every active skill is an executable workflow with these sections, in this order:
 `Verification` · `Failure handling` · `Evidence and reporting` ·
 `Definition of done`
 
-The six sections `When to use`, `Required reading`, `Steps`, `Guardrails`,
-`Verification` and `Definition of done` are required by
-`docs/engineering-standard.md` §13.1 and are enforced, in order, by
-`tests/scripts/verify-agent-governance.py` — together with the index-drift,
-dangling-reference and single-source-of-truth checks. Run it directly with:
+All twelve sections are required by `docs/engineering-standard.md` §13.1 and
+are enforced, in order, by `tests/scripts/verify-agent-governance.py` —
+together with the index-drift, dangling-reference, single-source-of-truth,
+`_Last verified_` marker and production-safety checks. Run it directly with:
 
 ```bash
 python3 tests/scripts/verify-agent-governance.py
 ```
 
-_Last verified: 2026-11-08 by the commemorative-event skill addition_
+Every active skill ends with its `_Last verified: YYYY-MM-DD by <area>_`
+line (engineering standard §9.2).
+
+_Last verified: 2026-11-09 by the agent skills review and hardening_

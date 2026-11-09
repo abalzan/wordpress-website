@@ -388,3 +388,5 @@ registry).
 - [ ] Documentation/report created and indexed; task plan (when required) and report created from the canonical templates, not in place of them.
 - [ ] Production/release approval status recorded; no production write occurred.
 - [ ] Git state captured before and after; no destructive operations; no commit/push/deploy without authorization.
+
+_Last verified: 2026-11-09 by the agent skills review and hardening_

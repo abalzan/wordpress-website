@@ -94,6 +94,7 @@ REQUIRED_SKILLS = (
     "wp-frontend-perf",
     "wp-translation-rollout",
     "wp-plugin-registry",
+    "wp-commemorative-event",
     # Orientation, content writes, test execution and live-site operations.
     # These four own the workflows the ten above assume but none of them
     # defined: orient/plan, change content, run the contract, operate
@@ -105,7 +106,7 @@ REQUIRED_SKILLS = (
 )
 
 # The skill index. It must list every ACTIVE skill and nothing else, so an
-# agent can answer "which skill applies?" without reading fourteen files.
+# agent can answer "which skill applies?" without reading fifteen files.
 SKILL_INDEX = os.path.join(".agents", "skills", "README.md")
 
 # The full standard skill format (engineering standard §13.1). The six
@@ -256,6 +257,10 @@ def main() -> int:
         )
 
     # -- 4. Every active skill has the six required sections, in order ------
+    # The six REQUIRED_SECTIONS are the governed core (§13.1); they are checked
+    # for presence first because a missing core section is a hard defect.
+    # The full-format ordering check below then applies to all twelve
+    # STANDARD_SECTIONS, so a skill's sections appear in the prescribed order.
     section_report: list[str] = []
     for name in skills:
         skill_file = os.path.join(SKILLS_DIR, name, "SKILL.md")
@@ -279,6 +284,27 @@ def main() -> int:
         check(
             body.lstrip().startswith("# "),
             f".agents/skills/{name}/SKILL.md must start with a '# <Skill Name>' title",
+        )
+        # Full-format contract: all twelve sections, in the prescribed order.
+        full_missing = [s for s in STANDARD_SECTIONS if s not in found]
+        if full_missing:
+            check(
+                False,
+                f".agents/skills/{name}/SKILL.md is missing standard section(s): "
+                f"{', '.join(full_missing)}; a skill is an executable workflow, "
+                f"not a summary",
+            )
+        full_positions = [found.index(s) for s in STANDARD_SECTIONS if s in found]
+        check(
+            full_positions == sorted(full_positions),
+            f".agents/skills/{name}/SKILL.md has the standard sections out of "
+            f"order: {' -> '.join(found)}",
+        )
+        # §9.2: every document ends with a _Last verified_ marker.
+        check(
+            LAST_VERIFIED_RE.search(body) is not None,
+            f".agents/skills/{name}/SKILL.md does not carry its _Last verified_ "
+            f"line (engineering standard §9.2)",
         )
         section_report.append(f"    {name}: {' -> '.join(found)}")
     note("skill sections:\n" + "\n".join(section_report))
@@ -705,27 +731,15 @@ def main() -> int:
         "this gate is not named verify-*.py, so scripts/run-tests.sh will not "
         "discover it",
     )
-    # -- 16. Every active skill uses the full standard skill format ----------
-    # The six REQUIRED_SECTIONS are the governed core; STANDARD_SECTIONS is the
-    # format a skill must follow so it states its purpose, its boundaries, its
-    # authoritative inputs, and what to do when a step fails. A skill that is
-    # only a summary is not an executable workflow, which is the whole point.
+    # -- 16. No duplicated section headings --------------------------------
+    # Section 4 already enforces the full twelve-section order and presence;
+    # this check catches duplicated headings, which mean one section silently
+    # lost its body — a real editing defect, not a cosmetic one.
     for name in skills:
         skill_file = os.path.join(SKILLS_DIR, name, "SKILL.md")
         if not os.path.isfile(skill_file):
             continue
         found = sections_of(read(skill_file))
-        missing = [s for s in STANDARD_SECTIONS if s not in found]
-        check(
-            not missing,
-            f".agents/skills/{name}/SKILL.md is missing standard section(s): "
-            f"{', '.join(missing)}; a skill is an executable workflow, not a "
-            f"summary, and must state its purpose, boundaries, authoritative "
-            f"inputs and failure handling",
-        )
-        # A duplicated heading means two sections collided during an edit and
-        # one of them silently lost its body. That is a real editing defect, not
-        # a cosmetic one.
         duplicates = sorted({s for s in found if found.count(s) > 1})
         check(
             not duplicates,

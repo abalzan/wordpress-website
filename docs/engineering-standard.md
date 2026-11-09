@@ -783,6 +783,7 @@ list every active skill.
 | `wp-add-content-type` | data-model registration, taxonomy/sitemap decision, docs, test |
 | `wp-add-admin-screen` | capability, nonce, list table, dry-run preview, notices, escaping |
 | `wp-content-change` | the §5.2 six-step contract, snapshots, idempotence, numeric gate, rollback |
+| `wp-commemorative-event` | engine/theme ownership, event/package/placement separation, editorial brief/calendar/watchlist, no new engine or route |
 | `wp-translation-rollout` | §6.2 procedure, shared engine, invariant tests, routing doc update |
 | `wp-testing` | what to run, in what order, failure classification, regression comparison, permanent gates |
 | `wp-write-in-process-test` | bootstrap + assertions + naming + prerequisites |
@@ -871,4 +872,4 @@ _Last verified: 2026-09-25 by the WordPress engineering standardisation audit (p
 
 _Last verified: 2026-09-26 by Stage I — Scripts Standardisation_
 _Last verified: 2026-09-30 by the agent skills / documentation migration_
-_Last verified: 2026-11-07 by the agent, skills and documentation audit (§9.1 records the existing `docs/plans/` location; the plan template copy destination now matches it)_
+_Last verified: 2026-11-09 by the agent skills review and hardening (§13.1 skills table, §9.2 last-verified rule)_

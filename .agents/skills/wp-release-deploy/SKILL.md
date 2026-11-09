@@ -193,3 +193,5 @@ what rollback does **not** cover. The build's per-step output belongs in
 - [ ] Versions were bumped in component headers and logged in `docs/releases.md`.
 - [ ] A rollback note exists and states what rollback does not cover.
 - [ ] No build artifact, secret or localhost URL is committed.
+
+_Last verified: 2026-11-09 by the agent skills review and hardening_
