@@ -1,7 +1,7 @@
 {
   "stage": "L — permanent invariant gates",
-  "generated_at": "2026-11-07T12:06:51Z",
-  "repository_sha": "af91ed86ec03f798cec910a7268a6bea778f4f31",
+  "generated_at": "2026-11-09T15:15:06Z",
+  "repository_sha": "9eec1ece2e7035b90687c9172e256528a32d4030",
   "status": "fail",
   "gates": {
     "taxonomy_policy": {
@@ -112,7 +112,7 @@
         "  PASS: conexao_tag: every translated term pair is linked in BOTH directions",
         "  PASS: the gate inspected a real shared-term population",
         "",
-        "  inspected: 313 shared terms, 22 translated term pairs",
+        "  inspected: 370 shared terms, 22 translated term pairs",
         "",
         "18 passed, 0 failed",
         "GATE-RESULT {\"gate\":\"taxonomy_policy\",\"status\":\"pass\",\"passed\":18,\"failed\":0,\"violations\":0,\"pre_existing\":0,\"new\":0,\"prerequisites\":[\"polylang\",\"conexao_county + conexao_town + conexao_category terms\"],\"allowlisted\":[],\"allowlisted_count\":0,\"details\":[{\"key\":\"taxonomy:conexao_county:suffixed_duplicate_terms\",\"count\":0,\"label\":\"conexao_county: no per-language suffixed duplicate terms\",\"detail\":{\"slugs\":[]}},{\"key\":\"taxonomy:conexao_county:duplicate_slugs\",\"count\":0,\"label\":\"conexao_county: no duplicate term slugs\",\"detail\":{\"slugs\":[]}},{\"key\":\"taxonomy:conexao_county:language_tagged_terms\",\"count\":0,\"label\":\"conexao_county: every shared term is language-neutral (no language tag)\",\"detail\":{\"sample\":[]}},{\"key\":\"taxonomy:conexao_town:suffixed_duplicate_terms\",\"count\":0,\"label\":\"conexao_town: no per-language suffixed duplicate terms\",\"detail\":{\"slugs\":[]}},{\"key\":\"taxonomy:conexao_town:duplicate_slugs\",\"count\":0,\"label\":\"conexao_town: no duplicate term slugs\",\"detail\":{\"slugs\":[]}},{\"key\":\"taxonomy:conexao_town:language_tagged_terms\",\"count\":0,\"label\":\"conexao_town: every shared term is language-neutral (no language tag)\",\"detail\":{\"sample\":[]}},{\"key\":\"taxonomy:conexao_category:en_terms_without_pt_link\",\"count\":0,\"label\":\"conexao_category: every EN term has a PT master\",\"detail\":{\"slugs\":[]}},{\"key\":\"taxonomy:conexao_category:missing_reverse_link\",\"count\":0,\"label\":\"conexao_category: every translated term pair is linked in BOTH directions\",\"detail\":{\"pairs\":[]}},{\"key\":\"taxonomy:conexao_tag:en_terms_without_pt_link\",\"count\":0,\"label\":\"conexao_tag: every EN term has a PT master\",\"detail\":{\"slugs\":[]}},{\"key\":\"taxonomy:conexao_tag:missing_reverse_link\",\"count\":0,\"label\":\"conexao_tag: every translated term pair is linked in BOTH directions\",\"detail\":{\"pairs\":[]}}]}"
@@ -130,7 +130,7 @@
       "violations": 3,
       "pre_existing": 1,
       "new": 2,
-      "allowlisted": 979,
+      "allowlisted": 3073,
       "prerequisites": [
         "polylang",
         "published PT content"
@@ -160,9 +160,9 @@
           "count": 0,
           "label": "event: eligible public PT records missing a linked EN translation = 0",
           "detail": {
-            "eligible": 662,
+            "eligible": 2756,
             "translated": 1,
-            "allowlisted": 661,
+            "allowlisted": 2755,
             "sample": []
           }
         },
@@ -331,9 +331,9 @@
         "  violations: 3 (1 pre-existing, 2 new)",
         "    - post_type:guide:missing_en: 1 (guide: eligible public PT records missing a linked EN translation = 0)",
         "    - post_type:page:malformed_relationships: 2 (page: every translation relationship is a bidirectional link to a PT master)",
-        "  allowlisted: 979 (by documented policy)",
-        "    first 20: course_provider:microcreds, course_provider:apprenticeship-ie, course_provider:etbi, course_provider:courses-ie, course_provider:local-enterprise-office, course_provider:solas-ecollege, course_provider:skillnet-ireland, course_provider:springboard-plus, course_provider:qualifax, course_provider:fetch-courses, event:test-event-for-galway-27, event:test-event-for-laois-27, event:test-event-for-wicklow-27, event:test-event-for-carlow-27, event:test-event-for-cavan-27, event:test-event-for-clare-27, event:test-event-for-cork-27, event:test-event-for-dublin-27, event:unrelated-cache-test-27, event:test-event-for-dublin-26",
-        "GATE-RESULT {\"gate\":\"translation_completeness\",\"status\":\"fail\",\"passed\":21,\"failed\":2,\"violations\":3,\"pre_existing\":1,\"new\":2,\"prerequisites\":[\"polylang\",\"published PT content\"],\"allowlisted\":[\"course_provider:microcreds\",\"course_provider:apprenticeship-ie\",\"course_provider:etbi\",\"course_provider:courses-ie\",\"course_provider:local-enterprise-office\",\"course_provider:solas-ecollege\",\"course_provider:skillnet-ireland\",\"course_provider:springboard-plus\",\"course_provider:qualifax\",\"course_provider:fetch-courses\",\"event:test-event-for-galway-27\",\"event:test-event-for-laois-27\",\"event:test-event-for-wicklow-27\",\"event:test-event-for-carlow-27\",\"event:test-event-for-cavan-27\",\"event:test-event-for-clare-27\",\"event:test-event-for-cork-27\",\"event:test-event-for-dublin-27\",\"event:unrelated-cache-test-27\",\"event:test-event-for-dublin-26\"],\"allowlisted_count\":979,\"details\":[{\"key\":\"post_type:course_provider:missing_en\",\"count\":0,\"label\":\"course_provider: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":10,\"translated\":0,\"allowlisted\":10,\"sample\":[]}},{\"key\":\"post_type:course_provider:malformed_relationships\",\"count\":0,\"label\":\"course_provider: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:event:missing_en\",\"count\":0,\"label\":\"event: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":662,\"translated\":1,\"allowlisted\":661,\"sample\":[]}},{\"key\":\"post_type:event:malformed_relationships\",\"count\":0,\"label\":\"event: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:guide:empty_population\",\"count\":0,\"label\":\"guide: the B1 population has enough PT records for the invariant to be non-vacuous (eligible PT >= 11)\",\"detail\":{\"eligible\":55,\"floor\":11}},{\"key\":\"post_type:guide:missing_en\",\"count\":1,\"label\":\"guide: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":55,\"translated\":54,\"allowlisted\":0,\"sample\":[\"carteira-motorista-brasileiros\"]}},{\"key\":\"post_type:guide:malformed_relationships\",\"count\":0,\"label\":\"guide: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:job:missing_en\",\"count\":0,\"label\":\"job: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":2,\"translated\":2,\"allowlisted\":0,\"sample\":[]}},{\"key\":\"post_type:job:malformed_relationships\",\"count\":0,\"label\":\"job: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:leisure:missing_en\",\"count\":0,\"label\":\"leisure: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":293,\"translated\":1,\"allowlisted\":292,\"sample\":[]}},{\"key\":\"post_type:leisure:malformed_relationships\",\"count\":0,\"label\":\"leisure: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:page:empty_population\",\"count\":0,\"label\":\"page: the B1 population has enough PT records for the invariant to be non-vacuous (eligible PT >= 1)\",\"detail\":{\"eligible\":45,\"floor\":1}},{\"key\":\"post_type:page:missing_en\",\"count\":0,\"label\":\"page: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":45,\"translated\":35,\"allowlisted\":10,\"sample\":[]}},{\"key\":\"post_type:page:malformed_relationships\",\"count\":2,\"label\":\"page: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[\"en_without_pt:empregos-3\",\"en_without_pt:empregos\"]}},{\"key\":\"post_type:post:empty_population\",\"count\":0,\"label\":\"post: the B1 population has enough PT records for the invariant to be non-vacuous (eligible PT >= 11)\",\"detail\":{\"eligible\":43,\"floor\":11}},{\"key\":\"post_type:post:missing_en\",\"count\":0,\"label\":\"post: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":43,\"translated\":43,\"allowlisted\":0,\"sample\":[]}},{\"key\":\"post_type:post:malformed_relationships\",\"count\":0,\"label\":\"post: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:sponsor:missing_en\",\"count\":0,\"label\":\"sponsor: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":7,\"translated\":1,\"allowlisted\":6,\"sample\":[]}},{\"key\":\"post_type:sponsor:malformed_relationships\",\"count\":0,\"label\":\"sponsor: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}}]}"
+        "  allowlisted: 3073 (by documented policy)",
+        "    first 20: course_provider:microcreds, course_provider:apprenticeship-ie, course_provider:etbi, course_provider:courses-ie, course_provider:local-enterprise-office, course_provider:solas-ecollege, course_provider:skillnet-ireland, course_provider:springboard-plus, course_provider:qualifax, course_provider:fetch-courses, event:test-event-for-clare-30, event:test-event-for-cork-30, event:test-event-for-dublin-30, event:test-event-for-galway-30, event:test-event-for-laois-30, event:test-event-for-wicklow-30, event:unrelated-cache-test-30, event:test-event-for-carlow-30, event:test-event-for-cavan-30, event:active-bystander-training-for-kildare-based-artists-arts-workers",
+        "GATE-RESULT {\"gate\":\"translation_completeness\",\"status\":\"fail\",\"passed\":21,\"failed\":2,\"violations\":3,\"pre_existing\":1,\"new\":2,\"prerequisites\":[\"polylang\",\"published PT content\"],\"allowlisted\":[\"course_provider:microcreds\",\"course_provider:apprenticeship-ie\",\"course_provider:etbi\",\"course_provider:courses-ie\",\"course_provider:local-enterprise-office\",\"course_provider:solas-ecollege\",\"course_provider:skillnet-ireland\",\"course_provider:springboard-plus\",\"course_provider:qualifax\",\"course_provider:fetch-courses\",\"event:test-event-for-clare-30\",\"event:test-event-for-cork-30\",\"event:test-event-for-dublin-30\",\"event:test-event-for-galway-30\",\"event:test-event-for-laois-30\",\"event:test-event-for-wicklow-30\",\"event:unrelated-cache-test-30\",\"event:test-event-for-carlow-30\",\"event:test-event-for-cavan-30\",\"event:active-bystander-training-for-kildare-based-artists-arts-workers\"],\"allowlisted_count\":3073,\"details\":[{\"key\":\"post_type:course_provider:missing_en\",\"count\":0,\"label\":\"course_provider: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":10,\"translated\":0,\"allowlisted\":10,\"sample\":[]}},{\"key\":\"post_type:course_provider:malformed_relationships\",\"count\":0,\"label\":\"course_provider: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:event:missing_en\",\"count\":0,\"label\":\"event: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":2756,\"translated\":1,\"allowlisted\":2755,\"sample\":[]}},{\"key\":\"post_type:event:malformed_relationships\",\"count\":0,\"label\":\"event: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:guide:empty_population\",\"count\":0,\"label\":\"guide: the B1 population has enough PT records for the invariant to be non-vacuous (eligible PT >= 11)\",\"detail\":{\"eligible\":55,\"floor\":11}},{\"key\":\"post_type:guide:missing_en\",\"count\":1,\"label\":\"guide: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":55,\"translated\":54,\"allowlisted\":0,\"sample\":[\"carteira-motorista-brasileiros\"]}},{\"key\":\"post_type:guide:malformed_relationships\",\"count\":0,\"label\":\"guide: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:job:missing_en\",\"count\":0,\"label\":\"job: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":2,\"translated\":2,\"allowlisted\":0,\"sample\":[]}},{\"key\":\"post_type:job:malformed_relationships\",\"count\":0,\"label\":\"job: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:leisure:missing_en\",\"count\":0,\"label\":\"leisure: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":293,\"translated\":1,\"allowlisted\":292,\"sample\":[]}},{\"key\":\"post_type:leisure:malformed_relationships\",\"count\":0,\"label\":\"leisure: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:page:empty_population\",\"count\":0,\"label\":\"page: the B1 population has enough PT records for the invariant to be non-vacuous (eligible PT >= 1)\",\"detail\":{\"eligible\":45,\"floor\":1}},{\"key\":\"post_type:page:missing_en\",\"count\":0,\"label\":\"page: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":45,\"translated\":35,\"allowlisted\":10,\"sample\":[]}},{\"key\":\"post_type:page:malformed_relationships\",\"count\":2,\"label\":\"page: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[\"en_without_pt:empregos-3\",\"en_without_pt:empregos\"]}},{\"key\":\"post_type:post:empty_population\",\"count\":0,\"label\":\"post: the B1 population has enough PT records for the invariant to be non-vacuous (eligible PT >= 11)\",\"detail\":{\"eligible\":43,\"floor\":11}},{\"key\":\"post_type:post:missing_en\",\"count\":0,\"label\":\"post: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":43,\"translated\":43,\"allowlisted\":0,\"sample\":[]}},{\"key\":\"post_type:post:malformed_relationships\",\"count\":0,\"label\":\"post: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:sponsor:missing_en\",\"count\":0,\"label\":\"sponsor: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":7,\"translated\":1,\"allowlisted\":6,\"sample\":[]}},{\"key\":\"post_type:sponsor:malformed_relationships\",\"count\":0,\"label\":\"sponsor: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}}]}"
       ]
     },
     "cache_scoping": {
@@ -452,7 +452,7 @@
         "   scope: wp-content/plugins/conexao-translation-rollout",
         "   scope: wp-content/plugins/conexao-translation-automation",
         "",
-        "   scanned 168 production PHP files (PHP token_get_all)",
+        "   scanned 171 production PHP files (PHP token_get_all)",
         "   unscoped conexao_* cache keys: 0",
         "2 passed, 0 failed",
         "GATE-RESULT {\"gate\": \"cache_scoping_static\", \"status\": \"pass\", \"passed\": 2, \"failed\": 0, \"violations\": 0, \"details\": []}"
@@ -593,7 +593,7 @@
       "command": "python3 tests/scripts/verify-documentation-drift.py",
       "exit_code": 0,
       "status": "pass",
-      "passed": 14,
+      "passed": 17,
       "failed": 0,
       "violations": 0,
       "pre_existing": 0,
@@ -602,18 +602,18 @@
       "prerequisites": [],
       "details": [],
       "output_tail": [
-        "   historical/audit documents without the marker (reported, not gated): 217",
+        "   historical/audit documents without the marker (reported, not gated): 239",
         "",
         "   -- §9.2 no root-level report/evidence file --",
         "   root files scanned: 17, offenders: 0",
         "",
         "   -- §9.2 AGENTS.md remains orientation --",
-        "   AGENTS.md lines: 230",
+        "   AGENTS.md lines: 249",
         "",
         "   -- authoritative sources referenced by the governance layer --",
         "   authoritative sources checked: 7",
-        "14 passed, 0 failed",
-        "GATE-RESULT {\"gate\": \"documentation_drift\", \"status\": \"pass\", \"passed\": 14, \"failed\": 0, \"violations\": 0, \"details\": []}"
+        "17 passed, 0 failed",
+        "GATE-RESULT {\"gate\": \"documentation_drift\", \"status\": \"pass\", \"passed\": 17, \"failed\": 0, \"violations\": 0, \"details\": []}"
       ]
     },
     "i18n_freshness": {
@@ -634,10 +634,10 @@
         {
           "component": "conexao-br-irlanda",
           "catalogue": "wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot",
-          "newest_source": "wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/hero.php",
+          "newest_source": "wp-content/themes/conexao-br-irlanda/inc/commemorative-presentations.php",
           "catalogue_ts": 1793965014,
-          "newest_source_ts": 1794048281,
-          "lag_seconds": 83267
+          "newest_source_ts": 1794236656,
+          "lag_seconds": 271642
         },
         {
           "component": "conexao-admin-ux",
@@ -663,12 +663,12 @@
         "   conexao-translation-automation catalogue=1791787669 newest-source=1790861950 (wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-batch-control.php) fresh",
         "",
         "   stale catalogues: 3",
-        "FAIL: conexao-br-irlanda: wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot is older than wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/hero.php by 83267s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)",
+        "FAIL: conexao-br-irlanda: wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot is older than wp-content/themes/conexao-br-irlanda/inc/commemorative-presentations.php by 271642s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)",
         "FAIL: conexao-admin-ux: wp-content/plugins/conexao-admin-ux/languages/conexao-admin-ux.pot is older than wp-content/plugins/conexao-admin-ux/includes/class-editor.php by 6083s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)",
         "FAIL: conexao-commemorative: wp-content/plugins/conexao-commemorative/languages/conexao-commemorative.pot is older than wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php by 6083s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)",
         "3 passed, 3 failed",
         "  stale catalogues: 2 pre-existing, 1 new",
-        "GATE-RESULT {\"gate\": \"i18n_freshness\", \"status\": \"fail\", \"passed\": 3, \"failed\": 3, \"violations\": 3, \"pre_existing\": 2, \"new\": 1, \"details\": [{\"component\": \"conexao-br-irlanda\", \"catalogue\": \"wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot\", \"newest_source\": \"wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/hero.php\", \"catalogue_ts\": 1793965014, \"newest_source_ts\": 1794048281, \"lag_seconds\": 83267}, {\"component\": \"conexao-admin-ux\", \"catalogue\": \"wp-content/plugins/conexao-admin-ux/languages/conexao-admin-ux.pot\", \"newest_source\": \"wp-content/plugins/conexao-admin-ux/includes/class-editor.php\", \"catalogue_ts\": 1793965014, \"newest_source_ts\": 1793971097, \"lag_seconds\": 6083}, {\"component\": \"conexao-commemorative\", \"catalogue\": \"wp-content/plugins/conexao-commemorative/languages/conexao-commemorative.pot\", \"newest_source\": \"wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php\", \"catalogue_ts\": 1793965014, \"newest_source_ts\": 1793971097, \"lag_seconds\": 6083}]}"
+        "GATE-RESULT {\"gate\": \"i18n_freshness\", \"status\": \"fail\", \"passed\": 3, \"failed\": 3, \"violations\": 3, \"pre_existing\": 2, \"new\": 1, \"details\": [{\"component\": \"conexao-br-irlanda\", \"catalogue\": \"wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot\", \"newest_source\": \"wp-content/themes/conexao-br-irlanda/inc/commemorative-presentations.php\", \"catalogue_ts\": 1793965014, \"newest_source_ts\": 1794236656, \"lag_seconds\": 271642}, {\"component\": \"conexao-admin-ux\", \"catalogue\": \"wp-content/plugins/conexao-admin-ux/languages/conexao-admin-ux.pot\", \"newest_source\": \"wp-content/plugins/conexao-admin-ux/includes/class-editor.php\", \"catalogue_ts\": 1793965014, \"newest_source_ts\": 1793971097, \"lag_seconds\": 6083}, {\"component\": \"conexao-commemorative\", \"catalogue\": \"wp-content/plugins/conexao-commemorative/languages/conexao-commemorative.pot\", \"newest_source\": \"wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php\", \"catalogue_ts\": 1793965014, \"newest_source_ts\": 1793971097, \"lag_seconds\": 6083}]}"
       ]
     },
     "commemorative_no_asset_without_event": {
@@ -864,7 +864,7 @@
           "label": "the sitemap publishes no commemorative CPT URL and no archived landing page",
           "detail": {
             "offenders": [],
-            "bytes": 323575
+            "bytes": 921206
           }
         },
         {
@@ -899,7 +899,7 @@
         "  PASS: the landing page is excluded from the sitemap",
         "",
         "11 passed, 0 failed",
-        "GATE-RESULT {\"gate\":\"commemorative_cpt_privacy\",\"status\":\"pass\",\"passed\":11,\"failed\":0,\"violations\":0,\"pre_existing\":0,\"new\":0,\"prerequisites\":[\"theme-active\",\"conexao-commemorative plugin active\",\"the seeded landing pages\"],\"allowlisted\":[],\"allowlisted_count\":0,\"details\":[{\"key\":\"cpt:public_exposure\",\"count\":0,\"label\":\"the CPT is private on every axis (route, archive, query var, REST, search)\",\"detail\":{\"flags\":{\"public\":false,\"publicly_queryable\":false,\"has_archive\":false,\"query_var\":false,\"show_in_rest\":false,\"show_ui\":true},\"exposure\":[]}},{\"key\":\"cpt:rest_route\",\"count\":0,\"label\":\"no REST route is registered for the commemorative CPT\",\"detail\":{\"routes\":[]}},{\"key\":\"cpt:public_permalink\",\"count\":0,\"label\":\"the CPT exposes no archive link and no public PATH-based permalink\",\"detail\":{\"archive\":\"\",\"public_paths\":[]}},{\"key\":\"sitemap:forbidden_url\",\"count\":0,\"label\":\"the sitemap publishes no commemorative CPT URL and no archived landing page\",\"detail\":{\"offenders\":[],\"bytes\":323575}},{\"key\":\"gate:injected_negative_not_detected\",\"count\":0,\"label\":\"the gate detects a sitemap that DOES publish the forbidden URLs\",\"detail\":{\"fixture_offenders\":[\"sitemap:contains:\\/natal\\/\",\"sitemap:contains:commemorative_event\"]}},{\"key\":\"gate:sitemap_check_is_vacuous\",\"count\":0,\"label\":\"the sitemap check is not vacuous: a normal published page is still listed\",\"detail\":{\"page\":\"documentos\"}}]}"
+        "GATE-RESULT {\"gate\":\"commemorative_cpt_privacy\",\"status\":\"pass\",\"passed\":11,\"failed\":0,\"violations\":0,\"pre_existing\":0,\"new\":0,\"prerequisites\":[\"theme-active\",\"conexao-commemorative plugin active\",\"the seeded landing pages\"],\"allowlisted\":[],\"allowlisted_count\":0,\"details\":[{\"key\":\"cpt:public_exposure\",\"count\":0,\"label\":\"the CPT is private on every axis (route, archive, query var, REST, search)\",\"detail\":{\"flags\":{\"public\":false,\"publicly_queryable\":false,\"has_archive\":false,\"query_var\":false,\"show_in_rest\":false,\"show_ui\":true},\"exposure\":[]}},{\"key\":\"cpt:rest_route\",\"count\":0,\"label\":\"no REST route is registered for the commemorative CPT\",\"detail\":{\"routes\":[]}},{\"key\":\"cpt:public_permalink\",\"count\":0,\"label\":\"the CPT exposes no archive link and no public PATH-based permalink\",\"detail\":{\"archive\":\"\",\"public_paths\":[]}},{\"key\":\"sitemap:forbidden_url\",\"count\":0,\"label\":\"the sitemap publishes no commemorative CPT URL and no archived landing page\",\"detail\":{\"offenders\":[],\"bytes\":921206}},{\"key\":\"gate:injected_negative_not_detected\",\"count\":0,\"label\":\"the gate detects a sitemap that DOES publish the forbidden URLs\",\"detail\":{\"fixture_offenders\":[\"sitemap:contains:\\/natal\\/\",\"sitemap:contains:commemorative_event\"]}},{\"key\":\"gate:sitemap_check_is_vacuous\",\"count\":0,\"label\":\"the sitemap check is not vacuous: a normal published page is still listed\",\"detail\":{\"page\":\"documentos\"}}]}"
       ]
     },
     "commemorative_single_package": {
@@ -957,8 +957,8 @@
         "",
         "6 passed, 0 failed",
         "GATE-RESULT {\"gate\":\"commemorative_single_package\",\"status\":\"pass\",\"passed\":6,\"failed\":0,\"violations\":0,\"pre_existing\":0,\"new\":0,\"prerequisites\":[\"theme-active\",\"conexao-commemorative plugin active\"],\"allowlisted\":[],\"allowlisted_count\":0,\"details\":[{\"key\":\"package:leaked_placement\",\"count\":0,\"label\":\"no plan ever renders a placement that belongs to another package\",\"detail\":{\"violations\":[]}},{\"key\":\"multiple:selected_events\",\"count\":0,\"label\":\"a resolution holds exactly one selected event\",\"detail\":[]},{\"key\":\"gate:injected_negative_not_detected\",\"count\":0,\"label\":\"the gate detects a placement that does not belong to the selected package\",\"detail\":{\"fixture_violations\":[\"placement_not_owned_by_package:landing_page\",\"template_mismatch:landing_page\"]}}]}",
-        "[07-Nov-2026 12:06:49 UTC] PHP Warning:  Undefined array key \"landing_page\" in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-commemorative-gate-single-package.php on line 64",
-        "[07-Nov-2026 12:06:49 UTC] PHP Warning:  Trying to access array offset on null in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-commemorative-gate-single-package.php on line 64"
+        "[09-Nov-2026 15:15:03 UTC] PHP Warning:  Undefined array key \"landing_page\" in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-commemorative-gate-single-package.php on line 64",
+        "[09-Nov-2026 15:15:03 UTC] PHP Warning:  Trying to access array offset on null in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-commemorative-gate-single-package.php on line 64"
       ]
     },
     "commemorative_ambient_decorative": {
@@ -1116,7 +1116,7 @@
       "command": "python3 tests/scripts/verify-commemorative-runtime.py",
       "exit_code": 0,
       "status": "pass",
-      "passed": 76,
+      "passed": 104,
       "failed": 0,
       "violations": 0,
       "pre_existing": 0,
@@ -1127,18 +1127,18 @@
       ],
       "details": [],
       "output_tail": [
-        "   assertions passed:      11",
-        "",
-        "   -- tests/node/christmas-journey.test.js --",
-        "   runtime cases executed: 8",
         "   assertions passed:      8",
         "",
         "   -- tests/node/christmas-welcome.test.js --",
         "   runtime cases executed: 19",
         "   assertions passed:      19",
         "",
-        "76 passed, 0 failed",
-        "GATE-RESULT {\"gate\": \"commemorative_ambient_runtime\", \"status\": \"pass\", \"passed\": 76, \"failed\": 0, \"violations\": 0, \"pre_existing\": 0, \"new\": 0, \"prerequisites\": [\"node\"], \"allowlisted\": [], \"allowlisted_count\": 0, \"details\": []}"
+        "   -- tests/node/christmas-micro-animations.test.js --",
+        "   runtime cases executed: 14",
+        "   assertions passed:      14",
+        "",
+        "104 passed, 0 failed",
+        "GATE-RESULT {\"gate\": \"commemorative_ambient_runtime\", \"status\": \"pass\", \"passed\": 104, \"failed\": 0, \"violations\": 0, \"pre_existing\": 0, \"new\": 0, \"prerequisites\": [\"node\"], \"allowlisted\": [], \"allowlisted_count\": 0, \"details\": []}"
       ]
     },
     "commemorative_translation_ownership": {
@@ -1315,7 +1315,7 @@
       ]
     }
   },
-  "total_passed": 226,
+  "total_passed": 257,
   "total_failed": 5,
   "total_violations": 6,
   "total_pre_existing": 3,
