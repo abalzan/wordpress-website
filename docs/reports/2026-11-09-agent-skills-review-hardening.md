@@ -19,9 +19,9 @@ repository root.**
 | **Author / agent** | AI assistant using Copilot SDK in VS Code |
 | **Branch** | commemorative-events |
 | **Start SHA** | 38c130d8188cba312f92ee96511df8540f7bdba0 |
-| **Final SHA** | 24e90ba (follow-up reconciliation commit `chore: audit and update plugin documentation with last verified markers`, on top of `a52bad7`) |
-| **Working tree at finish** | clean — 32 modified files + 2 added relative to the `38c130d` baseline (all documentation/skills/governance); 8 pre-existing stashes preserved on `feat/christmas-easter-egg` and `master` |
-| **Commit/push status** | Original stage committed and pushed at `a52bad7`; follow-up reconciliation committed at `24e90ba`. This report reflects the cumulative branch state at `24e90ba`, not a claim that all work was completed in the earlier stage. |
+| **Final SHA** | 38949ad (follow-up reconciliation commit `docs: update agent skills review and hardening templates and reports for clarity`, on top of `24e90ba` and `a52bad7`) |
+| **Working tree at finish** | clean — 32 modified files + 2 added relative to the `38c130d` baseline (all documentation/skills/governance); 9 pre-existing stashes preserved on `feat/christmas-easter-egg` and `master` |
+| **Commit/push status** | Original stage committed and pushed at `a52bad7`; follow-up reconciliation commits at `24e90ba` and `38949ad`. This report reflects the cumulative branch state at `38949ad`, not a claim that all work was completed in the earlier stage. |
 | **Skills followed** | `wp-repository`, `wp-update-docs` |
 | **Authoritative docs consulted** | `docs/engineering-standard.md` (§9.1, §9.2, §13.1, §13.2, §14), `.agents/skills/README.md`, `AGENTS.md`, `docs/README.md`, `docs/templates/plan.md`, `docs/templates/report.md`, `plugins.json` |
 
@@ -86,7 +86,7 @@ reconciliation:
    (inspect first, reuse running stack, approval before side effects, otherwise
    `BLOCKED` / `not tested`).
 5. Task-specific plan filled in (no blank template sections).
-6. Task report reconciled against the actual pushed commit (`a52bad7`).
+6. Task report reconciled against the actual final commit (`38949ad`).
 7. Report index and documentation-index marker ordering updated.
 
 ## 3. Files added / modified / deleted
@@ -181,7 +181,7 @@ gap.
 
 | Command | Exit | Result |
 |---|---|---|
-| `python3 tests/scripts/verify-documentation-drift.py` | 0 | 17 passed, 0 failed (AGENTS.md 249 lines; 28 living docs with terminal markers; negative/positive proofs pass) |
+| `python3 tests/scripts/verify-documentation-drift.py` | 0 | 17 passed, 0 failed (AGENTS.md 249 lines; 31 living docs with terminal markers; negative/positive proofs pass) |
 | `python3 tests/scripts/verify-agent-governance.py` | 0 | 390 passed, 0 failed (all 15 skills + index carry terminal markers) |
 | `php scripts/generate-registry-docs.php --check` | 0 | registry OK: 11 plugins validated, 20 generated regions current (zero writes) |
 | `git diff --check` | 0 | clean |
@@ -292,7 +292,7 @@ and can be removed without affecting any canonical document.
 
 **Final status: `PASS WITH LIMITATION`**
 
-The governance gate (388/0), registry drift gate (OK) and `git diff --check`
+The governance gate (390/0), registry drift gate (OK) and `git diff --check`
 (clean) all pass, but `./scripts/run-tests.sh --scripts` could not reach a
 fully green state due to 2 pre-existing `dist/release.json` version mismatches
 unrelated to this change; the in-process PHP and HTTP acceptance layers were

@@ -19,7 +19,7 @@ exists to prevent.
 ## 1. Scope
 
 This task is a narrow corrective reconciliation of the agent-skills review and
-hardening already pushed at `a52bad7` on branch `commemorative-events`. It does
+hardening already pushed at `38949ad` on branch `commemorative-events`. It does
 not repeat the 15-skill review or redesign the skill system. It fixes six
 governance defects found when independently reviewing the pushed branch:
 
@@ -94,10 +94,11 @@ Procedures live in skills, not in this plan: `wp-repository` (orient/plan),
 
 Verified by reading the code and running the gates:
 
-- Branch `commemorative-events`, HEAD `a52bad7650d4289f030f0c6c230552d01113fc52`
-  (`chore: review and harden agent skills documentation`), previous review
-  baseline `38c130d8188cba312f92ee96511df8540f7bdba0`. Worktree clean; stashes
-  preserved (8 stashes on `feat/christmas-easter-egg` and `master`).
+- Branch `commemorative-events`, HEAD `38949ad8c5ada60dac2e44966e213e996fefb423`
+  (`docs: update agent skills review and hardening templates and reports for
+  clarity`), on top of `24e90ba` and `a52bad7`. Previous review baseline
+  `38c130d8188cba312f92ee96511df8540f7bdba0`. Worktree clean; stashes
+  preserved (9 stashes on `feat/christmas-easter-egg` and `master`).
 - `git diff 38c130d..HEAD` shows 34 changed paths: 32 modified + 2 added
   (983 insertions, 101 deletions), all documentation/skills/governance.
 - `AGENTS.md` has 249 physical lines ending in a newline, but
@@ -119,15 +120,15 @@ Verified by reading the code and running the gates:
 - `docs/reports/2026-11-09-agent-skills-review-hardening.md` has stale fields:
   title `# Report — <stage / task name>`, final SHA = old start SHA
   `38c130d...` ("no commit made"), file count `19 modified + 1 new` (actual is
-  20 modified + 2 added), working-tree statement reflects pre-commit dirty state,
+  32 modified + 2 added), working-tree statement reflects pre-commit dirty state,
   scope marked complete although plan/index corrections were not done earlier.
 - `docs/README.md` has the 2026-11-09 marker before two older 2026-11-08 markers
   (most recent marker must be final non-empty line).
 - `docs/reports/README.md` lacks the 2026-11-09 report row.
 - Baseline gate results: documentation drift FAIL (AGENTS.md line count),
-  agent governance PASS (388/0), registry drift PASS (zero writes), script
-  contract 19 passed / 2 failed (pre-existing `dist/release.json` version
-  mismatches, unrelated to this change).
+  agent governance PASS (388/0 at baseline, 390/0 after the reconciliation),
+  registry drift PASS (zero writes), script contract 19 passed / 2 failed
+  (pre-existing `dist/release.json` version mismatches, unrelated to this change).
 
 ## 5. Proposed approach
 
@@ -287,14 +288,14 @@ None — no routes or HTTP behaviour changed.
 
 How to undo this change, in order:
 
-1. `git revert` the follow-up commit (`24e90ba`) restores the governance files
-   to the `a52bad7` state; `git revert` the original stage commit
-   (`a52bad7`) restores the `38c130d` baseline.
+1. `git revert` the follow-up commit (`38949ad`) restores the governance files
+   to the `24e90ba` state; `git revert` `24e90ba` restores `a52bad7`;
+   `git revert` `a52bad7` restores the `38c130d` baseline.
 2. Plugin-doc markers are additive text; reverting removes them.
 3. No data, content, or production state was changed, so no data rollback is
    needed.
-4. Pre-change state captured: HEAD `a52bad7` (then `24e90ba`), clean worktree,
-   stashes preserved.
+4. Pre-change state captured: HEAD `a52bad7` (then `24e90ba`, then `38949ad`),
+   clean worktree, stashes preserved.
 
 Rollback does **not** cover content changes (none made). `git reset --hard` is
 not used, as it would discard worktree changes that must be preserved.
@@ -359,7 +360,7 @@ The task is complete when:
   `dist/release.json` mismatches are classified as pre-existing, no new
   failures introduced.
 - The task-specific plan has no blank template sections.
-- The task report is reconciled against the actual commit (`a52bad7`).
+- The task report is reconciled against the actual final commit (`38949ad`).
 - `docs/reports/README.md` and `docs/README.md` have correct terminal markers.
 - No `wp-content/` files changed; no runtime, content, DB, production, release
   or mobile changes occurred.
