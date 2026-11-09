@@ -1,15 +1,10 @@
 # Plan — Agent skills review and hardening
 
-> **This is a template.** Copy it to
-> `docs/plans/<date>-<topic>.md` and fill it in. Do **not** edit this file to
-> turn it into a repository-specific plan, and do not leave a filled-in plan at
-> this path.
->
-> Required by [`docs/engineering-standard.md`](../engineering-standard.md) §13.2
-> before multi-file work, and before anything that changes **content, routes or
-> English/Polylang**. A short task may answer the headings inline, but it may
-> not skip the impact sections — an unstated impact is the thing this document
-> exists to prevent.
+Required by [`docs/engineering-standard.md`](../engineering-standard.md) §13.2
+before multi-file work, and before anything that changes **content, routes or
+English/Polylang**. A short task may answer the headings inline, but it may
+not skip the impact sections — an unstated impact is the thing this document
+exists to prevent.
 
 | | |
 |---|---|
@@ -103,8 +98,8 @@ Verified by reading the code and running the gates:
   (`chore: review and harden agent skills documentation`), previous review
   baseline `38c130d8188cba312f92ee96511df8540f7bdba0`. Worktree clean; stashes
   preserved (8 stashes on `feat/christmas-easter-egg` and `master`).
-- `git diff 38c130d..HEAD` shows 22 changed paths: 20 modified + 2 added
-  (603 insertions, 78 deletions), all documentation/skills/governance.
+- `git diff 38c130d..HEAD` shows 34 changed paths: 32 modified + 2 added
+  (983 insertions, 101 deletions), all documentation/skills/governance.
 - `AGENTS.md` has 249 physical lines ending in a newline, but
   `count("\n") + 1` reports 250, failing the `<250` policy.
 - `verify-documentation-drift.py` uses `LAST_VERIFIED.search(body)` (marker
@@ -292,14 +287,17 @@ None — no routes or HTTP behaviour changed.
 
 How to undo this change, in order:
 
-1. `git revert` the commit (or `git reset --hard` to the pre-change HEAD if
-   uncommitted) restores all governance files.
+1. `git revert` the follow-up commit (`24e90ba`) restores the governance files
+   to the `a52bad7` state; `git revert` the original stage commit
+   (`a52bad7`) restores the `38c130d` baseline.
 2. Plugin-doc markers are additive text; reverting removes them.
 3. No data, content, or production state was changed, so no data rollback is
    needed.
-4. Pre-change state captured: HEAD `a52bad7`, clean worktree, stashes preserved.
+4. Pre-change state captured: HEAD `a52bad7` (then `24e90ba`), clean worktree,
+   stashes preserved.
 
-Rollback does **not** cover content changes (none made).
+Rollback does **not** cover content changes (none made). `git reset --hard` is
+not used, as it would discard worktree changes that must be preserved.
 
 ## 17. Documentation plan
 
@@ -336,7 +334,7 @@ relocated.
 ## 20. Verification gates
 
 1. `python3 tests/scripts/verify-documentation-drift.py` — must exit 0
-   (AGENTS.md 249 lines, terminal markers on all 28 living docs, negative
+   (AGENTS.md 249 lines, terminal markers on all 31 living docs, negative
    proofs pass).
 2. `python3 tests/scripts/verify-agent-governance.py` — must exit 0
    (terminal markers on all 15 skills + index).

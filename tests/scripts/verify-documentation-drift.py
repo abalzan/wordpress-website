@@ -88,6 +88,10 @@ LIVING_DOCS = (
     # references (required by wp-commemorative-event).
     "docs/commemorative-events.md",
     "docs/commemorative-content.md",
+    # Living indexes that carry `_Last verified` markers and must stay current.
+    "docs/plugins/README.md",
+    "docs/reports/README.md",
+    "docs/evidence/README.md",
 )
 
 
@@ -216,9 +220,9 @@ def main() -> int:
     # A valid marker followed by ordinary content must FAIL; the same document
     # with the marker as its final non-empty line must PASS. This keeps the
     # two gates aligned on one definition of a terminal marker.
-    marker = "_Last verified: 2026-11-09 by terminal-marker proof"
+    marker = "_Last verified: 2026-11-09 by terminal-marker proof_"
     doc_with_trailing_content = f"intro\n{marker}\nordinary content after the marker\n"
-    doc_with_terminal_marker = f"intro\nordinary content\n\n{marker}_\n\n"
+    doc_with_terminal_marker = f"intro\nordinary content\n\n{marker}\n\n"
     check(
         not terminal_marker_ok(doc_with_trailing_content),
         "negative proof: marker followed by content must fail",

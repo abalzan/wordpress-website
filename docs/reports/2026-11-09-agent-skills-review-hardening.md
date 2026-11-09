@@ -1,13 +1,9 @@
 # Report — Agent skills review and hardening (follow-up reconciliation)
 
-> **This is a template.** Copy it to `docs/reports/<date>-<stage>-<topic>.md`
-> (or `docs/reports/site/` for repository-engineering stages) and fill it in. Do
-> **not** edit this file to turn it into a repository-specific report.
->
-> Required by [`docs/engineering-standard.md`](../engineering-standard.md) §9.2
-> and §13.2. Machine evidence goes in `docs/evidence/<date>-<stage>/`; this
-> document is the narrative that cites it. **No report is ever added at the
-> repository root.**
+Required by [`docs/engineering-standard.md`](../engineering-standard.md) §9.2
+and §13.2. Machine evidence goes in `docs/evidence/<date>-<stage>/`; this
+document is the narrative that cites it. **No report is ever added at the
+repository root.**
 >
 > The reporting rule that matters: **a claim is only as good as the command that
 > produced its number.** Write `passed` only for something that ran and passed;
@@ -23,9 +19,9 @@
 | **Author / agent** | AI assistant using Copilot SDK in VS Code |
 | **Branch** | commemorative-events |
 | **Start SHA** | 38c130d8188cba312f92ee96511df8540f7bdba0 |
-| **Final SHA** | a52bad7650d4289f030f0c6c230552d01113fc52 (commit `chore: review and harden agent skills documentation`, pushed) |
-| **Working tree at finish** | clean — 20 modified files + 2 added (all documentation/skills/governance); 8 pre-existing stashes preserved on `feat/christmas-easter-egg` and `master` |
-| **Commit/push status** | Committed and pushed at `a52bad7`; this report is a follow-up reconciliation of that pushed state, not a claim that the work was completed in the earlier stage |
+| **Final SHA** | 24e90ba (follow-up reconciliation commit `chore: audit and update plugin documentation with last verified markers`, on top of `a52bad7`) |
+| **Working tree at finish** | clean — 32 modified files + 2 added relative to the `38c130d` baseline (all documentation/skills/governance); 8 pre-existing stashes preserved on `feat/christmas-easter-egg` and `master` |
+| **Commit/push status** | Original stage committed and pushed at `a52bad7`; follow-up reconciliation committed at `24e90ba`. This report reflects the cumulative branch state at `24e90ba`, not a claim that all work was completed in the earlier stage. |
 | **Skills followed** | `wp-repository`, `wp-update-docs` |
 | **Authoritative docs consulted** | `docs/engineering-standard.md` (§9.1, §9.2, §13.1, §13.2, §14), `.agents/skills/README.md`, `AGENTS.md`, `docs/README.md`, `docs/templates/plan.md`, `docs/templates/report.md`, `plugins.json` |
 
@@ -131,7 +127,7 @@ reconciliation:
 | `tests/scripts/verify-agent-governance.py` | modified | Terminal-marker validation for skills and skills index |
 | `tests/scripts/verify-documentation-drift.py` | modified | AGENTS.md line-count fix; terminal-marker validation; living-docs inventory extended; negative proofs |
 
-Counts: **2 added (plan + report), 20 modified**. No file deleted.
+Counts: **2 added (plan + report), 32 modified**. No file deleted.
 No file under `wp-content/` was changed. No runtime, content, database,
 production, or Flutter/mobile file was touched.
 
@@ -186,7 +182,7 @@ gap.
 | Command | Exit | Result |
 |---|---|---|
 | `python3 tests/scripts/verify-documentation-drift.py` | 0 | 17 passed, 0 failed (AGENTS.md 249 lines; 28 living docs with terminal markers; negative/positive proofs pass) |
-| `python3 tests/scripts/verify-agent-governance.py` | 0 | 388 passed, 0 failed (all 15 skills + index carry terminal markers) |
+| `python3 tests/scripts/verify-agent-governance.py` | 0 | 390 passed, 0 failed (all 15 skills + index carry terminal markers) |
 | `php scripts/generate-registry-docs.php --check` | 0 | registry OK: 11 plugins validated, 20 generated regions current (zero writes) |
 | `git diff --check` | 0 | clean |
 | `./scripts/run-tests.sh --scripts` | 1 | 19 passed, 2 failed — pre-existing version mismatches in `dist/release.json` build artifacts (unrelated to this documentation/governance change) |
@@ -228,7 +224,7 @@ references, second registries, and localhost/credential literals.
 | | Before | After |
 |---|---|---|
 | Documentation drift gate | FAIL (AGENTS.md 250 lines) | PASS (17/0) |
-| Governance gate passed | 372 | 388 |
+| Governance gate passed | 372 | 390 |
 | Governance gate failed | 0 | 0 |
 | Registry drift | OK | OK |
 | `git diff --check` | clean | clean |
