@@ -77,7 +77,7 @@
         "<link rel=\"canonical\" href=\"http://localhost:8080/natal/\" />",
         "hreflang=\"en\" href=\"http://localhost:8080/en/christmas/\"",
         "<h1 class=\"ce-landing__title\">Natal</h1>",
-        "data-ce-motif=\"bauble_ornament\"",
+        "data-ce-motif=\"shared_star\"",
         "ce-module--agenda",
         "ce-module--lugar",
         "ce-module--bem-estar",

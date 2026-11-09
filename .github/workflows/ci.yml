@@ -266,14 +266,16 @@ jobs:
       POLYLANG_VERSION: 3.8.9
       # Local test administrator credentials for the HTTP acceptance suites.
       # These authenticate against http://localhost:8080 only — never production.
-      # Override via repository variables (WP_USERNAME, WP_TEST_USER_PASSWORD,
-      # WP_APPLICATION_PASSWORD) when hardening the local account; the documented
-      # defaults are local-only fixture credentials and are not production
-      # credentials. WP_APPLICATION_PASSWORD is required by
-      # scripts/ensure-local-test-user.php.
+      # Override via repository variables (WP_USERNAME, WP_TEST_USER_PASSWORD)
+      # when hardening the local account; the documented defaults are local-only
+      # fixture credentials and are not production credentials.
+      # WP_APPLICATION_PASSWORD must be supplied as a GitHub Actions secret
+      # (repository Settings → Secrets and variables → Actions). It is required by
+      # scripts/ensure-local-test-user.php and is never given a default here so
+      # that no credential-shaped literal lives in this workflow file.
       WP_USERNAME: ${{ vars.WP_USERNAME || 'test' }}
       WP_TEST_USER_PASSWORD: ${{ vars.WP_TEST_USER_PASSWORD || 'test' }}
-      WP_APPLICATION_PASSWORD: ${{ vars.WP_APPLICATION_PASSWORD || 'abcd efgh ijkl mnop qrst uvwx' }}
+      WP_APPLICATION_PASSWORD: ${{ secrets.WP_APPLICATION_PASSWORD }}
 
     steps:
       - name: Checkout

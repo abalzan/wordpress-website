@@ -378,7 +378,7 @@ function ev_test_language_isolation() {
     PLL()->curlang = PLL()->model->languages->get( 'pt' );
     $read_key = conexao_lang_cache_key( $probe_key );
     $seen = get_transient( $read_key );
-    PLL()->curlang = NULL;
+    PLL()->curlang = PLL()->model->languages->get( 'en' );
     
     $collided = ( 'pt-only-value' === $seen );
     if ( ! $collided ) {

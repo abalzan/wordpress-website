@@ -30,7 +30,7 @@ function conexao_en_translation_manifest_data(): array {
 		// authored EN title). The row therefore moved to the `post` block below with
 		// every authored EN field unchanged. The `guide` rows are owned by
 		// `guide-translation-data.php` (51 records).
-		// page — 32 record(s).
+		// page — 33 record(s).
 		//
 		// The three rows below (`inicio`, `sobre-nos`, `contato`) are the CORE
 		// bilingual pages. Their English was authored in the now-retired
@@ -411,6 +411,15 @@ function conexao_en_translation_manifest_data(): array {
 <li><a href="/en/eventos/">Events</a></li>
 <li><a href="/en/guias/">Guides</a></li>
 </ul><!-- /wp:list -->
+',
+			),
+			'natal'                   => array(
+				'en_slug'             => 'christmas',
+				'en_title'            => 'Christmas',
+				'en_excerpt'          => '',
+				'en_meta_description' => 'Conexão BR Irlanda Christmas experience. The shared star of two skies, the seasonal journey and the commemorative landing page for Brazilians in Ireland.',
+				'en_content'          => '<!-- wp:heading --><h2>Christmas</h2><!-- /wp:heading -->
+<!-- wp:paragraph --><p>The Conexão BR Irlanda Christmas experience: one shared star, two skies, and a seasonal journey for the Brazilian community in Ireland.</p><!-- /wp:paragraph -->
 ',
 			),
 		),
