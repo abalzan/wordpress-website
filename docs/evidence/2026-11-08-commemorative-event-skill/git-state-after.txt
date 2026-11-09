@@ -1,0 +1,17 @@
+commemorative-events
+d7f7ca526e8ca508026964d9c5e6a6d19eaa3463
+--- git status --short
+ M .agents/skills/README.md
+ M AGENTS.md
+ M docs/README.md
+ M docs/evidence/README.md
+?? .agents/skills/wp-commemorative-event/
+?? docs/evidence/2026-11-08-commemorative-event-skill/
+?? docs/reports/2026-11-08-commemorative-event-skill.md
+--- stash count
+9
+--- git diff --name-only (tracked)
+.agents/skills/README.md
+AGENTS.md
+docs/README.md
+docs/evidence/README.md

@@ -1,0 +1,2 @@
+markdown link targets checked: 169, dangling: 0
+skill backticked path references checked: 16, missing: 0

@@ -38,6 +38,7 @@ Then, for the kind of work you are doing, the matching agent skill in
 | [`wp-content-change`](.agents/skills/wp-content-change/SKILL.md) | an importer, migration, seed or repair — any content write that is not an English rollout |
 | [`wp-testing`](.agents/skills/wp-testing/SKILL.md) | running, diagnosing or comparing the test contract |
 | [`wp-production-operations`](.agents/skills/wp-production-operations/SKILL.md) | auditing or operating the live WordPress.com site |
+| [`wp-commemorative-event`](.agents/skills/wp-commemorative-event/SKILL.md) | a seasonal/commemorative event: a new event record, a package/placement/asset change, a landing page, or a preview/modal/dispatch/ambient fix |
 
 ## Scope: what you may and may not touch
 
@@ -85,13 +86,14 @@ Pick the row, read the skill, then read only the canonical documents it names.
 | Writing a test or an acceptance row | `wp-write-in-process-test` / `wp-http-acceptance-matrix` | testing + routing |
 | Any change that alters what a maintainer must know | `wp-update-docs` | README index + standard §9 |
 | Anything touching a request, the database or an endpoint | `wp-security-review` | standard §2.1/§4.2/§7 + routing |
+| A seasonal/commemorative event (new, enhance, landing page, preview/modal/dispatch fix) | `wp-commemorative-event` | `docs/commemorative-events.md` + `docs/plugins/conexao-commemorative.md` |
 
 ## Workflow: plan, build, verify, report
 
 `wp-repository` owns this loop in full. In short:
 
-1. **Plan.** For multi-file work, or anything touching content, routes or
-   English/Polylang, fill in **[`docs/templates/plan.md`](docs/templates/plan.md)**.
+1. **Plan.** For multi-file work, or anything touching content, routes or English/Polylang, copy
+   **[`docs/templates/plan.md`](docs/templates/plan.md)** to `docs/plans/<date>-<topic>.md` and fill in that copy only.
 2. **Reuse, do not reinvent.** Prefer the existing shared engines and helpers
    over new copies; copying a plugin, script or engine requires a written
    justification in the report. Known shared pieces: `scripts/lib/bootstrap.php`
@@ -104,10 +106,10 @@ Pick the row, read the skill, then read only the canonical documents it names.
 3. **Verify with real numbers.** Run the checks the skill names and paste the
    actual output. `./scripts/run-tests.sh` is the single test command (in-process
    PHP + script contract + HTTP acceptance, one aggregate exit code).
-4. **Report.** Fill in **[`docs/templates/report.md`](docs/templates/report.md)**
-   and put machine evidence in `docs/evidence/<date>-<stage>/`. Never add a
-   report or evidence file at the repository root. No claim of "fully verified"
-   when a verifier was unavailable — use `PASS WITH LIMITATION` and say why.
+4. **Report.** Copy **[`docs/templates/report.md`](docs/templates/report.md)** to `docs/reports/<date>-<stage>-<topic>.md` and fill
+   in that copy only; never edit a canonical template for an individual task — change one only when the task is to improve it or the
+   standard requires. Machine evidence goes in `docs/evidence/<date>-<stage>/`; never add a report or evidence file at the repository
+   root. No claim of "fully verified" when a verifier was unavailable — use `PASS WITH LIMITATION` and say why.
 
 ## Safety rules that are not negotiable
 
@@ -157,6 +159,29 @@ what each gate proves, how to read a red gate, and where `gate.json` lives.
 
 Full command reference: [`docs/testing.md`](docs/testing.md) and
 [`scripts/README.md`](scripts/README.md).
+
+## Commemorative events
+
+Seasonal events (Halloween, Christmas, …) are the `conexao-commemorative` engine
+(plugin) plus a theme-owned presentation registry/dispatcher. Read
+**[`wp-commemorative-event`](.agents/skills/wp-commemorative-event/SKILL.md)** and
+[`docs/commemorative-events.md`](docs/commemorative-events.md) first, then the
+Halloween/Christmas reports under `docs/reports/` (history, not instruction).
+
+**Foot-guns:** never add an engine, resolver, scheduler, plugin, route, CPT, meta
+key, endpoint, activation path or timer for a visual event — reuse the registry,
+packages, placements, templates and helpers. The engine owns scheduling and
+eligibility; the theme owns the registry, dispatcher, placements and assets. The
+CPT stays private (routes, archives, REST, sitemap) and shared `_ce_*` config
+lives on the canonical PT record only. Preview is signed, capability-gated,
+nonce-verified and persists nothing. Modals are real `showModal()` dialogs, never
+`open`-attributed popups; landing dispatch resolves page-owned context first;
+zero commemorative bytes ship on ordinary routes with no active event.
+
+Event work ships tests, a dated report and a before/after git state, preserving
+existing worktree changes and stashes. Local green tests never prove release or
+production readiness, and no production write, activation, deploy or release
+happens without authorisation.
 
 ## Plugins (custom, this repo)
 

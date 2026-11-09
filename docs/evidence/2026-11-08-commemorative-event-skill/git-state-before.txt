@@ -1,0 +1,23 @@
+# Git state BEFORE this task (captured at start, 2026-11-08)
+
+branch:
+  commemorative-events
+
+HEAD:
+  d7f7ca526e8ca508026964d9c5e6a6d19eaa3463
+
+git status --porcelain (pre-existing, unrelated to this task; preserved):
+  M .agents/skills/README.md
+  M AGENTS.md
+  ?? .agents/skills/wp-commemorative-event/
+
+stash count: 9 (channel below)
+stash@{0}: WIP on feat/christmas-easter-egg: ceb27a6 feat: add Christmas Easter egg feature with localization support
+stash@{1}: WIP on master: a26fd7f Implement Stage 3.1 of English support architecture: B2 fallback rendering, SEO adjustments, and key static-page translations
+stash@{2}: On master: tmp-all-revert
+stash@{3}: WIP on master: 125688c feat: implement accent-insensitive search for Portuguese content by adjusting SQL collation handling
+stash@{4}: WIP on master: 4fc999c Refactor sponsor image handling and update CSS for responsive design
+stash@{5}: WIP on master: 9edf2d8 Add Import Logs functionality with admin interface for viewing, downloading, and clearing logs
+stash@{6}: WIP on master: 6dc6ee3 feat: Add functions to create redirect pages and manage menu items; refactor footer and primary menu item handling
+stash@{7}: WIP on master: 26f546f Add mobile search functionality and submenu toggle to header; enhance mobile menu styles
+stash@{8}: WIP on master: fe758a3 Enhance theme header and navigation structure

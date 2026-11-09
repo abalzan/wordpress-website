@@ -34,6 +34,7 @@ its workflow, and consults the canonical documents the skill names.
 | [`wp-release-deploy`](wp-release-deploy/SKILL.md) | building artifacts, recording a release, verifying a deployment, rolling one back | `docs/releases.md`, `plugins.json` |
 | [`wp-production-operations`](wp-production-operations/SKILL.md) | auditing or operating the live WordPress.com site: plugin/theme state, admin-only capabilities, safe updates | `docs/releases.md`, `docs/deployment.md` |
 | [`wp-update-docs`](wp-update-docs/SKILL.md) | any change that alters what a maintainer or agent must know, or that must not rot | `docs/README.md`, `docs/engineering-standard.md` §9 |
+| [`wp-commemorative-event`](wp-commemorative-event/SKILL.md) | planning, adding, enhancing, debugging, reviewing, or preparing a seasonal/commemorative event in the Conexão BR WordPress theme/engine | `docs/commemorative-events.md`, `docs/plugins/conexao-commemorative.md` |
 
 ## Ownership rules
 
@@ -69,4 +70,4 @@ dangling-reference and single-source-of-truth checks. Run it directly with:
 python3 tests/scripts/verify-agent-governance.py
 ```
 
-_Last verified: 2026-09-30 by the agent skills / documentation migration_
+_Last verified: 2026-11-08 by the commemorative-event skill addition_

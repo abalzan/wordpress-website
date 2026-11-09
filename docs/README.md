@@ -22,7 +22,7 @@ historical report is never the source of a current instruction.
 
 ## Agent workflows live in `.agents/skills/`
 
-There are **14 active WordPress skills**, each an executable workflow with a
+There are **15 active WordPress skills**, each an executable workflow with a
 standard format (Purpose → When to use → When not to use → Required reading →
 Authoritative sources → Preconditions → Steps → Guardrails → Verification →
 Failure handling → Evidence and reporting → Definition of done). One sentence
@@ -44,6 +44,7 @@ each; the full workflow is in the skill.
 | `wp-release-deploy` | Build, record, verify and deploy a release deterministically, with a working rollback. |
 | `wp-production-operations` | Audit and safely update the live WordPress.com site; update in place, never deactivate to update. |
 | `wp-update-docs` | Keep documentation truthful: one owner per fact, one home per procedure, no drift. |
+| `wp-commemorative-event` | Plan, build, test, review and report a seasonal event on the existing engine + theme registry — reuse packages and placements, never add a mechanism. |
 
 The index of record is [`.agents/skills/README.md`](../.agents/skills/README.md);
 `tests/scripts/verify-agent-governance.py` fails if it drifts from the directory.
@@ -215,6 +216,7 @@ To add, remove or re-classify a plugin: edit `plugins.json`, add its doc under
 | [reports/2026-11-06-christmas-landing-page-active-dispatch-fix.md](reports/2026-11-06-christmas-landing-page-active-dispatch-fix.md) | **Christmas landing-page active-event dispatch fix** — `/natal/` and `/en/christmas/` render the full landing experience again while the Christmas event is active. Root cause: `conexao_commemorative_placement_context()` returned the event-driven copy of `landing_page` (`page_id = 0`) instead of the page-owned entry, so the shared landing shell returned early and the route stayed blank. Two `if` blocks reordered in one file; **+22 assertions** across the two existing commemorative suites (6 + 16 of them fail against the old precedence), **165 real-browser assertions** at 320×568 / 390×844 / 768×1024 / 1366×768 in the active state, and a live before/after capture. **No production, release, commit or push.** Evidence in [evidence/2026-11-06-christmas-landing-page-active-dispatch-fix/](evidence/2026-11-06-christmas-landing-page-active-dispatch-fix/) |
 | [reports/2026-11-08-christmas-micro-animations.md](reports/2026-11-08-christmas-micro-animations.md) | **Christmas micro-animations** — a shared-star motion language for the existing Christmas package: welcome star twinkle (CSS-only, once), selected-CTA sparkle (3–5 bounded particles, pointer + keyboard), gentle landing content reveal (`IntersectionObserver`, no-JS-safe), and a one-time journey-star glow pulse; the sparse ambient glints were found already implemented by the `site_wide_ambient` placement and deliberately NOT duplicated (one ambient scheduler). Purely additive (427 insertions, 0 deletions). **52** Node cases (gate **104**), **320** in-process Christmas assertions, lint green, **560** real-browser assertions (welcome **546**, signature **0-fail**, micro **14**) at the required viewports in PT + EN, with two pre-existing script-gate failures unchanged. Evidence in [evidence/2026-11-08-christmas-micro-animations/](evidence/2026-11-08-christmas-micro-animations/) |
 | [plans/2026-11-07-agent-skill-doc-audit.md](plans/2026-11-07-agent-skill-doc-audit.md) | The plan for the comprehensive agent, skills and documentation audit: inventory, 14 findings, the no-new-skills decision with rejected options, and the verification gates |
+| [reports/2026-11-08-commemorative-event-skill.md](reports/2026-11-08-commemorative-event-skill.md) | **Commemorative events documented for future agents** — the `AGENTS.md` `## Commemorative events` routing/guardrail section and the `wp-commemorative-event` skill (seven-phase workflow, engine/theme invariants, the Halloween/Christmas foot-guns, an opt-in browser matrix and the per-event checklist), created and then hardened in the same request (registry split, brief/calendar workflow, template-as-template handling, contract-driven preview and cadence rules, event-scoped tests, deliberate local startup). Documentation only: **no `wp-content/` file changed**, no event implemented; governance **372/0**, documentation drift **14/0**, registry 20 regions/0 writes, 169 links/0 dangling, with two **pre-existing** script-contract failures recorded. Evidence in [evidence/2026-11-08-commemorative-event-skill/](evidence/2026-11-08-commemorative-event-skill/) |
 | [reports/2026-11-07-agent-skill-doc-audit.md](reports/2026-11-07-agent-skill-doc-audit.md) | The audit report: instruction/skill/documentation findings with evidence, the skills and documentation assessments, the verification results with real numbers, and the git-safety confirmation |
 | [importers/](importers/) | Event/Lazer/IVVCC/Mondello import pipeline reports and plans |
 | [research/](research/) | Topic research notes (e.g. recruitment agencies, employment permits) |
@@ -272,3 +274,5 @@ _Last verified: 2026-11-07 by the Christmas welcome top-of-screen popup fix (the
 _Last verified: 2026-11-07 by the agent, skills and documentation audit (plan + report indexed; duplicated witch-animation row removed)_
 
 _Last verified: 2026-11-08 by the Christmas micro-animations task (report + evidence directory added to the index)_
+
+_Last verified: 2026-11-08 by the commemorative-event skill (skill added to the index and the count; `AGENTS.md` routes event work to it)_

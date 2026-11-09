@@ -77,6 +77,7 @@ git ls-files docs/evidence | wc -l
 | 2026-11-05 | `lazer-proximity-button-removal` · `leisure-coordinate-rest-permission` · `leisure-location-production-audit` · `leisure-location-stage-7` · `leisure-location-stage-8` · `leisure-location-stage-9` |
 | 2026-11-06 | `christmas-homepage-popup-fix` · `christmas-homepage-welcome` · `christmas-landing-page-active-dispatch-fix` · `christmas-signature-experience` · `commemorative-events` · `commemorative-local-remediation` · `commemorative-precedence` · `evidence-directory-audit` |
 | 2026-11-07 | `agent-skill-doc-audit` · `christmas-welcome-top-popup` |
+| 2026-11-08 | `christmas-micro-animations` · `commemorative-event-skill` |
 | undated | `lazer-wikimedia-image-seed` · `stage-4-1-rest-matrix` |
 
 Two dated pairs are easy to confuse and are **different records**:
