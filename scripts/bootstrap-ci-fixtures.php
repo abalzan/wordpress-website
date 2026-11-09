@@ -1669,6 +1669,31 @@ if ( $apply ) {
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
+// STEP 5b — commemorative events and landing pages.
+//
+// The commemorative engine has NO runtime fallback to a built-in list (§8.2):
+// a brand-new install has zero `commemorative_event` records until the one-time
+// seed migration runs. The acceptance matrix and the landing-page suite both
+// assert against `/natal/` and `/en/christmas/`, so these records must exist on
+// the deterministic CI site.
+//
+// `seed-commemorative-events.php` creates the six legacy occasions as
+// `commemorative_event` records (idempotent, keyed by `_ce_event_key`).
+// `seed-commemorative-landing-pages.php` creates the opted-in PT `/natal/` and
+// linked EN `/christmas/` landing pages for the `christmas` package.
+//
+// Both run AFTER the directory seeders because the landing-page modules
+// reference existing leisure/guide/post records, and BEFORE the EN translation
+// stages so Polylang can link the PT/EN landing-page pair.
+// ═════════════════════════════════════════════════════════════════════════════
+if ( $apply ) {
+	echo "\n=== step 5b: commemorative events and landing pages ===\n";
+
+	conexao_ci_run_script( 'seed-commemorative-events.php', array( '--apply' ), $stats );
+	conexao_ci_run_script( 'seed-commemorative-landing-pages.php', array( '--apply' ), $stats );
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
 // STEP 6 — the EN translation stages, through the ONE shared engine.
 //
 // Every stage below is run by the EXISTING `scripts/run-en-translation.php`

@@ -264,6 +264,16 @@ jobs:
       # Pinned third-party dependency, per docs/development.md and the Stage 2
       # report. Not "latest".
       POLYLANG_VERSION: 3.8.9
+      # Local test administrator credentials for the HTTP acceptance suites.
+      # These authenticate against http://localhost:8080 only — never production.
+      # Override via repository variables (WP_USERNAME, WP_TEST_USER_PASSWORD,
+      # WP_APPLICATION_PASSWORD) when hardening the local account; the documented
+      # defaults are local-only fixture credentials and are not production
+      # credentials. WP_APPLICATION_PASSWORD is required by
+      # scripts/ensure-local-test-user.php.
+      WP_USERNAME: ${{ vars.WP_USERNAME || 'test' }}
+      WP_TEST_USER_PASSWORD: ${{ vars.WP_TEST_USER_PASSWORD || 'test' }}
+      WP_APPLICATION_PASSWORD: ${{ vars.WP_APPLICATION_PASSWORD || 'abcd efgh ijkl mnop qrst uvwx' }}
 
     steps:
       - name: Checkout
@@ -432,6 +442,31 @@ jobs:
           wp plugin activate conexao-translation-rollout
           wp plugin activate conexao-en-translation
           wp plugin list
+
+      # -------------------------------------------------------------------
+      # Create the local test administrator used by the HTTP acceptance suites.
+      #
+      # `verify-commemorative-http.py` logs in as this user through wp-login.php
+      # to exercise the authenticated preview layer. The account is created by
+      # `scripts/ensure-local-test-user.php`, which reads WP_USERNAME and
+      # WP_TEST_USER_PASSWORD from the environment and never prints them.
+      # Credentials come from repository variables (or the documented local-only
+      # defaults) and are never hard-coded into this workflow file.
+      - name: Create the local test administrator
+        env:
+          WP_USERNAME: ${{ env.WP_USERNAME }}
+          WP_TEST_USER_PASSWORD: ${{ env.WP_TEST_USER_PASSWORD }}
+        run: |
+          set -euo pipefail
+          WP_CONTAINER="$(docker compose ps -q wordpress)"
+          [ -n "$WP_CONTAINER" ] || { echo "::error::no wordpress container"; exit 1; }
+          for v in WORDPRESS_DB_HOST WORDPRESS_DB_NAME WORDPRESS_DB_USER WORDPRESS_DB_PASSWORD; do
+            val="$(docker inspect -f '{{range .Config.Env}}{{println .}}{{end}}' "$WP_CONTAINER" \
+                   | grep "^$v=" | head -1 | cut -d= -f2-)"
+            export "$v=$val"
+          done
+          docker compose exec -T -e WP_USERNAME -e WP_TEST_USER_PASSWORD -e WP_APPLICATION_PASSWORD wordpress \
+            php /var/www/html/scripts/ensure-local-test-user.php --apply
 
       # -------------------------------------------------------------------
       # The deterministic synthetic site.
