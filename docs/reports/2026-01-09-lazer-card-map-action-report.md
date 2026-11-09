@@ -38,7 +38,7 @@ guard and treats an empty return as "no map URL available".
 | `wp-content/themes/conexao-br-irlanda/assets/css/leisure.css` | Added `.leisure-card-actions` container (flex, wraps) and `.leisure-card-cta--map` bordered secondary style |
 | `wp-content/themes/conexao-br-irlanda/assets/css/dark-mode.css` | Added dark-mode rules for `.leisure-card-cta--map` and its hover state |
 | `wp-content/themes/conexao-br-irlanda/tests/test-leisure-card-map-action.php` | New test (35 assertions, A–J) |
-| `docs/lazer-card-map-action-report.md` | This report |
+| [`docs/reports/2026-01-09-lazer-card-map-action-report.md`](2026-01-09-lazer-card-map-action-report.md) | This report |
 
 No changes to: `functions.php`, `inc/seo.php`, data model, single-leisure.php,
 filters, or any plugin. No new libraries, icon systems, or remote services.

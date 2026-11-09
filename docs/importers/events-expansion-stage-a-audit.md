@@ -504,7 +504,7 @@ provider uses multiple labels — multiple provider labels map to **one**
 registry row.
 
 Columns: `county` = canonical `conexao_county` term (already seeded, 26
-counties, see `docs/events-location-filters-stage-a-report.md`); slug = its
+counties, see [`docs/reports/2026-09-26-events-location-filters-stage-a-report.md`](../reports/2026-09-26-events-location-filters-stage-a-report.md); slug = its
 URL slug; HW = the `where[]` value(s) a single Heritage Week source for that
 county must request; EB = the Eventbrite discovery slug + accepted region
 labels for a single Eventbrite source.
@@ -735,7 +735,7 @@ existing importer audits in `docs/importers/`).
 ## 11. Location normalization strategy
 
 The site supports county + city/town filtering (`conexao_county` /
-`conexao_town`; see `docs/events-location-filters-stage-a-report.md`). The
+`conexao_town`; see [`docs/reports/2026-09-26-events-location-filters-stage-a-report.md`](../reports/2026-09-26-events-location-filters-stage-a-report.md)). The
 existing pipeline already guarantees: county term always set (source hint),
 town term optional, and county-only events render fine (`event_location`
 display falls back venue → town → county; 14/39 current events are

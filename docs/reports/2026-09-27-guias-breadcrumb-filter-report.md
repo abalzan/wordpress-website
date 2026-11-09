@@ -75,7 +75,7 @@ The guide category crumb now points to the existing filtered archive:
 | `wp-content/themes/conexao-br-irlanda/inc/seo.php` | In `conexao_seo_breadcrumb_data()`, the `conexao_category` crumb for `guide` posts now uses `conexao_get_guide_category_url( $terms[0]->slug, $terms[0]->slug )` instead of `get_term_link()`. All other CPTs keep `get_term_link()`. |
 | `wp-content/themes/conexao-br-irlanda/tests/test-guide-breadcrumb-filter.php` | NEW automated test (36 assertions). |
 | `docs/themes/conexao-br-irlanda.md` | Breadcrumb hierarchy section documents the guide category crumb behavior. |
-| `docs/guias-breadcrumb-filter-report.md` | This report. |
+| [`docs/reports/2026-09-27-guias-breadcrumb-filter-report.md`](2026-09-27-guias-breadcrumb-filter-report.md) | This report. |
 
 No CSS, no JS, no templates, no plugin, no taxonomy, no route was changed.
 
