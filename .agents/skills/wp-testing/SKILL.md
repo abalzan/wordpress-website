@@ -162,12 +162,19 @@ python3 tests/scripts/verify-agent-governance.py
 
 ## Failure handling
 
-- *`insufficient data: <hint>`* — a data prerequisite is missing. Seed it
-  (see `scripts/README.md` for the seed scripts) and re-run. Do not delete the
-  prerequisite to make the suite pass.
+- *`insufficient data: <hint>`* — a data prerequisite is missing. Do not seed
+  automatically. Inspect the current stack state first (`docker compose ps`),
+  reuse what is already running, and request explicit approval before seeding
+  data or making any material environment/database/session change. If approval
+  is not granted, record the layer as `BLOCKED` / `not tested` and continue
+  only with non-mutating checks. Do not delete the prerequisite to make the
+  suite pass.
 - *`[BLOCKED] HTTP acceptance environment unavailable`* — the local site is not
-  reachable. Start the stack, or record the layer as blocked. An unavailable
-  layer is never a pass and is never silently skipped.
+  reachable. Inspect first (`docker compose ps`); reuse an already-running
+  environment. Request explicit approval before starting, recreating or
+  rebuilding containers. If approval is not granted, record the layer as
+  `BLOCKED` / `not tested`; an unavailable layer is never a pass and is never
+  silently skipped.
 - *A permanent gate reports `new > 0`* — you introduced the violation. Fix it;
   do not move it to the baseline.
 - *A permanent gate reports `pre_existing`* — the debt predates you. It still

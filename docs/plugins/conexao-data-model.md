@@ -230,3 +230,5 @@ Legacy meta boxes (Class `Conexao_Data_Model_Meta`). For event/guide/job/sponsor
 - `includes/class-relationships.php` — taxonomy seeds
 - `includes/class-meta.php` — meta registration and editorial boxes
 - `includes/class-contacts.php` — Apoiador contacts model
+
+_Last verified: 2026-11-09 by the plugin documentation audit_

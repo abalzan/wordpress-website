@@ -352,3 +352,5 @@ directly through the `active_plugins` option, e.g.:
 ```bash
 docker compose exec wordpress php -r 'require "/var/www/html/wp-load.php"; $p = get_option("active_plugins"); $p = array_values(array_diff($p, ["conexao-event-importer/conexao-event-importer.php"])); update_option("active_plugins", $p);'
 ```
+
+_Last verified: 2026-11-09 by the plugin documentation audit_

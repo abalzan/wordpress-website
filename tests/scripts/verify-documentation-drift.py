@@ -55,7 +55,16 @@ REPO_ROOT = os.environ.get("CONEXAO_REPO_ROOT") or os.path.abspath(
 
 GATE_ID = "documentation_drift"
 
-LAST_VERIFIED = re.compile(r"^_Last verified: \d{4}-\d{2}-\d{2} by .+_$", re.M)
+LAST_VERIFIED = re.compile(r"^_Last verified: \d{4}-\d{2}-\d{2} by .+_$")
+
+
+def terminal_marker_ok(body: str) -> bool:
+    """True when the last non-empty line is a valid `_Last verified:` marker.
+
+    Trailing blank lines are allowed; ordinary content after the marker is not.
+    """
+    lines = [line for line in body.splitlines() if line.strip()]
+    return bool(lines) and LAST_VERIFIED.match(lines[-1]) is not None
 
 # The living reference documents §9.1 gives an owner to, plus the index and the
 # two Stage K templates. These are the documents that must stay current.
@@ -75,7 +84,35 @@ LIVING_DOCS = (
     "docs/templates/plan.md",
     "docs/templates/report.md",
     "docs/themes/conexao-br-irlanda.md",
+    # Commemorative event/content references owned by §9.1 as living canonical
+    # references (required by wp-commemorative-event).
+    "docs/commemorative-events.md",
+    "docs/commemorative-content.md",
 )
+
+
+def plugin_documentation_paths() -> tuple[str, ...]:
+    """Derive active plugin documentation paths from plugins.json.
+
+    §9.1 assigns each `docs/plugins/<slug>.md` to a plugin maintainer, and
+    plugins.json is the single authoritative registry. Deriving the paths from
+    the registry avoids maintaining a second, hand-maintained plugin list.
+    Generated lifecycle-metadata regions (lines 3-16 of each plugin doc) are
+    owned by scripts/generate-registry-docs.php; the `_Last verified` marker is
+    added in the manual area below the generated block, never inside it.
+    """
+    registry_path = os.path.join(REPO_ROOT, "plugins.json")
+    paths: list[str] = []
+    if os.path.isfile(registry_path):
+        try:
+            with open(registry_path, encoding="utf-8") as handle:
+                data = json.load(handle)
+            for entry in data.get("load_order", []):
+                if isinstance(entry, dict) and entry.get("documentation"):
+                    paths.append(entry["documentation"])
+        except (ValueError, OSError):
+            pass
+    return tuple(paths)
 
 # The authoritative sources Stage K governance must keep pointing at.
 REQUIRED_AUTHORITIES = (
@@ -138,22 +175,24 @@ def main() -> int:
     # --- 2. §9.2 last-verified markers on the living document set ----------
     print("\n   -- §9.2 last-verified markers (living reference set) --")
     missing_markers = []
-    for relative in LIVING_DOCS:
+    # The static living set plus the plugin docs derived from plugins.json.
+    living = list(LIVING_DOCS) + list(plugin_documentation_paths())
+    for relative in living:
         path = os.path.join(REPO_ROOT, relative)
         if not os.path.isfile(path):
             missing_markers.append(f"{relative} (missing)")
             continue
         with open(path, encoding="utf-8", errors="replace") as handle:
             body = handle.read()
-        if not LAST_VERIFIED.search(body):
-            missing_markers.append(f"{relative} (no `_Last verified: YYYY-MM-DD by <area>_`)")
+        if not terminal_marker_ok(body):
+            missing_markers.append(f"{relative} (no terminal `_Last verified: YYYY-MM-DD by <area>_`)")
 
     check(
         not missing_markers,
         "every living reference document ends with a `_Last verified:` marker — "
         + "; ".join(missing_markers),
     )
-    print(f"   living documents checked: {len(LIVING_DOCS)}, missing marker: {len(missing_markers)}")
+    print(f"   living documents checked: {len(living)}, missing marker: {len(missing_markers)}")
 
     # --- 3. The historical corpus is REPORTED, not silently ignored --------
     # Counted explicitly so the number is visible rather than assumed.
@@ -169,9 +208,25 @@ def main() -> int:
                 continue
             with open(path, encoding="utf-8", errors="replace") as handle:
                 body = handle.read()
-            if not LAST_VERIFIED.search(body):
+            if not terminal_marker_ok(body):
                 historical += 1
     print(f"   historical/audit documents without the marker (reported, not gated): {historical}")
+
+    # --- 3a. Negative proofs for the terminal-marker rule ------------------
+    # A valid marker followed by ordinary content must FAIL; the same document
+    # with the marker as its final non-empty line must PASS. This keeps the
+    # two gates aligned on one definition of a terminal marker.
+    marker = "_Last verified: 2026-11-09 by terminal-marker proof"
+    doc_with_trailing_content = f"intro\n{marker}\nordinary content after the marker\n"
+    doc_with_terminal_marker = f"intro\nordinary content\n\n{marker}_\n\n"
+    check(
+        not terminal_marker_ok(doc_with_trailing_content),
+        "negative proof: marker followed by content must fail",
+    )
+    check(
+        terminal_marker_ok(doc_with_terminal_marker),
+        "positive proof: marker as final non-empty line (trailing blanks allowed) must pass",
+    )
 
     # --- 4. §9.2 no root-level report or evidence file --------------------
     print("\n   -- §9.2 no root-level report/evidence file --")
@@ -200,10 +255,20 @@ def main() -> int:
     agents_path = os.path.join(REPO_ROOT, "AGENTS.md")
     with open(agents_path, encoding="utf-8", errors="replace") as handle:
         agents_body = handle.read()
-    agents_lines = agents_body.count("\n") + 1
+    # Count physical lines accurately: splitlines() does not invent a trailing
+    # empty line for a final newline, so a 249-line file ending in "\n" is 249,
+    # not 250. A genuine 250-line file (with or without a final newline) still
+    # fails the <250 policy.
+    agents_lines = len(agents_body.splitlines())
     check(
         agents_lines < 250,
         f"AGENTS.md stays an orientation document (<250 lines) — it is {agents_lines} lines",
+    )
+    # Negative proof: a file with exactly 250 physical lines must fail even if
+    # it ends with a newline (splitlines() yields 250 entries either way).
+    check(
+        len(("x\n" * 250).splitlines()) == 250 and len(("x\n" * 249).splitlines()) == 249,
+        "line-count proof: 250 physical lines counts as 250, 249 as 249",
     )
     check(
         "docs/engineering-standard.md" in agents_body,

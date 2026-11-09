@@ -271,8 +271,9 @@ _Last verified: 2026-11-06 by the evidence directory audit and cleanup (the evid
 
 _Last verified: 2026-11-06 by the Christmas homepage popup UI fix (the report and evidence directory added to the index)_
 _Last verified: 2026-11-07 by the Christmas welcome top-of-screen popup fix (the report and evidence directory added to the index)_
-_Last verified: 2026-11-09 by the agent skills review and hardening_
 
 _Last verified: 2026-11-08 by the Christmas micro-animations task (report + evidence directory added to the index)_
 
 _Last verified: 2026-11-08 by the commemorative-event skill (skill added to the index and the count; `AGENTS.md` routes event work to it)_
+
+_Last verified: 2026-11-09 by the agent skills review and hardening_

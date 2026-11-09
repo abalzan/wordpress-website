@@ -345,3 +345,11 @@ _Last verified: 2026-11-06 by the evidence directory audit and cleanup (the audi
 _Last verified: 2026-11-06 by the Christmas homepage popup UI fix (index row added; the welcome-modal row's inline-band contract marked superseded)_
 _Last verified: 2026-11-07 by the Christmas welcome top-of-screen popup fix (index row added for the top-pinned, preview-auto-open welcome)_
 _Last verified: 2026-11-07 by the agent, skills and documentation audit (the audit report row added)_
+
+## Agent skills review and hardening (2026-11-09)
+
+| Report | Content |
+|---|---|
+| [`2026-11-09-agent-skills-review-hardening.md`](2026-11-09-agent-skills-review-hardening.md) | **Follow-up reconciliation of the agent-skills review and hardening pushed at `a52bad7`.** Fixes the documentation-drift AGENTS.md line-count off-by-one (`count("\n") + 1` → `len(splitlines())` with a negative/edge-case proof), strengthens terminal `_Last verified:` marker validation in both governance gates (last non-empty line must be the marker, with discriminating negative/positive proofs), reconciles the living-document inventory with §9.1 (commemorative references added; plugin docs derived from `plugins.json`; `_Last verified` markers added to plugin docs lacking them in manual areas below generated blocks), aligns local-environment side-effect wording in `wp-testing`, `wp-write-in-process-test` and `wp-http-acceptance-matrix` failure handling (inspect first, reuse running stack, approval before side effects, otherwise `BLOCKED` / `not tested`), fills the task-specific plan, reconciles the task report against the actual pushed commit, and updates the report and documentation indexes. Documentation/governance only — no `wp-content/`, production, release or Flutter/mobile changes. |
+
+_Last verified: 2026-11-09 by the agent skills review and hardening (follow-up reconciliation of the pushed `a52bad7` state)_

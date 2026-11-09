@@ -78,3 +78,5 @@ Full list in `create-pages.php`. Includes:
 
 - `conexao-content.php` — shortcodes and hooks
 - `create-pages.php` — page creation logic
+
+_Last verified: 2026-11-09 by the plugin documentation audit_

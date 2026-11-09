@@ -200,3 +200,4 @@ the commemorative presentation no longer reads it. Its date methods gained an
 optional injected clock (`is_active( $now = null )`) so the Halloween regression
 suite is date-independent, as r10 §9.1 requires.
 
+_Last verified: 2026-11-09 by the plugin documentation audit_

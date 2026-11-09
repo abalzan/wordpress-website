@@ -383,3 +383,5 @@ Save-flow regression suites live in the repo's `scripts/` directory:
 
 Both suites are destructive-safe: they create disposable records and delete them on exit.
 Never run them against production.
+
+_Last verified: 2026-11-09 by the plugin documentation audit_

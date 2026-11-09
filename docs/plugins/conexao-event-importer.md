@@ -1684,3 +1684,5 @@ meta group deleted, so a withdrawn series can never leave an orphan rule.
 - `includes/class-conexao-laois-tourism-series.php` — Laois collapsed-series rule
 - `includes/class-event-export.php` / `includes/class-event-import.php` — the local→production transfer (UUIDs + embedded images)
 - `includes/class-event-sources.php` — source CRUD + dashboard
+
+_Last verified: 2026-11-09 by the plugin documentation audit_

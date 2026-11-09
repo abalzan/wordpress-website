@@ -146,7 +146,10 @@ CONEXAO_TEST_BASE_URL=<local site> \
 - *A row passes with a wrong `expect_contains`.* It is vacuous. Rewrite the
   expectation so it discriminates.
 - *The suite is blocked (site unreachable).* Record it as blocked, not as a pass.
-  Start the stack and re-run; do not remove the row to avoid the failure.
+  Inspect the current stack state first (`docker compose ps`) and reuse an
+  already-running environment. Request explicit approval before starting,
+  recreating or rebuilding containers. If approval is not granted, record the
+  layer as `BLOCKED` / `not tested`; do not remove the row to avoid the failure.
 
 ## Evidence and reporting
 

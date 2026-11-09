@@ -1,4 +1,4 @@
-# Report — <stage / task name>
+# Report — Agent skills review and hardening (follow-up reconciliation)
 
 > **This is a template.** Copy it to `docs/reports/<date>-<stage>-<topic>.md`
 > (or `docs/reports/site/` for repository-engineering stages) and fill it in. Do
@@ -23,10 +23,11 @@
 | **Author / agent** | AI assistant using Copilot SDK in VS Code |
 | **Branch** | commemorative-events |
 | **Start SHA** | 38c130d8188cba312f92ee96511df8540f7bdba0 |
-| **Final SHA** | 38c130d8188cba312f92ee96511df8540f7bdba0 (no commit made) |
-| **Working tree at finish** | dirty — 17 modified files + 1 new plan file (all documentation/skills/governance) |
+| **Final SHA** | a52bad7650d4289f030f0c6c230552d01113fc52 (commit `chore: review and harden agent skills documentation`, pushed) |
+| **Working tree at finish** | clean — 20 modified files + 2 added (all documentation/skills/governance); 8 pre-existing stashes preserved on `feat/christmas-easter-egg` and `master` |
+| **Commit/push status** | Committed and pushed at `a52bad7`; this report is a follow-up reconciliation of that pushed state, not a claim that the work was completed in the earlier stage |
 | **Skills followed** | `wp-repository`, `wp-update-docs` |
-| **Authoritative docs consulted** | `docs/engineering-standard.md` (§9.2, §13.1, §13.2, §14), `.agents/skills/README.md`, `AGENTS.md`, `docs/README.md`, `docs/templates/plan.md`, `docs/templates/report.md`, `plugins.json` |
+| **Authoritative docs consulted** | `docs/engineering-standard.md` (§9.1, §9.2, §13.1, §13.2, §14), `.agents/skills/README.md`, `AGENTS.md`, `docs/README.md`, `docs/templates/plan.md`, `docs/templates/report.md`, `plugins.json` |
 
 ## 1. Scope completed
 
@@ -67,7 +68,30 @@ current canonical sources, and hardened the governance surface:
 
 ## 2. Scope NOT completed
 
-None — all findings from the attached review prompt were addressed.
+The plan and index corrections in this reconciliation (filling
+`docs/plans/2026-11-09-agent-skills-review-hardening.md`, reconciling this
+report, updating `docs/reports/README.md` and `docs/README.md` marker ordering)
+were **not** part of the earlier pushed stage. They are represented here as a
+follow-up reconciliation, not as work already completed.
+
+All findings from the attached review prompt were addressed in this
+reconciliation:
+
+1. AGENTS.md line-count off-by-one fixed (`count("\n") + 1` → `len(splitlines())`)
+   with a negative/edge-case proof; the `<250` policy is unchanged.
+2. Terminal-marker validation strengthened in both governance gates (last
+   non-empty line must be the marker), with discriminating negative/positive
+   proofs.
+3. Living-document inventory reconciled with §9.1: commemorative references
+   added; plugin docs derived from `plugins.json`; `_Last verified` markers
+   added to plugin docs lacking them (in manual areas below generated blocks).
+4. Local-environment side-effect wording aligned in `wp-testing`,
+   `wp-write-in-process-test` and `wp-http-acceptance-matrix` failure handling
+   (inspect first, reuse running stack, approval before side effects, otherwise
+   `BLOCKED` / `not tested`).
+5. Task-specific plan filled in (no blank template sections).
+6. Task report reconciled against the actual pushed commit (`a52bad7`).
+7. Report index and documentation-index marker ordering updated.
 
 ## 3. Files added / modified / deleted
 
@@ -79,24 +103,35 @@ None — all findings from the attached review prompt were addressed.
 | `.agents/skills/wp-commemorative-event/SKILL.md` | modified | `_Last verified_` marker |
 | `.agents/skills/wp-content-change/SKILL.md` | modified | plan-path convention + orphaned bullets moved + `_Last verified_` |
 | `.agents/skills/wp-frontend-perf/SKILL.md` | modified | local-env alignment + `_Last verified_` |
-| `.agents/skills/wp-http-acceptance-matrix/SKILL.md` | modified | local-env alignment + `_Last verified_` |
+| `.agents/skills/wp-http-acceptance-matrix/SKILL.md` | modified | local-env alignment + failure-handling side-effect wording + `_Last verified_` |
 | `.agents/skills/wp-plugin-registry/SKILL.md` | modified | `_Last verified_` marker |
 | `.agents/skills/wp-production-operations/SKILL.md` | modified | Preconditions reconstructed + orphaned prose removed + `_Last verified_` |
 | `.agents/skills/wp-release-deploy/SKILL.md` | modified | `_Last verified_` marker |
 | `.agents/skills/wp-repository/SKILL.md` | modified | plan/report copy convention + `_Last verified_` |
 | `.agents/skills/wp-security-review/SKILL.md` | modified | `_Last verified_` marker |
-| `.agents/skills/wp-testing/SKILL.md` | modified | Step 10 completed + local-env alignment + `_Last verified_` |
+| `.agents/skills/wp-testing/SKILL.md` | modified | Step 10 completed + local-env alignment + failure-handling side-effect wording + `_Last verified_` |
 | `.agents/skills/wp-translation-rollout/SKILL.md` | modified | `_Last verified_` marker |
 | `.agents/skills/wp-update-docs/SKILL.md` | modified | plan-path convention + `_Last verified_` |
-| `.agents/skills/wp-write-in-process-test/SKILL.md` | modified | local-env alignment + `_Last verified_` |
+| `.agents/skills/wp-write-in-process-test/SKILL.md` | modified | local-env alignment + failure-handling side-effect wording + `_Last verified_` |
 | `AGENTS.md` | modified | Running things section + `_Last verified_` marker |
 | `docs/engineering-standard.md` | modified | §13.1 commemorative row + `_Last verified_` marker |
-| `docs/README.md` | modified | `_Last verified_` marker |
-| `docs/plans/2026-11-09-agent-skills-review-hardening.md` | added | task-specific plan copied from template |
-| `docs/reports/2026-11-09-agent-skills-review-hardening.md` | added | task-specific report copied from template |
-| `tests/scripts/verify-agent-governance.py` | modified | REQUIRED_SKILLS + full-format order + last-verified + count wording |
+| `docs/README.md` | modified | `_Last verified_` marker + marker ordering |
+| `docs/plugins/conexao-admin-ux.md` | modified | Added `_Last verified_` marker (manual area below generated block) |
+| `docs/plugins/conexao-commemorative.md` | modified | Added `_Last verified_` marker (manual area below generated block) |
+| `docs/plugins/conexao-content.md` | modified | Added `_Last verified_` marker (manual area below generated block) |
+| `docs/plugins/conexao-data-model.md` | modified | Added `_Last verified_` marker (manual area below generated block) |
+| `docs/plugins/conexao-event-importer.md` | modified | Added `_Last verified_` marker (manual area below generated block) |
+| `docs/plugins/conexao-event-runtime.md` | modified | Added `_Last verified_` marker (manual area below generated block) |
+| `docs/plugins/conexao-en-translation.md` | modified | Fixed marker to use `by` (terminal marker) |
+| `docs/plugins/conexao-leisure-migration.md` | modified | Added `_Last verified_` marker (manual area below generated block) |
+| `docs/plugins/conexao-sponsor-migration.md` | modified | Added `_Last verified_` marker (manual area below generated block) |
+| `docs/plugins/README.md` | modified | Added `_Last verified_` marker (manual area below generated block) |
+| `docs/plans/2026-11-09-agent-skills-review-hardening.md` | added | Task-specific plan filled from template |
+| `docs/reports/2026-11-09-agent-skills-review-hardening.md` | added | Task-specific report reconciled against pushed commit |
+| `tests/scripts/verify-agent-governance.py` | modified | Terminal-marker validation for skills and skills index |
+| `tests/scripts/verify-documentation-drift.py` | modified | AGENTS.md line-count fix; terminal-marker validation; living-docs inventory extended; negative proofs |
 
-Counts: **1 added plan, 1 added report, 19 modified files**. No file deleted.
+Counts: **2 added (plan + report), 20 modified**. No file deleted.
 No file under `wp-content/` was changed. No runtime, content, database,
 production, or Flutter/mobile file was touched.
 
@@ -150,10 +185,11 @@ gap.
 
 | Command | Exit | Result |
 |---|---|---|
-| `python3 tests/scripts/verify-agent-governance.py` | 0 | 388 passed, 0 failed (baseline was 372 passed, 0 failed) |
+| `python3 tests/scripts/verify-documentation-drift.py` | 0 | 17 passed, 0 failed (AGENTS.md 249 lines; 28 living docs with terminal markers; negative/positive proofs pass) |
+| `python3 tests/scripts/verify-agent-governance.py` | 0 | 388 passed, 0 failed (all 15 skills + index carry terminal markers) |
 | `php scripts/generate-registry-docs.php --check` | 0 | registry OK: 11 plugins validated, 20 generated regions current (zero writes) |
 | `git diff --check` | 0 | clean |
-| `./scripts/run-tests.sh --scripts` | 1 | 19 passed, 2 failed — pre-existing version mismatches in `dist/release.json` build artifacts (unrelated to this documentation change) |
+| `./scripts/run-tests.sh --scripts` | 1 | 19 passed, 2 failed — pre-existing version mismatches in `dist/release.json` build artifacts (unrelated to this documentation/governance change) |
 
 ### Numeric test results
 
@@ -173,16 +209,25 @@ Not in scope — no release was built.
 
 ## 10. Failure proofs / negative tests
 
-Not applicable — this is a documentation/governance change with no runtime
-behaviour to prove negative against. The governance gate itself is a negative
-check: it fails on missing sections, duplicate headings, missing `_Last verified_`
-markers, dangling skill references, second registries, and localhost/credential
-literals.
+The documentation-drift gate now carries two negative proofs:
+
+1. **Line-count proof**: `len(("x\n" * 250).splitlines()) == 250` and
+   `len(("x\n" * 249).splitlines()) == 249` — a genuine 250-line file still
+   fails the `<250` policy; a 249-line file ending in a newline counts as 249.
+2. **Terminal-marker proof**: a document with a valid `_Last verified:` marker
+   followed by ordinary content must fail; the same document with the marker as
+   its final non-empty line (trailing blank lines allowed) must pass. Both
+   gates share this definition.
+
+The governance gate itself is a negative check: it fails on missing sections,
+duplicate headings, missing `_Last verified_` markers, dangling skill
+references, second registries, and localhost/credential literals.
 
 ## 11. Regression comparison
 
 | | Before | After |
 |---|---|---|
+| Documentation drift gate | FAIL (AGENTS.md 250 lines) | PASS (17/0) |
 | Governance gate passed | 372 | 388 |
 | Governance gate failed | 0 | 0 |
 | Registry drift | OK | OK |

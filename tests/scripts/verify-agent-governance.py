@@ -163,7 +163,16 @@ NOTES: list[str] = []
 
 # The §9.2 marker. The skill index is a living governance document, so it is
 # held to the same last-verified rule as docs/README.md and AGENTS.md.
-LAST_VERIFIED_RE = re.compile(r"^_Last verified: \d{4}-\d{2}-\d{2} by .+_$", re.M)
+LAST_VERIFIED_RE = re.compile(r"^_Last verified: \d{4}-\d{2}-\d{2} by .+_$")
+
+
+def terminal_marker_ok(body: str) -> bool:
+    """True when the last non-empty line is a valid `_Last verified:` marker.
+
+    Trailing blank lines are allowed; ordinary content after the marker is not.
+    """
+    lines = [line for line in body.splitlines() if line.strip()]
+    return bool(lines) and LAST_VERIFIED_RE.match(lines[-1]) is not None
 
 
 def check(condition: bool, message: str) -> bool:
@@ -302,12 +311,28 @@ def main() -> int:
         )
         # §9.2: every document ends with a _Last verified_ marker.
         check(
-            LAST_VERIFIED_RE.search(body) is not None,
+            terminal_marker_ok(body),
             f".agents/skills/{name}/SKILL.md does not carry its _Last verified_ "
-            f"line (engineering standard §9.2)",
+            f"line as its final non-empty line (engineering standard §9.2)",
         )
         section_report.append(f"    {name}: {' -> '.join(found)}")
     note("skill sections:\n" + "\n".join(section_report))
+
+    # Negative/positive proofs for the terminal-marker rule: a valid marker
+    # followed by ordinary content must FAIL; the same document with the marker
+    # as its final non-empty line (trailing blanks allowed) must PASS. Both
+    # gates share this definition of a terminal marker.
+    marker = "_Last verified: 2026-11-09 by terminal-marker proof"
+    doc_with_trailing_content = f"intro\n{marker}_\nordinary content after the marker\n"
+    doc_with_terminal_marker = f"intro\nordinary content\n\n{marker}_\n\n"
+    check(
+        not terminal_marker_ok(doc_with_trailing_content),
+        "negative proof: marker followed by content must fail",
+    )
+    check(
+        terminal_marker_ok(doc_with_terminal_marker),
+        "positive proof: marker as final non-empty line (trailing blanks allowed) must pass",
+    )
 
     # -- 5. Every required Stage K skill is present -------------------------
     for name in REQUIRED_SKILLS:
@@ -843,9 +868,9 @@ def main() -> int:
                 f"the stale entry so the index matches .agents/skills/",
             )
         check(
-            LAST_VERIFIED_RE.search(index) is not None,
-            f"{SKILL_INDEX} does not carry its _Last verified_ line "
-            f"(engineering standard §9.2)",
+            terminal_marker_ok(index),
+            f"{SKILL_INDEX} does not carry its _Last verified_ line as its "
+            f"final non-empty line (engineering standard §9.2)",
         )
 
     report_and_exit()

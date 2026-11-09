@@ -78,3 +78,5 @@ php scripts/generate-registry-docs.php --write   # write generated regions
 Output: `dist/*.zip` — one ZIP per registry entry with `build: true`, each
 structured for WordPress plugin upload. The list is generated from
 `plugins.json`; retired rollout plugins are never packaged.
+
+_Last verified: 2026-11-09 by the plugin documentation audit_
