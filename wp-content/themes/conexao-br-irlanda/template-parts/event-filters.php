@@ -70,6 +70,19 @@ if ( is_wp_error( $county_terms ) ) {
 	$county_terms = array();
 }
 
+// Placeholder county slugs must never be offered to a visitor. They are
+// filtered ONCE here so the desktop dropdown and the mobile sheet render the
+// SAME set: the sheet used to iterate the unfiltered list, so a placeholder
+// the dropdown had already dropped could still reach a phone visitor.
+$county_terms = array_values(
+	array_filter(
+		$county_terms,
+		static function ( $term ) {
+			return 'ev-uncounty' !== $term->slug;
+		}
+	)
+);
+
 // Towns used by published events, scoped to the selected county when one
 // is active (County -> City cascade — same helper the query layer relies on).
 $town_terms = function_exists( 'conexao_get_event_towns' ) ? conexao_get_event_towns( $current_county ) : conexao_get_terms_for_post_type( 'conexao_town', 'event' );
@@ -212,9 +225,7 @@ $event_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int) $
 								      // county (towns are scoped server-side), so invalid
 								      // County + City combinations can never be built from the UI.
 								// Skip invalid/placeholder county slug that should not be displayed to visitors.
-	if ( 'ev-uncounty' === $term->slug ) {
-		continue;
-	}
+								// (Those slugs are already filtered out of `$county_terms`.)
 	$county_link_state = array( 'county' => ( $term->slug === $current_county ) ? '' : $term->slug );
 								if ( $term->slug !== $current_county ) {
 									$county_link_state['cidade'] = '';

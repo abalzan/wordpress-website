@@ -494,6 +494,33 @@ function conexao_ci_fixture_named_pairs(): array {
 			'town'      => 'Dublin',
 			'offset'    => 0,
 		),
+		// The Christmas landing page's `agenda` module is populated from the
+		// SHARED upcoming-events engine and filtered by an EDITORIAL keyword
+		// list (`christmas`, `natal`, …). Without an upcoming record whose
+		// title matches one of those words the module legitimately renders
+		// nothing, and both landing pages — plus the acceptance rows that
+		// assert `ce-module--agenda` — lose it.
+		//
+		// The publication date and the EVENT date are deliberately two
+		// different facts here: `offset` stays 0 so `post_date` is today and
+		// WordPress keeps the record `publish` (a future publication date is
+		// derived to `post_status = future`, which removes it from every
+		// public query), while `event_offset` puts the EVENT in the future so
+		// the runtime treats it as upcoming. The data model's `_event_date` is
+		// a date (`Y-m-d`), which is exactly what the recurrence evaluator
+		// validates.
+		array(
+			'pt_slug'      => 'festa-natal-dublin-2026',
+			'type'         => 'event',
+			'title'        => 'Feira de Natal sintética em Dublin',
+			'en_slug'      => 'festa-natal-dublin-2026-en',
+			'en_title'     => 'Synthetic Christmas Gathering in Dublin',
+			'county'       => 'Dublin',
+			'town'         => 'Dublin',
+			'offset'       => 0,
+			'event_offset' => 15,
+		),
+
 		// Source-inherited EN: an event whose SOURCE is already English, so the
 		// EN record IS the record (no PT master to translate).
 		// The two events the REST suite requires to be HIDDEN. They are not

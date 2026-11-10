@@ -967,6 +967,22 @@ if ( $apply ) {
 				$pt_meta['_event_location'] = (string) $pair['town'] . ', ' . (string) $pair['county'];
 				$pt_meta['_event_status']   = 'published';
 
+				// An OPTIONAL event-date offset, separate from the publication
+				// date above. `offset` drives `post_date`; a `post_date` in the
+				// future is derived to `post_status = future`, which removes the
+				// record from every public query. A fixture that must be
+				// UPCOMING therefore needs the two dates apart: publish today,
+				// happen later. `_event_date` is contractually `Y-m-d` — the
+				// runtime's recurrence evaluator validates exactly that shape —
+				// so this branch writes a date, never a datetime.
+				if ( isset( $pair['event_offset'] ) ) {
+					$event_offset           = (int) $pair['event_offset'];
+					$pt_meta['_event_date'] = gmdate(
+						'Y-m-d',
+						strtotime( current_time( 'Y-m-d' ) . ' ' . ( $event_offset >= 0 ? '+' : '' ) . $event_offset . ' days' )
+					);
+				}
+
 				// The event SOURCE language, which is a different fact from the
 				// record language. An event imported from an already-English source
 				// has no Portuguese original to translate, so the EN record IS the

@@ -147,7 +147,13 @@ if ( isset( $GLOBALS['wpdb'] ) ) {
 	// Polylang copies none of the shared `_ce_*` configuration into the EN record, so
 	// the canonical record is the one that still owns `_ce_rule`.
 	foreach ( $ce_welcome_records as $ce_welcome_candidate ) {
-		if ( '' !== (string) get_post_meta( (int) $ce_welcome_candidate, '_ce_rule', true ) ) {
+		// "still owns `_ce_rule`" has to be asked of the STORAGE layer, not of
+		// `get_post_meta()`: `_ce_rule` is registered with the default
+		// `fixed_annual`, so the identity-only EN record reads back as
+		// non-empty as well and the loop could select it (its `_ce_presentation`
+		// and `_ce_date` read back as the registered `''` defaults). A
+		// registered default must never stand in for a stored value.
+		if ( metadata_exists( 'post', (int) $ce_welcome_candidate, '_ce_rule' ) ) {
 			$ce_welcome_id = (int) $ce_welcome_candidate;
 		}
 	}
