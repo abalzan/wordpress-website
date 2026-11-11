@@ -1,0 +1,15 @@
+# route matrix (read-only GET); 'active' = signed preview of christmas, 'public' = no preview
+active  /                welcome=6 landing_title=0 modules=0 ambient=1 banner=1 ce-active=2
+active  /guias/          welcome=0 landing_title=0 modules=0 ambient=1 banner=1 ce-active=2
+active  /lazer/          welcome=0 landing_title=0 modules=0 ambient=1 banner=1 ce-active=2
+active  /empregos/       welcome=0 landing_title=0 modules=0 ambient=0 banner=0 ce-active=0
+active  /en/             welcome=6 landing_title=0 modules=0 ambient=1 banner=1 ce-active=2
+active  /natal/          welcome=0 landing_title=1 modules=5 ambient=1 banner=1 ce-active=2
+active  /en/christmas/   welcome=0 landing_title=1 modules=5 ambient=1 banner=1 ce-active=2
+public  /                welcome=0 landing_title=0 modules=0 ambient=0 banner=0 ce-active=0
+public  /guias/          welcome=0 landing_title=0 modules=0 ambient=0 banner=0 ce-active=0
+public  /lazer/          welcome=0 landing_title=0 modules=0 ambient=0 banner=0 ce-active=0
+public  /empregos/       welcome=0 landing_title=0 modules=0 ambient=0 banner=0 ce-active=0
+public  /en/             welcome=0 landing_title=0 modules=0 ambient=0 banner=0 ce-active=0
+public  /natal/          welcome=0 landing_title=1 modules=5 ambient=0 banner=0 ce-active=2
+public  /en/christmas/   welcome=0 landing_title=1 modules=5 ambient=0 banner=0 ce-active=2

@@ -29,7 +29,7 @@ final class Conexao_Admin_Ux_Config {
 	 *
 	 * @var string[]
 	 */
-	const SUPPORTED_TYPES = array( 'event', 'guide', 'job', 'sponsor', 'course_provider', 'leisure', 'recruitment_agency', 'permit_employer' );
+	const SUPPORTED_TYPES = array( 'event', 'guide', 'job', 'sponsor', 'course_provider', 'leisure', 'recruitment_agency', 'permit_employer', 'commemorative_event' );
 
 	/**
 	 * Get the full configuration for a post type.
@@ -60,6 +60,7 @@ final class Conexao_Admin_Ux_Config {
 				'leisure'             => self::leisure_config(),
 				'recruitment_agency'  => self::recruitment_agency_config(),
 				'permit_employer'     => self::permit_employer_config(),
+				'commemorative_event' => self::commemorative_event_config(),
 			);
 		}
 
@@ -1180,5 +1181,205 @@ final class Conexao_Admin_Ux_Config {
 				array( 'key' => 'review', 'label' => 'Em revisão', 'status' => 'needs_review' ),
 			),
 		);
+	}
+
+	/**
+	 * ------------------------------------------------------------------
+	 * EVENTOS COMEMORATIVOS (architecture proposal r10)
+	 * ------------------------------------------------------------------
+	 *
+	 * The record is a wp-admin configuration container: no public URL, no
+	 * archive, no sitemap entry. The list columns are computed by the ENGINE
+	 * (`conexao-commemorative`); this config only declares them, and the list
+	 * renderer asks the engine through the `conexao_admin_ux_render_column`
+	 * filter, so wp-admin never computes scheduling itself.
+	 *
+	 * The annual manual preference (`_ce_year_precedence`) and the read-only
+	 * diagnostics live in the engine's own meta box, because they are engine
+	 * protocol (occurrence years, eligibility, cache boundary), not admin chrome.
+	 *
+	 * @return array
+	 */
+	private static function commemorative_event_config() {
+		return array(
+			'post_type'      => 'commemorative_event',
+			'labels'         => array(
+				'singular'           => 'Evento Comemorativo',
+				'plural'             => 'Eventos Comemorativos',
+				'add_button'         => 'Adicionar Evento Comemorativo',
+				'add_new_item'       => 'Adicionar Evento Comemorativo',
+				'edit_item'          => 'Editar Evento Comemorativo',
+				'empty_title'        => 'Ainda não existem eventos comemorativos',
+				'empty_message'      => 'Crie o primeiro evento comemorativo ou execute a migração inicial dos eventos existentes.',
+				'success_saved'      => 'Evento comemorativo atualizado com sucesso.',
+				'success_created'    => 'Evento comemorativo criado com sucesso.',
+				'success_published'  => 'Evento comemorativo publicado com sucesso.',
+				'success_draft'      => 'Rascunho salvo com sucesso.',
+				'success_duplicated' => 'Evento comemorativo duplicado como rascunho.',
+				'success_archived'   => 'Evento comemorativo arquivado com sucesso.',
+				'success_bulk'       => 'Eventos comemorativos atualizados com sucesso.',
+			),
+			'sections'       => array(
+				'informacao' => array(
+					'title'    => 'Informação',
+					'icon'     => 'dashicons-star-filled',
+					'priority' => 10,
+					'fields'   => array(
+						array(
+							'key'      => '_ce_name',
+							'label'    => 'Nome do evento (PT)',
+							'type'     => 'text',
+							'required' => true,
+							'help'     => 'Nome canônico em português. A versão inglesa é traduzida no registro EN ligado.',
+						),
+						array(
+							'key'      => '_ce_event_key',
+							'label'    => 'Chave do evento (_ce_event_key)',
+							'type'     => 'text',
+							'required' => true,
+							'help'     => 'Identidade lógica estável: apenas a-z, 0-9 e _. Igual nos dois idiomas; usada no link de pré-visualização e nos diagnósticos.',
+						),
+						array(
+							'key'   => '_ce_description',
+							'label' => 'Descrição interna',
+							'type'  => 'textarea',
+							'help'  => 'Nota interna do administrador. Não aparece no site e não é traduzida.',
+						),
+						array(
+							'key'   => '_ce_enabled',
+							'label' => 'Participa do agendamento',
+							'type'  => 'checkbox',
+							'help'  => 'Interruptor de agendamento. Independente do status editorial: um rascunho ou um evento desativado nunca é exibido.',
+						),
+						array(
+							'key'   => '_ce_priority',
+							'label' => 'Prioridade global (0–100)',
+							'type'  => 'number',
+							'help'  => 'Maior vence quando dois eventos elegíveis se sobrepõem. Empates são decididos pela chave do evento, em ordem crescente.',
+						),
+					),
+				),
+				'agendamento'  => array(
+					'title'    => 'Agendamento',
+					'icon'     => 'dashicons-calendar-alt',
+					'priority' => 20,
+					'fields'   => array(
+						array(
+							'key'     => '_ce_rule',
+							'label'   => 'Regra',
+							'type'    => 'select',
+							'options' => array(
+								'fixed_annual'    => 'Anual, data fixa (MM-DD)',
+								'variable_annual' => 'Anual, data calculada (Páscoa)',
+								'one_off'         => 'Data única (AAAA-MM-DD)',
+								'window'          => 'Janela explícita (MM-DD → MM-DD)',
+							),
+							'help'    => 'A janela explícita pode cruzar 31 de dezembro (ex.: Ano Novo 12-26 → 01-01).',
+						),
+						array(
+							'key'            => '_ce_date',
+							'label'          => 'Data anual (MM-DD)',
+							'type'           => 'text',
+							'help'           => 'Ex.: 10-31. 29 de fevereiro é rejeitado porque só existe em anos bissextos.',
+							'conditional_on' => array( 'field' => '_ce_rule', 'value' => 'fixed_annual' ),
+						),
+						array(
+							'key'            => '_ce_variable',
+							'label'          => 'Data calculada',
+							'type'           => 'select',
+							'options'        => array( 'easter' => 'Páscoa (algoritmo gregoriano)' ),
+							'conditional_on' => array( 'field' => '_ce_rule', 'value' => 'variable_annual' ),
+						),
+						array(
+							'key'            => '_ce_one_off_date',
+							'label'          => 'Data única (AAAA-MM-DD)',
+							'type'           => 'text',
+							'conditional_on' => array( 'field' => '_ce_rule', 'value' => 'one_off' ),
+							'help'           => 'Resolve apenas a data exata; nunca procura anos adjacentes.',
+						),
+						array(
+							'key'            => '_ce_window_start',
+							'label'          => 'Início da janela (MM-DD)',
+							'type'           => 'text',
+							'conditional_on' => array( 'field' => '_ce_rule', 'value' => 'window' ),
+						),
+						array(
+							'key'            => '_ce_window_end',
+							'label'          => 'Fim da janela (MM-DD)',
+							'type'           => 'text',
+							'conditional_on' => array( 'field' => '_ce_rule', 'value' => 'window' ),
+						),
+						array(
+							'key'   => '_ce_lead_in_days',
+							'label' => 'Dias de antecedência (0–120)',
+							'type'  => 'number',
+							'help'  => 'Usado pelas regras anuais e de data única. A janela explícita não usa antecedência.',
+						),
+					),
+				),
+				'apresentacao' => array(
+					'title'    => 'Apresentação',
+					'icon'     => 'dashicons-art',
+					'priority' => 30,
+					'fields'   => array(
+						array(
+							'key'     => '_ce_presentation',
+							'label'   => 'Pacote de experiência',
+							'type'    => 'select',
+							'options' => self::commemorative_packages(),
+							'help'    => 'Pacotes são registrados pelo tema. Um slug desconhecido nunca é exibido.',
+						),
+						array( 'key' => '_ce_heading', 'label' => 'Título (substituição PT)', 'type' => 'text' ),
+						array( 'key' => '_ce_subheading', 'label' => 'Subtítulo (substituição PT)', 'type' => 'text' ),
+						array( 'key' => '_ce_cta_label', 'label' => 'Rótulo do botão (PT)', 'type' => 'text' ),
+						array( 'key' => '_ce_cta_url', 'label' => 'URL do botão (PT)', 'type' => 'url' ),
+					),
+				),
+			),
+			'columns'        => array(
+				'state'    => array( 'label' => 'Estado', 'render' => 'commemorative_state' ),
+				'window'   => array( 'label' => 'Janela calculada', 'render' => 'commemorative_window' ),
+				'eligible' => array( 'label' => 'Elegível agora?', 'render' => 'commemorative_eligible' ),
+				'reason'   => array( 'label' => 'Motivo', 'render' => 'commemorative_reason' ),
+				'priority' => array( 'label' => 'Prioridade', 'render' => 'commemorative_priority' ),
+			),
+			'bulk_actions'   => array(
+				'publish' => array( 'label' => 'Publicar', 'type' => 'status', 'value' => 'published' ),
+				'draft'   => array( 'label' => 'Rascunho', 'type' => 'status', 'value' => 'draft' ),
+				'delete'  => array( 'label' => 'Excluir permanentemente', 'type' => 'delete', 'confirm' => 'Tem certeza que deseja excluir permanentemente os eventos selecionados? Esta ação não pode ser desfeita.' ),
+			),
+			'publishing'     => array(
+				'statuses'       => array(
+					'draft'     => array( 'label' => 'Rascunho', 'badge' => 'draft' ),
+					'published' => array( 'label' => 'Publicado', 'badge' => 'published' ),
+				),
+				'default_status' => 'draft',
+			),
+		);
+	}
+
+	/**
+	 * Registered experience-package slugs => labels, for the editor selector.
+	 *
+	 * Read from the theme-owned registry filter; the admin never lists a package
+	 * the theme cannot render.
+	 *
+	 * @return array<string,string>
+	 */
+	private static function commemorative_packages() {
+		$packages = array(
+			'' => '— Nenhum —',
+		);
+
+		$filtered = apply_filters( 'conexao_commemorative_presentations', array() );
+
+		if ( is_array( $filtered ) ) {
+			foreach ( $filtered as $slug => $definition ) {
+				$label             = is_array( $definition ) && ! empty( $definition['label'] ) ? (string) $definition['label'] : (string) $slug;
+				$packages[ $slug ] = $label;
+			}
+		}
+
+		return $packages;
 	}
 }

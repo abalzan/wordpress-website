@@ -1,0 +1,1399 @@
+/**
+ * Christmas experience package — package-scoped presentation CSS.
+ *
+ * ONE CHRISTMAS, TWO SKIES (r10 §7.12 · brief §3.2)
+ *
+ * Brazil appears as a summer evening that keeps its light; Ireland as a winter night
+ * that glows from the inside; the shared motif is a single star whose light travels
+ * between the two. The canvas is twilight indigo, the light is candle gold and soft
+ * amber, and the two cultures are carried by a coral/terracotta warmth (Brazil) and an
+ * evergreen/deep-teal coolness (Ireland) — never by flags, never by red-and-green
+ * generic Christmas styling, never by snow in Brazil.
+ *
+ * The registry's four public tokens (`--ce-primary`, `--ce-secondary`, `--ce-accent`,
+ * `--ce-surface`) are emitted inline by the dispatcher. The mirrors below are the
+ * fallback for the ambient decorations, which the script appends to <body> outside any
+ * placement wrapper; `test-commemorative-packages.php` asserts registry ↔ CSS parity.
+ * Everything else is a PRIVATE art-direction token with a `--ce-xmas-` prefix, so a
+ * future registry change can never silently collide with it.
+ *
+ * Enqueued only when a Christmas placement renders.
+ *
+ * @package Conexao_BR_Irlanda
+ */
+
+/* ===== 1. Tokens ===== */
+.ce-package--christmas,
+.ce-placement--site_wide_ambient.ce-package--christmas {
+  --ce-primary: #1b2447;
+  --ce-secondary: #b34a37;
+  --ce-accent: #d9a441;
+  --ce-surface: #fdf7ee;
+
+  /* Private art direction. */
+  --ce-xmas-night: #12173a;
+  --ce-xmas-night-deep: #080c22;
+  --ce-xmas-twilight: #241a44;
+  --ce-xmas-gold: #e8c273;
+  --ce-xmas-gold-soft: #fff6d8;
+  --ce-xmas-ember: #c2553f;
+  --ce-xmas-sun: #f2a65a;
+  --ce-xmas-evergreen: #1f4d46;
+  --ce-xmas-teal: #2f6b63;
+  --ce-xmas-ink: #1a2038;
+  --ce-xmas-body: #3a4157;
+  --ce-xmas-on-night: #ece5d6;
+  --ce-xmas-on-night-strong: #fdf7ee;
+  --ce-xmas-hairline: rgba(27, 36, 71, 0.16);
+  --ce-xmas-on-night-hairline: rgba(232, 194, 115, 0.26);
+  --ce-xmas-motion: 700ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ce-xmas-radius: 18px;
+}
+
+:root[data-theme="dark"] .ce-package--christmas,
+:root[data-theme="dark"] .ce-placement--site_wide_ambient.ce-package--christmas {
+  --ce-surface: #12162e;
+  --ce-accent: #e8c273;
+  --ce-xmas-ink: #eae4d6;
+  --ce-xmas-body: #cfc9ba;
+  --ce-xmas-hairline: rgba(232, 194, 115, 0.28);
+}
+
+/* ===== 2. The shared star motif ===== */
+/* One geometry (template-parts/commemorative/christmas/star.php), reused by the hero,
+   the journey control, the closing and the ambient layer. Nothing pulses forever:
+   the only motion is the guarded travel defined in §4. */
+.ce-xmas-star {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.ce-xmas-star__body {
+  filter: drop-shadow(0 0 6px rgba(255, 236, 180, 0.55));
+}
+
+.ce-xmas-star__core {
+  fill: var(--ce-xmas-gold-soft, #fff6d8);
+}
+
+.ce-xmas-star__trail {
+  fill: none;
+  stroke: var(--ce-xmas-gold, #e8c273);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  opacity: 0.85;
+}
+
+.ce-xmas-star__trail--faint {
+  stroke-width: 1.4;
+  opacity: 0.45;
+}
+
+.ce-xmas-star__sparks circle {
+  fill: var(--ce-xmas-gold-soft, #fff6d8);
+  opacity: 0.9;
+}
+
+/* ===== 3. Homepage hero band ===== */
+/* NOTHING renders inline for the Christmas welcome any more, so the hero reserves
+   NO padding: with JavaScript the welcome node is an empty wrapper (the dialog is
+   closed and the fallback is hidden) and the hero keeps its exact original
+   geometry — no gap, no layout shift, nothing to restore after dismissal. Without
+   JavaScript the compact fallback card sits in the normal flow UNDER the hero
+   content (the wrapper is static, below), which grows the section only for those
+   visitors and can never cover the copy or the sponsor carousel.
+   Art and copy in the dialog are SIBLINGS — no sentence ever sits on top of the
+   photograph, which is why contrast holds in both site themes without a scrim. */
+body.ce-active.ce-package-christmas.ce-placement-homepage-hero .ce-placement--homepage_hero {
+  position: static;
+  display: block;
+}
+
+.ce-christmas-hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 34%) minmax(0, 1fr);
+  gap: clamp(14px, 2vw, 26px);
+  align-items: center;
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto clamp(12px, 1.6vw, 20px);
+  padding: clamp(12px, 1.8vw, 18px);
+  border-radius: var(--ce-xmas-radius);
+  border: 1px solid color-mix(in srgb, var(--ce-accent, #d9a441) 46%, transparent);
+  background:
+    radial-gradient(120% 140% at 100% 0%, rgba(242, 166, 90, 0.16), transparent 58%),
+    linear-gradient(180deg, #fffcf5 0%, var(--ce-surface, #fdf7ee) 100%);
+  color: var(--ce-xmas-ink, #1a2038);
+  box-shadow: 0 22px 54px rgba(8, 12, 34, 0.34);
+}
+
+.ce-christmas-hero__art {
+  margin: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  line-height: 0;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28);
+}
+
+.ce-christmas-hero__art img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.ce-christmas-hero__kicker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 6px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ce-secondary, #b34a37);
+}
+
+.ce-christmas-hero__star {
+  flex: 0 0 auto;
+  display: block;
+  width: 22px;
+  line-height: 0;
+}
+
+.ce-christmas-hero__title {
+  margin: 0 0 6px;
+  font-size: clamp(1.2rem, 2.1vw, 1.7rem);
+  line-height: 1.16;
+  letter-spacing: -0.01em;
+  color: var(--ce-primary, #1b2447);
+}
+
+.ce-christmas-hero__copy {
+  margin: 0 0 12px;
+  max-width: 46ch;
+  font-size: 0.94rem;
+  line-height: 1.55;
+  color: var(--ce-xmas-body, #3a4157);
+}
+
+.ce-christmas-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+:root[data-theme="dark"] .ce-christmas-hero {
+  background:
+    radial-gradient(120% 140% at 100% 0%, rgba(242, 166, 90, 0.18), transparent 58%),
+    linear-gradient(180deg, #182042 0%, var(--ce-surface, #12162e) 100%);
+}
+
+:root[data-theme="dark"] .ce-christmas-hero__title {
+  color: var(--ce-xmas-on-night-strong, #fdf7ee);
+}
+
+:root[data-theme="dark"] .ce-christmas-hero__copy {
+  color: var(--ce-xmas-on-night, #ece5d6);
+}
+
+:root[data-theme="dark"] .ce-christmas-hero__kicker {
+  color: var(--ce-xmas-gold, #e8c273);
+}
+
+/* ===== 4. Landing page — the signature star journey ===== */
+/* Two skies, one star. Both panels are rendered by the server and visible by default;
+   the tab control is hidden until the package script upgrades the pair into a tabs
+   widget, so a visitor without JavaScript reads both skies in order and never meets an
+   unusable control. */
+.ce-christmas-journey {
+  display: grid;
+  gap: clamp(18px, 2.6vw, 30px);
+  margin: clamp(24px, 4vw, 48px) 0;
+  padding: clamp(20px, 3.2vw, 42px);
+  border-radius: calc(var(--ce-xmas-radius) + 6px);
+  border: 1px solid var(--ce-xmas-on-night-hairline, rgba(232, 194, 115, 0.26));
+  background:
+    radial-gradient(90% 70% at 12% 0%, rgba(194, 85, 63, 0.22), transparent 62%),
+    radial-gradient(90% 70% at 88% 6%, rgba(47, 107, 99, 0.26), transparent 60%),
+    linear-gradient(180deg, var(--ce-xmas-twilight, #241a44) 0%, var(--ce-xmas-night, #12173a) 42%, var(--ce-xmas-night-deep, #080c22) 100%);
+  color: var(--ce-xmas-on-night, #ece5d6);
+  box-shadow: 0 28px 70px rgba(6, 9, 28, 0.38);
+}
+
+.ce-christmas-journey__intro {
+  max-width: 62ch;
+}
+
+.ce-christmas-journey__kicker {
+  margin: 0 0 8px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ce-xmas-gold, #e8c273);
+}
+
+.ce-christmas-journey__title {
+  margin: 0 0 10px;
+  font-size: clamp(1.5rem, 3.4vw, 2.2rem);
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  color: var(--ce-xmas-on-night-strong, #fdf7ee);
+}
+
+.ce-christmas-journey__lede {
+  margin: 0;
+  font-size: clamp(1rem, 1.6vw, 1.08rem);
+  line-height: 1.6;
+  color: var(--ce-xmas-on-night, #ece5d6);
+}
+
+.ce-christmas-journey__art {
+  margin: 0 auto;
+  width: min(780px, 100%);
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(232, 194, 115, 0.2);
+  background: rgba(8, 12, 34, 0.4);
+  line-height: 0;
+}
+
+.ce-christmas-journey__art img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.ce-christmas-journey__caption {
+  margin: 0;
+  padding: 10px 14px;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: rgba(236, 229, 214, 0.78);
+  background: rgba(8, 12, 34, 0.55);
+}
+
+/* --- The control --- */
+.ce-christmas-journey__controls {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  padding-top: 46px;
+}
+
+.ce-christmas-journey__controls-label {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(236, 229, 214, 0.72);
+}
+
+.ce-christmas-journey__star {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: clamp(28px, 4vw, 38px);
+  line-height: 0;
+  transform: translateX(calc(-50% + var(--ce-xmas-journey-shift, 0px)));
+  transition: transform var(--ce-xmas-motion, 700ms cubic-bezier(0.22, 0.61, 0.36, 1));
+}
+
+.ce-christmas-journey__tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  width: min(520px, 100%);
+  padding: 6px;
+  border-radius: 999px;
+  border: 1px solid var(--ce-xmas-on-night-hairline, rgba(232, 194, 115, 0.26));
+  background: rgba(253, 247, 238, 0.06);
+}
+
+.ce-christmas-journey__tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ce-xmas-on-night, #ece5d6);
+  font: inherit;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
+.ce-christmas-journey__tab-name {
+  font-weight: 700;
+}
+
+.ce-christmas-journey__tab-season {
+  font-size: 0.8rem;
+  opacity: 0.82;
+}
+
+/* Selected state is not colour-only: the pill fills AND gains a solid dot marker,
+   and the label keeps a heavier weight. Assistive technology reads aria-selected. */
+.ce-christmas-journey__tab[aria-selected="true"] {
+  background: linear-gradient(180deg, var(--ce-xmas-gold-soft, #fff6d8) 0%, var(--ce-xmas-gold, #e8c273) 100%);
+  color: #1b2447;
+}
+
+.ce-christmas-journey__tab[aria-selected="true"]::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.ce-christmas-journey__tab:hover {
+  background: rgba(253, 247, 238, 0.1);
+}
+
+.ce-christmas-journey__tab[aria-selected="true"]:hover {
+  background: linear-gradient(180deg, var(--ce-xmas-gold-soft, #fff6d8) 0%, var(--ce-xmas-gold, #e8c273) 100%);
+}
+
+.ce-christmas-journey__tab:focus-visible {
+  outline: 2px solid var(--ce-xmas-gold-soft, #fff6d8);
+  outline-offset: 3px;
+}
+
+/* Where the star rests: over the seam, leaning towards the chosen sky. */
+.ce-christmas-journey__scene[data-ce-journey-state="brasil"] .ce-christmas-journey__star {
+  --ce-xmas-journey-shift: -4.5rem;
+}
+
+.ce-christmas-journey__scene[data-ce-journey-state="irlanda"] .ce-christmas-journey__star {
+  --ce-xmas-journey-shift: 4.5rem;
+}
+
+
+/* --- The two skies --- */
+.ce-christmas-journey__panels {
+  display: grid;
+  gap: clamp(14px, 2vw, 22px);
+}
+
+/* Without JavaScript both skies are read side by side on a wide screen; the tabs
+   upgrade collapses them to one at a time. */
+@media (min-width: 960px) {
+  .ce-christmas-journey__panels {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ce-christmas-journey__scene.is-enhanced .ce-christmas-journey__panels {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ce-christmas-journey__panel {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+  padding: clamp(14px, 2vw, 22px);
+  border-radius: 16px;
+  border: 1px solid rgba(232, 194, 115, 0.22);
+  background: rgba(253, 247, 238, 0.05);
+}
+
+.ce-christmas-journey__panel[hidden] {
+  display: none;
+}
+
+/* The decorative sky: pure CSS. Brazil keeps its light (sun low, warm haze over the
+   sea); Ireland glows from the inside (deep night, window light, evergreen horizon).
+   `aria-hidden` in the markup — it repeats nothing the copy does not say. */
+.ce-christmas-journey__sky {
+  position: relative;
+  height: clamp(110px, 16vw, 168px);
+  border-radius: 12px;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.ce-christmas-journey__sky--brasil {
+  background:
+    linear-gradient(180deg, #46356f 0%, #7d4470 26%, #bb5a4e 50%, #e08a55 68%, var(--ce-xmas-sun, #f2a65a) 82%, #f8d9a6 100%);
+}
+
+.ce-christmas-journey__sky--irlanda {
+  background:
+    linear-gradient(180deg, #04071a 0%, #0a1029 38%, #131d3c 64%, #172c3f 84%, var(--ce-xmas-evergreen, #1f4d46) 100%);
+}
+
+.ce-christmas-journey__sky-light {
+  position: absolute;
+  inset: 0;
+}
+
+/* Brazil: the low sun still above the sea, its light spread wide and warm. */
+.ce-christmas-journey__sky--brasil .ce-christmas-journey__sky-light {
+  background:
+    radial-gradient(circle at 70% 68%, #fff9e2 0 5px, rgba(255, 240, 190, 0.95) 6px, rgba(255, 214, 140, 0.55) 16px, transparent 34px),
+    radial-gradient(ellipse 42% 40% at 70% 72%, rgba(255, 206, 130, 0.4), transparent 72%),
+    radial-gradient(ellipse 90% 46% at 50% 100%, rgba(255, 186, 108, 0.32), transparent 78%);
+}
+
+/* Ireland: no sun at all — small lit windows and a couple of warm glows, deep dark above. */
+.ce-christmas-journey__sky--irlanda .ce-christmas-journey__sky-light {
+  background:
+    radial-gradient(circle at 24% 66%, #ffe3a4 0 2.6px, rgba(255, 214, 140, 0.75) 3.4px, transparent 14px),
+    radial-gradient(circle at 31% 73%, #ffd98c 0 1.8px, transparent 10px),
+    radial-gradient(circle at 44% 69%, #ffe3a4 0 1.5px, transparent 9px),
+    radial-gradient(circle at 73% 63%, #fff0c4 0 2.6px, rgba(255, 214, 140, 0.7) 3.4px, transparent 14px),
+    radial-gradient(circle at 81% 71%, #ffd98c 0 1.8px, transparent 10px),
+    radial-gradient(ellipse 20% 26% at 24% 68%, rgba(255, 196, 110, 0.26), transparent 76%),
+    radial-gradient(ellipse 18% 24% at 74% 65%, rgba(255, 196, 110, 0.22), transparent 76%);
+}
+
+.ce-christmas-journey__sky-horizon {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 38%;
+}
+
+.ce-christmas-journey__sky--brasil .ce-christmas-journey__sky-horizon {
+  height: 26%;
+  background:
+    linear-gradient(180deg, rgba(38, 26, 62, 0.55) 0%, rgba(24, 18, 44, 0.78) 42%, rgba(16, 12, 34, 0.92) 100%);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 236, 190, 0.5),
+    inset 0 10px 22px rgba(255, 214, 140, 0.16);
+}
+
+.ce-christmas-journey__sky--irlanda .ce-christmas-journey__sky-horizon {
+  height: 30%;
+  background:
+    linear-gradient(180deg, rgba(4, 7, 20, 0) 0%, rgba(4, 7, 20, 0.5) 42%, rgba(3, 5, 15, 0.94) 100%);
+}
+
+/* A restrained starfield on the Irish side only: Brazil's sky is still lit. */
+.ce-christmas-journey__sky-dots {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+
+.ce-christmas-journey__sky--irlanda .ce-christmas-journey__sky-dots {
+  opacity: 0.9;
+  background-image:
+    radial-gradient(1.4px 1.4px at 18% 22%, #fff6d8 60%, transparent 62%),
+    radial-gradient(1.1px 1.1px at 44% 14%, #fff6d8 60%, transparent 62%),
+    radial-gradient(1.2px 1.2px at 68% 30%, #fff6d8 60%, transparent 62%),
+    radial-gradient(1px 1px at 88% 18%, #fff6d8 60%, transparent 62%);
+  background-size: 100% 100%;
+}
+
+.ce-christmas-journey__season {
+  margin: 0;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ce-xmas-gold, #e8c273);
+}
+
+.ce-christmas-journey__panel-title {
+  margin: 0;
+  font-size: clamp(1.14rem, 2.2vw, 1.4rem);
+  line-height: 1.22;
+  color: var(--ce-xmas-on-night-strong, #fdf7ee);
+}
+
+.ce-christmas-journey__panel-text {
+  margin: 0;
+  font-size: 0.97rem;
+  line-height: 1.62;
+  color: var(--ce-xmas-on-night, #ece5d6);
+}
+
+.ce-christmas-journey__details {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ce-christmas-journey__details li {
+  position: relative;
+  padding-left: 20px;
+  font-size: 0.93rem;
+  line-height: 1.55;
+  color: var(--ce-xmas-on-night, #ece5d6);
+}
+
+/* A diamond bullet: shape carries the list, no glyph is exposed to a screen reader. */
+.ce-christmas-journey__details li::before {
+  content: "";
+  position: absolute;
+  top: 0.55em;
+  left: 4px;
+  width: 7px;
+  height: 7px;
+  border-radius: 1px;
+  background: var(--ce-xmas-gold, #e8c273);
+  transform: rotate(45deg);
+}
+
+.ce-christmas-journey__note {
+  margin: 0;
+  padding-left: 12px;
+  border-left: 2px solid rgba(232, 194, 115, 0.5);
+  font-size: 0.86rem;
+  line-height: 1.55;
+  color: rgba(236, 229, 214, 0.82);
+}
+
+.ce-christmas-journey__thread {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  margin: clamp(6px, 1.4vw, 14px) 0 0;
+  padding-top: clamp(12px, 2vw, 20px);
+  border-top: 1px solid var(--ce-xmas-on-night-hairline, rgba(232, 194, 115, 0.26));
+  text-align: center;
+  font-size: clamp(1rem, 1.8vw, 1.14rem);
+  line-height: 1.6;
+  color: var(--ce-xmas-on-night-strong, #fdf7ee);
+}
+
+.ce-christmas-journey__thread-star {
+  display: block;
+  width: 30px;
+  line-height: 0;
+}
+
+
+/* ===== 5. Landing page — what crosses both skies ===== */
+.ce-christmas-threads {
+  display: grid;
+  gap: clamp(14px, 2vw, 22px);
+  margin: clamp(26px, 4vw, 52px) 0;
+}
+
+.ce-christmas-threads__intro {
+  max-width: 62ch;
+}
+
+.ce-christmas-threads__title {
+  margin: 0 0 8px;
+  font-size: clamp(1.35rem, 2.8vw, 1.85rem);
+  line-height: 1.18;
+  color: var(--ce-primary, #1b2447);
+}
+
+.ce-christmas-threads__lede {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--ce-xmas-body, #3a4157);
+}
+
+.ce-christmas-threads__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: clamp(10px, 1.4vw, 16px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ce-christmas-threads__item {
+  padding: clamp(14px, 1.8vw, 20px);
+  border-radius: 14px;
+  border: 1px solid var(--ce-xmas-hairline, rgba(27, 36, 71, 0.16));
+  border-top: 2px solid color-mix(in srgb, var(--ce-accent, #d9a441) 70%, transparent);
+  background: color-mix(in srgb, var(--ce-surface, #fdf7ee) 92%, white);
+}
+
+.ce-christmas-threads__item-title {
+  margin: 0 0 6px;
+  font-size: 1.02rem;
+  line-height: 1.3;
+  color: var(--ce-primary, #1b2447);
+}
+
+.ce-christmas-threads__item-text {
+  margin: 0;
+  font-size: 0.93rem;
+  line-height: 1.55;
+  color: var(--ce-xmas-body, #3a4157);
+}
+
+.ce-christmas-threads__caveat {
+  margin: 0;
+  max-width: 64ch;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--ce-xmas-body, #3a4157);
+  font-style: italic;
+}
+
+.ce-christmas-threads__figure {
+  margin: clamp(6px, 1.2vw, 12px) auto 0;
+  width: min(700px, 100%);
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--ce-xmas-hairline, rgba(27, 36, 71, 0.16));
+  background: rgba(8, 12, 34, 0.5);
+  line-height: 0;
+}
+
+.ce-christmas-threads__figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.ce-christmas-threads__caption {
+  margin: 0;
+  padding: 10px 14px;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  text-align: center;
+  color: rgba(236, 229, 214, 0.82);
+  background: rgba(8, 12, 34, 0.72);
+}
+
+/* ===== 6. Landing page — the warm close ===== */
+.ce-christmas-closing {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  margin: clamp(26px, 4vw, 52px) 0 clamp(10px, 2vw, 20px);
+  padding: clamp(22px, 3.4vw, 40px) clamp(18px, 3vw, 32px);
+  border-radius: calc(var(--ce-xmas-radius) + 4px);
+  border: 1px solid var(--ce-xmas-hairline, rgba(27, 36, 71, 0.16));
+  background:
+    radial-gradient(120% 120% at 50% 0%, rgba(217, 164, 65, 0.16), transparent 62%),
+    color-mix(in srgb, var(--ce-surface, #fdf7ee) 94%, white);
+  text-align: center;
+}
+
+.ce-christmas-closing__star {
+  display: block;
+  width: clamp(30px, 4vw, 40px);
+  line-height: 0;
+}
+
+/* Centred grid items are sized to their content, so clamp them to the section's own
+   content box: a long translated heading must wrap inside the panel, never widen the
+   page (measured at 320 px, PT, before this rule). */
+.ce-christmas-closing > * {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.ce-christmas-closing__title,
+.ce-christmas-closing__text {
+  overflow-wrap: break-word;
+}
+
+.ce-christmas-closing__title {
+  margin: 0;
+  font-size: clamp(1.25rem, 2.6vw, 1.7rem);
+  line-height: 1.2;
+  color: var(--ce-primary, #1b2447);
+}
+
+.ce-christmas-closing__text {
+  margin: 0;
+  max-width: 58ch;
+  font-size: 0.98rem;
+  line-height: 1.62;
+  color: var(--ce-xmas-body, #3a4157);
+}
+
+.ce-christmas-closing__actions {
+  margin: 6px 0 0;
+}
+
+/* The theme's button is a nowrap pill; a long localised label must wrap inside the
+   panel on a 320 px screen instead of widening the page. */
+.ce-christmas-closing__cta {
+  max-width: 100%;
+  white-space: normal;
+  text-align: center;
+}
+
+:root[data-theme="dark"] .ce-christmas-threads__title,
+:root[data-theme="dark"] .ce-christmas-threads__item-title,
+:root[data-theme="dark"] .ce-christmas-closing__title {
+  color: var(--ce-xmas-ink, #eae4d6);
+}
+
+:root[data-theme="dark"] .ce-christmas-threads__lede,
+:root[data-theme="dark"] .ce-christmas-threads__item-text,
+:root[data-theme="dark"] .ce-christmas-threads__caveat,
+:root[data-theme="dark"] .ce-christmas-closing__text {
+  color: var(--ce-xmas-body, #cfc9ba);
+}
+
+:root[data-theme="dark"] .ce-christmas-threads__item,
+:root[data-theme="dark"] .ce-christmas-closing {
+  border-color: var(--ce-xmas-hairline);
+  background: #16203c;
+}
+
+
+/* ===== 7. Landing page — shared modules (colour only; the layout is shared) ===== */
+.ce-package--christmas .ce-landing__hero {
+  border-bottom: 1px solid color-mix(in srgb, var(--ce-primary, #1b2447) 18%, transparent);
+}
+
+.ce-package--christmas .ce-landing__kicker {
+  color: var(--ce-secondary, #b34a37);
+}
+
+.ce-package--christmas .ce-landing__title {
+  color: var(--ce-primary, #1b2447);
+}
+
+.ce-package--christmas .ce-module__title,
+.ce-package--christmas .ce-card__title a {
+  color: var(--ce-primary, #1b2447);
+}
+
+.ce-package--christmas .ce-card__type {
+  color: var(--ce-secondary, #b34a37);
+}
+
+:root[data-theme="dark"] .ce-package--christmas .ce-landing__title,
+:root[data-theme="dark"] .ce-package--christmas .ce-module__title,
+:root[data-theme="dark"] .ce-package--christmas .ce-card__title a {
+  color: #eae4d6;
+}
+
+:root[data-theme="dark"] .ce-package--christmas .ce-landing__kicker,
+:root[data-theme="dark"] .ce-package--christmas .ce-card__type {
+  color: var(--ce-accent, #e8c273);
+}
+
+.ce-package--christmas .ce-card {
+  border-color: color-mix(in srgb, var(--ce-primary, #1b2447) 20%, transparent);
+  background: color-mix(in srgb, var(--ce-surface, #fdf7ee) 92%, white);
+}
+
+:root[data-theme="dark"] .ce-package--christmas .ce-card {
+  border-color: rgba(232, 194, 115, 0.3);
+  background: #16203c;
+}
+
+/* ===== 8. Ambient decorations ===== */
+/* The motif repeats once, decoratively: one star drifts and fades, then the shared
+   scheduler removes the node. No loop, no audio, never focusable (the scheduler sets
+   aria-hidden and pointer-events), never over the header or a control. */
+.ce-package--christmas .ce-ambient-decoration {
+  animation: ce-xmas-ambient-drift 2600ms cubic-bezier(0.22, 0.61, 0.36, 1) 1 both;
+}
+
+.ce-package--christmas .ce-ambient-decoration img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@keyframes ce-xmas-ambient-drift {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.96);
+  }
+
+  35% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(12px) scale(1);
+  }
+}
+
+/* ===== 9. Responsive ===== */
+@media (max-width: 900px) {
+  .ce-christmas-hero {
+    grid-template-columns: minmax(0, 40%) minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  /* On phones the hero is a flex row whose copy is bottom-anchored, so the welcome
+     wrapper joins the normal flow UNDER the hero content: the section stops being a
+     flex container for it (it is static at every width, see §3) and reserves no
+     padding. Server-rendered, so still no layout shift. */
+  body.ce-active.ce-package-christmas.ce-placement-homepage-hero .hero-section {
+    display: block;
+  }
+
+  .ce-christmas-hero {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  /* The panorama keeps its full 16:9 frame here, so Brazil and Ireland are both fully
+     visible on a phone instead of one being cropped away. */
+  .ce-christmas-hero__art img {
+    aspect-ratio: 16 / 9;
+  }
+}
+
+@media (max-width: 640px) {
+  .ce-christmas-journey {
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .ce-christmas-journey__controls {
+    padding-top: 40px;
+  }
+
+  .ce-christmas-journey__tabs {
+    grid-template-columns: 1fr;
+    border-radius: 18px;
+  }
+
+  .ce-christmas-journey__tab {
+    border-radius: 14px;
+  }
+
+  .ce-christmas-journey__scene[data-ce-journey-state="brasil"] .ce-christmas-journey__star {
+    --ce-xmas-journey-shift: -2.5rem;
+  }
+
+  .ce-christmas-journey__scene[data-ce-journey-state="irlanda"] .ce-christmas-journey__star {
+    --ce-xmas-journey-shift: 2.5rem;
+  }
+
+  .ce-christmas-threads__list {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 380px) {
+  .ce-christmas-journey__tab {
+    padding: 10px 8px;
+    font-size: 0.9rem;
+  }
+
+  .ce-christmas-journey__tab-season {
+    display: none;
+  }
+}
+
+/* ===== 10. Reduced motion ===== */
+/* Nothing in this package animates indefinitely; the only motion is the star's single
+   travel and the ambient drift. Both are removed completely when the visitor asks. */
+@media (prefers-reduced-motion: reduce) {
+  .ce-christmas-journey__star,
+  .ce-christmas-journey__tab {
+    transition: none !important;
+  }
+
+  .ce-package--christmas .ce-ambient-decoration {
+    animation: none !important;
+  }
+}
+
+
+/* ===== 11. The homepage welcome dialog ===== */
+/*
+ * ONE dialog, one fallback, no inline card. The server renders the whole hero once
+ * inside a native <dialog> that ships CLOSED, plus a compact fallback card that is
+ * visible BY DEFAULT. `createWelcome()` claims the node and calls showModal(), which
+ * moves the same dialog to the browser's top layer (`.is-welcome-open`); from then
+ * on the fallback is hidden by the page state. There is no second copy of the art,
+ * and the full Natal card never appears as an in-flow banner.
+ *
+ * Page states (`data-ce-welcome-state` on <html>, set only by the guard/controller):
+ *   - (absent)  → no JavaScript: the fallback card is visible, the dialog stays closed;
+ *   - "pending" → the guard owns the page before first paint: nothing visible;
+ *   - "open"    → the modal is in the top layer: nothing visible behind it;
+ *   - "dismissed" → a public visitor closed it this session: nothing visible, no gap;
+ *   - "fallback" → the controller could not open (or never arrived): the fallback card;
+ *   - "preview"  → authorised signed preview, not auto-opened: the fallback card with
+ *                  its hidden-until-wired preview trigger.
+ */
+.ce-xmas-welcome {
+  display: block;
+}
+
+/* Neutralise the user-agent <dialog> box so a closed dialog is inert chrome and the
+   open state is styled only by `.is-welcome-open` below. */
+.ce-xmas-welcome__dialog {
+  position: static;
+  inset: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  width: auto;
+  max-width: none;
+  max-height: none;
+  background: none;
+  color: inherit;
+  overflow: visible;
+}
+
+/* A closed dialog is never painted: this is the fail-closed backstop for engines
+   whose UA default was neutralised by the rules above. */
+.ce-xmas-welcome__dialog:not([open]):not(.is-welcome-open) {
+  display: none;
+}
+
+/* The parse-time guard marks the page while it waits for the controller, so the
+   fallback card never flashes before the modal opens. If the controller never
+   arrives, the guard's DOMContentLoaded fallback clears this to "fallback".
+   ONLY "pending" hides the dialog here: every other state is covered by the
+   closed-dialog rule above (the controller always removes `open` when it is not
+   modal), and state "open" must of course KEEP the dialog visible. */
+:root[data-ce-welcome-state="pending"] .ce-xmas-welcome__dialog {
+  display: none;
+}
+
+/* --- The compact fallback card (no JS / no modal API / failed open) --- */
+/* Visible by default (no state yet = JavaScript never ran). Positioned above the
+   hero's absolutely-positioned background image and centred in the flow UNDER the
+   hero content: it can never cover the copy or the sponsor carousel, and with
+   JavaScript the guard/controller hide it before first paint, so a modal visitor
+   never sees both. Scoped to this package only — no global dialog or overlay rule. */
+.ce-xmas-welcome__fallback {
+  position: relative;
+  z-index: 1;
+  /* The shared placement is pointer-events: none; the card itself must answer to
+     the pointer so its own link and button behave like every other control. */
+  pointer-events: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  width: min(720px, calc(100% - 32px));
+  margin: 0 auto clamp(12px, 1.6vw, 20px);
+  padding: 10px 16px;
+  border: 1px solid color-mix(in srgb, var(--ce-accent, #d9a441) 46%, transparent);
+  border-radius: 16px;
+  background:
+    radial-gradient(120% 140% at 100% 0%, rgba(242, 166, 90, 0.16), transparent 58%),
+    linear-gradient(180deg, #fffcf5 0%, var(--ce-surface, #fdf7ee) 100%);
+  color: var(--ce-xmas-ink, #1a2038);
+  box-shadow: 0 12px 30px rgba(8, 12, 34, 0.28);
+}
+
+:root[data-theme="dark"] .ce-xmas-welcome__fallback {
+  background:
+    radial-gradient(120% 140% at 100% 0%, rgba(242, 166, 90, 0.18), transparent 58%),
+    linear-gradient(180deg, #182042 0%, var(--ce-surface, #12162e) 100%);
+}
+
+.ce-xmas-welcome__fallback-title {
+  margin: 0;
+  font-size: clamp(0.98rem, 1.6vw, 1.12rem);
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--ce-primary, #1b2447);
+}
+
+:root[data-theme="dark"] .ce-xmas-welcome__fallback-title {
+  color: var(--ce-xmas-on-night-strong, #fdf7ee);
+}
+
+.ce-xmas-welcome__fallback-cta {
+  margin-inline-start: auto;
+}
+
+/* The states where the fallback must NOT show: the modal owns the page, the
+   visitor dismissed it this session, or the signed preview is closed and left
+   NOTHING in the flow. Only "fallback" — and a page where JavaScript never ran
+   (no state attribute at all) — keeps the card visible. */
+:root[data-ce-welcome-state="pending"] .ce-xmas-welcome__fallback,
+:root[data-ce-welcome-state="open"] .ce-xmas-welcome__fallback,
+:root[data-ce-welcome-state="dismissed"] .ce-xmas-welcome__fallback,
+:root[data-ce-welcome-state="preview"] .ce-xmas-welcome__fallback {
+  display: none;
+}
+
+/* The preview trigger ships `hidden` and is NEVER revealed automatically: the
+   signed preview auto-opens the same modal, so no click is ever required to
+   inspect it. It stays wired (and styled for the hand-revealed case) so a
+   maintainer can still drive the exact same modal from the fallback card. */
+.ce-xmas-welcome__preview-trigger {
+  flex: 1 0 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 8px 14px;
+  border: 1px dashed color-mix(in srgb, var(--ce-accent, #d9a441) 70%, transparent);
+  border-radius: 999px;
+  background: rgba(27, 36, 71, 0.06);
+  color: var(--ce-xmas-ink, #1a2038);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ce-xmas-welcome__preview-trigger[hidden] {
+  display: none;
+}
+
+.ce-xmas-welcome__preview-trigger:focus-visible {
+  outline: 3px solid var(--ce-accent, #d9a441);
+  outline-offset: 2px;
+}
+
+/* --- Close control: fail-closed, ≥ 44 × 44 px, never inside the scroll area --- */
+.ce-xmas-welcome__close {
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 8px 14px;
+  border: 1px solid var(--ce-xmas-hairline, rgba(27, 36, 71, 0.16));
+  border-radius: 999px;
+  background: rgba(27, 36, 71, 0.06);
+  color: var(--ce-xmas-ink, #1a2038);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.ce-xmas-welcome__close-icon {
+  display: inline-flex;
+  line-height: 0;
+}
+
+.ce-xmas-welcome__dialog.is-welcome-open .ce-xmas-welcome__close:not([hidden]) {
+  display: inline-flex;
+}
+
+.ce-xmas-welcome__close:hover {
+  background: rgba(27, 36, 71, 0.12);
+}
+
+.ce-xmas-welcome__dialog:focus-visible,
+.ce-xmas-welcome__close:focus-visible {
+  outline: 3px solid var(--ce-accent, #d9a441);
+  outline-offset: 2px;
+}
+
+/* --- The card --- */
+.ce-xmas-welcome__dialog.is-welcome-open {
+  /* TOP-of-screen placement (the Halloween welcome's own reading of the hero):
+     the card is horizontally centred and pinned below the safe area AND below
+     whatever occupies the top of the viewport — admin bar, signed-preview
+     notice, sticky header. The controller measures those while the modal is
+     open and writes `--ce-xmas-welcome-obstruction-top`; both values share one
+     `max()` so a notched device and a logged-in editor compose correctly. */
+  --ce-xmas-welcome-obstruction-top: 0px;
+  --ce-xmas-welcome-frame-top: max(16px, env(safe-area-inset-top, 0px), var(--ce-xmas-welcome-obstruction-top));
+  --ce-xmas-welcome-frame-bottom: max(16px, env(safe-area-inset-bottom, 0px));
+
+  position: fixed;
+  /* Top edge at the frame, bottom free: the card hangs from the top instead of
+     being vertically centred (`inset: 0` + `margin: auto` used to centre it). */
+  inset: var(--ce-xmas-welcome-frame-top) 0 auto 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  width: min(94vw, 960px);
+  max-width: calc(100vw - 2 * max(12px, env(safe-area-inset-left, 0px)));
+  height: fit-content;
+  /* Left/right auto margins keep the card horizontally centred between the
+     pinned edges; there is no vertical centring any more. */
+  margin-inline: auto;
+  padding: 0;
+  /* `vh` first as the fallback for engines without dynamic viewport units.
+     Both lines subtract the WHOLE top frame (safe area + measured
+     obstruction), so a tall header/notice on a short viewport can never push
+     the card past the bottom edge. */
+  max-height: calc(100vh - var(--ce-xmas-welcome-frame-top) - var(--ce-xmas-welcome-frame-bottom));
+  max-height: min(calc(100dvh - var(--ce-xmas-welcome-frame-top) - var(--ce-xmas-welcome-frame-bottom)), 820px);
+  border: 1px solid color-mix(in srgb, var(--ce-accent, #d9a441) 46%, transparent);
+  border-radius: 22px;
+  background:
+    radial-gradient(120% 140% at 100% 0%, rgba(242, 166, 90, 0.16), transparent 58%),
+    linear-gradient(180deg, #fffcf5 0%, var(--ce-surface, #fdf7ee) 100%);
+  color: var(--ce-xmas-ink, #1a2038);
+  box-shadow: 0 30px 80px rgba(8, 12, 34, 0.5);
+  overflow: hidden;
+  animation: ce-xmas-welcome-in 220ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+.ce-xmas-welcome__dialog.is-welcome-open::backdrop {
+  background: rgba(8, 12, 34, 0.66);
+  animation: ce-xmas-welcome-fade 220ms linear both;
+}
+
+/* Signed preview only (the server marks the DIALOG itself with
+   `data-ce-welcome-preview`, so this rule can never reach a public page): the
+   non-dismissible notice sits above the card and must stay readable through
+   the tint, so the backdrop is lighter here — and only here. The public
+   backdrop stays the approved 66%. */
+.ce-xmas-welcome__dialog[data-ce-welcome-preview].is-welcome-open::backdrop {
+  background: rgba(8, 12, 34, 0.45);
+}
+
+/* The close control sits in the dialog's own first row, outside the scrolling area,
+   so it stays reachable at every height. */
+body.ce-package-christmas .ce-xmas-welcome__dialog.is-welcome-open > .ce-xmas-welcome__close {
+  justify-self: end;
+  margin: clamp(8px, 1.2vw, 14px) clamp(10px, 1.4vw, 16px) 0;
+}
+
+/* The hero keeps its sibling layout inside the card; only the band's outer chrome
+   (its own width, margin, padding, border, background and shadow) is dropped. */
+body.ce-package-christmas .ce-xmas-welcome__dialog.is-welcome-open .ce-christmas-hero {
+  width: auto;
+  margin: 0;
+  padding: clamp(6px, 1vw, 12px) clamp(14px, 2vw, 26px) clamp(16px, 2vw, 26px);
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  grid-template-columns: minmax(0, 46%) minmax(0, 1fr);
+  gap: clamp(16px, 2.2vw, 30px);
+  align-items: center;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+body.ce-package-christmas .ce-xmas-welcome__dialog.is-welcome-open .ce-christmas-hero__title {
+  font-size: clamp(1.4rem, 2.1vw, 2rem);
+}
+
+body.ce-package-christmas .ce-xmas-welcome__dialog.is-welcome-open .ce-christmas-hero__copy {
+  max-width: 42ch;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* The CTA keeps the package's candle-gold surface inside the card in BOTH site
+   themes: the global dark-mode button pairing computes to green-on-orange (1.16:1)
+   here, so the dialog states its own pair explicitly — deep-navy ink on gold is
+   11.2:1 and stays inside the Christmas palette instead of inventing a new one. */
+body.ce-package-christmas .ce-xmas-welcome__dialog.is-welcome-open .ce-christmas-hero__cta,
+body.ce-package-christmas .ce-xmas-welcome__dialog.is-welcome-open .ce-christmas-hero__cta:hover,
+body.ce-package-christmas .ce-xmas-welcome__dialog.is-welcome-open .ce-christmas-hero__cta:focus {
+  background: var(--ce-xmas-gold, #e8c273);
+  border-color: var(--ce-xmas-gold, #e8c273);
+  color: var(--ce-xmas-night-deep, #080c22);
+}
+
+:root[data-theme="dark"] .ce-xmas-welcome__dialog.is-welcome-open {
+  background:
+    radial-gradient(120% 140% at 100% 0%, rgba(242, 166, 90, 0.18), transparent 58%),
+    linear-gradient(180deg, #182042 0%, var(--ce-surface, #12162e) 100%);
+  border-color: color-mix(in srgb, var(--ce-accent, #e8c273) 42%, transparent);
+}
+
+:root[data-theme="dark"] .ce-xmas-welcome__close {
+  border-color: var(--ce-xmas-on-night-hairline, rgba(232, 194, 115, 0.26));
+  background: rgba(253, 247, 238, 0.08);
+  color: var(--ce-xmas-on-night-strong, #fdf7ee);
+}
+
+:root[data-theme="dark"] .ce-xmas-welcome__close:hover {
+  background: rgba(253, 247, 238, 0.16);
+}
+
+@keyframes ce-xmas-welcome-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes ce-xmas-welcome-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* --- Phones: stacked, image above the copy, internal scrolling at short heights --- */
+@media (max-width: 768px) {
+  .ce-xmas-welcome__dialog.is-welcome-open {
+    width: min(100% - 20px, 560px);
+    border-radius: 18px;
+  }
+
+  body.ce-package-christmas .ce-xmas-welcome__dialog.is-welcome-open .ce-christmas-hero {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    align-items: start;
+    padding: 0 14px 16px;
+  }
+
+  /* The panorama keeps its full 16:9 frame, so Brazil and Ireland both stay visible
+     inside the dialog exactly as they do in the band. */
+  body.ce-package-christmas .ce-xmas-welcome__dialog.is-welcome-open .ce-christmas-hero__art img {
+    aspect-ratio: 16 / 9;
+  }
+}
+
+/* Very short viewports (a landscape phone): the card uses the room it has and the
+   content scrolls, while the close control keeps its own row. */
+@media (max-height: 560px) {
+  .ce-xmas-welcome__dialog.is-welcome-open {
+    /* Frame-aware even here: with the card pinned to the top, a short
+       viewport must cap the height against the SAME frame, or the bottom
+       edge would overflow (measured: 844x390 signed preview). */
+    max-height: calc(100dvh - var(--ce-xmas-welcome-frame-top) - var(--ce-xmas-welcome-frame-bottom));
+    border-radius: 14px;
+  }
+
+  body.ce-package-christmas .ce-xmas-welcome__dialog.is-welcome-open .ce-christmas-hero {
+    gap: 12px;
+  }
+}
+
+/* --- Reduced motion: no entrance transform, no backdrop fade, no star travel --- */
+@media (prefers-reduced-motion: reduce) {
+  .ce-xmas-welcome__dialog.is-welcome-open,
+  .ce-xmas-welcome__dialog.is-welcome-open::backdrop {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+/* ===== 5. Micro-animations (shared Christmas-star language) ===== */
+/* Small, one-shot, bounded motions that reuse the shared star motif and the
+   package's candle-gold palette. Nothing loops, nothing covers copy, nothing
+   shifts layout. All triggered from assets/js/presentations/christmas/christmas.js
+   and scoped to Christmas-package markup so unrelated routes are untouched. */
+
+/* --- 5.1 Welcome star twinkle: runs once when the welcome modal opens ---
+   Hooked on the `.is-welcome-open` class that `createWelcome()` already adds;
+   no JS timer, no delay to `showModal()`, no flash. 1.2 s, two gentle twinkles,
+   then still. */
+@keyframes ce-xmas-welcome-star-twinkle {
+  0%, 40%, 100% {
+    filter: drop-shadow(0 0 6px rgba(255, 236, 180, 0.55));
+  }
+  20% {
+    filter: drop-shadow(0 0 18px rgba(232, 194, 115, 0.95));
+  }
+  70% {
+    filter: drop-shadow(0 0 14px rgba(232, 194, 115, 0.85));
+  }
+}
+
+body.ce-package-christmas
+  .ce-xmas-welcome__dialog.is-welcome-open
+  .ce-xmas-star__body {
+  animation: ce-xmas-welcome-star-twinkle 1.2s ease-out 1;
+}
+
+/* --- 5.2 Selected CTA sparkle: 3-5 golden glints near an activated CTA ---
+   Particles are created by script, positioned at the button's bottom edge (never
+   over the label), float a short distance and fade. `aria-hidden`, out of the
+   tab order, removed once the animation ends. */
+.ce-xmas-sparkle {
+  position: fixed;
+  z-index: 250;
+  width: 5px;
+  height: 5px;
+  background: var(--ce-xmas-gold, #e8c273);
+  box-shadow: 0 0 8px rgba(232, 194, 115, 0.9);
+  border-radius: 50%;
+  opacity: 0.95;
+  pointer-events: none;
+  transform-origin: 50% 50%;
+  animation: ce-xmas-sparkle-float 0.6s ease-out forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes ce-xmas-sparkle-float {
+  0% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+    opacity: 0.95;
+  }
+  100% {
+    transform: translate(var(--ce-sparkle-tx, 0), var(--ce-sparkle-ty, -28px))
+      scale(0) rotate(14deg);
+    opacity: 0;
+  }
+}
+
+/* --- 5.3 Gentle content reveal: landing-page modules and the journey ---
+   `.ce-xmas-reveal-ready` is added by script only (no-JS keeps content visible);
+   the observer swaps it for `.ce-xmas-revealed` once per target. Opacity and
+   translate only — no height, margin or geometry animation. */
+.ce-xmas-reveal-ready {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+.ce-xmas-revealed {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+/* --- 5.4 Shared-star journey pulse: one-time glow when the journey first ---
+   --- becomes visible; glow only, no transform, so it cannot fight the           ---
+   --- user-controlled star travel between the two skies.                        --- */
+.ce-christmas-journey__star-svg.ce-xmas-journey-star--pulse .ce-xmas-star__body {
+  animation: ce-xmas-journey-star-pulse 1s ease-out 1;
+}
+
+@keyframes ce-xmas-journey-star-pulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 6px rgba(255, 236, 180, 0.55));
+  }
+  50% {
+    filter: drop-shadow(0 0 20px rgba(232, 194, 115, 1));
+  }
+}
+
+/* --- 5.5 Reduced motion: suppress all non-essential motion, keep content --- */
+@media (prefers-reduced-motion: reduce) {
+  body.ce-package-christmas
+    .ce-xmas-welcome__dialog.is-welcome-open
+    .ce-xmas-star__body {
+    animation: none !important;
+  }
+  .ce-xmas-sparkle {
+    animation: none !important;
+    display: none !important;
+  }
+  .ce-xmas-reveal-ready {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .ce-xmas-revealed {
+    transition: none !important;
+  }
+  .ce-christmas-journey__star-svg.ce-xmas-journey-star--pulse
+    .ce-xmas-star__body {
+    animation: none !important;
+  }
+}

@@ -64,6 +64,20 @@
       "documentation": "docs/plugins/conexao-event-runtime.md"
     },
     {
+      "slug": "conexao-commemorative",
+      "name": "Conexão BR Irlanda — Commemorative Events",
+      "class": "platform",
+      "status": "active",
+      "production": true,
+      "build": true,
+      "mount": true,
+      "dependencies": [
+        "conexao-data-model"
+      ],
+      "version_source": "wp-content/plugins/conexao-commemorative/conexao-commemorative.php",
+      "documentation": "docs/plugins/conexao-commemorative.md"
+    },
+    {
       "slug": "conexao-event-importer",
       "name": "Conexão BR Irlanda — Event Importer (Local Tools)",
       "class": "tooling",

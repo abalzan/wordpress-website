@@ -1,7 +1,7 @@
 <?php
 /**
  * Generates the pre-import review report for the Lazer expansion:
- * docs/lazer-expansion-report.md
+ * docs/reports/2026-08-21-lazer-expansion-report.md
  *
  * Combines the audited existing dataset (from WordPress) with the proposed
  * expansion dataset (scripts/data/leisure-expansion-data-*.php).
@@ -107,6 +107,6 @@ $lines[] = '- Imagens serão importadas pelo fluxo Wikimedia Commons existente (
 $lines[] = '- Registros criados com o mesmo modelo de dados dos seeds existentes; compatíveis com export/import do plugin conexao-leisure-migration.';
 $lines[] = '';
 
-$out_path = dirname( dirname( __FILE__ ) ) . '/docs/lazer-expansion-report.md';
+$out_path = dirname( dirname( __FILE__ ) ) . '/docs/reports/2026-08-21-lazer-expansion-report.md';
 file_put_contents( $out_path, implode( "\n", $lines ) );
 echo "Report written to {$out_path}\n";

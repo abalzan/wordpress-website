@@ -1,0 +1,19 @@
+
+== PERMANENT GATE: commemorative_placement_assets ==
+Package and placement asset handles are enqueued only for placements actually rendered on the current route.
+  prerequisites: theme-active, conexao-commemorative plugin active
+
+=== Real routes: only the rendered placements own assets ===
+  PASS: no asset is planned for a placement that does not render on the route
+
+=== The hero asset is absent on an internal page ===
+  PASS: the homepage-hero assets are never enqueued on an internal route
+
+=== The non-selected package ships nothing ===
+  PASS: only the selected package enqueues assets
+
+=== Injected negative proof: an asset for an unrendered placement IS detected ===
+  PASS: the gate detects an asset belonging to a placement that does not render
+
+4 passed, 0 failed
+GATE-RESULT {"gate":"commemorative_placement_assets","status":"pass","passed":4,"failed":0,"violations":0,"pre_existing":0,"new":0,"prerequisites":["theme-active","conexao-commemorative plugin active"],"allowlisted":[],"allowlisted_count":0,"details":[{"key":"asset:unrendered_placement","count":0,"label":"no asset is planned for a placement that does not render on the route","detail":{"findings":[]}},{"key":"asset:hero_on_internal_route","count":0,"label":"the homepage-hero assets are never enqueued on an internal route","detail":{"placements":["site_wide_ambient"]}},{"key":"asset:non_selected_package","count":0,"label":"only the selected package enqueues assets","detail":{"handles":[]}},{"key":"gate:injected_negative_not_detected","count":0,"label":"the gate detects an asset belonging to a placement that does not render","detail":{"fixture_findings":["asset_for_unrendered_placement:site_wide_ambient"]}}]}

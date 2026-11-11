@@ -1,9 +1,9 @@
 # Plan — <task title>
 
 > **This is a template.** Copy it to
-> `docs/reports/<date>-<stage>-<slug>.md` (or the location the standard requires
-> for your work) and fill it in. Do **not** edit this file to turn it into a
-> repository-specific plan, and do not leave a filled-in plan at this path.
+> `docs/plans/<date>-<topic>.md` and fill it in. Do **not** edit this file to
+> turn it into a repository-specific plan, and do not leave a filled-in plan at
+> this path.
 >
 > Required by [`docs/engineering-standard.md`](../engineering-standard.md) §13.2
 > before multi-file work, and before anything that changes **content, routes or
@@ -186,3 +186,5 @@ until every applicable item holds and the report contains real numbers.
 _Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_
 
 _Last verified: 2026-09-30 by the agent skills / documentation migration_
+
+_Last verified: 2026-11-07 by the agent, skills and documentation audit (copy destination corrected to `docs/plans/`)_

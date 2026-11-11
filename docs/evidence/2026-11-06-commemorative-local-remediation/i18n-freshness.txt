@@ -1,0 +1,17 @@
+== Stage L i18n catalogue freshness gate ==
+   repo:  /home/andrei/IdeaProjects/wordpress-website
+   signal: git commit time per file (mtime is not reproducible in CI)
+   conexao-br-irlanda       catalogue=1793965014 newest-source=1793965014 (wp-content/themes/conexao-br-irlanda/footer.php) fresh
+   conexao-data-model       catalogue=1793965014 newest-source=1790335165 (wp-content/plugins/conexao-data-model/includes/class-agency.php) fresh
+   conexao-content          catalogue=1791787669 newest-source=1790699556 (wp-content/plugins/conexao-content/conexao-content.php) fresh
+   conexao-admin-ux         catalogue=1793965014 newest-source=1793958998 (wp-content/plugins/conexao-admin-ux/includes/class-editor.php) fresh
+   conexao-event-runtime    catalogue=1791787669 newest-source=1791205894 (wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php) fresh
+   conexao-commemorative    catalogue=1793965014 newest-source=1793965014 (wp-content/plugins/conexao-commemorative/includes/functions.php) fresh
+   conexao-event-importer   catalogue=1792653196 newest-source=1792616365 (wp-content/plugins/conexao-event-importer/includes/class-event-cleanup.php) fresh
+   conexao-leisure-migration catalogue=1791787669 newest-source=1790325155 (wp-content/plugins/conexao-leisure-migration/includes/class-leisure-exporter.php) fresh
+   conexao-sponsor-migration catalogue=1791787669 newest-source=1789994211 (wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-importer.php) fresh
+   conexao-translation-automation catalogue=1791787669 newest-source=1790861950 (wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-batch-control.php) fresh
+
+   stale catalogues: 0
+3 passed, 0 failed
+GATE-RESULT {"gate": "i18n_freshness", "status": "pass", "passed": 3, "failed": 0, "violations": 0, "pre_existing": 0, "new": 0, "details": []}

@@ -1,0 +1,35 @@
+# Preservation snapshot — TASK END
+
+branch:              commemorative-events
+HEAD:                b18fa58c1052b69340cdfc639e140f53ddbc3d08
+HEAD subject:        2026-11-06 13:18:17 +0000 Add Conexao_Seasonal_Occasion class and tests for commemorative translation ownership
+start HEAD ancestor: yes
+stashes:             9
+
+## git status --short at end (this task only)
+ M docs/commemorative-content.md
+ M docs/evidence/README.md
+ M docs/reports/README.md
+ M docs/themes/conexao-br-irlanda.md
+ M tests/scripts/verify-commemorative-runtime.py
+ M wp-content/themes/conexao-br-irlanda/assets/css/presentations/christmas.css
+ D wp-content/themes/conexao-br-irlanda/assets/images/presentations/christmas/decorations/bauble.svg
+ M wp-content/themes/conexao-br-irlanda/assets/js/presentations/christmas/christmas.js
+ M wp-content/themes/conexao-br-irlanda/inc/commemorative-modules.php
+ M wp-content/themes/conexao-br-irlanda/inc/commemorative-presentations.php
+ M wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/ambient.php
+ M wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/hero.php
+ M wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php
+ M wp-content/themes/conexao-br-irlanda/tests/test-commemorative-ambient.php
+ M wp-content/themes/conexao-br-irlanda/tests/test-commemorative-packages.php
+ M wp-content/themes/conexao-br-irlanda/tests/test-commemorative-presentation-dispatch.php
+?? docs/evidence/2026-11-06-christmas-signature-experience/
+?? tests/browser/verify-christmas-signature-browser.py
+?? tests/node/christmas-journey.test.js
+?? wp-content/themes/conexao-br-irlanda/assets/images/presentations/christmas/decorations/star.svg
+?? wp-content/themes/conexao-br-irlanda/assets/images/presentations/christmas/two-skies/
+?? wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php
+?? wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/star.php
+?? wp-content/themes/conexao-br-irlanda/tests/test-commemorative-christmas-journey.php
+
+## Destructive git commands used: NONE (no reset/clean/checkout/rebase/amend/stash/pop/drop)

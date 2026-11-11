@@ -209,3 +209,5 @@ production write occurred.
 - [ ] The completeness gate is `0` or an explicit allowlist, with the number
       recorded.
 - [ ] Documentation updated; no production write occurred.
+
+_Last verified: 2026-11-09 by the agent skills review and hardening_

@@ -37,6 +37,13 @@
 				<element value="conexao-content"/>
 				<element value="conexao-admin-ux"/>
 				<element value="conexao-event-runtime"/>
+				<!--
+					The commemorative engine declares its own Text Domain in its
+					plugin header. Listing it keeps the check meaningful: it still
+					catches a WRONG domain, it just stops treating this plugin's
+					own domain as an error (same policy as Stage 11 below).
+				-->
+				<element value="conexao-commemorative"/>
 				<element value="conexao-event-importer"/>
 				<element value="conexao-leisure-migration"/>
 				<element value="conexao-sponsor-migration"/>

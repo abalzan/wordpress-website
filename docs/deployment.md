@@ -30,7 +30,7 @@
 ### Plugins
 
 <!-- BEGIN GENERATED PLUGIN REGISTRY: docs/deployment.md activation order -->
-Generated from [`plugins.json`](../../plugins.json) by
+Generated from [`plugins.json`](../plugins.json) by
 `scripts/generate-registry-docs.php`. Do not hand-edit this section.
 
 ### Production activation order
@@ -42,10 +42,11 @@ The filtered subset of the registry load order where `production: true`. It cont
 2. `conexao-content`
 3. `conexao-admin-ux`
 4. `conexao-event-runtime`
-5. `conexao-translation-rollout`
-6. `conexao-translation-automation`
+5. `conexao-commemorative`
+6. `conexao-translation-rollout`
+7. `conexao-translation-automation`
 
-Production needs exactly these 6 platform plugins. They are the only
+Production needs exactly these 7 platform plugins. They are the only
 plugins that must be installed **and active** on production.
 
 ### Release build output
@@ -54,12 +55,13 @@ plugins that must be installed **and active** on production.
 ./scripts/build-plugins-zip.sh
 ```
 
-Produces one ZIP per `build: true` entry (9 files), in registry order:
+Produces one ZIP per `build: true` entry (10 files), in registry order:
 
 - `dist/conexao-data-model.zip`
 - `dist/conexao-content.zip`
 - `dist/conexao-admin-ux.zip`
 - `dist/conexao-event-runtime.zip`
+- `dist/conexao-commemorative.zip`
 - `dist/conexao-event-importer.zip`
 - `dist/conexao-leisure-migration.zip`
 - `dist/conexao-sponsor-migration.zip`
@@ -157,8 +159,9 @@ so the srcset ladders include the small derivatives:
 docker compose exec wordpress php wp-cli.phar media regenerate <IDs...> --skip-delete --yes --allow-root
 ```
 
-On WordPress.com production, regenerate thumbnails for the same attachments
-via WP-CLI (`wp media regenerate`) or a plugin equivalent after deploying the
+On WordPress.com production there is **no WP-CLI** (see
+[`releases.md`](releases.md) §Production constraints), so regenerate the same
+attachments with a thumbnail-regeneration plugin equivalent after deploying the
 theme update. The `scripts/generate-logo-derivatives.php` script creates the
 240px header-logo derivatives from the theme assets (already committed; run
 it only if the logo masters are ever replaced).
@@ -262,3 +265,4 @@ See [`docs/plugins/conexao-translation-rollout.md`](plugins/conexao-translation-
 
 _Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_
 _Last verified: 2026-09-30 by the agent skills / documentation migration_
+_Last verified: 2026-11-07 by the agent, skills and documentation audit (generated `plugins.json` link corrected; production WP-CLI recommendation replaced with the admin/plugin path)_

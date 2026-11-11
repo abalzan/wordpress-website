@@ -1,0 +1,109 @@
+
+== Commemorative landing page ==
+  PASS: the PT /natal/ landing page exists
+  PASS: the EN /christmas/ landing page exists
+
+=== The double opt-in is required ===
+  PASS: the PT page assigns the landing template
+  PASS: the PT page names the christmas package
+  PASS: the PT page is a landing page
+  PASS: the EN page is a landing page
+  PASS: a normal page is not a landing page
+
+=== The PT/EN pair is a real translation pair ===
+  PASS: the EN record is linked to the PT record
+  PASS: the link is bidirectional
+
+=== Modules reuse existing records and never duplicate content ===
+  PASS: at least three modules have real items (empty-page rule)
+  PASS: the modules surface at least four real records
+  PASS: no record appears in two modules (non-duplicative)
+  PASS: every item has a real title
+  PASS: every item links to a real published record
+  PASS: every item has a real title
+  PASS: every item links to a real published record
+  PASS: every item has a real title
+  PASS: every item links to a real published record
+  PASS: every item has a real title
+  PASS: every item links to a real published record
+  PASS: every item has a real title
+  PASS: every item links to a real published record
+  PASS: every item has a real title
+  PASS: every item links to a real published record
+  PASS: every item has a real title
+  PASS: every item links to a real published record
+  PASS: every item has a real title
+  PASS: every item links to a real published record
+  PASS: every item has a real title
+  PASS: every item links to a real published record
+  PASS: every item has a real title
+  PASS: every item links to a real published record
+
+=== A missing record never produces placeholder copy ===
+  PASS: an unknown slug and an unknown post type produce no items
+  PASS: an empty module renders nothing at all
+
+=== Sitemap policy: archived, not promoted ===
+  PASS: the shared sitemap decision function exists
+  PASS: the PT landing page is excluded from the sitemap
+  PASS: the EN landing page is excluded from the sitemap
+  PASS: a normal published page is still included (the exclusion is not global)
+
+=== The page renders after the event window (archival) ===
+  PASS: no event-driven placement is active in March
+  PASS: the landing placement is still resolved in March
+  PASS: the landing page still renders in March
+  PASS: the page hero renders
+  PASS: the page title is the PT title
+  PASS: at least three modules render after the window
+  PASS: the archival page is not a preview
+
+=== Both languages render while the event is active ===
+  PASS: pt: the language context is the route language
+  PASS: pt: christmas is active at the clock
+  PASS: pt: the page opt-in resolves its landing entry while the event is active
+  PASS: pt: the landing placement resolves a context
+  PASS: pt: the context comes from the page, not from the event
+  PASS: pt: the context carries this language page id
+  PASS: pt: the landing placement renders
+  PASS: pt: the landing placement is not blank
+  PASS: pt: the landing hero renders exactly once
+  PASS: pt: the shell is attributed to the queried page
+  PASS: pt: the landing route never renders the homepage welcome
+  PASS: pt: a plain landing request is not a preview
+  PASS: pt: the landing hero uses the queried page title
+  PASS: pt: at least three landing modules render
+  PASS: pt: no landing module renders twice
+  PASS: pt: the page copy is in the route language
+  PASS: pt: the other language copy never leaks in
+  PASS: en: the language context is the route language
+  PASS: en: christmas is active at the clock
+  PASS: en: the page opt-in resolves its landing entry while the event is active
+  PASS: en: the landing placement resolves a context
+  PASS: en: the context comes from the page, not from the event
+  PASS: en: the context carries this language page id
+  PASS: en: the landing placement renders
+  PASS: en: the landing placement is not blank
+  PASS: en: the landing hero renders exactly once
+  PASS: en: the shell is attributed to the queried page
+  PASS: en: the landing route never renders the homepage welcome
+  PASS: en: a plain landing request is not a preview
+  PASS: en: the landing hero uses the queried page title
+  PASS: en: at least three landing modules render
+  PASS: en: no landing module renders twice
+  PASS: en: the page copy is in the route language
+  PASS: en: the other language copy never leaks in
+
+=== An unrelated page out of season stays commemorative-free ===
+  PASS: no event placement is planned on an unrelated page out of season
+  PASS: an unrelated page never resolves a landing placement
+  PASS: no commemorative dispatch happens on an unrelated page out of season
+  PASS: no package stylesheet is planned on an unrelated page
+  PASS: no package script is planned on an unrelated page
+  PASS: the landing placement outputs nothing on an unrelated page
+
+=== Preview authorisation is unchanged ===
+  PASS: a plain landing request is not an authorised preview
+  PASS: no preview banner is printed without authorisation
+
+commemorative-landing-page: 87 passed, 0 failed

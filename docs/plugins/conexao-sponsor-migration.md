@@ -130,3 +130,5 @@ no-ops when Polylang is inactive.
 | `Conexao_Sponsor_Exporter` | Builds the payload; streams the `.json` download |
 | `Conexao_Sponsor_Importer` | Validates, matches, creates/updates posts, recreates images |
 | `Conexao_Sponsor_Transfer_Admin` | Menu pages, nonce/cap checks, oversized-upload interception |
+
+_Last verified: 2026-11-09 by the plugin documentation audit_

@@ -1,0 +1,27 @@
+# FAIL-FIRST RUN: tests vs the OLD event-first precedence (fix temporarily reverted)
+
+## commemorative-presentation-dispatch
+  FAIL: the page-owned landing entry wins over the event-driven copy of the same placement — expected 'landing', got 'event'
+  FAIL: the landing context carries the queried page id, never 0 — expected 125982, got 0
+  FAIL: the landing placement is not blank while its event is active
+  FAIL: the landing hero renders exactly once — expected 1, got 0
+  FAIL: the shell is attributed to the queried page — 'data-ce-landing="125982"' not found in ''
+  FAIL: at least three landing modules render while the event is active
+
+## commemorative-landing-page
+  FAIL: pt: the context comes from the page, not from the event — expected 'landing', got 'event'
+  FAIL: pt: the context carries this language page id — expected 125982, got 0
+  FAIL: pt: the landing placement is not blank
+  FAIL: pt: the landing hero renders exactly once — expected 1, got 0
+  FAIL: pt: the shell is attributed to the queried page — 'data-ce-landing="125982"' not found in ''
+  FAIL: pt: the landing hero uses the queried page title — expected 'Natal', got ''
+  FAIL: pt: at least three landing modules render
+  FAIL: pt: the page copy is in the route language — 'Dois céus, uma mesma estrela' not found in ''
+  FAIL: en: the context comes from the page, not from the event — expected 'landing', got 'event'
+  FAIL: en: the context carries this language page id — expected 125983, got 0
+  FAIL: en: the landing placement is not blank
+  FAIL: en: the landing hero renders exactly once — expected 1, got 0
+  FAIL: en: the shell is attributed to the queried page — 'data-ce-landing="125983"' not found in ''
+  FAIL: en: the landing hero uses the queried page title — expected 'Christmas', got ''
+  FAIL: en: at least three landing modules render
+  FAIL: en: the page copy is in the route language — 'Two skies, one star' not found in ''

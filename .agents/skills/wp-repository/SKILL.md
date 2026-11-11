@@ -28,7 +28,8 @@ domain skill: `wp-add-content-type`, `wp-translation-rollout`, `wp-testing`,
 - `docs/engineering-standard.md` — §0 (the change-safety principles that apply to
   every change), §12 (git and review), §14 (definition of done).
 - `docs/README.md` — the documentation index, to find a canonical document.
-- `docs/templates/plan.md` — required before multi-file work.
+- `docs/templates/plan.md` — the plan template; copy it to
+  `docs/plans/<date>-<topic>.md` and fill in the copy before multi-file work.
 
 ## Authoritative sources
 
@@ -64,9 +65,10 @@ This skill owns **no** project data. Every fact it needs is read, never restated
    write down the one document that owns it. If a needed fact has no owner, that
    is a finding: the change should add the owner, not invent a private list.
 4. **Plan before writing** when the change is multi-file, or touches content,
-   routes, REST or English/Polylang. Fill in `docs/templates/plan.md` — every
-   impact section, even when the answer is "none". A short task may answer the
-   headings inline; it may not skip them.
+   routes, REST or English/Polylang. Copy `docs/templates/plan.md` to
+   `docs/plans/<date>-<topic>.md` and fill in the copy — every impact section,
+   even when the answer is "none". A short task may answer the headings inline;
+   it may not skip them.
 5. **State non-goals explicitly.** Name the tempting adjacent work you are
    refusing, so a reviewer does not read it as an oversight.
 6. **Prove a new artifact is needed.** Most "add a component/script/CPT" requests
@@ -148,8 +150,9 @@ python3 tests/scripts/verify-agent-governance.py
 
 ## Evidence and reporting
 
-Fill in `docs/templates/plan.md` before the work and
-`docs/templates/report.md` after it. The report carries **real** numbers from the
+Copy `docs/templates/plan.md` to `docs/plans/<date>-<topic>.md` before the work
+and `docs/templates/report.md` to `docs/reports/<date>-<stage>-<topic>.md`
+after it; fill in the copies only. The report carries **real** numbers from the
 commands above, the baseline-versus-final comparison, and an explicit limitations
 section. Machine output goes to `docs/evidence/<date>-<stage>/`; no report or
 evidence file is ever added at the repository root.
@@ -166,3 +169,5 @@ evidence file is ever added at the repository root.
 - [ ] One logical change per commit; no refactor mixed with a behaviour change.
 - [ ] `docs/engineering-standard.md` §14 is satisfied, with real numbers.
 - [ ] The Flutter/mobile repository was not touched; no production write occurred.
+
+_Last verified: 2026-11-09 by the agent skills review and hardening_

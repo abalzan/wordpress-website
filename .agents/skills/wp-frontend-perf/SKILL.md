@@ -49,8 +49,13 @@ regression. It is a review-and-verify discipline, not a licence to refactor.
 
 ## Preconditions
 
-- The local site is up, so query counts and cache behaviour can be observed
-  rather than assumed.
+- Inspect the current stack state first (`docker compose ps`; setup documented
+  in `docs/development.md`) and reuse an already-running local environment, so
+  query counts and cache behaviour can be observed rather than assumed. Do not
+  automatically start, recreate or rebuild containers, reset volumes, seed data
+  or mint an administrator session; make those side effects deliberate. If the
+  environment is unavailable, report the blocker and fall back to non-mutating
+  checks.
 - You have a **before** measurement (queries per request, or page weight) for the
   template or route you are changing.
 - You know which transient keys the change affects, so the invalidation matrix
@@ -175,3 +180,5 @@ Evidence goes to `docs/evidence/<date>-<stage>/`.
 - [ ] Every touched route was verified over HTTP before and after, with no
       unintended behaviour change.
 - [ ] Limitations (e.g. no profiler available) are stated in the report.
+
+_Last verified: 2026-11-09 by the agent skills review and hardening_

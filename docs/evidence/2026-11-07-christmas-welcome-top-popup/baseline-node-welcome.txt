@@ -1,0 +1,26 @@
+✔ the welcome opens immediately on the first eligible view (5.384854ms)
+✔ no placement on the page means no controller and no error (1.816261ms)
+✔ dismissal is remembered for the tab session and nothing stays inline (1.434062ms)
+✔ a fresh session is eligible again (0.407348ms)
+✔ storage that throws never breaks the page and still caps this document (0.608702ms)
+✔ Escape (the native close event) dismisses and is remembered (0.393336ms)
+✔ a genuine backdrop click dismisses, a click inside the card does not (0.792352ms)
+✔ nothing reopens the welcome on resize, orientation or focus changes (0.567746ms)
+✔ the CTA keeps its normal navigation (0.670357ms)
+✔ an incomplete welcome fails closed and never becomes an inline card (0.748704ms)
+✔ an engine without showModal() fails closed instead of faking a dialog (0.31583ms)
+✔ a showModal() that throws leaves the safe fallback, never a half-open dialog (0.282134ms)
+✔ a repeated boot claims nothing twice: one controller, one showModal(), no duplicate listeners (0.257595ms)
+✔ a late controller legitimately overrides the guard timeout instead of racing it (0.167678ms)
+✔ the signed preview is never auto-opened, exposes its trigger, and never touches dismissal state (0.407926ms)
+✔ focus enters the dialog on open and returns to the previously focused element on close (0.198ms)
+✔ it is not a scheduler: no timer, interval or requestAnimationFrame (0.303169ms)
+✔ the dismissal key is session-scoped and never persistent (0.793403ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 132.766486

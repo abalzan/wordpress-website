@@ -1,0 +1,94 @@
+[06-Nov-2026 11:11:38 UTC] PHP Notice:  $_SERVER['HTTP_HOST'] or $_SERVER['REQUEST_URI'] are required but not set. in /var/www/html/wp-content/plugins/polylang/src/functions.php on line 81
+script: scripts/diagnostics/commemorative-dispatch-probe.php
+target: http://localhost:8080 (local, local)
+mode:   read-only
+scope:  read-only
+
+Notice: $_SERVER['HTTP_HOST'] or $_SERVER['REQUEST_URI'] are required but not set. in /var/www/html/wp-content/plugins/polylang/src/functions.php on line 81
+
+== registered packages ==
+  halloween          status=implemented  energy=playful   motif=carved_pumpkin     placements=[homepage_hero, site_wide_ambient]
+  christmas          status=implemented  energy=calm      motif=bauble_ornament    placements=[homepage_hero, site_wide_ambient, landing_page]
+  new_year           status=planned      energy=playful   motif=four_point_sparkle placements=[]
+  st_patricks_day    status=planned      energy=moderate  motif=shamrock           placements=[]
+  valentines_day     status=planned      energy=calm      motif=heart              placements=[]
+  easter             status=planned      energy=calm      motif=decorated_egg      placements=[]
+
+== no active event, homepage ==
+  clock:        2026-11-06 12:00:00 (Europe/Dublin)
+  route kinds:  homepage
+  event:        none
+  package:      none
+  placements:   (none)
+  landing:      none
+  styles:       (none)
+  scripts:      (none)
+
+== Halloween active, homepage ==
+  clock:        2026-10-20 12:00:00 (Europe/Dublin)
+  route kinds:  homepage
+  event:        halloween (occurrence 2026)
+  package:      halloween
+  placements:   homepage_hero, site_wide_ambient
+  landing:      none
+  styles:       conexao-ce-css-presentations-halloween
+  scripts:      conexao-ce-js-presentations-halloween-halloween
+
+== Halloween active, internal page ==
+  clock:        2026-10-20 12:00:00 (Europe/Dublin)
+  route kinds:  internal
+  event:        halloween (occurrence 2026)
+  package:      halloween
+  placements:   site_wide_ambient
+  landing:      none
+  styles:       conexao-ce-css-presentations-halloween
+  scripts:      conexao-ce-js-presentations-halloween-halloween
+
+== Christmas active, homepage ==
+  clock:        2026-12-15 12:00:00 (Europe/Dublin)
+  route kinds:  homepage
+  event:        christmas (occurrence 2026)
+  package:      christmas
+  placements:   homepage_hero, site_wide_ambient
+  landing:      none
+  styles:       conexao-ce-css-presentations-christmas
+  scripts:      conexao-ce-js-presentations-christmas-christmas
+
+== Christmas active, internal page ==
+  clock:        2026-12-15 12:00:00 (Europe/Dublin)
+  route kinds:  internal
+  event:        christmas (occurrence 2026)
+  package:      christmas
+  placements:   site_wide_ambient
+  landing:      none
+  styles:       conexao-ce-css-presentations-christmas
+  scripts:      conexao-ce-js-presentations-christmas-christmas
+
+== landing page after the window (archival) ==
+  clock:        2027-02-01 12:00:00 (Europe/Dublin)
+  route kinds:  internal, landing
+  event:        valentines_day (occurrence 2027)
+  package:      none
+  placements:   (none)
+  landing:      christmas (page 125982)
+  styles:       conexao-ce-css-presentations-christmas
+  scripts:      conexao-ce-js-presentations-christmas-christmas
+
+== rendered placements ==
+
+-- render: no active event, homepage --
+  homepage_hero      rendered=no  bytes=0      aria-hidden=no  pointer-events-free=yes pumpkin=no
+  site_wide_ambient  rendered=no  bytes=0      aria-hidden=no  pointer-events-free=yes pumpkin=no
+  landing_page       rendered=no  bytes=0      aria-hidden=no  pointer-events-free=yes pumpkin=no
+
+-- render: Halloween, homepage --
+  homepage_hero      rendered=yes bytes=5462   aria-hidden=yes pointer-events-free=yes pumpkin=yes
+  site_wide_ambient  rendered=yes bytes=976    aria-hidden=yes pointer-events-free=yes pumpkin=no
+  landing_page       rendered=no  bytes=0      aria-hidden=no  pointer-events-free=yes pumpkin=no
+
+-- render: Halloween, internal page --
+  homepage_hero      rendered=no  bytes=0      aria-hidden=no  pointer-events-free=yes pumpkin=no
+  site_wide_ambient  rendered=yes bytes=976    aria-hidden=yes pointer-events-free=yes pumpkin=no
+  landing_page       rendered=no  bytes=0      aria-hidden=no  pointer-events-free=yes pumpkin=no
+
+summary: read-only dispatch probe complete

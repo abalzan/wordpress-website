@@ -1,0 +1,69 @@
+
+== Commemorative ambient layer ==
+
+=== Halloween ambient markup is decorative only ===
+  PASS: the ambient placement renders inside the Halloween window
+  PASS: the layer is hidden from assistive technology
+  PASS: the layer uses the shared placement class
+  PASS: the layer contains no control
+  PASS: the layer contains no link
+  PASS: the layer contains no audio
+  PASS: the layer contains no focusable node
+
+=== Halloween ambient config publishes the approved cadence and cap ===
+  PASS: the playful energy profile is published
+  PASS: the first surprise waits 20 s at the earliest
+  PASS: the first surprise waits 30 s at the latest
+  PASS: later surprises wait 25 s at the earliest
+  PASS: later surprises wait 35 s at the latest
+  PASS: the shortest effect lasts 0.9 s
+  PASS: the longest effect lasts 3 s
+  PASS: only one decoration may run at a time
+  PASS: the session cap is seven decorations
+  PASS: the cap is scoped to the occurrence year
+
+=== Christmas ambient config publishes the calm profile ===
+  PASS: the ambient placement renders inside the Christmas window
+  PASS: the Christmas layer is decorative too
+  PASS: the calm energy profile is published
+  PASS: a bauble appears every 60 s at the earliest
+  PASS: a bauble appears every 120 s at the latest
+  PASS: the bauble lasts 2 s at the shortest
+  PASS: the bauble lasts 4 s at the longest
+  PASS: the calm session cap is three decorations
+  PASS: no Halloween marker leaks into the Christmas layer
+
+=== The shared stylesheet enforces non-interaction ===
+  PASS: the shared stylesheet scopes the ambient layer
+  PASS: the layer never intercepts pointer events
+  PASS: the layer cannot move content
+  PASS: the layer cannot add a scrollbar
+  PASS: every decoration uses one class
+  PASS: reduced motion is honoured in CSS as well
+
+=== The shared scheduler owns timing, cap, visibility and cleanup ===
+  PASS: the session key is namespaced by package and occurrence
+  PASS: the counter reads the tab-scoped session storage
+  PASS: the counter persists within the tab session
+  PASS: the cap is enforced before every scheduling decision
+  PASS: a hidden tab is not eligible
+  PASS: returning to the tab waits for a cooldown
+  PASS: reduced motion stops the scheduler regardless of energy or cap
+  PASS: a pending timer is always cleared before a new one
+  PASS: each decoration node is removed after its duration
+  PASS: every decoration is hidden from assistive technology
+  PASS: every decoration is removed from the tab order
+  PASS: every decoration ignores pointer events
+  PASS: the scheduler normalises the simultaneous cap to one
+  PASS: a second decoration can never be shown while one is active
+
+=== The Halloween package script preserves its approved behaviour ===
+  PASS: the first surprise waits at least 20 s
+  PASS: the first surprise waits no more than 30 s
+  PASS: later surprises wait at least 25 s
+  PASS: later surprises wait no more than 35 s
+  PASS: the session cap is consulted before a decoration appears
+  PASS: each decoration is counted against the cap
+  PASS: the playful cap is the package fallback
+
+commemorative-ambient: 53 passed, 0 failed

@@ -62,18 +62,19 @@ that one file.
 | 2 | `conexao-content` | platform | active | yes | yes | yes | [conexao-content](docs/plugins/conexao-content.md) |
 | 3 | `conexao-admin-ux` | platform | active | yes | yes | yes | [conexao-admin-ux](docs/plugins/conexao-admin-ux.md) |
 | 4 | `conexao-event-runtime` | platform | active | yes | yes | yes | [conexao-event-runtime](docs/plugins/conexao-event-runtime.md) |
-| 5 | `conexao-event-importer` | tooling | active | no | yes | yes | [conexao-event-importer](docs/plugins/conexao-event-importer.md) |
-| 6 | `conexao-leisure-migration` | tooling | active | no | yes | yes | [conexao-leisure-migration](docs/plugins/conexao-leisure-migration.md) |
-| 7 | `conexao-sponsor-migration` | tooling | active | no | yes | yes | [conexao-sponsor-migration](docs/plugins/conexao-sponsor-migration.md) |
-| 8 | `conexao-translation-rollout` | platform | active | yes | yes | yes | [conexao-translation-rollout](docs/plugins/conexao-translation-rollout.md) |
-| 9 | `conexao-en-translation` | tooling | active | no | no | yes | [conexao-en-translation](docs/plugins/conexao-en-translation.md) |
-| 10 | `conexao-translation-automation` | platform | active | yes | yes | yes | [conexao-translation-automation](docs/plugins/conexao-translation-automation.md) |
+| 5 | `conexao-commemorative` | platform | active | yes | yes | yes | [conexao-commemorative](docs/plugins/conexao-commemorative.md) |
+| 6 | `conexao-event-importer` | tooling | active | no | yes | yes | [conexao-event-importer](docs/plugins/conexao-event-importer.md) |
+| 7 | `conexao-leisure-migration` | tooling | active | no | yes | yes | [conexao-leisure-migration](docs/plugins/conexao-leisure-migration.md) |
+| 8 | `conexao-sponsor-migration` | tooling | active | no | yes | yes | [conexao-sponsor-migration](docs/plugins/conexao-sponsor-migration.md) |
+| 9 | `conexao-translation-rollout` | platform | active | yes | yes | yes | [conexao-translation-rollout](docs/plugins/conexao-translation-rollout.md) |
+| 10 | `conexao-en-translation` | tooling | active | no | no | yes | [conexao-en-translation](docs/plugins/conexao-en-translation.md) |
+| 11 | `conexao-translation-automation` | platform | active | yes | yes | yes | [conexao-translation-automation](docs/plugins/conexao-translation-automation.md) |
 
-**Production steady state** (platform, `production: true`) - activate in this order: conexao-data-model -> conexao-content -> conexao-admin-ux -> conexao-event-runtime -> conexao-translation-rollout -> conexao-translation-automation.
+**Production steady state** (platform, `production: true`) - activate in this order: conexao-data-model -> conexao-content -> conexao-admin-ux -> conexao-event-runtime -> conexao-commemorative -> conexao-translation-rollout -> conexao-translation-automation.
 
 **Local-only tooling** (never production): conexao-event-importer, conexao-leisure-migration, conexao-sponsor-migration, conexao-en-translation.
 
-**Retired rollout plugins** (historical tooling, *activate → apply → remove*; not a production dependency and not in any release ZIP): .
+**Retired rollout plugins** (historical tooling, *activate → apply → remove*; not a production dependency and not in any release ZIP): none.
 
 Versions are **not** duplicated in the registry: the WordPress plugin header is the
 authoritative source, and each entry records only where to read it (`version_source`).
@@ -161,3 +162,4 @@ Never hand-edit a generated block; edit `plugins.json` and re-run `--write`.
 
 See `AGENTS.md` for AI-agent orientation and `docs/` for detailed documentation.
 _Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_
+_Last verified: 2026-11-07 by the agent, skills and documentation audit (generated registry regions regenerated: `plugins.json` link and empty retired-list sentence fixed)_

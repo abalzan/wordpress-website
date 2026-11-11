@@ -1,0 +1,22 @@
+NEGATIVE PROOFS — each verifier is shown FAILING on an injected violation,
+then restored. Nothing here persists; the working tree is re-checked after.
+
+--- Proof 1: plugins.json documentation path broken on purpose ---
+command: php scripts/generate-registry-docs.php --check
+exit: 1
+ERROR: generated-target validation failed:
+  - generated target does not exist: docs/plugins/does-not-exist.md
+EXPECTED: exit != 0 -> PASS (gate failed as required)
+
+--- Proof 2: skill directory wp-bogus-proof created without SKILL.md ---
+command: python3 tests/scripts/verify-agent-governance.py
+exit: 1
+FAIL: .agents/skills/wp-bogus-proof/ has no SKILL.md; a skill IS its SKILL.md
+FAIL: .agents/skills/README.md does not list the active skill 'wp-bogus-proof'; the index has drifted from .agents/skills/ and an agent would not find it
+EXPECTED: exit != 0 -> PASS (gate failed as required)
+
+restore check — registry --check: exit=0 | registry OK: 11 plugins validated, 20 generated regions current (zero writes).
+restore check — agent governance: exit=0 | Stage K governance verification: 357 passed, 0 failed
+
+Proof 3 (link audit): the baseline scan reported 28 broken links before
+the fixes and 19+1 after — the detector demonstrably discriminates.

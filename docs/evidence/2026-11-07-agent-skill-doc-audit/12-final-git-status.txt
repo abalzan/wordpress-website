@@ -1,0 +1,38 @@
+ M .agents/skills/wp-testing/SKILL.md
+ M .github/copilot-instructions.md
+ M AGENTS.md
+ M README.md
+ M docs/README.md
+ M docs/commemorative-events.md
+ M docs/deployment.md
+ M docs/development.md
+ M docs/engineering-standard.md
+ M docs/evidence/README.md
+ M docs/plugins/README.md
+ M docs/project-inventory.md
+ M docs/reports/README.md
+ M docs/routing.md
+ M docs/templates/plan.md
+ M docs/translation-manual-operator-runbook.md
+ M scripts/generate-registry-docs.php
+?? docs/evidence/2026-11-07-agent-skill-doc-audit/
+?? docs/plans/2026-11-07-agent-skill-doc-audit.md
+?? docs/reports/2026-11-07-agent-skill-doc-audit.md
+ .agents/skills/wp-testing/SKILL.md          |   2 -
+ .github/copilot-instructions.md             | 203 +++++++++++-----------------
+ AGENTS.md                                   |  22 ++-
+ README.md                                   |   3 +-
+ docs/README.md                              |   4 +-
+ docs/commemorative-events.md                |   3 +-
+ docs/deployment.md                          |   8 +-
+ docs/development.md                         |  11 +-
+ docs/engineering-standard.md                |   2 +
+ docs/evidence/README.md                     |  14 +-
+ docs/plugins/README.md                      |   2 +-
+ docs/project-inventory.md                   |   2 +-
+ docs/reports/README.md                      |   2 +
+ docs/routing.md                             |   7 +-
+ docs/templates/plan.md                      |   8 +-
+ docs/translation-manual-operator-runbook.md |   5 +-
+ scripts/generate-registry-docs.php          |  15 +-
+ 17 files changed, 140 insertions(+), 173 deletions(-)

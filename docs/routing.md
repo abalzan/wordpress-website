@@ -310,8 +310,8 @@ If a maintainer later decides these pages should not exist at all, that is a PT
 content change with its own plan — not a change to the gate.
 
 EN coverage is now produced by the shared
-[`conexao-translation-rollout`](../plugins/conexao-translation-rollout.md) engine
-through the [`conexao-en-translation`](../plugins/conexao-en-translation.md)
+[`conexao-translation-rollout`](plugins/conexao-translation-rollout.md) engine
+through the [`conexao-en-translation`](plugins/conexao-en-translation.md)
 stage:
 
 ```bash
@@ -396,7 +396,7 @@ in Stage 19).
 - **Portability**: `conexao-leisure-migration`'s exporter/importer carry
   `_leisure_excerpt_en`, so the field travels with the leisure dataset.
 - **Rollout**: executed by the shared
-  [`conexao-translation-rollout`](conexao-translation-rollout.md) engine through
+  [`conexao-translation-rollout`](plugins/conexao-translation-rollout.md) engine through
   stage `en-leisure-description`, owned by `conexao-en-translation`
   (dataset `includes/leisure-description-data.php`, adapter/config
   `includes/leisure-description-stage.php`). Driven by the shared runner
@@ -562,7 +562,26 @@ home.php                → /blog/
 search.php              → /search/
 404.php                 → 404 errors
 page-landing.php        → landing page template (specific pages)
+page-commemorative-landing.php → the opt-in commemorative landing page (see below)
 ```
+
+### Commemorative landing page (`/natal/`, `/en/christmas/`)
+
+The commemorative landing page uses **only** the existing page mechanism: it is a
+normal `page` record with the assigned template `page-commemorative-landing.php`
+and the `_ce_landing_package` meta. There is **no rewrite rule, no query var and no
+CPT exposure** — `commemorative_event` still has no public URL at all.
+
+| Concern | Behaviour |
+|---|---|
+| Status | `200` in both languages (never a redirect) |
+| Canonical | self-referencing in each language |
+| hreflang | the real translation pair (`pt-BR` ↔ `en`) |
+| Redirect precedence | no redirect matches these slugs; the page wins |
+| Sitemap | **excluded** by `conexao_seo_sitemap_include_page()` (archived, not promoted) |
+| After the window | still `200`; the copy comes from the page, not the event schedule |
+| Opt-in failure | a page with only one of the two opt-ins renders as an ordinary page |
+
 
 ## Navigation Architecture
 
@@ -724,3 +743,4 @@ _Last verified: 2026-09-28 by the EN Jobs URL consistency change — the EN Jobs
 _Last verified: 2026-09-30 by the EN rollout blocker resolution — `newsletter` adopted as the third declared shared-slug B1 page (Option A). The permit is now read from each stage's own manifest by `conexao_en_translation_shared_page_slug_for()` instead of a hard-coded list, and is always paired with the shared-slug duplicate guard. The regenerated read-only dry-run plans `en-page::newsletter` at target slug `newsletter` (never `newsletter-2`); `unresolved_slug_conflicts` 1 → 0. `newsletter` was NOT added to the B2 page allowlist. Production untouched: 0 writes, 0 EN records, 0 links; `/newsletter/` still PT and `/en/newsletter-2/` still 404_
 
 _Last verified: 2026-10-08 by the Apoiadores single-page directory change (PT and EN Apoiadores are single-page directories; paged URLs keep their 404)_
+_Last verified: 2026-11-07 by the agent, skills and documentation audit (three broken plugin-doc links corrected)_

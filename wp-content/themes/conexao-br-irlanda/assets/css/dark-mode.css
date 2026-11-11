@@ -90,46 +90,6 @@
   --focus-ring: 3px solid var(--conexao-accent);
 }
 
-:root[data-theme="dark"] .seasonal-halloween-presentation,
-:root[data-theme="dark"] .seasonal-halloween-effect-layer {
-  --halloween-surface: #181522;
-  --halloween-surface-raised: #262033;
-  --halloween-text: #fff8ec;
-  --halloween-text-muted: #f0e5d4;
-  --halloween-accent: #ffc179;
-  --halloween-accent-soft: #f7a94b;
-  --halloween-accent-glow: rgba(247, 153, 62, 0.18);
-  --halloween-border: rgba(250, 204, 147, 0.42);
-  --halloween-shadow: 0 28px 70px rgba(4, 5, 14, 0.58), 0 4px 24px rgba(247, 153, 62, 0.13);
-  --halloween-focus: #ffe2aa;
-  --halloween-bat-color: #10111e;
-  --halloween-bat-rim: rgba(255, 235, 201, 0.98);
-  --halloween-bat-glow: rgba(180, 147, 229, 0.74);
-  --halloween-witch-glow: rgba(255, 174, 87, 0.9);
-  --halloween-moon-face: #fff2c9;
-  --halloween-moon-edge: #bba985;
-  --halloween-decorative-glow: rgba(255, 236, 190, 0.76);
-  --halloween-mist: rgba(194, 187, 225, 0.17);
-  --halloween-ghost-color: #fff8ec;
-  --halloween-pumpkin-highlight: #ffd080;
-  --halloween-pumpkin-mid: #f2852f;
-  --halloween-pumpkin-shadow: #9c3d1f;
-  --halloween-pumpkin-stem-light: #555d35;
-  --halloween-pumpkin-stem-dark: #9a8347;
-  --halloween-pumpkin-stem-ink: #383d26;
-  --halloween-pumpkin-ink: #71321e;
-  --halloween-pumpkin-face-ink: #512215;
-  --halloween-pumpkin-face: #ffdb79;
-  --halloween-pumpkin-line: #7a321d;
-  --halloween-cta-highlight: #ffc16f;
-  --halloween-cta-base: #ef9130;
-  --halloween-cta-text: #28190f;
-  --halloween-cta-border: rgba(255, 219, 168, 0.64);
-  --halloween-backdrop:
-    radial-gradient(ellipse at 50% 45%, rgba(35, 25, 55, 0.62) 0%, rgba(8, 11, 24, 0.9) 74%),
-    linear-gradient(115deg, rgba(20, 17, 36, 0.86), rgba(11, 20, 38, 0.8));
-}
-
 /* ===== 2. BASE ===== */
 [data-theme="dark"] body {
   background-color: var(--color-background);

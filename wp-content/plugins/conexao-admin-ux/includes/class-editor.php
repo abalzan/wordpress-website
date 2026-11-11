@@ -205,6 +205,16 @@ final class Conexao_Admin_Ux_Editor {
 			return ( $a['priority'] ?? 10 ) <=> ( $b['priority'] ?? 10 );
 		} );
 
+		// r10 §3.6 single-owner invariant, layer 2 (editor): a non-canonical
+		// translation shows the shared configuration as read-only. The values are
+		// still displayed (an editor must be able to see what will render), but
+		// no input is emitted for them and save() refuses them server-side.
+		if ( self::is_locked_translation( $post->ID ) ) {
+			echo '<div class="notice notice-info inline conexao-translation-notice"><p>';
+			echo esc_html__( 'Este registo é a tradução. Agendamento, ativação, prioridade e preferência anual pertencem ao registo canónico (PT) e não podem ser alterados aqui.', 'conexao-admin-ux' );
+			echo '</p></div>';
+		}
+
 		foreach ( $sections as $key => $section ) {
 			$icon    = isset( $section['icon'] ) ? $section['icon'] : 'dashicons-admin-generic';
 			$section_id = 'conexao-section--' . sanitize_html_class( $key );
@@ -215,7 +225,7 @@ final class Conexao_Admin_Ux_Editor {
 			echo '</div>';
 			echo '<div class="conexao-section-body">';
 			echo '<div class="conexao-fields-grid">';
-			foreach ( $section['fields'] as $field ) {
+			foreach ( self::lock_shared_fields( $section['fields'], $post->ID ) as $field ) {
 				$value = Conexao_Admin_Ux_Fields::get_value( $post, $field );
 				echo Conexao_Admin_Ux_Fields::render( $field, $value, $post->ID ); // phpcs:ignore WordPress.Security.EscapeOutput -- field renderer escapes its output.
 			}
@@ -225,6 +235,54 @@ final class Conexao_Admin_Ux_Editor {
 		}
 
 		echo '</div>';
+	}
+
+	/**
+	 * Whether this record is a non-canonical translation of a commemorative event.
+	 *
+	 * The single question the editor asks before locking the shared fields: the
+	 * data model owns the shared/translated split and the Polylang language
+	 * lookup, so the editor cannot disagree with the engine or the save guard.
+	 *
+	 * @param int $post_id Post ID.
+	 * @return bool
+	 */
+	public static function is_locked_translation( $post_id ) {
+		if ( ! class_exists( 'Conexao_Data_Model_Commemorative' ) ) {
+			return false;
+		}
+
+		if ( Conexao_Data_Model_Commemorative::POST_TYPE !== get_post_type( $post_id ) ) {
+			return false;
+		}
+
+		return ! Conexao_Data_Model_Commemorative::can_write_shared_meta( $post_id );
+	}
+
+	/**
+	 * Mark the shared fields read-only on a non-canonical translation.
+	 *
+	 * Canonical records (and every other post type) are returned unchanged, so a
+	 * legitimate PT edit keeps its full editable field set.
+	 *
+	 * @param array $fields  Field definitions for one section.
+	 * @param int   $post_id Post ID.
+	 * @return array
+	 */
+	public static function lock_shared_fields( array $fields, $post_id ) {
+		if ( ! self::is_locked_translation( $post_id ) ) {
+			return $fields;
+		}
+
+		foreach ( $fields as $index => $field ) {
+			if ( empty( $field['key'] ) || ! Conexao_Data_Model_Commemorative::is_shared_meta_key( $field['key'] ) ) {
+				continue;
+			}
+
+			$fields[ $index ]['readonly'] = true;
+		}
+
+		return $fields;
 	}
 
 	/**
@@ -323,7 +381,13 @@ final class Conexao_Admin_Ux_Editor {
 		}
 
 		// Return to list link.
-		echo '<p class="conexao-back-link"><a href="' . esc_url( admin_url( 'edit.php?post_type=' . $this->post_type ) ) . '">← ' . esc_html( sprintf( __( 'Voltar para %s', 'conexao-admin-ux' ), $this->config['labels']['plural'] ) ) . '</a></p>';
+		$back_label = sprintf(
+			/* translators: %s: plural label of the content type. */
+			__( 'Voltar para %s', 'conexao-admin-ux' ),
+			$this->config['labels']['plural']
+		);
+
+		echo '<p class="conexao-back-link"><a href="' . esc_url( admin_url( 'edit.php?post_type=' . $this->post_type ) ) . '">← ' . esc_html( $back_label ) . '</a></p>';
 
 		echo '</div>';
 	}
@@ -533,7 +597,8 @@ final class Conexao_Admin_Ux_Editor {
 
 		// Save the custom status.
 		Conexao_Admin_Ux_Actions::set_status( $post_id, $this->post_type, $status );
-if ( ! empty( $recurrence_warnings ) ) {
+
+		if ( ! empty( $recurrence_warnings ) ) {
 			update_option( 'conexao_admin_ux_warnings_' . $post_id, $recurrence_warnings, false );
 		}
 
@@ -760,6 +825,7 @@ if ( ! empty( $recurrence_warnings ) ) {
 			'leisure'             => '_leisure_name',
 			'recruitment_agency'  => '_agency_name',
 			'permit_employer'     => '_employer_name',
+			'commemorative_event' => '_ce_name',
 		);
 		return isset( $map[ $this->post_type ] ) ? $map[ $this->post_type ] : '_' . $this->post_type . '_title';
 	}

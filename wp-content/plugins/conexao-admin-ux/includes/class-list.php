@@ -128,6 +128,16 @@ final class Conexao_Admin_Ux_List {
 
 		}
 
+		// A component that owns the value (e.g. the commemorative engine) renders
+		// it through this one documented filter, so the admin UX never computes
+		// scheduling, eligibility or any other engine-owned state itself.
+		$rendered = apply_filters( 'conexao_admin_ux_render_column', null, $render, $post_id, $this->post_type, $config );
+
+		if ( null !== $rendered ) {
+			echo $rendered; // phpcs:ignore WordPress.Security.EscapeOutput -- the providing component escapes its own markup.
+			return;
+		}
+
 		// No custom render callback — fall back to the default renderer.
 		$this->render_default( $post_id, $config );
 	}
@@ -590,7 +600,8 @@ final class Conexao_Admin_Ux_List {
 
 		printf(
 			'<div class="notice notice-success is-dismissible"><p>%s</p></div>',
-			esc_html( sprintf( __( '%d %s com sucesso.', 'conexao-admin-ux' ), $count, $label ) )
+			/* translators: 1: number of records changed, 2: bulk action label. */
+			esc_html( sprintf( __( '%1$d %2$s com sucesso.', 'conexao-admin-ux' ), $count, $label ) )
 		);
 	}
 

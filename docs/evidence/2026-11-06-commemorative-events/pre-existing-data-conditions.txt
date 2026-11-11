@@ -1,0 +1,22 @@
+Pre-existing LOCAL data conditions reported by the permanent gates and the HTTP smoke matrix.
+None of these records was created, modified or deleted by the commemorative-events change:
+
+  empregos                  page  id=22200   created 2026-08-26 21:39:09  modified 2026-10-21 20:03:35  lang=en
+  empregos-3                page  id=115443  created 2026-08-26 21:39:09  modified 2026-10-21 20:03:57  lang=en
+  carteira-motorista-brasileiros  guide  id=115267  created 2026-10-21 20:02:56  modified 2026-10-21 20:02:56  lang=pt
+
+The task started on 2026-11-06 (baseline 50ae318). The three records above were last
+modified on 2026-10-21, i.e. before this work, and the change adds no route, redirect
+or page-language edit.
+
+Effects:
+  - translation_completeness gate: page:malformed_relationships (2: en_without_pt:empregos-3,
+    en_without_pt:empregos) and guide:missing_en (1: carteira-motorista-brasileiros).
+  - HTTP smoke matrix: /empregos/ answers 302 -> /en/empregos/ because page 22200 is
+    assigned Polylang language `en` while the site default is `pt`.
+
+Additional pre-existing local condition (full-suite run):
+  conexao_town term id=2311  "Co Clare Ireland"  (legacy junk term, low term_id, not created by this task)
+  -> plugin/conexao-event-importer/test-town-sanitization.php fails its global
+     "no Eircode-contaminated or non-town terms" assertion (82 assertions pass).
+     The commemorative change creates no terms and touches no taxonomy.

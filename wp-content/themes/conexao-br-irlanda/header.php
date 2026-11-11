@@ -43,13 +43,13 @@
 <?php wp_body_open(); ?>
 
 <?php
-// Halloween-active marker: read by the client-side navigation-effects
-// initializer. The occasion engine remains the sole eligibility authority;
-// no date calculation is duplicated here.
-if ( function_exists( 'conexao_seasonal_variant' ) && 'halloween' === conexao_seasonal_variant() ) :
-	?>
-	<span class="seasonal-halloween-active-marker" data-witch-asset="<?php echo esc_url( get_template_directory_uri() . '/assets/images/halloween/witch-broom.svg' ); ?>" hidden></span>
-<?php endif; ?>
+/*
+ * The commemorative client marker is no longer an event-specific branch. The
+ * dispatcher emits one generic marker (package slug + rendered placements) on
+ * `wp_body_open` above; header.php contains no holiday identity at all
+ * (r10 §8.1, §7.11).
+ */
+?>
 
 <div id="page" class="site">
 	<a class="skip-link screen-reader-text" href="#primary"><?php esc_html_e( 'Pular para o conteúdo', 'conexao-br-irlanda' ); ?></a>

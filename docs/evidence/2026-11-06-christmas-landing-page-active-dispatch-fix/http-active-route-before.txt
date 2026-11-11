@@ -1,0 +1,5 @@
+--- BEFORE (HEAD code, Christmas forced active via signed preview) ---
+/natal/            banner=1 landing_hero=0 modules=0 bytes=63885
+<main id="primary" class="site-main">
+/en/christmas/     banner=1 landing_hero=0 modules=0 bytes=63740
+<main id="primary" class="site-main">

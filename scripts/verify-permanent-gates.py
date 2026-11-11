@@ -109,6 +109,63 @@ GATES = (
         "command": ["python3", os.path.join("tests", "scripts", "verify-i18n-freshness.py")],
         "needs_wordpress": False,
     },
+    # --- r10 §9.5 commemorative gates (a)-(f) + the runtime scheduler proof ----
+    {
+        "domain": "commemorative_assets",
+        "gate": "commemorative_no_asset_without_event",
+        "kind": "php",
+        "command": ["php", os.path.join(THEME_TESTS, "test-commemorative-gate-assets.php")],
+        "needs_wordpress": True,
+    },
+    {
+        "domain": "commemorative_security",
+        "gate": "commemorative_no_public_activation",
+        "kind": "php",
+        "command": ["php", os.path.join(THEME_TESTS, "test-commemorative-gate-public-activation.php")],
+        "needs_wordpress": True,
+    },
+    {
+        "domain": "commemorative_privacy",
+        "gate": "commemorative_cpt_privacy",
+        "kind": "php",
+        "command": ["php", os.path.join(THEME_TESTS, "test-commemorative-gate-cpt-privacy.php")],
+        "needs_wordpress": True,
+    },
+    {
+        "domain": "commemorative_dispatch",
+        "gate": "commemorative_single_package",
+        "kind": "php",
+        "command": ["php", os.path.join(THEME_TESTS, "test-commemorative-gate-single-package.php")],
+        "needs_wordpress": True,
+    },
+    {
+        "domain": "commemorative_a11y",
+        "gate": "commemorative_ambient_decorative",
+        "kind": "php",
+        "command": ["php", os.path.join(THEME_TESTS, "test-commemorative-gate-ambient-decoration.php")],
+        "needs_wordpress": True,
+    },
+    {
+        "domain": "commemorative_assets",
+        "gate": "commemorative_placement_assets",
+        "kind": "php",
+        "command": ["php", os.path.join(THEME_TESTS, "test-commemorative-gate-placement-assets.php")],
+        "needs_wordpress": True,
+    },
+    {
+        "domain": "commemorative_runtime",
+        "gate": "commemorative_ambient_runtime",
+        "kind": "static",
+        "command": ["python3", os.path.join("tests", "scripts", "verify-commemorative-runtime.py")],
+        "needs_wordpress": False,
+    },
+    {
+        "domain": "commemorative_polylang",
+        "gate": "commemorative_translation_ownership",
+        "kind": "php",
+        "command": ["php", os.path.join(THEME_TESTS, "test-commemorative-gate-translation-ownership.php")],
+        "needs_wordpress": True,
+    },
 )
 
 GATE_RESULT = re.compile(r"^GATE-RESULT (\{.*\})$", re.M)

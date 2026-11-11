@@ -1,0 +1,681 @@
+{
+  "base": "http://localhost:8080",
+  "browser": "Chromium 151.0.7922.34",
+  "rows": [
+    {
+      "url": "http://localhost:8080/",
+      "status": 200,
+      "console_errors": [],
+      "commemorative_requests": [],
+      "placements": [],
+      "modules": 0,
+      "ambient_nodes": [],
+      "h1": [
+        "Tudo que o brasileiro precisa para viver melhor na Irlanda"
+      ],
+      "lang": "pt-BR",
+      "canonical": [
+        "http://localhost:8080/"
+      ],
+      "hreflang": [
+        "pt http://localhost:8080/",
+        "en http://localhost:8080/en/",
+        "pt-BR http://localhost:8080/",
+        "en http://localhost:8080/en/",
+        "x-default http://localhost:8080/"
+      ],
+      "preview_banner": 0,
+      "overflow_x": false
+    },
+    {
+      "url": "http://localhost:8080/documentos/",
+      "status": 200,
+      "console_errors": [],
+      "commemorative_requests": [],
+      "placements": [],
+      "modules": 0,
+      "ambient_nodes": [],
+      "h1": [
+        "Documentos"
+      ],
+      "lang": "pt-BR",
+      "canonical": [
+        "http://localhost:8080/documentos/"
+      ],
+      "hreflang": [
+        "pt http://localhost:8080/documentos/",
+        "en http://localhost:8080/en/documents/",
+        "pt-BR http://localhost:8080/documentos/",
+        "en http://localhost:8080/en/documents/",
+        "x-default http://localhost:8080/documentos/"
+      ],
+      "preview_banner": 0,
+      "overflow_x": false
+    },
+    {
+      "url": "http://localhost:8080/natal/",
+      "status": 200,
+      "console_errors": [],
+      "commemorative_requests": [
+        "http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/js/commemorative.js?ver=1793960967",
+        "http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/js/presentations/christmas/christmas.js?ver=1793961199"
+      ],
+      "placements": [
+        "landing_page"
+      ],
+      "modules": 5,
+      "ambient_nodes": [],
+      "h1": [
+        "Natal"
+      ],
+      "lang": "pt-BR",
+      "canonical": [
+        "http://localhost:8080/natal/"
+      ],
+      "hreflang": [
+        "pt http://localhost:8080/natal/",
+        "en http://localhost:8080/en/christmas/",
+        "pt-BR http://localhost:8080/natal/",
+        "en http://localhost:8080/en/christmas/",
+        "x-default http://localhost:8080/natal/"
+      ],
+      "preview_banner": 0,
+      "overflow_x": false
+    },
+    {
+      "url": "http://localhost:8080/natal/",
+      "contrast_light": [
+        {
+          "selector": "ce-landing__title",
+          "ratio": "9.36",
+          "size": "32px"
+        },
+        {
+          "selector": "ce-module__title",
+          "ratio": "9.36",
+          "size": "22.4px"
+        },
+        {
+          "selector": "ce-card__summary",
+          "ratio": "16.23",
+          "size": "14.4px"
+        },
+        {
+          "selector": "ce-card__summary",
+          "ratio": "16.23",
+          "size": "14.4px"
+        },
+        {
+          "selector": "ce-card__summary",
+          "ratio": "16.23",
+          "size": "14.4px"
+        },
+        {
+          "selector": "ce-card__summary",
+          "ratio": "16.23",
+          "size": "14.4px"
+        },
+        {
+          "selector": "ce-card__summary",
+          "ratio": "16.23",
+          "size": "14.4px"
+        },
+        {
+          "selector": "ce-card__summary",
+          "ratio": "16.23",
+          "size": "14.4px"
+        }
+      ]
+    },
+    {
+      "url": "http://localhost:8080/natal/",
+      "contrast_dark": [
+        {
+          "selector": "ce-landing__title",
+          "ratio": "15.82",
+          "size": "32px"
+        },
+        {
+          "selector": "ce-module__title",
+          "ratio": "15.82",
+          "size": "22.4px"
+        },
+        {
+          "selector": "ce-card__summary",
+          "ratio": "13.67",
+          "size": "14.4px"
+        },
+        {
+          "selector": "ce-card__summary",
+          "ratio": "13.67",
+          "size": "14.4px"
+        },
+        {
+          "selector": "ce-card__summary",
+          "ratio": "13.67",
+          "size": "14.4px"
+        },
+        {
+          "selector": "ce-card__summary",
+          "ratio": "13.67",
+          "size": "14.4px"
+        },
+        {
+          "selector": "ce-card__summary",
+          "ratio": "13.67",
+          "size": "14.4px"
+        },
+        {
+          "selector": "ce-card__summary",
+          "ratio": "13.67",
+          "size": "14.4px"
+        }
+      ]
+    },
+    {
+      "url": "http://localhost:8080/en/christmas/",
+      "status": 200,
+      "console_errors": [],
+      "commemorative_requests": [
+        "http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/js/commemorative.js?ver=1793960967",
+        "http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/js/presentations/christmas/christmas.js?ver=1793961199"
+      ],
+      "placements": [
+        "landing_page"
+      ],
+      "modules": 5,
+      "ambient_nodes": [],
+      "h1": [
+        "Christmas"
+      ],
+      "lang": "en-US",
+      "canonical": [
+        "http://localhost:8080/en/christmas/"
+      ],
+      "hreflang": [
+        "pt http://localhost:8080/natal/",
+        "en http://localhost:8080/en/christmas/",
+        "en http://localhost:8080/en/christmas/",
+        "pt-BR http://localhost:8080/natal/",
+        "x-default http://localhost:8080/natal/"
+      ],
+      "preview_banner": 0,
+      "overflow_x": false
+    },
+    {
+      "url": "http://localhost:8080/natal/",
+      "status": 200,
+      "console_errors": [],
+      "commemorative_requests": [
+        "http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/js/commemorative.js?ver=1793960967",
+        "http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/js/presentations/christmas/christmas.js?ver=1793961199"
+      ],
+      "placements": [
+        "landing_page"
+      ],
+      "modules": 5,
+      "ambient_nodes": [],
+      "h1": [
+        "Natal"
+      ],
+      "lang": "pt-BR",
+      "canonical": [
+        "http://localhost:8080/natal/"
+      ],
+      "hreflang": [
+        "pt http://localhost:8080/natal/",
+        "en http://localhost:8080/en/christmas/",
+        "pt-BR http://localhost:8080/natal/",
+        "en http://localhost:8080/en/christmas/",
+        "x-default http://localhost:8080/natal/"
+      ],
+      "preview_banner": 0,
+      "overflow_x": false
+    },
+    {
+      "reduced_motion": true,
+      "ambient_children": []
+    },
+    {
+      "url": "http://localhost:8080/?conexao_preview=halloween&_wpnonce=0504692fc2&_ce_ts=1793963782",
+      "status": 200,
+      "console_errors": [],
+      "commemorative_requests": [
+        "http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/js/commemorative.js?ver=1793960967",
+        "http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/js/presentations/halloween/halloween.js?ver=1793960999"
+      ],
+      "placements": [
+        "homepage_hero",
+        "site_wide_ambient"
+      ],
+      "modules": 0,
+      "ambient_nodes": [
+        {
+          "ariaHidden": "true",
+          "pointerEvents": "none",
+          "children": 1,
+          "focusable": 0
+        }
+      ],
+      "h1": [
+        "Tudo que o brasileiro precisa para viver melhor na Irlanda"
+      ],
+      "lang": "pt-BR",
+      "canonical": [
+        "http://localhost:8080/"
+      ],
+      "hreflang": [
+        "pt http://localhost:8080/",
+        "en http://localhost:8080/en/",
+        "pt-BR http://localhost:8080/",
+        "en http://localhost:8080/en/",
+        "x-default http://localhost:8080/"
+      ],
+      "preview_banner": 1,
+      "overflow_x": false
+    },
+    {
+      "preview_focus_order": [
+        {
+          "tag": "A",
+          "label": "Sobre o WordPress",
+          "cls": "ab-item"
+        },
+        {
+          "tag": "A",
+          "label": "Conexão BR",
+          "cls": "ab-item"
+        },
+        {
+          "tag": "A",
+          "label": "Personalizar",
+          "cls": "ab-item"
+        },
+        {
+          "tag": "A",
+          "label": "1010 atualizações disponíveis",
+          "cls": "ab-item"
+        },
+        {
+          "tag": "A",
+          "label": "00 comentário esperando moderação",
+          "cls": "ab-item"
+        },
+        {
+          "tag": "A",
+          "label": "Novo",
+          "cls": "ab-item"
+        },
+        {
+          "tag": "A",
+          "label": "Editar página",
+          "cls": "ab-item"
+        },
+        {
+          "tag": "A",
+          "label": "Leitor",
+          "cls": "ab-item"
+        },
+        {
+          "tag": "A",
+          "label": "Olá, test",
+          "cls": "ab-item"
+        },
+        {
+          "tag": "INPUT",
+          "label": "",
+          "cls": "adminbar-input"
+        },
+        {
+          "tag": "A",
+          "label": "Pular para o conteúdo",
+          "cls": "skip-link screen-reader-text"
+        },
+        {
+          "tag": "A",
+          "label": "Pular para o conteúdo",
+          "cls": "skip-link screen-reader-text"
+        },
+        {
+          "tag": "A",
+          "label": "",
+          "cls": "site-logo-link"
+        },
+        {
+          "tag": "A",
+          "label": "Início",
+          "cls": "nav-link"
+        },
+        {
+          "tag": "A",
+          "label": "Apoiadores",
+          "cls": "nav-link"
+        },
+        {
+          "tag": "A",
+          "label": "Guias",
+          "cls": "nav-link"
+        },
+        {
+          "tag": "A",
+          "label": "Eventos",
+          "cls": "nav-link"
+        },
+        {
+          "tag": "A",
+          "label": "Cursos",
+          "cls": "nav-link"
+        },
+        {
+          "tag": "A",
+          "label": "Lazer e turismo",
+          "cls": "nav-link"
+        },
+        {
+          "tag": "A",
+          "label": "Empregos",
+          "cls": "nav-link"
+        },
+        {
+          "tag": "A",
+          "label": "Blog",
+          "cls": "nav-link"
+        },
+        {
+          "tag": "A",
+          "label": "Contato",
+          "cls": "nav-link"
+        },
+        {
+          "tag": "BUTTON",
+          "label": "Alternar tema claro/escuro",
+          "cls": "theme-toggle"
+        },
+        {
+          "tag": "INPUT",
+          "label": "",
+          "cls": "search-field"
+        },
+        {
+          "tag": "BUTTON",
+          "label": "Buscar",
+          "cls": "screen-reader-text header-search-submit"
+        },
+        {
+          "tag": "A",
+          "label": "Anuncie Aqui",
+          "cls": "header-cta"
+        },
+        {
+          "tag": "BUTTON",
+          "label": "Fechar mensagem de Halloween",
+          "cls": "seasonal-halloween-close"
+        },
+        {
+          "tag": "A",
+          "label": "Explorar eventos",
+          "cls": "btn btn-primary seasonal-halloween-cta"
+        }
+      ]
+    },
+    {
+      "dismissed": 1
+    }
+  ],
+  "review": [
+    {
+      "ok": true,
+      "label": "homepage returns 200",
+      "detail": ""
+    },
+    {
+      "ok": true,
+      "label": "homepage has no console errors",
+      "detail": "[]"
+    },
+    {
+      "ok": true,
+      "label": "no-event homepage requests zero commemorative assets",
+      "detail": "[]"
+    },
+    {
+      "ok": true,
+      "label": "no-event homepage renders zero placements",
+      "detail": "[]"
+    },
+    {
+      "ok": true,
+      "label": "internal page returns 200",
+      "detail": ""
+    },
+    {
+      "ok": true,
+      "label": "no-event internal page requests zero commemorative assets",
+      "detail": ""
+    },
+    {
+      "ok": true,
+      "label": "PT landing page returns 200",
+      "detail": ""
+    },
+    {
+      "ok": true,
+      "label": "PT landing page renders at least three modules",
+      "detail": "5"
+    },
+    {
+      "ok": true,
+      "label": "PT landing page is served in Portuguese",
+      "detail": "pt-BR"
+    },
+    {
+      "ok": true,
+      "label": "PT landing page is self-canonical",
+      "detail": "['http://localhost:8080/natal/']"
+    },
+    {
+      "ok": true,
+      "label": "PT landing page declares the EN hreflang",
+      "detail": "['pt http://localhost:8080/natal/', 'en http://localhost:8080/en/christmas/', 'pt-BR http://localhost:8080/natal/', 'en http://localhost:8080/en/christmas/', 'x-default http://localhost:8080/natal/']"
+    },
+    {
+      "ok": true,
+      "label": "PT landing page has exactly one h1",
+      "detail": "['Natal']"
+    },
+    {
+      "ok": true,
+      "label": "PT landing page has no horizontal overflow at 1440px",
+      "detail": ""
+    },
+    {
+      "ok": true,
+      "label": "PT landing page has no console errors",
+      "detail": "[]"
+    },
+    {
+      "ok": true,
+      "label": "landing light contrast >= 4.5:1 (ce-landing__title)",
+      "detail": "9.36"
+    },
+    {
+      "ok": true,
+      "label": "landing light contrast >= 4.5:1 (ce-module__title)",
+      "detail": "9.36"
+    },
+    {
+      "ok": true,
+      "label": "landing light contrast >= 4.5:1 (ce-card__summary)",
+      "detail": "16.23"
+    },
+    {
+      "ok": true,
+      "label": "landing light contrast >= 4.5:1 (ce-card__summary)",
+      "detail": "16.23"
+    },
+    {
+      "ok": true,
+      "label": "landing light contrast >= 4.5:1 (ce-card__summary)",
+      "detail": "16.23"
+    },
+    {
+      "ok": true,
+      "label": "landing light contrast >= 4.5:1 (ce-card__summary)",
+      "detail": "16.23"
+    },
+    {
+      "ok": true,
+      "label": "landing light contrast >= 4.5:1 (ce-card__summary)",
+      "detail": "16.23"
+    },
+    {
+      "ok": true,
+      "label": "landing light contrast >= 4.5:1 (ce-card__summary)",
+      "detail": "16.23"
+    },
+    {
+      "ok": true,
+      "label": "landing dark contrast >= 4.5:1 (ce-landing__title)",
+      "detail": "15.82"
+    },
+    {
+      "ok": true,
+      "label": "landing dark contrast >= 4.5:1 (ce-module__title)",
+      "detail": "15.82"
+    },
+    {
+      "ok": true,
+      "label": "landing dark contrast >= 4.5:1 (ce-card__summary)",
+      "detail": "13.67"
+    },
+    {
+      "ok": true,
+      "label": "landing dark contrast >= 4.5:1 (ce-card__summary)",
+      "detail": "13.67"
+    },
+    {
+      "ok": true,
+      "label": "landing dark contrast >= 4.5:1 (ce-card__summary)",
+      "detail": "13.67"
+    },
+    {
+      "ok": true,
+      "label": "landing dark contrast >= 4.5:1 (ce-card__summary)",
+      "detail": "13.67"
+    },
+    {
+      "ok": true,
+      "label": "landing dark contrast >= 4.5:1 (ce-card__summary)",
+      "detail": "13.67"
+    },
+    {
+      "ok": true,
+      "label": "landing dark contrast >= 4.5:1 (ce-card__summary)",
+      "detail": "13.67"
+    },
+    {
+      "ok": true,
+      "label": "EN landing page returns 200",
+      "detail": ""
+    },
+    {
+      "ok": true,
+      "label": "EN landing page is served in English",
+      "detail": "en-US"
+    },
+    {
+      "ok": true,
+      "label": "EN landing page is self-canonical",
+      "detail": "['http://localhost:8080/en/christmas/']"
+    },
+    {
+      "ok": true,
+      "label": "EN landing page renders at least three modules",
+      "detail": "5"
+    },
+    {
+      "ok": true,
+      "label": "landing page has no horizontal overflow at 390px",
+      "detail": ""
+    },
+    {
+      "ok": true,
+      "label": "ambient decorations are disabled under reduced motion",
+      "detail": "[]"
+    },
+    {
+      "ok": true,
+      "label": "the signed preview link was found in the event editor",
+      "detail": ""
+    },
+    {
+      "ok": true,
+      "label": "preview homepage returns 200",
+      "detail": ""
+    },
+    {
+      "ok": true,
+      "label": "preview banner is rendered",
+      "detail": ""
+    },
+    {
+      "ok": true,
+      "label": "preview renders the homepage hero",
+      "detail": "['homepage_hero', 'site_wide_ambient']"
+    },
+    {
+      "ok": true,
+      "label": "preview renders the ambient layer",
+      "detail": ""
+    },
+    {
+      "ok": true,
+      "label": "preview requests the Halloween package asset",
+      "detail": "['http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/js/commemorative.js?ver=1793960967', 'http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/js/presentations/halloween/halloween.js?ver=1793960999']"
+    },
+    {
+      "ok": true,
+      "label": "preview does not request the other package's assets",
+      "detail": ""
+    },
+    {
+      "ok": true,
+      "label": "preview homepage has no horizontal overflow",
+      "detail": ""
+    },
+    {
+      "ok": true,
+      "label": "the ambient layer is aria-hidden",
+      "detail": "{'ariaHidden': 'true', 'pointerEvents': 'none', 'children': 1, 'focusable': 0}"
+    },
+    {
+      "ok": true,
+      "label": "the ambient layer ignores pointer events",
+      "detail": "{'ariaHidden': 'true', 'pointerEvents': 'none', 'children': 1, 'focusable': 0}"
+    },
+    {
+      "ok": true,
+      "label": "the ambient layer contains no focusable node",
+      "detail": "{'ariaHidden': 'true', 'pointerEvents': 'none', 'children': 1, 'focusable': 0}"
+    },
+    {
+      "ok": true,
+      "label": "the hero dismiss control is reachable by keyboard",
+      "detail": "[{'tag': 'A', 'label': 'Sobre o WordPress', 'cls': 'ab-item'}, {'tag': 'A', 'label': 'Conexão BR', 'cls': 'ab-item'}, {'tag': 'A', 'label': 'Personalizar', 'cls': 'ab-item'}, {'tag': 'A', 'label': '1010 atualizações disponíveis', 'cls': 'ab-item'}, {'tag': 'A', 'label': '00 comentário esperando moderação', 'cls': 'ab-item'}, {'tag': 'A', 'label': 'Novo', 'cls': 'ab-item'}, {'tag': 'A', 'label': 'Editar página', 'cls': 'ab-item'}, {'tag': 'A', 'label': 'Leitor', 'cls': 'ab-item'}, {'tag': 'A', 'label': 'Olá, test', 'cls': 'ab-item'}, {'tag': 'INPUT', 'label': '', 'cls': 'adminbar-input'}, {'tag': 'A', 'label': 'Pular para o conteúdo', 'cls': 'skip-link screen-reader-text'}, {'tag': 'A', 'label': 'Pular para o conteúdo', 'cls': 'skip-link screen-reader-text'}, {'tag': 'A', 'label': '', 'cls': 'site-logo-link'}, {'tag': 'A', 'label': 'Início', 'cls': 'nav-link'}, {'tag': 'A', 'label': 'Apoiadores', 'cls': 'nav-link'}, {'tag': 'A', 'label': 'Guias', 'cls': 'nav-link'}, {'tag': 'A', 'label': 'Eventos', 'cls': 'nav-link'}, {'tag': 'A', 'label': 'Cursos', 'cls': 'nav-link'}, {'tag': 'A', 'label': 'Lazer e turismo', 'cls': 'nav-link'}, {'tag': 'A', 'label': 'Empregos', 'cls': 'nav-link'}, {'tag': 'A', 'label': 'Blog', 'cls': 'nav-link'}, {'tag': 'A', 'label': 'Contato', 'cls': 'nav-link'}, {'tag': 'BUTTON', 'label': 'Alternar tema claro/escuro', 'cls': 'theme-toggle'}, {'tag': 'INPUT', 'label': '', 'cls': 'search-field'}, {'tag': 'BUTTON', 'label': 'Buscar', 'cls': 'screen-reader-text header-search-submit'}, {'tag': 'A', 'label': 'Anuncie Aqui', 'cls': 'header-cta'}, {'tag': 'BUTTON', 'label': 'Fechar mensagem de Halloween', 'cls': 'seasonal-halloween-close'}, {'tag': 'A', 'label': 'Explorar eventos', 'cls': 'btn btn-primary seasonal-halloween-cta'}]"
+    },
+    {
+      "ok": true,
+      "label": "the hero is dismissible and stays dismissed in the session",
+      "detail": ""
+    },
+    {
+      "ok": true,
+      "label": "no ambient decoration appears in the preview under reduced motion",
+      "detail": ""
+    }
+  ],
+  "summary": {
+    "passed": 50,
+    "failed": 0
+  }
+}

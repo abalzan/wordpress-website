@@ -57,6 +57,13 @@ system.
 ## Preconditions
 
 - **The task explicitly authorises a production action.** Without that
+  authorisation, stop: the correct outcome is a plan and an artifact, not a
+  change.
+- The previous release record is known, so a rollback target exists *before*
+  the change (see `docs/releases.md` §Before deploying, record this).
+- `WP_USERNAME` / `WP_APPLICATION_PASSWORD` are available **in the environment
+  only** if a REST-based read is required — never in code, docs or evidence.
+- A read-only verification of current state has been captured first.
 
 ## Steps
 
@@ -178,15 +185,4 @@ any deviation from the steady state.
 - [ ] The release log row and the rollback note are recorded.
 - [ ] Unverifiable steps are reported as blocked/not-tested, never as verified.
 
-- **No secrets, no localhost URLs, no hotlinked media** in production data.
-- **Local restore** is only ever `scripts/restore-updraft-db.sh`, and only ever
-  local and destructive.
-- Never touch the Flutter/mobile repository from this task.
-
-  authorisation, stop: the correct outcome is a plan and an artifact, not a
-  change.
-- The previous release record is known, so a rollback target exists *before* the
-  change (see `docs/releases.md` §Before deploying, record this).
-- `WP_USERNAME` / `WP_APPLICATION_PASSWORD` are available **in the environment
-  only** if a REST-based read is required — never in code, docs or evidence.
-- A read-only verification of current state has been captured first.
+_Last verified: 2026-11-09 by the agent skills review and hardening_

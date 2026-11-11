@@ -24,6 +24,7 @@ Then, for the kind of work you are doing, the matching agent skill in
 
 | Skill | Use it for |
 |---|---|
+| [`wp-repository`](.agents/skills/wp-repository/SKILL.md) | orienting in the repository, planning multi-file work, holding scope, and reviewing a change before merge |
 | [`wp-add-content-type`](.agents/skills/wp-add-content-type/SKILL.md) | a new/changed post type, taxonomy, meta field, archive or route |
 | [`wp-add-admin-screen`](.agents/skills/wp-add-admin-screen/SKILL.md) | a maintainer capability operated through wp-admin |
 | [`wp-write-in-process-test`](.agents/skills/wp-write-in-process-test/SKILL.md) | an in-process PHP test suite |
@@ -34,6 +35,10 @@ Then, for the kind of work you are doing, the matching agent skill in
 | [`wp-frontend-perf`](.agents/skills/wp-frontend-perf/SKILL.md) | templates, queries, caching, assets |
 | [`wp-translation-rollout`](.agents/skills/wp-translation-rollout/SKILL.md) | English coverage for a content type |
 | [`wp-plugin-registry`](.agents/skills/wp-plugin-registry/SKILL.md) | adding/re-classifying a plugin, build or mount facts |
+| [`wp-content-change`](.agents/skills/wp-content-change/SKILL.md) | an importer, migration, seed or repair — any content write that is not an English rollout |
+| [`wp-testing`](.agents/skills/wp-testing/SKILL.md) | running, diagnosing or comparing the test contract |
+| [`wp-production-operations`](.agents/skills/wp-production-operations/SKILL.md) | auditing or operating the live WordPress.com site |
+| [`wp-commemorative-event`](.agents/skills/wp-commemorative-event/SKILL.md) | a seasonal/commemorative event: a new event record, a package/placement/asset change, a landing page, or a preview/modal/dispatch/ambient fix |
 
 ## Scope: what you may and may not touch
 
@@ -81,13 +86,14 @@ Pick the row, read the skill, then read only the canonical documents it names.
 | Writing a test or an acceptance row | `wp-write-in-process-test` / `wp-http-acceptance-matrix` | testing + routing |
 | Any change that alters what a maintainer must know | `wp-update-docs` | README index + standard §9 |
 | Anything touching a request, the database or an endpoint | `wp-security-review` | standard §2.1/§4.2/§7 + routing |
+| A seasonal/commemorative event (new, enhance, landing page, preview/modal/dispatch fix) | `wp-commemorative-event` | `docs/commemorative-events.md` + `docs/plugins/conexao-commemorative.md` |
 
 ## Workflow: plan, build, verify, report
 
 `wp-repository` owns this loop in full. In short:
 
-1. **Plan.** For multi-file work, or anything touching content, routes or
-   English/Polylang, fill in **[`docs/templates/plan.md`](docs/templates/plan.md)**.
+1. **Plan.** For multi-file work, or anything touching content, routes or English/Polylang, copy
+   **[`docs/templates/plan.md`](docs/templates/plan.md)** to `docs/plans/<date>-<topic>.md` and fill in that copy only.
 2. **Reuse, do not reinvent.** Prefer the existing shared engines and helpers
    over new copies; copying a plugin, script or engine requires a written
    justification in the report. Known shared pieces: `scripts/lib/bootstrap.php`
@@ -100,10 +106,10 @@ Pick the row, read the skill, then read only the canonical documents it names.
 3. **Verify with real numbers.** Run the checks the skill names and paste the
    actual output. `./scripts/run-tests.sh` is the single test command (in-process
    PHP + script contract + HTTP acceptance, one aggregate exit code).
-4. **Report.** Fill in **[`docs/templates/report.md`](docs/templates/report.md)**
-   and put machine evidence in `docs/evidence/<date>-<stage>/`. Never add a
-   report or evidence file at the repository root. No claim of "fully verified"
-   when a verifier was unavailable — use `PASS WITH LIMITATION` and say why.
+4. **Report.** Copy **[`docs/templates/report.md`](docs/templates/report.md)** to `docs/reports/<date>-<stage>-<topic>.md` and fill
+   in that copy only; never edit a canonical template for an individual task — change one only when the task is to improve it or the
+   standard requires. Machine evidence goes in `docs/evidence/<date>-<stage>/`; never add a report or evidence file at the repository
+   root. No claim of "fully verified" when a verifier was unavailable — use `PASS WITH LIMITATION` and say why.
 
 ## Safety rules that are not negotiable
 
@@ -133,38 +139,50 @@ Pick the row, read the skill, then read only the canonical documents it names.
 - **Never touch the Flutter/mobile repository.**
 
 ## Running things
-
+Inspect the current stack state first (`docker compose ps`; setup documented in
+`docs/development.md`) and reuse an already-running local environment. Do not
+automatically start, recreate or rebuild containers, reset volumes, seed data
+or mint an administrator session — make those side effects deliberate. The
+script-contract layer needs no stack and always runs; the in-process and
+acceptance layers need the local site.
 ```bash
-docker compose up -d                       # start the local site (see docs/development.md)
 ./scripts/run-tests.sh                     # ALL tests, one aggregate exit code
-./scripts/run-tests.sh --scripts           # script-contract gates only
+./scripts/run-tests.sh --scripts           # script-contract gates only (no stack)
+./scripts/run-tests.sh --acceptance        # HTTP acceptance only (needs local stack)
 ./scripts/lint.sh                          # PHP syntax + PHPCS + PHPStan
 php scripts/generate-registry-docs.php --check   # registry drift gate (0 writes)
 python3 scripts/verify-permanent-gates.py # Stage L permanent invariants -> gate.json
 ./scripts/verify-release.sh                # whole release workflow, proven locally
 ```
-
-The **permanent invariant gates** (Stage L: taxonomy policy, translation
-completeness, language-scoped caching, legacy redirect precedence,
-documentation drift, i18n freshness) run inside `./scripts/run-tests.sh` — they
-are discovered by convention, so there is no second runner. They fail closed.
-See [`docs/testing.md`](docs/testing.md) §"The permanent invariant gates" for
-what each gate proves, how to read a red gate, and where `gate.json` lives.
-
-**CI.** `.github/workflows/ci.yml` is the single CI entrypoint and runs three
-**blocking** jobs on every `push` and `pull_request` (and on
-`workflow_dispatch`): **static quality**, **release integrity** and
-**integration**. The integration job is a required blocking check: it builds the
-deterministic synthetic site from the committed fixtures in an ephemeral
-Docker WordPress and runs `./scripts/run-tests.sh`. It is no longer
-`workflow_dispatch`-only and no longer waits on deterministic fixtures — that
-requirement was satisfied, not dropped (see
-[`docs/reports/2026-09-29-stage-p-ci-readiness.md`](docs/reports/2026-09-29-stage-p-ci-readiness.md)).
+The permanent invariant gates (Stage L) run inside `./scripts/run-tests.sh` —
+discovered by convention, no second runner, fail closed. See
+[`docs/testing.md`](docs/testing.md) §"The permanent invariant gates".
 
 Full command reference: [`docs/testing.md`](docs/testing.md) and
 [`scripts/README.md`](scripts/README.md).
 
-## Plugins (custom, this repo)
+## Commemorative events
+
+Seasonal events (Halloween, Christmas, …) are the `conexao-commemorative` engine
+(plugin) plus a theme-owned presentation registry/dispatcher. Read
+**[`wp-commemorative-event`](.agents/skills/wp-commemorative-event/SKILL.md)** and
+[`docs/commemorative-events.md`](docs/commemorative-events.md) first, then the
+Halloween/Christmas reports under `docs/reports/` (history, not instruction).
+
+**Foot-guns:** never add an engine, resolver, scheduler, plugin, route, CPT, meta
+key, endpoint, activation path or timer for a visual event — reuse the registry,
+packages, placements, templates and helpers. The engine owns scheduling and
+eligibility; the theme owns the registry, dispatcher, placements and assets. The
+CPT stays private (routes, archives, REST, sitemap) and shared `_ce_*` config
+lives on the canonical PT record only. Preview is signed, capability-gated,
+nonce-verified and persists nothing. Modals are real `showModal()` dialogs, never
+`open`-attributed popups; landing dispatch resolves page-owned context first;
+zero commemorative bytes ship on ordinary routes with no active event.
+
+Event work ships tests, a dated report and a before/after git state, preserving
+existing worktree changes and stashes. Local green tests never prove release or
+production readiness, and no production write, activation, deploy or release
+happens without authorisation.
 
 ## Plugins (custom, this repo)
 
@@ -173,7 +191,7 @@ All under `wp-content/plugins/`. Load order matters:
 <!-- BEGIN GENERATED PLUGIN REGISTRY: AGENTS.md plugin inventory -->
 All custom plugins live in `wp-content/plugins/`. **Load order matters.**
 
-This table is generated from [`plugins.json`](../plugins.json) - the single
+This table is generated from [`plugins.json`](plugins.json) - the single
 authoritative registry. Edit the registry and run
 `php scripts/generate-registry-docs.php --write`; never hand-edit this table.
 
@@ -183,18 +201,19 @@ authoritative registry. Edit the registry and run
 | 2 | `conexao-content` | platform | active | yes | yes | yes | `docs/plugins/conexao-content.md` |
 | 3 | `conexao-admin-ux` | platform | active | yes | yes | yes | `docs/plugins/conexao-admin-ux.md` |
 | 4 | `conexao-event-runtime` | platform | active | yes | yes | yes | `docs/plugins/conexao-event-runtime.md` |
-| 5 | `conexao-event-importer` | tooling | active | no | yes | yes | `docs/plugins/conexao-event-importer.md` |
-| 6 | `conexao-leisure-migration` | tooling | active | no | yes | yes | `docs/plugins/conexao-leisure-migration.md` |
-| 7 | `conexao-sponsor-migration` | tooling | active | no | yes | yes | `docs/plugins/conexao-sponsor-migration.md` |
-| 8 | `conexao-translation-rollout` | platform | active | yes | yes | yes | `docs/plugins/conexao-translation-rollout.md` |
-| 9 | `conexao-en-translation` | tooling | active | no | no | yes | `docs/plugins/conexao-en-translation.md` |
-| 10 | `conexao-translation-automation` | platform | active | yes | yes | yes | `docs/plugins/conexao-translation-automation.md` |
+| 5 | `conexao-commemorative` | platform | active | yes | yes | yes | `docs/plugins/conexao-commemorative.md` |
+| 6 | `conexao-event-importer` | tooling | active | no | yes | yes | `docs/plugins/conexao-event-importer.md` |
+| 7 | `conexao-leisure-migration` | tooling | active | no | yes | yes | `docs/plugins/conexao-leisure-migration.md` |
+| 8 | `conexao-sponsor-migration` | tooling | active | no | yes | yes | `docs/plugins/conexao-sponsor-migration.md` |
+| 9 | `conexao-translation-rollout` | platform | active | yes | yes | yes | `docs/plugins/conexao-translation-rollout.md` |
+| 10 | `conexao-en-translation` | tooling | active | no | no | yes | `docs/plugins/conexao-en-translation.md` |
+| 11 | `conexao-translation-automation` | platform | active | yes | yes | yes | `docs/plugins/conexao-translation-automation.md` |
 
-**Production steady state** (platform, `production: true`) - activate in this order: conexao-data-model -> conexao-content -> conexao-admin-ux -> conexao-event-runtime -> conexao-translation-rollout -> conexao-translation-automation.
+**Production steady state** (platform, `production: true`) - activate in this order: conexao-data-model -> conexao-content -> conexao-admin-ux -> conexao-event-runtime -> conexao-commemorative -> conexao-translation-rollout -> conexao-translation-automation.
 
 **Local-only tooling** (never production): conexao-event-importer, conexao-leisure-migration, conexao-sponsor-migration, conexao-en-translation.
 
-**Retired rollout plugins** (historical tooling, *activate → apply → remove*; not a production dependency and not in any release ZIP): .
+**Retired rollout plugins** (historical tooling, *activate → apply → remove*; not a production dependency and not in any release ZIP): none.
 <!-- END GENERATED PLUGIN REGISTRY: AGENTS.md plugin inventory -->
 
 ## Where to go next
@@ -226,3 +245,5 @@ requirement was satisfied, not dropped (see
 _Last verified: 2026-09-26 by Stage K — Agent Skills + Templates_
 
 _Last verified: 2026-09-30 by the agent skills / documentation migration_
+
+_Last verified: 2026-11-09 by the agent skills review and hardening_

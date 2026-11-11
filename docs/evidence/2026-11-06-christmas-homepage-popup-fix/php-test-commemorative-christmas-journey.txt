@@ -1,0 +1,108 @@
+
+== Christmas signature experience ==
+  PASS: the christmas package is registered
+
+=== The identity is one shared star, not a bauble ===
+  PASS: the signature motif is the shared star
+  PASS: the energy level stays calm
+  PASS: the package keeps exactly its three approved placements — no new placement was invented
+  PASS: the motion language states the 700 ms travel
+  PASS: the journey renders
+
+=== Both skies are complete without JavaScript ===
+  PASS: both perspectives are rendered server-side
+  PASS: both controls are rendered server-side
+  PASS: each perspective has its own heading
+  PASS: each perspective has its own paragraph
+  PASS: each perspective states its own nuance
+  PASS: each perspective lists three observed details (2 x 3)
+  PASS: each perspective has its own sky scene
+  PASS: the control stays hidden until the script reveals it
+  PASS: the no-JS fallback does not pretend to be a tabs widget
+  PASS: no tablist role before the script runs
+  PASS: no tabpanel role before the script runs
+
+=== The control and the panels are already wired correctly ===
+  PASS: brasil: the tab carries its id
+  PASS: brasil: the tab controls its panel
+  PASS: brasil: the panel carries its id
+  PASS: brasil: the panel id appears exactly once
+  PASS: irlanda: the tab carries its id
+  PASS: irlanda: the tab controls its panel
+  PASS: irlanda: the panel carries its id
+  PASS: irlanda: the panel id appears exactly once
+  PASS: the scene publishes a clear default state
+  PASS: the tablist hook the script upgrades exists
+
+=== The decorative star is never announced and never focusable ===
+  PASS: the shared star appears twice: the control and the closing thread
+  PASS: both star instances are SVG, not raster crops
+  PASS: the decorative star is hidden from assistive technology
+  PASS: the decorative star cannot receive focus
+  PASS: the decorative star is hidden from assistive technology
+  PASS: the decorative star cannot receive focus
+  PASS: the scenes are CSS skies, not extra image requests
+
+=== The artwork is local, present and sized for the web ===
+  PASS: the derivative two-skies-hero-840.webp exists
+  PASS: two-skies-hero-840.webp is not empty
+  PASS: two-skies-hero-840.webp stays under 300 KB
+  PASS: the derivative two-skies-hero-1200.webp exists
+  PASS: two-skies-hero-1200.webp is not empty
+  PASS: two-skies-hero-1200.webp stays under 300 KB
+  PASS: the derivative star-bridge-780.webp exists
+  PASS: star-bridge-780.webp is not empty
+  PASS: star-bridge-780.webp stays under 300 KB
+  PASS: the derivative star-bridge-1280.webp exists
+  PASS: star-bridge-1280.webp is not empty
+  PASS: star-bridge-1280.webp stays under 300 KB
+  PASS: the derivative two-skies-postcard-760.webp exists
+  PASS: two-skies-postcard-760.webp is not empty
+  PASS: two-skies-postcard-760.webp stays under 300 KB
+  PASS: the derivative two-skies-postcard-1120.webp exists
+  PASS: two-skies-postcard-1120.webp is not empty
+  PASS: two-skies-postcard-1120.webp stays under 300 KB
+  PASS: the multi-megabyte PNG masters are not shipped in the theme
+  PASS: the ambient star asset exists
+  PASS: the retired bauble asset is gone
+  PASS: the journey uses the star-bridge composition
+  PASS: every artwork URL resolves inside the theme — no remote hotlink
+
+=== The homepage hero: one CTA, art and copy as siblings ===
+  PASS: the christmas hero renders inside its window
+  PASS: the package hero component renders
+  PASS: the welcome offers exactly two anchors: the modal CTA and the fallback CTA
+  PASS: the hero component itself keeps exactly one CTA
+  PASS: the fallback card keeps exactly one CTA
+  PASS: both anchors carry an href
+  PASS: one call to action: both CTAs lead to the SAME destination (modal state and fallback state)
+  PASS: the single control is the primary button
+  PASS: the hero uses the warm-evening panorama
+  PASS: the hero art is responsive
+  PASS: the hero art declares its intrinsic width (no layout shift)
+  PASS: the hero art declares its intrinsic height (no layout shift)
+  PASS: the informative artwork carries alternative text
+  PASS: the band keeps a level-two heading under the page h1
+  PASS: the band never introduces a second document heading
+  PASS: the hero is a native dialog, rendered once
+  PASS: the dialog is named by its own localised heading
+  PASS: the welcome reuses the single copy, never a second one
+  PASS: the single CTA leads to the Christmas landing page
+
+=== The ambient marker requests the star, never the retired bauble ===
+  PASS: the ambient layer points at the star asset
+  PASS: the star asset path is the installed file
+  PASS: no reference to the retired bauble survives
+  PASS: the ambient layer stays decorative
+
+=== English is written, not poured from the Portuguese text ===
+  PASS: the English heading is real English
+  PASS: the Irish perspective is translated
+  PASS: the control label is translated
+  PASS: no Portuguese heading leaks into the English rendering
+  PASS: no Portuguese vignette leaks into the English rendering
+  PASS: the Portuguese heading renders in the canonical locale
+  PASS: no English heading leaks into the Portuguese rendering
+  PASS: both locales carry the same number of observed details (parity, not truncation)
+
+commemorative-christmas-journey: 88 passed, 0 failed

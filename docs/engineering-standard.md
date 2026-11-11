@@ -644,6 +644,7 @@ a historical measurement, not a current fact.
 | `docs/plugins/<slug>.md` | Per-plugin doc (metadata block per §4.1) | Plugin maintainer |
 | `docs/themes/conexao-br-irlanda.md` | Theme reference | Theme maintainer |
 | `docs/reports/<date>-<stage>-<topic>.md` | Stage/feature history (the root `CONEXAO_*` reports move here) | Change author |
+| `docs/plans/<date>-<topic>.md` | Pre-change plans filled from `docs/templates/plan.md` (scope, impact sections, approach, risks) | Change author |
 | `docs/evidence/<date>-<stage>/` | Machine-readable proof (matrices, `gate.json`, snapshots) | Change author |
 | `docs/audit/` | Audits | Project maintainer |
 | `docs/templates/` | `plan.md`, `report.md` | Project maintainer |
@@ -782,6 +783,7 @@ list every active skill.
 | `wp-add-content-type` | data-model registration, taxonomy/sitemap decision, docs, test |
 | `wp-add-admin-screen` | capability, nonce, list table, dry-run preview, notices, escaping |
 | `wp-content-change` | the §5.2 six-step contract, snapshots, idempotence, numeric gate, rollback |
+| `wp-commemorative-event` | engine/theme ownership, event/package/placement separation, editorial brief/calendar/watchlist, no new engine or route |
 | `wp-translation-rollout` | §6.2 procedure, shared engine, invariant tests, routing doc update |
 | `wp-testing` | what to run, in what order, failure classification, regression comparison, permanent gates |
 | `wp-write-in-process-test` | bootstrap + assertions + naming + prerequisites |
@@ -870,3 +872,4 @@ _Last verified: 2026-09-25 by the WordPress engineering standardisation audit (p
 
 _Last verified: 2026-09-26 by Stage I — Scripts Standardisation_
 _Last verified: 2026-09-30 by the agent skills / documentation migration_
+_Last verified: 2026-11-09 by the agent skills review and hardening (§13.1 skills table, §9.2 last-verified rule)_

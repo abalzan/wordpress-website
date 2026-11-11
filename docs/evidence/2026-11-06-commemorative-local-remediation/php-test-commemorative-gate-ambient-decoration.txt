@@ -1,0 +1,22 @@
+
+== PERMANENT GATE: commemorative_ambient_decorative ==
+Ambient decoration DOM is decorative-only: aria-hidden, non-focusable, pointer-events: none, no audio, cannot block interaction.
+  prerequisites: theme-active, conexao-commemorative plugin active
+
+=== The real ambient markup of every implemented package ===
+  PASS: halloween: the ambient layer renders inside its window
+  PASS: christmas: the ambient layer renders inside its window
+  PASS: the ambient layer is aria-hidden, non-focusable and free of interactive nodes
+
+=== The shared stylesheet and scheduler keep it non-interactive ===
+  PASS: the shared stylesheet keeps every ambient node non-interactive
+  PASS: the shared scheduler marks every decoration decorative and removes it afterwards
+
+=== Injected negative proof: a violating layer IS detected ===
+  PASS: the gate detects a focusable, interactive, audible ambient fixture
+
+=== Injected negative proof: a non-decorative stylesheet IS detected ===
+  PASS: the gate detects an ambient layer that accepts pointer events
+
+7 passed, 0 failed
+GATE-RESULT {"gate":"commemorative_ambient_decorative","status":"pass","passed":7,"failed":0,"violations":0,"pre_existing":0,"new":0,"prerequisites":["theme-active","conexao-commemorative plugin active"],"allowlisted":[],"allowlisted_count":0,"details":[{"key":"ambient:decorative_contract","count":0,"label":"the ambient layer is aria-hidden, non-focusable and free of interactive nodes","detail":{"findings":[]}},{"key":"ambient:stylesheet_contract","count":0,"label":"the shared stylesheet keeps every ambient node non-interactive","detail":{"findings":[]}},{"key":"ambient:scheduler_contract","count":0,"label":"the shared scheduler marks every decoration decorative and removes it afterwards","detail":{"findings":[]}},{"key":"gate:injected_negative_not_detected","count":0,"label":"the gate detects a focusable, interactive, audible ambient fixture","detail":{"fixture_findings":["ambient:not_aria_hidden","ambient:interactive_node:<button","ambient:interactive_node:<a ","ambient:interactive_node:<audio","ambient:focusable_tabindex"]}},{"key":"gate:injected_negative_not_detected:css","count":0,"label":"the gate detects an ambient layer that accepts pointer events","detail":[]}]}

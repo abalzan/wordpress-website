@@ -48,8 +48,15 @@ for guard review and `wp-frontend-perf` for caching work.
 
 ## Preconditions
 
-- The local stack is up (`docker compose up -d`) for the in-process and
-  acceptance layers. The **script-contract layer needs no stack** and always runs.
+- Inspect the current stack state first (`docker compose ps`; setup documented
+  in `docs/development.md`) and reuse an already-running local environment.
+  The in-process and acceptance layers need the local stack; the
+  **script-contract layer needs no stack** and always runs. Do not automatically
+  start, recreate or rebuild containers, reset volumes, seed data or mint an
+  administrator session — make those side effects deliberate. If the needed
+  environment is unavailable, report the exact blocker and fall back to
+  non-mutating checks; ask before any material environment, database or session
+  change.
 - `CONEXAO_TEST_BASE_URL` points at the local site. A production host is
   **refused** by the runner; never override it with one.
 - You have the **before** result for whatever you are about to change. A
@@ -109,6 +116,9 @@ for guard review and `wp-frontend-perf` for caching work.
    the failing-suite list before vs after, the numeric totals before vs after, and
    an explicit statement of which failures are pre-existing.
 10. **Report honestly.** Paste the real numbers. A verifier that could not run is
+    reported as blocked/not-tested with the reason, never as passing. State
+    pre-existing failures separately from your own, and never write "should work"
+    for something that did not run.
 
 ## Guardrails
 
@@ -152,12 +162,19 @@ python3 tests/scripts/verify-agent-governance.py
 
 ## Failure handling
 
-- *`insufficient data: <hint>`* — a data prerequisite is missing. Seed it
-  (see `scripts/README.md` for the seed scripts) and re-run. Do not delete the
-  prerequisite to make the suite pass.
+- *`insufficient data: <hint>`* — a data prerequisite is missing. Do not seed
+  automatically. Inspect the current stack state first (`docker compose ps`),
+  reuse what is already running, and request explicit approval before seeding
+  data or making any material environment/database/session change. If approval
+  is not granted, record the layer as `BLOCKED` / `not tested` and continue
+  only with non-mutating checks. Do not delete the prerequisite to make the
+  suite pass.
 - *`[BLOCKED] HTTP acceptance environment unavailable`* — the local site is not
-  reachable. Start the stack, or record the layer as blocked. An unavailable
-  layer is never a pass and is never silently skipped.
+  reachable. Inspect first (`docker compose ps`); reuse an already-running
+  environment. Request explicit approval before starting, recreating or
+  rebuilding containers. If approval is not granted, record the layer as
+  `BLOCKED` / `not tested`; an unavailable layer is never a pass and is never
+  silently skipped.
 - *A permanent gate reports `new > 0`* — you introduced the violation. Fix it;
   do not move it to the baseline.
 - *A permanent gate reports `pre_existing`* — the debt predates you. It still
@@ -190,5 +207,5 @@ verifiers that could not run. Use `docs/templates/report.md`.
 - [ ] Logs and the comparison are under `docs/evidence/<date>-<stage>/`.
 - [ ] Blocked and not-tested verifiers are named explicitly, not reported as pass.
 
-    recorded as blocked or not tested — never as verified.
 
+_Last verified: 2026-11-09 by the agent skills review and hardening_

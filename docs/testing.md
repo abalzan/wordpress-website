@@ -60,6 +60,48 @@ same conventions, no special runner, no hand-maintained list.
 | Documentation drift | Orchestrates the Stage G/I/K gates (it does not reimplement them) and owns the §9.2 rules: `_Last verified:` markers on the living reference set, no root-level report/evidence file, `AGENTS.md` stays orientation, the authoritative sources still exist. | `verify-documentation-drift.py` | Script contract |
 | i18n catalogue freshness | A `.pot` is never older than the PHP defining its strings. Signal: **git commit time**, not mtime (a fresh clone gives every file the checkout time, so mtime cannot express this rule). | `verify-i18n-freshness.py`, `scripts/i18n-check.sh` | Script contract |
 
+#### The commemorative gates (r10 Stages 4–6)
+
+Eight further fail-closed gates guard the commemorative presentation system. Each
+one contains an **injected negative proof**: it deliberately creates the forbidden
+condition in a fixture and fails if its own check cannot detect it, so a gate that
+has gone blind fails instead of passing vacuously.
+
+| Gate | Proves | Suite | Layer |
+|---|---|---|---|
+| `commemorative_no_asset_without_event` | with no displayed placement, no commemorative CSS/JS handle is planned **or** enqueued (and the injected active plan IS reported). Scope: ordinary routes. An explicitly opted-in commemorative **landing page** keeps its package assets outside the event window by design (archival, §7.13) — see [`commemorative-events.md`](commemorative-events.md) §2 | `test-commemorative-gate-assets.php` | In-process PHP |
+| `commemorative_no_public_activation` | an anonymous request with a preview key, a bogus nonce or a package parameter activates nothing; an administrator with a valid nonce still previews | `test-commemorative-gate-public-activation.php` | In-process PHP |
+| `commemorative_cpt_privacy` | the CPT is private on every axis (route, archive, query var, REST, search), has no public permalink, and neither it nor the archived landing pages appear in the **rendered theme sitemap producer**. This gate proves the theme producer's own decision; it does **not** prove that the publicly served `/sitemap.xml` is produced by that producer (`docs/testing.md` §"Sitemap evidence semantics") | `test-commemorative-gate-cpt-privacy.php` | In-process PHP |
+| `commemorative_single_package` | every real plan renders only placements owned by the selected package (and a stolen placement IS detected) | `test-commemorative-gate-single-package.php` | In-process PHP |
+| `commemorative_ambient_decorative` | the ambient DOM is `aria-hidden`, non-focusable and free of interactive/audio nodes, in markup and in the shared CSS/JS (and a violating fixture IS detected) | `test-commemorative-gate-ambient-decoration.php` | In-process PHP |
+| `commemorative_placement_assets` | placement assets are planned only for placements that render on that route (and a leaked asset IS detected) | `test-commemorative-gate-placement-assets.php` | In-process PHP |
+| `commemorative_translation_ownership` | the Polylang single-owner rule (r10 §3.6) is **enforced**: `pll_copy_post_metas` carries no shared key for a commemorative copy (and a list that still does IS detected), the translated editor renders every shared field read-only with no submittable input (and an unlocked field still renders an input), the save paths persist no shared key on a translation while the canonical record keeps them, and the stored translation carries only `_ce_event_key` plus its translated copy | `test-commemorative-gate-translation-ownership.php` | In-process PHP |
+| `commemorative_ambient_runtime` | the shared scheduler's **runtime** behaviour: interval/duration bounds, the initial/subsequent split, one decoration at a time, node cleanup, the session cap across a reload and its reset in a new session, the visibility pause + cooldown, and reduced motion — **plus** the Christmas runtime surfaces: the two-sky journey controller and the homepage welcome dialog (immediate `showModal()` open, once-per-tab-session dismissal leaving nothing inline, denial of storage, close/Escape/backdrop, no reopen on resize/focus, the closed-dialog fail-closed contract with the `fallback` state, a throwing `showModal()`, the signed-preview auto-open that never writes the dismissal key, the top-of-screen obstruction offset (admin bar / preview notice / sticky header) applied on open and cleared on close, the idempotent `data-ce-welcome-claimed` boot, and no timer/interval/`requestAnimationFrame`). Executed with `node --test`; Node being unavailable reports **blocked**, never pass | `verify-commemorative-runtime.py` + `tests/node/commemorative-ambient.test.js`, `tests/node/christmas-journey.test.js`, `tests/node/christmas-welcome.test.js` | Script contract (Node) |
+
+The seven PHP gates are registered in `scripts/verify-permanent-gates.py`; all
+eight are discovered by `./scripts/run-tests.sh` through the normal conventions.
+
+#### Sitemap evidence semantics
+
+Two different producers answer for the commemorative landing pages, and the
+evidence must not confuse them:
+
+- **The theme producer** (`conexao_seo_sitemap()`, hooked to `template_redirect`
+  for `/sitemap.xml`/`/sitemap_index.xml`) is the producer this repository owns.
+  `commemorative_cpt_privacy` renders it in-process and proves its exclusion
+  decision. That is a real proof of *the theme producer's* behaviour.
+- **The serving producer** is whatever answers a public `GET /sitemap.xml`. In the
+  local stack Jetpack answers with a sitemap **index** (`sitemap-1.xml`), which
+  lists no page at all, so the theme producer never runs. An HTTP row that checks
+  "no commemorative URL in `/sitemap.xml`" therefore passes **vacuously** in that
+  environment: it is *not* an effective proof of end-to-end sitemap exclusion.
+
+The acceptance matrix labels that row accordingly (`note` on
+`pt-sitemap-does-not-publish-commemorative-urls`) and the row additionally asserts
+that the response is a sitemap it can interpret. End-to-end exclusion by the
+**serving** producer is **NOT VERIFIED** in this repository and requires a
+separately authorised production check.
+
 Run them all and get one machine-readable summary:
 
 ```bash
@@ -786,3 +828,7 @@ _Last verified: 2026-10-08 by the Featured Apoiadores carousel mobile-compactnes
 _Last verified: 2026-11-04 by the Lazer proximity feature (opt-in Node layer `tests/js/` and the two Lazer proximity browser suites documented; browserless halves named)_
 
 _Last verified: 2026-11-05 by the Lazer header cleanup (proximity control removed; the two Lazer proximity browser suites marked as encoding the removed button)_
+
+_Last verified: 2026-11-06 by the Christmas homepage popup UI fix (the `commemorative_ambient_runtime` gate row updated for the closed-dialog welcome, 18 runtime cases)_
+
+_Last verified: 2026-11-07 by the Christmas welcome top-of-screen popup fix (the `commemorative_ambient_runtime` gate row updated for the preview auto-open and the top-obstruction offset, 19 welcome runtime cases)_

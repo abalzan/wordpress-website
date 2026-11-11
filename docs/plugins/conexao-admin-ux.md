@@ -9,7 +9,7 @@
 | **Build** | yes |
 | **Compose mount** | yes |
 | **Dependencies** | none |
-| **Version** | 1.0.8 (authoritative source: `wp-content/plugins/conexao-admin-ux/conexao-admin-ux.php` header) |
+| **Version** | 1.0.9 (authoritative source: `wp-content/plugins/conexao-admin-ux/conexao-admin-ux.php` header) |
 | **Registry** | [`plugins.json`](../../plugins.json) |
 
 > **Production platform plugin.** Part of the production steady state.
@@ -383,3 +383,5 @@ Save-flow regression suites live in the repo's `scripts/` directory:
 
 Both suites are destructive-safe: they create disposable records and delete them on exit.
 Never run them against production.
+
+_Last verified: 2026-11-09 by the plugin documentation audit_

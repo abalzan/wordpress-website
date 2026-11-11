@@ -46,11 +46,15 @@ those have their own skills.
 
 ## Preconditions
 
-- A plan exists (`docs/templates/plan.md`) with the content-model, route/HTTP and
-  Polylang impact sections answered.
+- A plan exists at `docs/plans/<date>-<topic>.md`, copied from
+  `docs/templates/plan.md`, with the content-model, route/HTTP and Polylang
+  impact sections answered.
 - The decision to add a CPT (rather than a term, a meta field or a filter) has
   been made and recorded.
-- `docker compose up -d` is up if the acceptance layer will be run.
+- Inspect the current stack state first (`docker compose ps`; setup documented
+  in `docs/development.md`) and reuse an already-running local environment if
+  the acceptance layer will be run. Do not automatically start, recreate or
+  rebuild containers.
 
 ## Steps
 
@@ -178,3 +182,5 @@ Machine evidence goes to `docs/evidence/<date>-<stage>/`.
 - [ ] The completeness gate is `0` (or an explicit allowlist) if EN coverage exists.
 - [ ] No production write occurred; no `wp-content` change outside the plan.
 - [ ] The report carries real verification numbers and stated limitations.
+
+_Last verified: 2026-11-09 by the agent skills review and hardening_

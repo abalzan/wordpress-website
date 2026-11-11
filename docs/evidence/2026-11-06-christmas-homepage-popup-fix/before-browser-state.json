@@ -1,0 +1,90 @@
+{
+  "base_url": "http://localhost:8080",
+  "preview_url_shape": "http://localhost:8080/?conexao_preview=…",
+  "before_preview_1366x768": {
+    "readyState": "complete",
+    "state": "inline",
+    "preview": true,
+    "dialogOpen": true,
+    "isModal": false,
+    "closeHidden": true,
+    "closeVisible": false,
+    "bodyClasses": "home wp-singular page-template-default page page-id-9 logged-in admin-bar wp-custom-logo wp-embed-responsive wp-theme-conexao-br-irlanda ce-active ce-package-christmas ce-placement-homepage-hero ce-placement-site-wide-ambient singular front-page customize-support",
+    "dialog": {
+      "rect": {
+        "x": 204,
+        "y": 715,
+        "w": 958,
+        "h": 253
+      },
+      "position": "static",
+      "inset": "auto",
+      "width": "958px",
+      "height": "252.797px",
+      "margin": "0px",
+      "zIndex": "auto",
+      "display": "block",
+      "overflow": "visible",
+      "transform": "none",
+      "paddingBottom": "0px",
+      "open": true
+    },
+    "placement": {
+      "rect": {
+        "x": 0,
+        "y": 139,
+        "w": 1366,
+        "h": 850
+      },
+      "position": "absolute",
+      "inset": "0px",
+      "width": "1366px",
+      "height": "849.578px",
+      "margin": "0px",
+      "zIndex": "20",
+      "display": "flex",
+      "overflow": "visible",
+      "transform": "none",
+      "paddingBottom": "0px",
+      "open": false
+    },
+    "hero": {
+      "rect": {
+        "x": 0,
+        "y": 139,
+        "w": 1366,
+        "h": 850
+      },
+      "position": "relative",
+      "inset": "0px",
+      "width": "1366px",
+      "height": "849.578px",
+      "margin": "0px",
+      "zIndex": "auto",
+      "display": "block",
+      "overflow": "hidden",
+      "transform": "none",
+      "paddingBottom": "286.86px",
+      "open": false
+    },
+    "bannerVisible": true,
+    "sessionStorage": null
+  },
+  "before_preview_390x844": {
+    "state": "inline",
+    "dialogOpen": true,
+    "isModal": false,
+    "dialogRect": {
+      "y": 580,
+      "h": 460
+    },
+    "heroRect": {
+      "y": 184,
+      "h": 872
+    }
+  },
+  "observed": {
+    "console": [],
+    "pageerror": []
+  }
+}

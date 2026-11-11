@@ -1,0 +1,34 @@
+== Stage L permanent invariant gates ==
+   repository: /home/andrei/IdeaProjects/wordpress-website
+   sha:        448cd9dd8458c02430e11238a9fd9a5ab98ed70e
+
+[PASS   ] taxonomy                   taxonomy_policy          exit=0 18 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[FAIL   ] translation_completeness   translation_completeness exit=1 21 passed, 2 failed, 3 violation(s) (1 pre-existing, 2 new), 962 allowlisted
+          violations: 3 (1 pre-existing, 2 new)
+          - post_type:guide:missing_en: 1 (guide: eligible public PT records missing a linked EN translation = 0)
+          - post_type:page:malformed_relationships: 2 (page: every translation relationship is a bidirectional link to a PT master)
+          allowlisted: 962 (by documented policy)
+[PASS   ] cache_scoping              cache_scoping            exit=0 9 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] cache_scoping              cache_scoping_static     exit=0 2 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] redirect_precedence        redirect_precedence      exit=0 15 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] documentation_drift        documentation_drift      exit=0 14 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[FAIL   ] i18n_freshness             i18n_freshness           exit=1 3 passed, 3 failed, 3 violation(s) (2 pre-existing, 1 new), 0 allowlisted
+[PASS   ] commemorative_assets       commemorative_no_asset_without_event exit=0 5 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] commemorative_security     commemorative_no_public_activation exit=0 5 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] commemorative_privacy      commemorative_cpt_privacy exit=0 11 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] commemorative_dispatch     commemorative_single_package exit=0 6 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] commemorative_a11y         commemorative_ambient_decorative exit=0 7 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] commemorative_assets       commemorative_placement_assets exit=0 4 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] commemorative_runtime      commemorative_ambient_runtime exit=0 66 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] commemorative_polylang     commemorative_translation_ownership exit=0 30 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+
+----------------------------------------
+Gates: 15 total, 13 passed, 2 failed, 0 blocked
+Assertions: 216 passed, 5 failed
+Violations: 6 (3 pre-existing, 3 new)
+AGGREGATE: FAIL
+----------------------------------------
+gate.json written: /tmp/gate.json
+
+One or more permanent invariant gates FAILED. This is a real repository/data violation, not a harness problem: the gates are blocking by design and must not be weakened to obtain a green run.
+exit:1

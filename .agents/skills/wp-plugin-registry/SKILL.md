@@ -189,3 +189,5 @@ production steady state. Evidence goes to `docs/evidence/<date>-<stage>/`.
 - [ ] `tests/scripts/verify-release-integrity.py` confirms the allowlist is
       derived and refuses a retired build-enabled entry.
 - [ ] No second registry was introduced anywhere (including agent skills and docs).
+
+_Last verified: 2026-11-09 by the agent skills review and hardening_

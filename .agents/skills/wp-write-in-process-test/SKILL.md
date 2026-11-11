@@ -47,8 +47,12 @@ feature work ships **one in-process suite plus one HTTP matrix addition**.
 
 ## Preconditions
 
-- The local stack is up (`docker compose up -d`) — this layer needs a real
-  WordPress.
+- Inspect the current stack state first (`docker compose ps`; setup documented
+  in `docs/development.md`) and reuse an already-running local environment —
+  this layer needs a real WordPress. Do not automatically start, recreate or
+  rebuild containers, reset volumes, seed data or mint an administrator
+  session; make those side effects deliberate. If the environment is
+  unavailable, report the blocker and fall back to non-mutating checks.
 - You know what the change does, so you can name the assertion that would fail if
   it were reverted.
 - Any data the suite depends on has a declared prerequisite and is seeded.
@@ -136,8 +140,13 @@ php -l <path/to/suite.php>                        # syntax
 - *The suite is not discovered.* The filename does not match
   `<component>/tests/test-*.php`; the runner globs, so a wrong name means the
   suite silently never runs. Rename it — and confirm with `--list`.
-- *`insufficient data: <hint>`.* A prerequisite is missing. Seed it; do not
-  delete the `test_require()` to make the suite pass.
+- *`insufficient data: <hint>`.* A prerequisite is missing. Do not seed
+  automatically. Inspect the current stack state first (`docker compose ps`),
+  reuse what is already running, and request explicit approval before seeding
+  data or making any material environment/database/session change. If approval
+  is not granted, record the layer as `BLOCKED` / `not tested` and continue
+  only with non-mutating checks. Do not delete the `test_require()` to make the
+  suite pass.
 - *WordPress will not bootstrap.* Stop: a suite that cannot run must fail
   loudly, never skip. Check the stack and `CONEXAO_TEST_WP_ROOT`.
 - *The suite passes even after you revert the change.* It is vacuous. Rewrite it
@@ -170,3 +179,5 @@ output goes to `docs/evidence/<date>-<stage>/`.
 - [ ] Guards are proven negatively.
 - [ ] `docs/testing.md` reflects any new prerequisite or layer inventory.
 - [ ] The real pass/fail numbers appear in the report.
+
+_Last verified: 2026-11-09 by the agent skills review and hardening_

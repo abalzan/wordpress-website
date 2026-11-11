@@ -80,6 +80,31 @@ function ev_test_render_filters() {
     return ob_get_clean();
 }
 
+/** Delete the fixtures this suite created (posts first, then terms). */
+function ev_cleanup() {
+    global $created_posts, $created_terms;
+
+    // Posts first: deleting them drops their term relationships, so the term
+    // deletes below cannot fail on a leftover attachment.
+    foreach ( array_unique( array_map( 'intval', (array) $created_posts ) ) as $post_id ) {
+        if ( $post_id > 0 ) {
+            wp_delete_post( $post_id, true );
+        }
+    }
+
+    // Only terms THIS suite created or adopted are removed — never a shared
+    // term the site owns. Some are already gone (the lifecycle test deletes its
+    // event, the taxonomy test deletes its renamed term); `wp_delete_term()`
+    // returning a WP_Error for those is expected and ignored.
+    foreach ( (array) $created_terms as $taxonomy => $term_ids ) {
+        foreach ( array_unique( array_map( 'intval', (array) $term_ids ) ) as $term_id ) {
+            if ( $term_id > 0 ) {
+                wp_delete_term( $term_id, (string) $taxonomy );
+            }
+        }
+    }
+}
+
 /** Suite summary and exit. */
 function ev_finish() {
     global $passed, $failed;
@@ -187,22 +212,32 @@ function ev_test_warm_hit() {
  */
 function ev_test_empty_results() {
     global $passed, $failed;
-    
-    // Flush caches and ensure no events exist
+
+    // A CONTROLLED empty dataset — not an empty database.
+    //
+    // The deterministic CI site is deliberately POPULATED, so "delete every
+    // event and expect empty" is both destructive and impossible there. The
+    // empty-result contract is instead exercised on scopes that provably match
+    // no record, each with its own cache key: `conexao_get_terms_for_post_type()`
+    // folds `$extra_args` into the key, so the real filter caches are never
+    // read or written by this test.
+    $empty_scope = array( 'name' => 'ev-empty-probe-no-such-event' );
+
+    // Towns: a county that EXISTS but owns no event. That is the same
+    // "county known, nothing published in it" path the UI produces, created
+    // here explicitly so the result cannot depend on the site's population.
+    $probe_county_slug = ev_test_term( 'Empty Probe County', 'ev-empty-probe-county', 'conexao_county' );
+
     conexao_clear_event_filter_caches();
-    // Remove any test posts to ensure truly empty
-    global $wpdb;
-    $wpdb->query( $wpdb->prepare( "DELETE FROM wp_posts WHERE post_type = 'event' AND post_title LIKE %s", "%Test Cache Event%" ) );
-    
-    // Cold request with no events should return empty arrays
-    $county_terms = conexao_get_terms_for_post_type( 'conexao_county', 'event' );
-    $town_terms   = conexao_get_event_towns();
-    $category_terms = conexao_get_terms_for_post_type( 'conexao_category', 'event' );
-    
-    $county_empty = ( ! is_array( $county_terms ) || empty( $county_terms ) );
-    $town_empty   = ( ! is_array( $town_terms ) || empty( $town_terms ) );
-    $category_empty = ( ! is_array( $category_terms ) || empty( $category_terms ) );
-    
+
+    $county_terms   = conexao_get_terms_for_post_type( 'conexao_county', 'event', $empty_scope );
+    $category_terms = conexao_get_terms_for_post_type( 'conexao_category', 'event', $empty_scope );
+    $town_terms     = conexao_get_event_towns( $probe_county_slug );
+
+    $county_empty   = ( is_array( $county_terms ) && empty( $county_terms ) );
+    $town_empty     = ( is_array( $town_terms ) && empty( $town_terms ) );
+    $category_empty = ( is_array( $category_terms ) && empty( $category_terms ) );
+
     if ( $county_empty && $town_empty && $category_empty ) {
         echo "  PASS: Cold empty request returns empty arrays\n";
         $passed++;
@@ -210,16 +245,33 @@ function ev_test_empty_results() {
         echo "  FAIL: Cold empty request unexpected results\n";
         $failed++;
     }
-    
-    // Warm hit should also return empty (cached empty result)
-    $county_terms_warm = conexao_get_terms_for_post_type( 'conexao_county', 'event' );
-    $town_terms_warm   = conexao_get_event_towns();
-    $category_terms_warm = conexao_get_terms_for_post_type( 'conexao_category', 'event' );
-    
-    $county_empty_warm = ( ! is_array( $county_terms_warm ) || empty( $county_terms_warm ) );
-    $town_empty_warm   = ( ! is_array( $town_terms_warm ) || empty( $town_terms_warm ) );
-    $category_empty_warm = ( ! is_array( $category_terms_warm ) || empty( $category_terms_warm ) );
-    
+
+    // An empty result must be STORED, not mistaken for a miss. The persistent
+    // layer has to hold the empty array under the scope's own key — that is
+    // the only externally observable difference between "cached empty" and
+    // "recomputed empty".
+    $county_key    = conexao_lang_cache_key( 'conexao_terms_conexao_county_event' ) . '_' . md5( wp_json_encode( $empty_scope ) );
+    $town_key      = conexao_lang_cache_key( 'conexao_event_towns_' . $probe_county_slug );
+    $county_stored = get_transient( $county_key );
+    $town_stored   = get_transient( $town_key );
+
+    if ( is_array( $county_stored ) && array() === $county_stored && is_array( $town_stored ) && array() === $town_stored ) {
+        echo "  PASS: The empty result is cached (empty is not a miss)\n";
+        $passed++;
+    } else {
+        echo "  FAIL: The empty result was not cached\n";
+        $failed++;
+    }
+
+    // Warm hit returns the cached empty result.
+    $county_terms_warm   = conexao_get_terms_for_post_type( 'conexao_county', 'event', $empty_scope );
+    $category_terms_warm = conexao_get_terms_for_post_type( 'conexao_category', 'event', $empty_scope );
+    $town_terms_warm     = conexao_get_event_towns( $probe_county_slug );
+
+    $county_empty_warm   = ( is_array( $county_terms_warm ) && empty( $county_terms_warm ) );
+    $town_empty_warm     = ( is_array( $town_terms_warm ) && empty( $town_terms_warm ) );
+    $category_empty_warm = ( is_array( $category_terms_warm ) && empty( $category_terms_warm ) );
+
     if ( $county_empty_warm && $town_empty_warm && $category_empty_warm ) {
         echo "  PASS: Warm hit also returns empty (no recompute)\n";
         $passed++;
@@ -227,7 +279,7 @@ function ev_test_empty_results() {
         echo "  FAIL: Warm hit did not return empty\n";
         $failed++;
     }
-    
+
     echo "  Empty Results Complete\n";
 }
 /** 
@@ -294,8 +346,14 @@ function ev_test_taxonomy_invalidation() {
     global $passed, $failed, $created_terms;
     
     // === A. Create county: should invalidate event county cache ===
+    //
+    // The filter lists are derived FROM published events, so the county is
+    // attached to a controlled event here. Without that link the term exists
+    // but can never be part of an event-filter list, and the rename assertion
+    // below would prove nothing.
     $county_slug = ev_test_term( 'Taxonomy County', 'ev-taxonomy-county', 'conexao_county' );
-    
+    ev_test_event( 'Taxonomy Event', $county_slug, '', '' );
+
     // County created, cache should be cleared via created_conexao_county hook
     $county_terms = conexao_get_terms_for_post_type( 'conexao_county', 'event' );
     if ( is_array( $county_terms ) && ! empty( $county_terms ) ) {
@@ -357,7 +415,16 @@ function ev_test_taxonomy_invalidation() {
  */
 function ev_test_language_isolation() {
     global $passed, $failed;
-    
+
+    // The probe below has to switch the ACTIVE language object. Save the
+    // process's current context first: leaving a DIFFERENT language behind
+    // leaks into every later test of this run. Concretely, a category term
+    // created while the context is `en` is translated by Polylang into a
+    // `-pt` suffixed duplicate (a real taxonomy-policy violation that a later
+    // suite correctly reports), and event queries are narrowed to EN records
+    // so Portuguese fixtures disappear from the filter lists.
+    $original_curlang = PLL()->curlang;
+
     // === A. PT and EN cache keys are distinct ===
     $probe_key = 'conexao_gate_probe';
     $key_pt = conexao_lang_cache_key( $probe_key . '_pt' );
@@ -378,7 +445,7 @@ function ev_test_language_isolation() {
     PLL()->curlang = PLL()->model->languages->get( 'pt' );
     $read_key = conexao_lang_cache_key( $probe_key );
     $seen = get_transient( $read_key );
-    PLL()->curlang = NULL;
+    PLL()->curlang = PLL()->model->languages->get( 'en' );
     
     $collided = ( 'pt-only-value' === $seen );
     if ( ! $collided ) {
@@ -391,7 +458,14 @@ function ev_test_language_isolation() {
     
     // Clean up
     delete_transient( $write_key );
-    
+
+    // Restore the context this suite started in. It is a real language object
+    // (never NULL), so no null-language warning is produced downstream, and it
+    // is the ORIGINAL one, so no context leaks either.
+    PLL()->curlang = is_object( $original_curlang )
+        ? $original_curlang
+        : PLL()->model->get_language( pll_default_language( 'slug' ) );
+
     echo "  Language Isolation Complete\n";
 }
 /** 
@@ -403,12 +477,18 @@ function ev_test_county_scoped_town_variants() {
     global $passed, $failed, $created_terms;
     
     // === A. Create town scoped to a county ===
+    //
+    // Scoping is expressed through an EVENT that carries BOTH terms: the
+    // helper returns towns attached to at least one published event in that
+    // county. The previous fixture created only terms (and passed a slug where
+    // `wp_set_object_terms()` expects an object ID, which also created a junk
+    // town term named after the county), so the scoped list could never be
+    // non-empty.
     $county_slug = ev_test_term( 'Scoping County', 'ev-scoping-county', 'conexao_county' );
     $town_slug   = ev_test_term( 'Scoped Town', 'ev-scoped-town', 'conexao_town' );
-    
-    // Associate town with county
-    wp_set_object_terms( $town_slug, $county_slug, 'conexao_town', false );
-    
+
+    ev_test_event( 'Scoped Event', $county_slug, $town_slug, '' );
+
     // Get county-scoped towns
     $scoped_towns = conexao_get_event_towns( $county_slug );
     $all_towns    = conexao_get_event_towns();
@@ -562,5 +642,11 @@ ev_test_language_isolation();
 ev_test_county_scoped_town_variants();
 ev_test_unrelated_cache_preservation();
 ev_test_ev_uncounty_excluded();
+
+// Leave the shared database as it was found. This suite runs against the
+// POPULATED deterministic site, and every later suite shares that database, so
+// a leftover fixture is not private to this file: a stray per-language term
+// once failed the Polylang foundation suite several files later.
+ev_cleanup();
+
 ev_finish();
-$created_terms = array();

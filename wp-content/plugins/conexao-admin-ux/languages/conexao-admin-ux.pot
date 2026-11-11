@@ -2,14 +2,14 @@
 # This file is distributed under the GNU General Public License v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Conexão BR Irlanda — Admin UX 1.0.7\n"
+"Project-Id-Version: Conexão BR Irlanda — Admin UX 1.0.9\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/conexao-br-irlanda\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-04 20:03+0000\n"
+"POT-Creation-Date: 2026-11-06 10:59+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 
 
@@ -25,7 +25,7 @@ msgstr ""
 #: wp-content/plugins/conexao-admin-ux/includes/class-admin.php:282
 #: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:113
 #: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:321
-#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:642
+#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:652
 msgid "Excluir permanentemente? Esta ação não pode ser desfeita."
 msgstr ""
 #: wp-content/plugins/conexao-admin-ux/includes/class-admin.php:283
@@ -40,11 +40,11 @@ msgstr ""
 msgid "Onde este conteúdo aparece"
 msgstr ""
 #: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:266
-#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:613
+#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:623
 msgid "Ver no site ↗"
 msgstr ""
 #: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:270
-#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:617
+#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:627
 msgid "Visualizar rascunho ↗"
 msgstr ""
 #: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:274
@@ -65,11 +65,11 @@ msgstr ""
 msgid "Atualizar"
 msgstr ""
 #: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:315
-#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:634
+#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:644
 msgid "Arquivar"
 msgstr ""
 #: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:321
-#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:642
+#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:652
 msgid "Excluir permanentemente"
 msgstr ""
 #: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:326
@@ -91,10 +91,10 @@ msgstr ""
 #: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:372
 msgid "Abrir evento original ↗"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:820
+#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:821
 msgid "Não foi possível publicar."
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:828
+#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:829
 msgid "Preencha os campos obrigatórios antes de publicar."
 msgstr ""
 #: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:188
@@ -119,7 +119,7 @@ msgstr ""
 msgid "Adicionar contato"
 msgstr ""
 #: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:340
-#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:353
+#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:363
 msgid "Sim"
 msgstr ""
 #: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:347
@@ -309,41 +309,41 @@ msgstr ""
 #: wp-content/plugins/conexao-admin-ux/includes/class-list.php:63
 msgid "Título"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:172
+#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:182
 msgid "Ativa"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:177
+#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:187
 msgid "Inativa"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:204
+#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:214
 msgid "Manual"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:277
+#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:287
 msgid "Verificadas"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:282
+#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:292
 msgid "Por verificar"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:287
+#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:297
 msgid "Inválidas"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:292
+#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:302
 msgid "Sem coordenadas"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:395
+#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:405
 msgid "Todas as fontes"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:421
+#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:431
 msgid "Todos os condados"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:593
+#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:603
 #, php-format
 msgid "%d %s com sucesso."
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:626
+#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:636
 msgid "Duplicar"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:642
+#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:652
 msgid "Excluir"
 msgstr ""
 #: wp-content/plugins/conexao-admin-ux/includes/class-translation-state.php:202
@@ -407,5 +407,5 @@ msgstr ""
 
 #. Version of the plugin
 #: wp-content/plugins/conexao-admin-ux/conexao-admin-ux.php:1
-msgid "1.0.7"
+msgid "1.0.9"
 msgstr ""

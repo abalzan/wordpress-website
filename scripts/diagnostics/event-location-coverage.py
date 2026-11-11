@@ -22,7 +22,7 @@ Usage:
 
 Defaults to $CONEXAO_SITE_URL, else the local stack (http://localhost:8080).
 There is no production default; pass an explicit URL to audit production. Used for the pre-deploy baseline and the post-deploy
-re-audit (docs/events-location-filters-stage-b-report.md).
+re-audit (`docs/reports/2026-09-26-events-location-filters-stage-b-report.md`).
 """
 
 import json

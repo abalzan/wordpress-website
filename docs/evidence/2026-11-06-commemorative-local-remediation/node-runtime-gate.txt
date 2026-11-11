@@ -1,0 +1,8 @@
+
+== PERMANENT GATE: commemorative_ambient_runtime ==
+The shared ambient scheduler is executed under node --test.
+  prerequisites: node
+  runtime cases executed: 11
+  assertions passed:      11
+22 passed, 0 failed
+GATE-RESULT {"gate": "commemorative_ambient_runtime", "status": "pass", "passed": 22, "failed": 0, "violations": 0, "pre_existing": 0, "new": 0, "prerequisites": ["node"], "allowlisted": [], "allowlisted_count": 0, "details": []}

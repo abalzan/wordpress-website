@@ -566,4 +566,4 @@ php wp-content/themes/conexao-br-irlanda/tests/test-translation-completeness.php
 
 _Last verified: 2026-09-27 by the EN Leisure description rollout — Stage 7 `en-leisure-description` on the shared engine_
 
-_Last verified: 2026-09-30 — the `en-guide` stage owns the 50-row Guide dataset + 13 EN `conexao_category` terms and applies them through the shared engine. One authored row (`learner-permit-theory-test-irlanda-cnh-brasileira`) was retired on 2026-09-30 because its PT source was permanently deleted; the retirement is recorded in `includes/exclusions-data.php`._
+_Last verified: 2026-09-30 by the EN Leisure description rollout — the `en-guide` stage owns the 50-row Guide dataset + 13 EN `conexao_category` terms and applies them through the shared engine. One authored row (`learner-permit-theory-test-irlanda-cnh-brasileira`) was retired on 2026-09-30 because its PT source was permanently deleted; the retirement is recorded in `includes/exclusions-data.php`._

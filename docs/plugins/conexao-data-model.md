@@ -9,7 +9,7 @@
 | **Build** | yes |
 | **Compose mount** | yes |
 | **Dependencies** | none |
-| **Version** | 1.6.3 (authoritative source: `wp-content/plugins/conexao-data-model/conexao-data-model.php` header) |
+| **Version** | 1.7.0 (authoritative source: `wp-content/plugins/conexao-data-model/conexao-data-model.php` header) |
 | **Registry** | [`plugins.json`](../../plugins.json) |
 
 > **Production platform plugin.** Part of the production steady state.
@@ -230,3 +230,5 @@ Legacy meta boxes (Class `Conexao_Data_Model_Meta`). For event/guide/job/sponsor
 - `includes/class-relationships.php` — taxonomy seeds
 - `includes/class-meta.php` — meta registration and editorial boxes
 - `includes/class-contacts.php` — Apoiador contacts model
+
+_Last verified: 2026-11-09 by the plugin documentation audit_

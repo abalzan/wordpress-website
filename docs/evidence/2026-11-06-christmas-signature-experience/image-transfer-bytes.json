@@ -1,0 +1,32 @@
+{
+ "desktop-dpr1": {
+  "images": {
+   "logo_dark_mode-240.webp": 7602,
+   "logo_conexao_br_irlanda-240.webp": 6034,
+   "two-skies-postcard-760.webp": 93544,
+   "star-bridge-780.webp": 94262,
+   "logo_dark_mode.webp": 19358
+  },
+  "image_bytes": 220800
+ },
+ "desktop-dpr2": {
+  "images": {
+   "logo_conexao_br_irlanda-240.webp": 6034,
+   "logo_dark_mode-240.webp": 7602,
+   "two-skies-postcard-1120.webp": 174820,
+   "star-bridge-1280.webp": 211828,
+   "logo_dark_mode.webp": 19358
+  },
+  "image_bytes": 419642
+ },
+ "mobile-dpr2": {
+  "images": {
+   "logo_dark_mode-240.webp": 7602,
+   "logo_conexao_br_irlanda-240.webp": 6034,
+   "star-bridge-780.webp": 94262,
+   "two-skies-postcard-760.webp": 93544,
+   "logo_dark_mode.webp": 19358
+  },
+  "image_bytes": 220800
+ }
+}

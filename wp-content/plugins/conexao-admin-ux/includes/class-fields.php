@@ -62,6 +62,30 @@ final class Conexao_Admin_Ux_Fields {
 		$html .= '<div class="conexao-field conexao-field--' . esc_attr( $type ) . $class_extra . '" data-field-key="' . esc_attr( $key ) . '"' . $data_cond . '>';
 		$html .= '<label class="conexao-field-label" for="' . esc_attr( $id ) . '">' . esc_html( $label ) . $req_html . '</label>';
 
+		// Read-only field (`readonly => true`): the value is DISPLAYED, never
+		// submitted. Used for configuration a record does not own — the shared
+		// commemorative scheduling/presentation keys on a non-canonical
+		// translation (r10 §3.6). No input is emitted, so the value cannot be
+		// posted back; the server-side guard in save() is the enforcement, this
+		// is the honest UI for it.
+		$locked = ! empty( $field['readonly'] ) && ! in_array( $type, array( 'readonly', 'static' ), true );
+
+		if ( $locked ) {
+			if ( 'checkbox' === $type ) {
+				$value = ! empty( $value )
+					? __( 'Sim', 'conexao-admin-ux' )
+					: __( 'Não', 'conexao-admin-ux' );
+			} elseif ( is_array( $value ) ) {
+				$value = implode( ', ', array_map( 'strval', $value ) );
+			}
+
+			$help = trim(
+				$help . ' ' . __( 'Configuração partilhada: só pode ser editada no registo canónico (PT).', 'conexao-admin-ux' )
+			);
+
+			$type = 'readonly';
+		}
+
 		switch ( $type ) {
 			case 'text':
 				$html .= '<input type="text" class="conexao-field-input" id="' . esc_attr( $id ) . '" name="' . esc_attr( $name ) . '" value="' . esc_attr( $value ) . '"' . $required_attr . $aria_req . ' />';
@@ -131,7 +155,7 @@ final class Conexao_Admin_Ux_Fields {
 				$html .= '</div>';
 				break;
 
-case 'radio':
+			case 'radio':
 				// Radio button group: options is a value => label map.
 				// The stored value is one of the option keys (or '' when
 				// a blank option exists, e.g. "Evento único"). Whitelisted
@@ -376,9 +400,20 @@ case 'radio':
 		$fields = self::collect_fields( $config );
 		$meta   = isset( $data['conexao_fields'] ) ? $data['conexao_fields'] : array();
 
+		// Server-side ownership guard (r10 §3.6). `writable_field_keys()` is the
+		// ONE place that decides which fields this record may persist; the loop
+		// below persists nothing else. A crafted POST that submits the shared
+		// `_ce_*` configuration for a non-canonical translation is therefore
+		// dropped here, not merely hidden in the UI.
+		$writable = array_flip( self::writable_field_keys( $post_id, $config ) );
+
 		foreach ( $fields as $field ) {
 			$key = $field['key'];
 			$id  = ltrim( $key, '_' );
+
+			if ( ! isset( $writable[ $key ] ) ) {
+				continue;
+			}
 
 			// Skip virtual fields (prefixed title etc.) that map to the post itself.
 			if ( self::is_virtual( $key ) ) {
@@ -543,7 +578,7 @@ case 'radio':
 			}
 		}
 
-// Event recurrence: persists the weekly rule atomically (all four
+		// Event recurrence: persists the weekly rule atomically (all four
 		// meta keys together, validate-then-write), clears the whole group
 		// when the event is one-time, and never writes invalid rules —
 		// mirroring the validation messages shown by the editor.
@@ -551,7 +586,6 @@ case 'radio':
 			self::save_event_recurrence( $post_id, $meta );
 		}
 
-		// Save taxonomies.
 		// Save taxonomies.
 		if ( isset( $data['conexao_taxonomies'] ) && is_array( $data['conexao_taxonomies'] ) ) {
 			foreach ( $data["conexao_taxonomies"] as $taxonomy => $term_value ) {
@@ -728,6 +762,63 @@ case 'radio':
 	}
 
 	/**
+	 * Whether a field key may be persisted for this record.
+	 *
+	 * The commemorative single-owner rule (r10 §3.6): the shared
+	 * `_ce_*` scheduling/presentation keys belong to the canonical Portuguese
+	 * record only. A non-canonical translation may persist its translated copy
+	 * and the identity key, never the shared configuration. Any other post type,
+	 * and any record in the canonical language, is unaffected.
+	 *
+	 * @param int   $post_id Post ID.
+	 * @param array $field   Field config.
+	 * @return bool
+	 */
+	public static function field_is_writable( $post_id, $field ) {
+		if ( empty( $field['key'] ) || ! class_exists( 'Conexao_Data_Model_Commemorative' ) ) {
+			return true;
+		}
+
+		if ( Conexao_Data_Model_Commemorative::POST_TYPE !== get_post_type( $post_id ) ) {
+			return true;
+		}
+
+		if ( ! Conexao_Data_Model_Commemorative::is_shared_meta_key( $field['key'] ) ) {
+			return true;
+		}
+
+		return Conexao_Data_Model_Commemorative::can_write_shared_meta( $post_id );
+	}
+
+	/**
+	 * The field keys this record may persist, in config order.
+	 *
+	 * The single source of truth for the save guard: `save()` persists only the
+	 * keys returned here, and the permanent gate asserts that the shared keys
+	 * disappear from this list on a translation and stay on the canonical
+	 * record.
+	 *
+	 * @param int   $post_id Post ID.
+	 * @param array $config  Content type config.
+	 * @return string[]
+	 */
+	public static function writable_field_keys( $post_id, $config ) {
+		$keys = array();
+
+		foreach ( self::collect_fields( $config ) as $field ) {
+			if ( ! self::field_is_writable( $post_id, $field ) ) {
+				continue;
+			}
+
+			if ( isset( $field['key'] ) ) {
+				$keys[] = $field['key'];
+			}
+		}
+
+		return $keys;
+	}
+
+	/**
 	 * Whether a field key maps to a virtual/prefixed field (title, content).
 	 *
 	 * These are handled directly by the editor form (post_title, post_content).
@@ -736,7 +827,7 @@ case 'radio':
 	 * @return bool
 	 */
 	public static function is_virtual( $key ) {
-		$virtual = array( '_event_title', '_event_description', '_news_title', '_news_content', '_guide_title', '_guide_content', '_job_title', '_job_description', '_sponsor_name', '_sponsor_description', '_provider_name', '_provider_description', '_leisure_name', '_leisure_description', '_agency_name', '_employer_name' );
+		$virtual = array( '_event_title', '_event_description', '_news_title', '_news_content', '_guide_title', '_guide_content', '_job_title', '_job_description', '_sponsor_name', '_sponsor_description', '_provider_name', '_provider_description', '_leisure_name', '_leisure_description', '_agency_name', '_employer_name', '_ce_name' );
 		return in_array( $key, $virtual, true );
 	}
 
@@ -962,6 +1053,7 @@ case 'radio':
 			case '_leisure_name':
 			case '_agency_name':
 			case '_employer_name':
+			case '_ce_name':
 				return $post->post_title;
 			case '_event_description':
 			case '_news_content':

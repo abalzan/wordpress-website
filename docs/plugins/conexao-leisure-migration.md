@@ -160,3 +160,5 @@ terms are mutually exclusive per record.
 - `includes/class-leisure-exporter.php` — export logic
 - `includes/class-leisure-importer.php` — import logic with dedupe + media
 - `includes/class-leisure-transfer-admin.php` — admin UI
+
+_Last verified: 2026-11-09 by the plugin documentation audit_

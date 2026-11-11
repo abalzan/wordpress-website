@@ -168,3 +168,5 @@ default, localhost URL or hotlinked media was introduced. Evidence goes to
 - [ ] The change sits in the plugin that owns the concern.
 - [ ] `./scripts/lint.sh` reports no new violations.
 - [ ] Untestable items are listed explicitly in the report's limitations.
+
+_Last verified: 2026-11-09 by the agent skills review and hardening_

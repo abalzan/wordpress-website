@@ -1,0 +1,61 @@
+
+== Commemorative landing page ==
+  PASS: the PT /natal/ landing page exists
+  PASS: the EN /christmas/ landing page exists
+
+=== The double opt-in is required ===
+  PASS: the PT page assigns the landing template
+  PASS: the PT page names the christmas package
+  PASS: the PT page is a landing page
+  PASS: the EN page is a landing page
+  PASS: a normal page is not a landing page
+
+=== The PT/EN pair is a real translation pair ===
+  PASS: the EN record is linked to the PT record
+  PASS: the link is bidirectional
+
+=== Modules reuse existing records and never duplicate content ===
+  PASS: at least three modules have real items (empty-page rule)
+  PASS: the modules surface at least four real records
+  PASS: no record appears in two modules (non-duplicative)
+  PASS: every item has a real title
+  PASS: every item links to a real published record
+  PASS: every item has a real title
+  PASS: every item links to a real published record
+  PASS: every item has a real title
+  PASS: every item links to a real published record
+  PASS: every item has a real title
+  PASS: every item links to a real published record
+  PASS: every item has a real title
+  PASS: every item links to a real published record
+  PASS: every item has a real title
+  PASS: every item links to a real published record
+  PASS: every item has a real title
+  PASS: every item links to a real published record
+  PASS: every item has a real title
+  PASS: every item links to a real published record
+  PASS: every item has a real title
+  PASS: every item links to a real published record
+  PASS: every item has a real title
+  PASS: every item links to a real published record
+
+=== A missing record never produces placeholder copy ===
+  PASS: an unknown slug and an unknown post type produce no items
+  PASS: an empty module renders nothing at all
+
+=== Sitemap policy: archived, not promoted ===
+  PASS: the shared sitemap decision function exists
+  PASS: the PT landing page is excluded from the sitemap
+  PASS: the EN landing page is excluded from the sitemap
+  PASS: a normal published page is still included (the exclusion is not global)
+
+=== The page renders after the event window (archival) ===
+  PASS: no event-driven placement is active in March
+  PASS: the landing placement is still resolved in March
+  PASS: the landing page still renders in March
+  PASS: the page hero renders
+  PASS: the page title is the PT title
+  PASS: at least three modules render after the window
+  PASS: the archival page is not a preview
+
+commemorative-landing-page: 45 passed, 0 failed

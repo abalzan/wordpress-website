@@ -1,0 +1,297 @@
+/**
+ * New Year experience package — package-scoped presentation CSS.
+ *
+ * TWO COUNTRIES, ONE NEW BEGINNING (r10 §7.12 · brief §3.2)
+ *
+ * Brazil appears as a Rio sunset over the water; Ireland as Dublin's riverside
+ * at night; the shared motif is fireworks over one night sky. The canvas is a
+ * deep night indigo, the light is champagne gold and celebration amber, and the
+ * two cultures are carried by Brazilian green/yellow and Irish green — never by
+ * flags, never by red-and-green generic styling.
+ *
+ * The registry's four public tokens (`--ce-primary`, `--ce-secondary`,
+ * `--ce-accent`, `--ce-surface`) are emitted inline by the dispatcher. The
+ * mirrors below are the fallback for the ambient decorations; everything else
+ * is a PRIVATE art-direction token with a `--ce-ny-` prefix, so a future
+ * registry change can never silently collide with it.
+ *
+ * Enqueued only when a New Year placement renders.
+ *
+ * @package Conexao_BR_Irlanda
+ */
+
+/* ===== 1. Tokens ===== */
+.ce-package--new_year,
+.ce-placement--site_wide_ambient.ce-package--new_year {
+  --ce-primary: #1b2447;
+  --ce-secondary: #b34a37;
+  --ce-accent: #d9a441;
+  --ce-surface: #fdf7ee;
+
+  /* Private art direction. */
+  --ce-ny-night: #0f172a;
+  --ce-ny-night-deep: #080c18;
+  --ce-ny-twilight: #1e1b4b;
+  --ce-ny-gold: #f59e0b;
+  --ce-ny-gold-soft: #fef3c7;
+  --ce-ny-ember: #ef4444;
+  --ce-ny-sun: #fbbf24;
+  --ce-ny-brazil-green: #009c3b;
+  --ce-ny-ireland-green: #16a34a;
+  --ce-ny-ink: #1a2038;
+  --ce-ny-body: #3a4157;
+  --ce-ny-on-night: #ece5d6;
+  --ce-ny-on-night-strong: #fdf7ee;
+  --ce-ny-hairline: rgba(27, 36, 71, 0.16);
+  --ce-ny-on-night-hairline: rgba(245, 158, 11, 0.26);
+  --ce-ny-motion: 700ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ce-ny-radius: 18px;
+}
+
+:root[data-theme="dark"] .ce-package--new_year,
+:root[data-theme="dark"] .ce-placement--site_wide_ambient.ce-package--new_year {
+  --ce-surface: #12162e;
+  --ce-accent: #f59e0b;
+  --ce-ny-ink: #eae4d6;
+  --ce-ny-body: #cfc9ba;
+  --ce-ny-hairline: rgba(245, 158, 11, 0.28);
+}
+
+/* ===== 2. Homepage hero band ===== */
+body.ce-active.ce-package-new_year.ce-placement-homepage-hero .ce-placement--homepage_hero {
+  position: static;
+  display: block;
+}
+
+.ce-new-year-hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 34%) minmax(0, 1fr);
+  gap: clamp(14px, 2vw, 26px);
+  align-items: center;
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto clamp(12px, 1.6vw, 20px);
+  padding: clamp(12px, 1.8vw, 18px);
+  border-radius: var(--ce-ny-radius);
+  border: 1px solid color-mix(in srgb, var(--ce-accent, #d9a441) 46%, transparent);
+  background:
+    radial-gradient(120% 140% at 100% 0%, rgba(251, 191, 36, 0.16), transparent 58%),
+    linear-gradient(180deg, #fffcf5 0%, var(--ce-surface, #fdf7ee) 100%);
+  color: var(--ce-ny-ink, #1a2038);
+  box-shadow: 0 22px 54px rgba(8, 12, 34, 0.34);
+}
+
+.ce-new-year-hero__art {
+  margin: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  line-height: 0;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28);
+}
+
+.ce-new-year-hero__art img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.ce-new-year-hero__kicker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 6px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ce-secondary, #b34a37);
+}
+
+.ce-new-year-hero__title {
+  margin: 0 0 6px;
+  font-size: clamp(1.2rem, 2.1vw, 1.7rem);
+  line-height: 1.16;
+  letter-spacing: -0.01em;
+  color: var(--ce-primary, #1b2447);
+}
+
+.ce-new-year-hero__copy {
+  margin: 0 0 12px;
+  max-width: 46ch;
+  font-size: 0.94rem;
+  line-height: 1.55;
+  color: var(--ce-ny-body, #3a4157);
+}
+
+.ce-new-year-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+:root[data-theme="dark"] .ce-new-year-hero {
+  background:
+    radial-gradient(120% 140% at 100% 0%, rgba(251, 191, 36, 0.18), transparent 58%),
+    linear-gradient(180deg, #182042 0%, var(--ce-surface, #12162e) 100%);
+}
+
+:root[data-theme="dark"] .ce-new-year-hero__title {
+  color: var(--ce-ny-on-night-strong, #fdf7ee);
+}
+
+:root[data-theme="dark"] .ce-new-year-hero__copy {
+  color: var(--ce-ny-on-night, #ece5d6);
+}
+
+:root[data-theme="dark"] .ce-new-year-hero__kicker {
+  color: var(--ce-ny-gold, #f59e0b);
+}
+
+/* ===== 3. Landing page ===== */
+.ce-new-year-hero {
+  margin: clamp(24px, 4vw, 48px) 0;
+}
+
+.ce-new-year-hero__wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(18px, 2.6vw, 30px);
+  align-items: center;
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: clamp(20px, 3.2vw, 42px);
+  border-radius: calc(var(--ce-ny-radius) + 6px);
+  border: 1px solid var(--ce-ny-on-night-hairline, rgba(245, 158, 11, 0.26));
+  background:
+    radial-gradient(90% 70% at 12% 0%, rgba(239, 68, 68, 0.22), transparent 62%),
+    radial-gradient(90% 70% at 88% 6%, rgba(22, 163, 74, 0.26), transparent 60%),
+    linear-gradient(180deg, var(--ce-ny-twilight, #1e1b4b) 0%, var(--ce-ny-night, #0f172a) 42%, var(--ce-ny-night-deep, #080c18) 100%);
+  color: var(--ce-ny-on-night, #ece5d6);
+  box-shadow: 0 28px 70px rgba(6, 9, 28, 0.38);
+}
+
+.ce-new-year-hero__art {
+  margin: 0;
+  width: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  background: rgba(8, 12, 34, 0.4);
+  line-height: 0;
+}
+
+.ce-new-year-hero__art img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.ce-new-year-hero__caption {
+  margin: 0;
+  padding: 10px 14px;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: rgba(236, 229, 214, 0.78);
+  background: rgba(8, 12, 34, 0.55);
+}
+
+.ce-new-year-hero__body {
+  padding: 0 clamp(12px, 2vw, 24px);
+}
+
+.ce-new-year-hero__kicker {
+  margin: 0 0 8px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ce-ny-gold, #f59e0b);
+}
+
+.ce-new-year-hero__title {
+  margin: 0 0 10px;
+  font-size: clamp(1.5rem, 3.4vw, 2.2rem);
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  color: var(--ce-ny-on-night-strong, #fdf7ee);
+}
+
+.ce-new-year-hero__message {
+  margin: 0;
+  font-size: clamp(1rem, 1.6vw, 1.08rem);
+  line-height: 1.6;
+  color: var(--ce-ny-on-night, #ece5d6);
+}
+
+:root[data-theme="dark"] .ce-new-year-hero__wrap {
+  background:
+    radial-gradient(90% 70% at 12% 0%, rgba(239, 68, 68, 0.22), transparent 62%),
+    radial-gradient(90% 70% at 88% 6%, rgba(22, 163, 74, 0.26), transparent 60%),
+    linear-gradient(180deg, var(--ce-ny-twilight, #1e1b4b) 0%, var(--ce-ny-night, #0f172a) 42%, var(--ce-ny-night-deep, #080c18) 100%);
+}
+
+/* ===== 4. Welcome dialog (homepage hero) ===== */
+.ce-new-year-welcome__dialog {
+  /* The dialog ships closed; the controller opens it with showModal(). */
+}
+
+.ce-new-year-welcome__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--ce-ny-on-night-strong);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.ce-new-year-welcome__close:focus-visible {
+  outline: 3px solid var(--ce-ny-gold);
+  outline-offset: 2px;
+}
+
+.ce-new-year-welcome__fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: clamp(12px, 2vw, 20px);
+  text-align: center;
+}
+
+.ce-new-year-welcome__fallback-title {
+  margin: 0;
+  font-size: clamp(1.2rem, 2.1vw, 1.7rem);
+  line-height: 1.16;
+  color: var(--ce-primary, #1b2447);
+}
+
+.ce-new-year-welcome__fallback-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== 5. Reduced motion ===== */
+@media (prefers-reduced-motion: reduce) {
+  .ce-new-year-hero__art img {
+    transition: none !important;
+  }
+
+  .ce-placement--homepage_hero *,
+  .ce-placement--homepage_hero *::before,
+  .ce-placement--homepage_hero *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

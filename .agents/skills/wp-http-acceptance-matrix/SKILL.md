@@ -48,8 +48,13 @@ This layer proves what a real request returns; the in-process layer
 
 ## Preconditions
 
-- The local site is up and reachable at the local base URL. A production host is
-  refused by both the runner and the client.
+- Inspect the current stack state first (`docker compose ps`; setup documented
+  in `docs/development.md`) and reuse an already-running local environment at
+  the local base URL. A production host is refused by both the runner and the
+  client. Do not automatically start, recreate or rebuild containers, reset
+  volumes, seed data or mint an administrator session; make those side effects
+  deliberate. If the environment is unavailable, report the blocker and fall
+  back to non-mutating checks.
 - You know the **contract** the route must satisfy, so the row asserts a stable
   fragment rather than incidental markup.
 - You have the before/after row results if you are changing existing behaviour.
@@ -141,7 +146,10 @@ CONEXAO_TEST_BASE_URL=<local site> \
 - *A row passes with a wrong `expect_contains`.* It is vacuous. Rewrite the
   expectation so it discriminates.
 - *The suite is blocked (site unreachable).* Record it as blocked, not as a pass.
-  Start the stack and re-run; do not remove the row to avoid the failure.
+  Inspect the current stack state first (`docker compose ps`) and reuse an
+  already-running environment. Request explicit approval before starting,
+  recreating or rebuilding containers. If approval is not granted, record the
+  layer as `BLOCKED` / `not tested`; do not remove the row to avoid the failure.
 
 ## Evidence and reporting
 
@@ -163,3 +171,5 @@ list. Captured matrices and summaries go to
 - [ ] Exact row and assertion counts are recorded in the report.
 - [ ] The suite exits 0, and one row was proven to fail when made wrong.
 - [ ] Evidence, if captured, is under `docs/evidence/<date>-<stage>/`.
+
+_Last verified: 2026-11-09 by the agent skills review and hardening_

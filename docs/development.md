@@ -342,17 +342,11 @@ The Guide CPT is a **real English translation** since Stage 9: one linked EN
 `/en/guias/` is a genuine English archive.
 
 ```bash
-# 1. Local runner (LOCAL ONLY; loads the plugin itself)
-docker compose exec -T wordpress php \
-  /var/www/html/wp-content/themes/conexao-br-irlanda/tests/run-guide-translation.php dry-run
-docker compose exec -T wordpress php \
-  /var/www/html/wp-content/themes/conexao-br-irlanda/tests/run-guide-translation.php
-
-# 2. In-process suite (completeness gate, pairs, identity, filter, PT regression)
+# 1. In-process suite (completeness gate, pairs, identity, filter, PT regression)
 docker compose exec -T wordpress php \
   /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-guide-en-translation.php
 
-# 3. HTTP contract (archive, singles, canonical, hreflang, filter, pagination, sitemap)
+# 2. HTTP contract (archive, singles, canonical, hreflang, filter, pagination, sitemap)
 ./scripts/verify-guides-http.sh
 ```
 
@@ -483,3 +477,4 @@ repository root.
 _Last verified: 2026-09-26 by Stage I — Scripts Standardisation_
 
 _Last verified: 2026-09-28 by CI integration setup recovery_
+_Last verified: 2026-11-07 by the agent, skills and documentation audit (retired `run-guide-translation.php` commands removed from the Stage 9 section)_

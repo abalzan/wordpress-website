@@ -22,6 +22,93 @@ Landing" hub, rendered by the theme's `page-empregos.php`). Individual job
 posts keep their `/empregos/{slug}/` permalinks (the CPT `rewrite` slug stays
 `empregos`).
 
+### Commemorative event (`commemorative_event`, r10)
+
+Registered by its own method (`Conexao_Data_Model::register_commemorative_post_type()`)
+because it is a **pure wp-admin configuration container**: `public` and
+`publicly_queryable` false, `has_archive` false, `rewrite` false, no query var,
+excluded from search, and **`show_in_rest => false`** — **no front-end URL, no
+archive, no REST route, no sitemap entry**. It has its own top-level wp-admin menu
+("Eventos Comemorativos"). Those five negatives are asserted by the permanent gate
+`commemorative_cpt_privacy`.
+
+The field schema, defaults and sanitizers are owned by
+`Conexao_Data_Model_Commemorative`; the scheduling/activation behaviour is owned
+by the `conexao-commemorative` engine (see
+[`docs/plugins/conexao-commemorative.md`](plugins/conexao-commemorative.md)).
+The authoritative requirements are in architecture proposal r10 §3.
+
+| Meta key | Type | Default | Shared / translated | Notes |
+|---|---|---|---|---|
+| `_ce_event_key` | string `[a-z0-9_]+` | `''` | **Shared** (identical in both language records) | the stable logical identity; used by the preview link, logs and diagnostics. Never a local post ID, never a translated slug |
+| `post_title` / `post_name` | string | — | **Translated** | the user-visible event name / a human-readable slug (not the identity) |
+| `_ce_description` | text | `''` | **Shared** | internal administrator note; never rendered, never translated |
+| `_ce_enabled` | bool | `true` | **Shared** | the *scheduling* switch, independent of post status (an event is eligible only when `publish` AND enabled) |
+| `_ce_priority` | int `0..100` | `10` | **Shared** | global priority; higher wins on overlap |
+| `_ce_year_precedence` | JSON map | `{}` | **Shared, stored only on the PT record** | `occurrence_year => { preferred?: bool, note?: string }`; years `Y−2..Y+5`; note ≤ 200 chars |
+| `_ce_presentation` | string | `''` | **Shared** | experience-package slug, validated against the theme-owned registry |
+| `_ce_rule` | enum | `fixed_annual` | **Shared** | `fixed_annual`, `variable_annual`, `one_off`, `window` |
+| `_ce_date` / `_ce_variable` / `_ce_one_off_date` / `_ce_window_start` / `_ce_window_end` / `_ce_lead_in_days` | string / int | see r10 §3.2 | **Shared** | scheduling inputs. `MM-DD` values round-trip exactly; `02-29` is rejected |
+| `_ce_heading`, `_ce_subheading`, `_ce_cta_label`, `_ce_cta_url` | string | `''` | **Translated** | optional content overrides for the current language |
+
+**Single-owner Polylang rule — enforced, not merely documented.** Shared
+configuration lives ONLY on the canonical Portuguese record and is read from there
+whichever language renders. The EN record carries `post_title`/`post_name`, the
+translated copy and `_ce_event_key`, and **no other `_ce_*` meta**. Three layers
+enforce it, all reading the split from
+`Conexao_Data_Model_Commemorative::shared_meta_keys()` — the single source of truth:
+
+| Layer | Mechanism |
+|---|---|
+| Polylang meta copy | the `conexao-commemorative` engine filters `pll_copy_post_metas` (an **inclusion** list) and removes `SHARED_META_KEYS` whenever either side of the copy is a `commemorative_event`; every other post type is untouched |
+| Editor | `Conexao_Admin_Ux_Editor::lock_shared_fields()` marks the shared fields `readonly` on a non-canonical record, so no input is emitted for them |
+| Save | `Conexao_Admin_Ux_Fields::writable_field_keys()` (used by the save loop) and the engine's `save_precedence()` both refuse shared keys on a non-canonical record, so a crafted POST cannot install a second owner |
+
+The canonical record is identified through Polylang's configured default language
+(`Conexao_Data_Model_Commemorative::is_canonical_language()`, which the engine's
+`Repository::is_canonical_language()` delegates to). The expected canonical state
+**and** the absence of shared configuration on every translation are asserted by
+the permanent gate `commemorative_translation_ownership`, which also refuses to
+pass when no translation fixture exists.
+
+**No runtime fallback.** The CPT is the only source of truth: there is no
+"if empty, use the built-in six" path. The six legacy occasions are created once
+by `scripts/seed-commemorative-events.php` (dry-run first, idempotent,
+`--apply`), and a brand-new install simply has zero events until an administrator
+creates one. `_ce_*` meta is registered with `show_in_rest => false` and the CPT
+itself declares `show_in_rest => false`, so no REST surface exposes scheduling
+data or event records.
+
+**Recorded deviation from r10 §3.2/§3.7.** The proposal **proposed**
+`show_in_rest => true` for the CPT (with authenticated REST-read tests in §9.8);
+the implementation deliberately keeps the whole surface out of REST, so
+`GET /wp-json/wp/v2/commemorative_event` is a **404** rather than a
+permission-gated route. That is stricter than the proposal: an absent route cannot
+be mis-configured into an exposure, the records are admin-only configuration and
+nothing public consumes them. Consequence: r10 §9.8's authenticated REST-read row
+is **not applicable** and is not silently re-interpreted. Re-enabling REST is an
+architecture decision, not a documentation fix — see
+[`plugins/conexao-commemorative.md`](plugins/conexao-commemorative.md).
+
+#### The opt-in landing page is a PAGE, not a CPT route (r10 Stages 4–6)
+
+An experience package may render a dedicated landing page. It is a normal `page`
+record that carries **two independent opt-ins**:
+
+| Opt-in | Value |
+|---|---|
+| assigned page template | `page-commemorative-landing.php` (`Template Name: Commemorative Landing Page`) |
+| `_ce_landing_package` meta | the experience-package slug (`christmas`) |
+
+A page with only one of them renders as an ordinary page. The package's
+`landing_page` → `options.page_slugs` must also match the page slug for the current
+language (`natal` for PT, `christmas` for EN). The pair is a real Polylang
+translation pair. The landing page renders from the PAGE's own copy, never from the
+event schedule, so it keeps working after the event window; it is **excluded from
+the sitemap** (`conexao_seo_sitemap_include_page()`) unless inclusion is explicitly
+approved. See [`commemorative-events.md`](commemorative-events.md) §5.2.
+
+
 **`recruitment_agency`** and **`permit_employer`** are further exceptions: they
 are not public (`public` and `publicly_queryable` are false), have no rewrite,
 no archive, and no single post URL. The CPTs exist purely as wp-admin data

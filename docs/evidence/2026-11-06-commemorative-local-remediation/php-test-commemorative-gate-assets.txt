@@ -1,0 +1,14 @@
+
+== PERMANENT GATE: commemorative_no_asset_without_event ==
+No commemorative CSS/JS handle is enqueued (or planned) when no commemorative placement is displayed.
+  prerequisites: theme-active, conexao-commemorative plugin active
+
+=== Real request: an internal page with no active event ===
+  PASS: the no-event plan schedules no commemorative stylesheet
+  PASS: the no-event plan schedules no commemorative script
+  PASS: the no-event plan does not load the shared framework
+  PASS: no commemorative handle is enqueued on a request with no active event
+  PASS: the gate can detect the forbidden condition (an injected active placement IS reported)
+
+5 passed, 0 failed
+GATE-RESULT {"gate":"commemorative_no_asset_without_event","status":"pass","passed":5,"failed":0,"violations":0,"pre_existing":0,"new":0,"prerequisites":["theme-active","conexao-commemorative plugin active"],"allowlisted":[],"allowlisted_count":0,"details":[{"key":"asset:planned_without_event:styles","count":0,"label":"the no-event plan schedules no commemorative stylesheet","detail":{"handles":[]}},{"key":"asset:planned_without_event:scripts","count":0,"label":"the no-event plan schedules no commemorative script","detail":{"handles":[]}},{"key":"asset:planned_without_event:shared","count":0,"label":"the no-event plan does not load the shared framework","detail":[]},{"key":"asset:enqueued_without_event","count":0,"label":"no commemorative handle is enqueued on a request with no active event","detail":{"handles":[]}},{"key":"gate:injected_negative_not_detected","count":0,"label":"the gate can detect the forbidden condition (an injected active placement IS reported)","detail":{"injected":{"styles":["conexao-ce-css-presentations-halloween"],"scripts":["conexao-ce-js-presentations-halloween-halloween"],"shared":true},"package":"halloween"}}]}

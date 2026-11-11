@@ -1,0 +1,18 @@
+# PHPCS per-sniff: pre-remediation (HEAD 657c334, dirty-free) -> post-remediation -> baseline
+# command: vendor/bin/phpcs -q --report=json --no-colors   +   php scripts/phpcs-baseline.php check <report> phpcs-baseline.json
+
+SNIFF                                                            BEFORE    AFTER BASELINE
+Universal.CodeAnalysis.NoDoubleNegative.FoundDouble                   1        0        0
+Generic.WhiteSpace.ScopeIndent.IncorrectExact                        21       19       19
+Squiz.Commenting.VariableComment.Missing                             15        5        5
+Universal.Files.SeparateFunctionsFromOO.Mixed                         6        5        5
+WordPress.Files.FileName.InvalidClassFileName                        75       74       74
+WordPress.WP.I18n.MissingTranslatorsComment                         102       99      101
+
+TOTALS            errors/warnings
+before            2858 / 2221
+after             2837 / 2221
+baseline          3290 / 2672
+
+GATE RESULT: exit 0 — "OK: no new PHPCS violations against the baseline."
+No baseline entry was added, removed or regenerated.

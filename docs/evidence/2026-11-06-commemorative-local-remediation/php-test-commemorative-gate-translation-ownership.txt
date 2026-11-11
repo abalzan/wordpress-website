@@ -1,0 +1,47 @@
+
+== PERMANENT GATE: commemorative_translation_ownership ==
+The canonical PT commemorative record is the only owner of the shared _ce_* configuration: Polylang copies none of it, the editor renders it read-only on the translation, and the save paths refuse to persist it there.
+  prerequisites: theme-active, conexao-data-model + conexao-admin-ux + conexao-commemorative active, polylang active, a commemorative record with its linked translation
+  PASS: the gate prerequisite is available: the data model, the admin UX and the engine
+  PASS: the gate prerequisite is available: Polylang (the split only exists in a bilingual install)
+  PASS: the gate prerequisite is available: a canonical commemorative record with a linked EN translation
+
+=== Layer 1 — Polylang does not copy the shared configuration ===
+  PASS: the shared keys are excluded through the documented `pll_copy_post_metas` filter
+  PASS: a commemorative copy list carries no shared scheduling/presentation key
+  PASS: only the shared keys are excluded — translated copy, identity and unrelated meta are still copied
+  PASS: the gate prerequisite is available: a normal page for the copy-scope proof
+  PASS: a non-commemorative post type keeps its copy list unchanged
+
+=== Injected negative proof: the copy check detects a leaked shared key ===
+  PASS: the copy check flags a list that DOES still carry a shared key
+
+=== Layer 2 — the translation editor is read-only for shared fields ===
+  PASS: the EN record is recognised as a non-canonical translation
+  PASS: the PT record is NOT locked (a legitimate canonical edit stays possible)
+  PASS: every shared field is read-only on the translation
+  PASS: the translated copy stays editable on the translation (only the shared set is locked)
+  PASS: the shared `_ce_enabled` control exists in the editor config
+  PASS: the read-only control emits NO submittable input
+  PASS: the read-only control displays the shared value
+  PASS: the lock check can tell a locked control apart from an editable one
+  PASS: the canonical PT record has no read-only field
+
+=== Layer 3 — the save paths refuse shared configuration on a translation ===
+  PASS: a translation may persist NO shared key (a crafted POST is dropped, not hidden)
+  PASS: the canonical record may still persist every shared key the editor owns
+  PASS: the translation may still persist `_ce_heading`
+  PASS: the translation may still persist `_ce_subheading`
+  PASS: the translation may still persist `_ce_cta_label`
+  PASS: the translation may still persist `_ce_cta_url`
+  PASS: the translation may still persist `_ce_event_key`
+  PASS: the editor save path persists only the writable field list
+  PASS: the annual-preference save refuses a non-canonical record BEFORE writing
+
+=== The stored data matches the invariant ===
+  PASS: the canonical record actually carries the shared configuration
+  PASS: the translation carries no shared `_ce_*` row
+  PASS: the translation carries `_ce_event_key` (identity is not shared configuration)
+
+30 passed, 0 failed
+GATE-RESULT {"gate":"commemorative_translation_ownership","status":"pass","passed":30,"failed":0,"violations":0,"pre_existing":0,"new":0,"prerequisites":["theme-active","conexao-data-model + conexao-admin-ux + conexao-commemorative active","polylang active","a commemorative record with its linked translation"],"allowlisted":[],"allowlisted_count":0,"details":[{"key":"copy:filter_not_registered","count":0,"label":"the shared keys are excluded through the documented `pll_copy_post_metas` filter","detail":[]},{"key":"copy:shared_key_copied","count":0,"label":"a commemorative copy list carries no shared scheduling\/presentation key","detail":{"leaks":[]}},{"key":"copy:over_excluded","count":0,"label":"only the shared keys are excluded \u2014 translated copy, identity and unrelated meta are still copied","detail":{"over_excluded":[]}},{"key":"copy:unrelated_post_type_changed","count":0,"label":"a non-commemorative post type keeps its copy list unchanged","detail":{"page":27}},{"key":"gate:copy_leak_not_detected","count":0,"label":"the copy check flags a list that DOES still carry a shared key","detail":{"detected":["_ce_description","_ce_enabled","_ce_priority","_ce_year_precedence","_ce_presentation","_ce_rule","_ce_date","_ce_variable","_ce_one_off_date","_ce_window_start","_ce_window_end","_ce_lead_in_days"]}},{"key":"editor:shared_field_editable","count":0,"label":"every shared field is read-only on the translation","detail":{"editable":[]}},{"key":"editor:translated_field_locked","count":0,"label":"the translated copy stays editable on the translation (only the shared set is locked)","detail":{"locked":[]}},{"key":"editor:shared_field_renders_input","count":0,"label":"the read-only control emits NO submittable input","detail":{"html_bytes":453}},{"key":"gate:locked_render_check_is_vacuous","count":0,"label":"the lock check can tell a locked control apart from an editable one","detail":[]},{"key":"editor:canonical_field_locked","count":0,"label":"the canonical PT record has no read-only field","detail":{"locked":0}},{"key":"save:shared_key_writable_on_translation","count":0,"label":"a translation may persist NO shared key (a crafted POST is dropped, not hidden)","detail":{"writable_shared":[]}},{"key":"save:canonical_shared_key_not_writable","count":0,"label":"the canonical record may still persist every shared key the editor owns","detail":{"missing":[]}},{"key":"save:editor_guard_not_wired","count":0,"label":"the editor save path persists only the writable field list","detail":{"body_bytes":8542}},{"key":"save:precedence_guard_not_wired","count":0,"label":"the annual-preference save refuses a non-canonical record BEFORE writing","detail":{"guard_at":884}},{"key":"data:canonical_missing_shared_rows","count":0,"label":"the canonical record actually carries the shared configuration","detail":{"shared_rows":7}},{"key":"data:translation_carries_shared_rows","count":0,"label":"the translation carries no shared `_ce_*` row","detail":{"rows":[]}}]}

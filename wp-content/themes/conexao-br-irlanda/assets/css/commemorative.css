@@ -1,0 +1,202 @@
+/**
+ * Commemorative presentation framework — shared CSS.
+ *
+ * Loaded ONLY when at least one commemorative placement renders on the request
+ * (r10 §7.9). It contains the reusable capabilities every placement shares — the
+ * placement wrapper, the hero shell, the decorative ambient layer, the focus ring
+ * and the reduced-motion rules — and no package artwork or palette.
+ *
+ * Package files (`presentations/<package>.css`) supply colour and art; they are
+ * declared as dependencies of this handle, so the framework always comes first.
+ *
+ * @package Conexao_BR_Irlanda
+ */
+
+/* ===== 1. Placement wrapper ===== */
+.ce-placement {
+  position: relative;
+  /* A placement never intercepts interaction outside its own controls. */
+  pointer-events: none;
+}
+
+.ce-placement a,
+.ce-placement button,
+.ce-placement .ce-hero {
+  pointer-events: auto;
+}
+
+/* Homepage hero: the host is an absolute overlay aligned to the hero's bottom.
+   Halloween's own card positions itself against this box (inset: 0), exactly as
+   the previous markup did; a package that renders an inline band (Christmas)
+   becomes a static flex child pinned to the bottom edge. A package whose band
+   needs room adds `padding-bottom` to `.hero-section` through the generic
+   `body.ce-placement-homepage_hero.ce-package-<slug>` classes, so the space is
+   reserved server-side and nothing shifts after load. */
+.ce-placement--homepage_hero {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.ce-hero-shell {
+  position: static;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 100%;
+}
+
+/* Site-wide ambient: a fixed, inert, viewport-filling decorative layer. It can
+   never move content, change scroll position or capture pointer events. */
+.ce-placement--site_wide_ambient {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Every decoration created by the shared scheduler uses this class. */
+.ce-ambient-decoration {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  max-width: min(36vw, 180px);
+  max-height: 42vh;
+  will-change: transform, opacity;
+}
+
+/* Never let a decoration sit under the mobile chrome (header, bottom bar) or
+   over a form/CTA: the package script also bounds its coordinates, and this is
+   the CSS backstop. */
+.ce-placement--site_wide_ambient .ce-ambient-decoration {
+  z-index: 0;
+}
+
+/* ===== 2. Focus ring (shared) ===== */
+.ce-placement :focus-visible {
+  outline: 3px solid var(--ce-primary, currentColor);
+  outline-offset: 2px;
+}
+
+/* ===== 3. Reduced motion =====
+   Under `prefers-reduced-motion: reduce` no package may start the spontaneous
+   scheduler (r10 §7.7 addendum 3) and every decorative animation is suppressed.
+   The scheduler enforces this in JavaScript as well; this rule is the CSS
+   backstop, so a decoration injected by a stale tab can never animate. */
+@media (prefers-reduced-motion: reduce) {
+  .ce-ambient-decoration {
+    display: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .ce-placement--homepage_hero *,
+  .ce-placement--homepage_hero *::before,
+  .ce-placement--homepage_hero *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ===== 4. Dedicated landing page (shared component) ===== */
+.ce-landing {
+  padding-block: clamp(18px, 3vw, 34px);
+}
+
+.ce-landing__hero {
+  padding-bottom: clamp(12px, 2vw, 20px);
+}
+
+.ce-landing__kicker {
+  margin: 0 0 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ce-landing__title {
+  margin: 0 0 10px;
+  line-height: 1.15;
+}
+
+.ce-landing__intro {
+  max-width: 68ch;
+  font-size: 1.02rem;
+  line-height: 1.65;
+}
+
+.ce-module {
+  margin: clamp(22px, 3vw, 36px) 0;
+}
+
+.ce-module__title {
+  margin: 0 0 6px;
+  font-size: clamp(1.15rem, 2vw, 1.4rem);
+  line-height: 1.25;
+}
+
+.ce-module__intro {
+  margin: 0 0 14px;
+  max-width: 68ch;
+}
+
+.ce-module__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ce-card {
+  height: 100%;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--ce-primary, currentColor) 22%, transparent);
+  background: var(--ce-surface, transparent);
+  /* The card is a themed surface, so its text uses the theme's primary text
+     token (WCAG AA on the light surface). `--color-text-secondary` measured
+     2.55:1 on this surface in the Stage 6 browser review, which is why the card
+     does not inherit the body's secondary colour. */
+  color: var(--color-text, #1f2d24);
+}
+
+:root[data-theme="dark"] .ce-card {
+  color: var(--color-text, #e8edf2);
+}
+
+.ce-card__type {
+  margin: 0 0 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.ce-card__meta {
+  margin-left: 8px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  opacity: 0.8;
+}
+
+.ce-card__title {
+  margin: 0 0 6px;
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.ce-card__summary {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+

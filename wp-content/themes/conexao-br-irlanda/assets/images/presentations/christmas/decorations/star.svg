@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 150" width="120" height="150" role="img" aria-hidden="true" focusable="false">
+	<defs>
+		<radialGradient id="ce-xmas-ambient-glow" cx="50%" cy="34%" r="50%">
+			<stop offset="0%" stop-color="#fff3c9" stop-opacity="0.85"/>
+			<stop offset="55%" stop-color="#e8c273" stop-opacity="0.28"/>
+			<stop offset="100%" stop-color="#e8c273" stop-opacity="0"/>
+		</radialGradient>
+		<linearGradient id="ce-xmas-ambient-point" x1="0" y1="0" x2="0" y2="1">
+			<stop offset="0%" stop-color="#fffaf0"/>
+			<stop offset="100%" stop-color="#d9a441"/>
+		</linearGradient>
+	</defs>
+	<!-- Ambient decoration: the shared star of "One Christmas, Two Skies".
+	     Same eight-point geometry as template-parts/commemorative/christmas/star.php
+	     (two long cardinal points, two long verticals, four short diagonals); this file
+	     is the single raster-free instance the ambient scheduler requests. Decorative:
+	     no text, no baked-in copy, never focusable. -->
+	<circle cx="60" cy="46" r="44" fill="url(#ce-xmas-ambient-glow)"/>
+	<path d="M60 2 L66.5 36.5 L101 30 L71.5 46 L101 62 L66.5 55.5 L60 90 L53.5 55.5 L19 62 L48.5 46 L19 30 L53.5 36.5 Z" fill="url(#ce-xmas-ambient-point)"/>
+	<circle cx="60" cy="46" r="4.2" fill="#fffaf0"/>
+	<g fill="#e8c273" opacity="0.9">
+		<circle cx="34" cy="104" r="2.1"/>
+		<circle cx="60" cy="118" r="1.7"/>
+		<circle cx="86" cy="100" r="1.9"/>
+		<circle cx="72" cy="132" r="1.4"/>
+		<circle cx="45" cy="134" r="1.5"/>
+	</g>
+</svg>

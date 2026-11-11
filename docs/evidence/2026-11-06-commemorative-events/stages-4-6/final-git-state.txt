@@ -1,0 +1,67 @@
+branch: commemorative-events
+head: cfea1faffbd38bd575128b03eb33af20f0fca641
+stashes: 9
+changed paths: 62
+
+ M docs/README.md
+ M docs/content-model.md
+ M docs/evidence/2026-11-06-commemorative-events/php-suites.txt
+ M docs/plugins/conexao-commemorative.md
+ M docs/reports/README.md
+ M docs/routing.md
+ M docs/testing.md
+ M docs/themes/conexao-br-irlanda.md
+ M scripts/README.md
+ M scripts/verify-permanent-gates.py
+ M wp-content/plugins/conexao-admin-ux/languages/conexao-admin-ux.pot
+ M wp-content/plugins/conexao-commemorative/includes/functions.php
+ M wp-content/plugins/conexao-commemorative/languages/conexao-commemorative.pot
+ M wp-content/plugins/conexao-data-model/conexao-data-model.php
+ M wp-content/plugins/conexao-data-model/languages/conexao-data-model.pot
+ M wp-content/themes/conexao-br-irlanda/assets/css/dark-mode.css
+ M wp-content/themes/conexao-br-irlanda/assets/css/main.css
+R  wp-content/themes/conexao-br-irlanda/assets/images/halloween/witch-broom.svg -> wp-content/themes/conexao-br-irlanda/assets/images/presentations/halloween/decorations/witch-broom.svg
+ M wp-content/themes/conexao-br-irlanda/assets/js/main.js
+ M wp-content/themes/conexao-br-irlanda/footer.php
+ M wp-content/themes/conexao-br-irlanda/front-page.php
+ M wp-content/themes/conexao-br-irlanda/functions.php
+ M wp-content/themes/conexao-br-irlanda/header.php
+ M wp-content/themes/conexao-br-irlanda/inc/commemorative-presentations.php
+ M wp-content/themes/conexao-br-irlanda/inc/occasion.php
+ M wp-content/themes/conexao-br-irlanda/inc/seo/sitemap.php
+ M wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot
+ D wp-content/themes/conexao-br-irlanda/template-parts/halloween-hero.php
+ M wp-content/themes/conexao-br-irlanda/tests/test-seasonal-halloween-nav-effects.php
+ M wp-content/themes/conexao-br-irlanda/tests/test-seasonal-halloween-presentation.php
+?? docs/commemorative-content.md
+?? docs/commemorative-events.md
+?? docs/evidence/2026-11-06-commemorative-events/stages-4-6/
+?? docs/reports/2026-11-06-commemorative-events-stage-4-6-implementation.md
+?? docs/reports/2026-11-06-commemorative-events-stage-4-6-plan.md
+?? scripts/diagnostics/commemorative-browser-review.py
+?? scripts/diagnostics/commemorative-christmas-content.php
+?? scripts/diagnostics/commemorative-content-inventory.php
+?? scripts/diagnostics/commemorative-dispatch-probe.php
+?? scripts/seed-commemorative-landing-pages.php
+?? tests/acceptance/matrices/commemorative.json
+?? tests/acceptance/verify-commemorative-http.py
+?? tests/node/
+?? tests/scripts/verify-commemorative-runtime.py
+?? wp-content/themes/conexao-br-irlanda/assets/css/commemorative.css
+?? wp-content/themes/conexao-br-irlanda/assets/css/presentations/
+?? wp-content/themes/conexao-br-irlanda/assets/images/presentations/christmas/
+?? wp-content/themes/conexao-br-irlanda/assets/js/commemorative.js
+?? wp-content/themes/conexao-br-irlanda/assets/js/presentations/
+?? wp-content/themes/conexao-br-irlanda/inc/commemorative-modules.php
+?? wp-content/themes/conexao-br-irlanda/page-commemorative-landing.php
+?? wp-content/themes/conexao-br-irlanda/template-parts/commemorative/
+?? wp-content/themes/conexao-br-irlanda/tests/test-commemorative-ambient.php
+?? wp-content/themes/conexao-br-irlanda/tests/test-commemorative-gate-ambient-decoration.php
+?? wp-content/themes/conexao-br-irlanda/tests/test-commemorative-gate-assets.php
+?? wp-content/themes/conexao-br-irlanda/tests/test-commemorative-gate-cpt-privacy.php
+?? wp-content/themes/conexao-br-irlanda/tests/test-commemorative-gate-placement-assets.php
+?? wp-content/themes/conexao-br-irlanda/tests/test-commemorative-gate-public-activation.php
+?? wp-content/themes/conexao-br-irlanda/tests/test-commemorative-gate-single-package.php
+?? wp-content/themes/conexao-br-irlanda/tests/test-commemorative-landing-page.php
+?? wp-content/themes/conexao-br-irlanda/tests/test-commemorative-packages.php
+?? wp-content/themes/conexao-br-irlanda/tests/test-commemorative-presentation-dispatch.php

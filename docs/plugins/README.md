@@ -1,7 +1,7 @@
 # Plugins
 
 <!-- BEGIN GENERATED PLUGIN REGISTRY: docs/plugins/README.md load order -->
-This project contains **10 custom WordPress plugins**, all in
+This project contains **11 custom WordPress plugins**, all in
 `wp-content/plugins/`. The authoritative registry is [`plugins.json`](../../plugins.json);
 the tables below are generated from it by `scripts/generate-registry-docs.php` and must
 not be hand-edited.
@@ -12,22 +12,23 @@ Load order is the row order. Dependencies always precede their dependents.
 
 | # | Plugin | Class | Status | Production | Build | Mount | Dependencies | Version | Docs |
 |---|--------|-------|--------|------------|-------|-------|--------------|---------|------|
-| 1 | `conexao-data-model` | platform | active | yes | yes | yes | - | 1.6.3 | [conexao-data-model](./conexao-data-model.md) |
+| 1 | `conexao-data-model` | platform | active | yes | yes | yes | - | 1.7.0 | [conexao-data-model](./conexao-data-model.md) |
 | 2 | `conexao-content` | platform | active | yes | yes | yes | - | 1.0.1 | [conexao-content](./conexao-content.md) |
-| 3 | `conexao-admin-ux` | platform | active | yes | yes | yes | - | 1.0.8 | [conexao-admin-ux](./conexao-admin-ux.md) |
+| 3 | `conexao-admin-ux` | platform | active | yes | yes | yes | - | 1.0.9 | [conexao-admin-ux](./conexao-admin-ux.md) |
 | 4 | `conexao-event-runtime` | platform | active | yes | yes | yes | `conexao-data-model` | 1.2.3 | [conexao-event-runtime](./conexao-event-runtime.md) |
-| 5 | `conexao-event-importer` | tooling | active | no | yes | yes | `conexao-data-model`, `conexao-event-runtime` | 1.9.0 | [conexao-event-importer](./conexao-event-importer.md) |
-| 6 | `conexao-leisure-migration` | tooling | active | no | yes | yes | - | 2.1.0 | [conexao-leisure-migration](./conexao-leisure-migration.md) |
-| 7 | `conexao-sponsor-migration` | tooling | active | no | yes | yes | - | 1.1.0 | [conexao-sponsor-migration](./conexao-sponsor-migration.md) |
-| 8 | `conexao-translation-rollout` | platform | active | yes | yes | yes | - | 1.2.0 | [conexao-translation-rollout](./conexao-translation-rollout.md) |
-| 9 | `conexao-en-translation` | tooling | active | no | no | yes | `conexao-translation-rollout` | 1.5.0 | [conexao-en-translation](./conexao-en-translation.md) |
-| 10 | `conexao-translation-automation` | platform | active | yes | yes | yes | `conexao-translation-rollout` | 0.6.0 | [conexao-translation-automation](./conexao-translation-automation.md) |
+| 5 | `conexao-commemorative` | platform | active | yes | yes | yes | `conexao-data-model` | 1.0.0 | [conexao-commemorative](./conexao-commemorative.md) |
+| 6 | `conexao-event-importer` | tooling | active | no | yes | yes | `conexao-data-model`, `conexao-event-runtime` | 1.9.0 | [conexao-event-importer](./conexao-event-importer.md) |
+| 7 | `conexao-leisure-migration` | tooling | active | no | yes | yes | - | 2.1.0 | [conexao-leisure-migration](./conexao-leisure-migration.md) |
+| 8 | `conexao-sponsor-migration` | tooling | active | no | yes | yes | - | 1.1.0 | [conexao-sponsor-migration](./conexao-sponsor-migration.md) |
+| 9 | `conexao-translation-rollout` | platform | active | yes | yes | yes | - | 1.2.0 | [conexao-translation-rollout](./conexao-translation-rollout.md) |
+| 10 | `conexao-en-translation` | tooling | active | no | no | yes | `conexao-translation-rollout` | 1.5.0 | [conexao-en-translation](./conexao-en-translation.md) |
+| 11 | `conexao-translation-automation` | platform | active | yes | yes | yes | `conexao-translation-rollout` | 0.6.0 | [conexao-translation-automation](./conexao-translation-automation.md) |
 
-**Production steady state** (platform, `production: true`) - activate in this order: conexao-data-model -> conexao-content -> conexao-admin-ux -> conexao-event-runtime -> conexao-translation-rollout -> conexao-translation-automation.
+**Production steady state** (platform, `production: true`) - activate in this order: conexao-data-model -> conexao-content -> conexao-admin-ux -> conexao-event-runtime -> conexao-commemorative -> conexao-translation-rollout -> conexao-translation-automation.
 
 **Local-only tooling** (never production): conexao-event-importer, conexao-leisure-migration, conexao-sponsor-migration, conexao-en-translation.
 
-**Retired rollout plugins** (historical tooling, *activate → apply → remove*; not a production dependency and not in any release ZIP): .
+**Retired rollout plugins** (historical tooling, *activate → apply → remove*; not a production dependency and not in any release ZIP): none.
 
 ### Dependency evidence
 
@@ -57,7 +58,7 @@ running) without the event runtime plugin.
 ## Third-Party Plugins
 
 No third-party plugins are bundled in this repository. The project relies only on these
-10 custom plugins and core WordPress functionality (plus Polylang Free 3.8.9 for the
+11 custom plugins and core WordPress functionality (plus Polylang Free 3.8.9 for the
 English layer).
 
 ## Regenerating this page
@@ -77,3 +78,5 @@ php scripts/generate-registry-docs.php --write   # write generated regions
 Output: `dist/*.zip` — one ZIP per registry entry with `build: true`, each
 structured for WordPress plugin upload. The list is generated from
 `plugins.json`; retired rollout plugins are never packaged.
+
+_Last verified: 2026-11-09 by the plugin documentation audit_

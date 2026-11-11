@@ -28,6 +28,50 @@ function conexao_seo_disable_core_sitemap() {
 }
 add_filter( 'wp_sitemaps_enabled', 'conexao_seo_disable_core_sitemap' );
 
+/**
+ * Whether a page belongs in the theme sitemap.
+ *
+ * One decision function shared by the PT and the EN pass, so the exclusion can be
+ * proven directly (permanent gate (c)) instead of by grepping the file.
+ *
+ * r10 §7.13: an opt-in commemorative landing page is ARCHIVED — it stays publicly
+ * reachable with its own canonical and hreflang, but it is excluded from the
+ * sitemap until inclusion is explicitly approved.
+ *
+ * @param mixed $page Page record (any value; only a WP_Post is considered).
+ * @return bool
+ */
+function conexao_seo_sitemap_include_page( $page ) {
+	if ( ! $page instanceof WP_Post ) {
+		return false;
+	}
+
+	$excluded_slugs = array( 'privacidade', 'termos', 'sobre', 'search', 'cookies' );
+
+	if ( in_array( (string) $page->post_name, $excluded_slugs, true ) ) {
+		return false;
+	}
+
+	// The static front page is emitted as the homepage entry, never twice.
+	$front_page_id = (int) get_option( 'page_on_front' );
+
+	if ( $front_page_id > 0 && (int) $page->ID === $front_page_id ) {
+		return false;
+	}
+
+	if ( function_exists( 'conexao_commemorative_is_landing_page' ) && conexao_commemorative_is_landing_page( (int) $page->ID ) ) {
+		return false;
+	}
+
+	return true;
+}
+
+/**
+ * Serve the XML sitemap on `/sitemap.xml` and `/sitemap_index.xml`, then end the
+ * request.
+ *
+ * @return void
+ */
 function conexao_seo_sitemap() {
 	// Only serve on the exact sitemap path.
 	if ( ! isset( $_SERVER['REQUEST_URI'] ) ) {
@@ -41,6 +85,22 @@ function conexao_seo_sitemap() {
 		return;
 	}
 
+	conexao_seo_sitemap_output();
+	exit;
+}
+
+/**
+ * Emit the sitemap body.
+ *
+ * Split out of the request handler so the permanent gate (c) can render the REAL
+ * producer in-process and inspect its output, instead of grepping this file or
+ * depending on whichever plugin happens to serve `/sitemap.xml` in a given
+ * environment. Behaviour is unchanged: the handler prints the same bytes and then
+ * terminates the request.
+ *
+ * @return void
+ */
+function conexao_seo_sitemap_output() {
 	/*
 	 * Stage 2 language scoping.
 	 *
@@ -65,21 +125,26 @@ function conexao_seo_sitemap() {
 	if ( conexao_polylang_active() ) {
 		$home_alternates = conexao_hreflang_with_default(
 			array(
-				'pt' => array( 'hreflang' => conexao_hreflang_code( 'pt' ), 'url' => trailingslashit( pll_home_url( 'pt' ) ) ),
-				'en' => array( 'hreflang' => conexao_hreflang_code( 'en' ), 'url' => trailingslashit( pll_home_url( 'en' ) ) ),
+				'pt' => array(
+					'hreflang' => conexao_hreflang_code( 'pt' ),
+					'url'      => trailingslashit( pll_home_url( 'pt' ) ),
+				),
+				'en' => array(
+					'hreflang' => conexao_hreflang_code( 'en' ),
+					'url'      => trailingslashit( pll_home_url( 'en' ) ),
+				),
 			),
 			'pt'
 		);
 	}
 	conexao_seo_sitemap_url( home_url( '/' ), '1.0', 'daily', $home_alternates );
 
-	// Static pages (exclude utility/redirect pages).
-	$excluded_pages = array( 'privacidade', 'termos', 'sobre', 'search', 'cookies' );
+	// Static pages (exclude utility/redirect/archived-landing pages).
 	$page_query_args = array(
-		'post_type'      => 'page',
-		'post_status'    => 'publish',
-		'posts_per_page' => -1,
-		'no_found_rows'  => true,
+		'post_type'              => 'page',
+		'post_status'            => 'publish',
+		'posts_per_page'         => -1,
+		'no_found_rows'          => true,
 		'update_post_meta_cache' => false,
 		'update_post_term_cache' => false,
 	);
@@ -87,15 +152,10 @@ function conexao_seo_sitemap() {
 		$page_query_args['lang'] = $sitemap_lang;
 	}
 	$pages = get_posts( $page_query_args );
-	$front_page_id = (int) get_option( 'page_on_front' );
 	foreach ( $pages as $page ) {
-		if ( in_array( $page->post_name, $excluded_pages, true ) ) {
-			continue;
-		}
-		// STAGE 3.2 — the static front page's own permalink IS the homepage
-		// URL (get_page_link() maps page_on_front to home_url('/')), so
-		// emitting it here would duplicate the homepage entry above.
-		if ( $front_page_id > 0 && (int) $page->ID === $front_page_id ) {
+		// One decision function for every page-level exclusion (utility slugs, the
+		// front page, and the archived commemorative landing pages of r10 §7.13).
+		if ( ! conexao_seo_sitemap_include_page( $page ) ) {
 			continue;
 		}
 		// STAGE 3.1: conexao_object_translation_links() only returns REAL
@@ -110,17 +170,18 @@ function conexao_seo_sitemap() {
 	// are never emitted as EN entries.
 	if ( conexao_polylang_active() ) {
 		$en_page_args = array(
-			'post_type'      => 'page',
-			'post_status'    => 'publish',
-			'posts_per_page' => -1,
-			'no_found_rows'  => true,
+			'post_type'              => 'page',
+			'post_status'            => 'publish',
+			'posts_per_page'         => -1,
+			'no_found_rows'          => true,
 			'update_post_meta_cache' => false,
 			'update_post_term_cache' => false,
-			'lang'           => 'en',
+			'lang'                   => 'en',
 		);
-		$en_pages = get_posts( $en_page_args );
+		$en_pages     = get_posts( $en_page_args );
 		foreach ( $en_pages as $en_page ) {
-			if ( in_array( $en_page->post_name, $excluded_pages, true ) ) {
+			// Same shared page-level decision, applied to the EN record.
+			if ( ! conexao_seo_sitemap_include_page( $en_page ) ) {
 				continue;
 			}
 			conexao_seo_sitemap_url( get_permalink( $en_page->ID ), '0.8', 'monthly', conexao_object_translation_links( (int) $en_page->ID ) );
@@ -130,23 +191,23 @@ function conexao_seo_sitemap() {
 	// CPTs — batched so the sitemap stays lightweight even when a CPT grows
 	// to thousands of posts (no posts_per_page => -1 full-table load).
 	$cpt_priorities = array(
-		'guide'    => '0.9',
-		'event'    => '0.8',
-		'job'      => '0.7',
-		'sponsor'  => '0.7',
-		'leisure'  => '0.7',
+		'guide'   => '0.9',
+		'event'   => '0.8',
+		'job'     => '0.7',
+		'sponsor' => '0.7',
+		'leisure' => '0.7',
 	);
-	$sitemap_batch = 500;
+	$sitemap_batch  = 500;
 	foreach ( $cpt_priorities as $cpt => $priority ) {
 		$page = 1;
 		do {
 			$cpt_query_args = array(
-				'post_type'      => $cpt,
-				'post_status'    => 'publish',
-				'posts_per_page' => $sitemap_batch,
-				'paged'          => $page,
-				'fields'         => 'ids',
-				'no_found_rows'  => true,
+				'post_type'              => $cpt,
+				'post_status'            => 'publish',
+				'posts_per_page'         => $sitemap_batch,
+				'paged'                  => $page,
+				'fields'                 => 'ids',
+				'no_found_rows'          => true,
 				'update_post_meta_cache' => false,
 				'update_post_term_cache' => false,
 			);
@@ -163,7 +224,7 @@ function conexao_seo_sitemap() {
 				// no EN alternate and no EN <url> entry).
 				conexao_seo_sitemap_url( get_permalink( $item_id ), $priority, 'weekly', conexao_object_translation_links( (int) $item_id ) );
 			}
-			$page++;
+			++$page;
 		} while ( count( $items ) === $sitemap_batch );
 
 		// STAGE 3.1 — EN pass: real EN records get their own indexable EN
@@ -172,24 +233,26 @@ function conexao_seo_sitemap() {
 		if ( conexao_polylang_active() ) {
 			$en_page = 1;
 			do {
-				$en_items = get_posts( array(
-					'post_type'      => $cpt,
-					'post_status'    => 'publish',
-					'posts_per_page' => $sitemap_batch,
-					'paged'          => $en_page,
-					'fields'         => 'ids',
-					'no_found_rows'  => true,
-					'update_post_meta_cache' => false,
-					'update_post_term_cache' => false,
-					'lang'           => 'en',
-				) );
+				$en_items = get_posts(
+					array(
+						'post_type'              => $cpt,
+						'post_status'            => 'publish',
+						'posts_per_page'         => $sitemap_batch,
+						'paged'                  => $en_page,
+						'fields'                 => 'ids',
+						'no_found_rows'          => true,
+						'update_post_meta_cache' => false,
+						'update_post_term_cache' => false,
+						'lang'                   => 'en',
+					)
+				);
 				foreach ( $en_items as $en_item_id ) {
 					if ( 'leisure' === $cpt && conexao_leisure_external_url( $en_item_id ) ) {
 						continue;
 					}
 					conexao_seo_sitemap_url( get_permalink( $en_item_id ), $priority, 'weekly', conexao_object_translation_links( (int) $en_item_id ) );
 				}
-				$en_page++;
+				++$en_page;
 			} while ( count( $en_items ) === $sitemap_batch );
 		}
 	}
@@ -208,12 +271,12 @@ function conexao_seo_sitemap() {
 		$blog_page = 1;
 		do {
 			$blog_args = array(
-				'post_type'      => 'post',
-				'post_status'    => 'publish',
-				'posts_per_page' => $sitemap_batch,
-				'paged'          => $blog_page,
-				'fields'         => 'ids',
-				'no_found_rows'  => true,
+				'post_type'              => 'post',
+				'post_status'            => 'publish',
+				'posts_per_page'         => $sitemap_batch,
+				'paged'                  => $blog_page,
+				'fields'                 => 'ids',
+				'no_found_rows'          => true,
 				'update_post_meta_cache' => false,
 				'update_post_term_cache' => false,
 			);
@@ -224,16 +287,18 @@ function conexao_seo_sitemap() {
 			foreach ( $blog_items as $blog_item_id ) {
 				conexao_seo_sitemap_url( get_permalink( $blog_item_id ), '0.6', 'weekly', conexao_object_translation_links( (int) $blog_item_id ) );
 			}
-			$blog_page++;
+			++$blog_page;
 		} while ( count( $blog_items ) === $sitemap_batch );
 	}
 
 	// Taxonomies (categories + counties, only non-empty).
 	foreach ( array( 'conexao_category', 'conexao_county' ) as $tax ) {
-		$terms = get_terms( array(
-			'taxonomy'   => $tax,
-			'hide_empty' => true,
-		) );
+		$terms = get_terms(
+			array(
+				'taxonomy'   => $tax,
+				'hide_empty' => true,
+			)
+		);
 		if ( is_wp_error( $terms ) ) {
 			continue;
 		}
@@ -243,7 +308,6 @@ function conexao_seo_sitemap() {
 	}
 
 	echo '</urlset>';
-	exit;
 }
 add_action( 'template_redirect', 'conexao_seo_sitemap', 0 );
 

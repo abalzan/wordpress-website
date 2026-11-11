@@ -1,0 +1,1324 @@
+{
+  "stage": "L — permanent invariant gates",
+  "generated_at": "2026-11-06T16:12:38Z",
+  "repository_sha": "448cd9dd8458c02430e11238a9fd9a5ab98ed70e",
+  "status": "fail",
+  "gates": {
+    "taxonomy_policy": {
+      "gate": "taxonomy_policy",
+      "domain": "taxonomy",
+      "kind": "php",
+      "command": "docker compose exec -T wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-taxonomy-policy.php",
+      "exit_code": 0,
+      "status": "pass",
+      "passed": 18,
+      "failed": 0,
+      "violations": 0,
+      "pre_existing": 0,
+      "new": 0,
+      "allowlisted": 0,
+      "prerequisites": [
+        "polylang",
+        "conexao_county + conexao_town + conexao_category terms"
+      ],
+      "details": [
+        {
+          "key": "taxonomy:conexao_county:suffixed_duplicate_terms",
+          "count": 0,
+          "label": "conexao_county: no per-language suffixed duplicate terms",
+          "detail": {
+            "slugs": []
+          }
+        },
+        {
+          "key": "taxonomy:conexao_county:duplicate_slugs",
+          "count": 0,
+          "label": "conexao_county: no duplicate term slugs",
+          "detail": {
+            "slugs": []
+          }
+        },
+        {
+          "key": "taxonomy:conexao_county:language_tagged_terms",
+          "count": 0,
+          "label": "conexao_county: every shared term is language-neutral (no language tag)",
+          "detail": {
+            "sample": []
+          }
+        },
+        {
+          "key": "taxonomy:conexao_town:suffixed_duplicate_terms",
+          "count": 0,
+          "label": "conexao_town: no per-language suffixed duplicate terms",
+          "detail": {
+            "slugs": []
+          }
+        },
+        {
+          "key": "taxonomy:conexao_town:duplicate_slugs",
+          "count": 0,
+          "label": "conexao_town: no duplicate term slugs",
+          "detail": {
+            "slugs": []
+          }
+        },
+        {
+          "key": "taxonomy:conexao_town:language_tagged_terms",
+          "count": 0,
+          "label": "conexao_town: every shared term is language-neutral (no language tag)",
+          "detail": {
+            "sample": []
+          }
+        },
+        {
+          "key": "taxonomy:conexao_category:en_terms_without_pt_link",
+          "count": 0,
+          "label": "conexao_category: every EN term has a PT master",
+          "detail": {
+            "slugs": []
+          }
+        },
+        {
+          "key": "taxonomy:conexao_category:missing_reverse_link",
+          "count": 0,
+          "label": "conexao_category: every translated term pair is linked in BOTH directions",
+          "detail": {
+            "pairs": []
+          }
+        },
+        {
+          "key": "taxonomy:conexao_tag:en_terms_without_pt_link",
+          "count": 0,
+          "label": "conexao_tag: every EN term has a PT master",
+          "detail": {
+            "slugs": []
+          }
+        },
+        {
+          "key": "taxonomy:conexao_tag:missing_reverse_link",
+          "count": 0,
+          "label": "conexao_tag: every translated term pair is linked in BOTH directions",
+          "detail": {
+            "pairs": []
+          }
+        }
+      ],
+      "output_tail": [
+        "  PASS: conexao_town: no duplicate term slugs",
+        "  PASS: conexao_town: every shared term is language-neutral (no language tag)",
+        "  PASS: conexao_category: every EN term has a PT master",
+        "  PASS: conexao_category: every translated term pair is linked in BOTH directions",
+        "  PASS: conexao_tag: every EN term has a PT master",
+        "  PASS: conexao_tag: every translated term pair is linked in BOTH directions",
+        "  PASS: the gate inspected a real shared-term population",
+        "",
+        "  inspected: 313 shared terms, 22 translated term pairs",
+        "",
+        "18 passed, 0 failed",
+        "GATE-RESULT {\"gate\":\"taxonomy_policy\",\"status\":\"pass\",\"passed\":18,\"failed\":0,\"violations\":0,\"pre_existing\":0,\"new\":0,\"prerequisites\":[\"polylang\",\"conexao_county + conexao_town + conexao_category terms\"],\"allowlisted\":[],\"allowlisted_count\":0,\"details\":[{\"key\":\"taxonomy:conexao_county:suffixed_duplicate_terms\",\"count\":0,\"label\":\"conexao_county: no per-language suffixed duplicate terms\",\"detail\":{\"slugs\":[]}},{\"key\":\"taxonomy:conexao_county:duplicate_slugs\",\"count\":0,\"label\":\"conexao_county: no duplicate term slugs\",\"detail\":{\"slugs\":[]}},{\"key\":\"taxonomy:conexao_county:language_tagged_terms\",\"count\":0,\"label\":\"conexao_county: every shared term is language-neutral (no language tag)\",\"detail\":{\"sample\":[]}},{\"key\":\"taxonomy:conexao_town:suffixed_duplicate_terms\",\"count\":0,\"label\":\"conexao_town: no per-language suffixed duplicate terms\",\"detail\":{\"slugs\":[]}},{\"key\":\"taxonomy:conexao_town:duplicate_slugs\",\"count\":0,\"label\":\"conexao_town: no duplicate term slugs\",\"detail\":{\"slugs\":[]}},{\"key\":\"taxonomy:conexao_town:language_tagged_terms\",\"count\":0,\"label\":\"conexao_town: every shared term is language-neutral (no language tag)\",\"detail\":{\"sample\":[]}},{\"key\":\"taxonomy:conexao_category:en_terms_without_pt_link\",\"count\":0,\"label\":\"conexao_category: every EN term has a PT master\",\"detail\":{\"slugs\":[]}},{\"key\":\"taxonomy:conexao_category:missing_reverse_link\",\"count\":0,\"label\":\"conexao_category: every translated term pair is linked in BOTH directions\",\"detail\":{\"pairs\":[]}},{\"key\":\"taxonomy:conexao_tag:en_terms_without_pt_link\",\"count\":0,\"label\":\"conexao_tag: every EN term has a PT master\",\"detail\":{\"slugs\":[]}},{\"key\":\"taxonomy:conexao_tag:missing_reverse_link\",\"count\":0,\"label\":\"conexao_tag: every translated term pair is linked in BOTH directions\",\"detail\":{\"pairs\":[]}}]}"
+      ]
+    },
+    "translation_completeness": {
+      "gate": "translation_completeness",
+      "domain": "translation_completeness",
+      "kind": "php",
+      "command": "docker compose exec -T wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-translation-completeness.php",
+      "exit_code": 1,
+      "status": "fail",
+      "passed": 21,
+      "failed": 2,
+      "violations": 3,
+      "pre_existing": 1,
+      "new": 2,
+      "allowlisted": 962,
+      "prerequisites": [
+        "polylang",
+        "published PT content"
+      ],
+      "details": [
+        {
+          "key": "post_type:course_provider:missing_en",
+          "count": 0,
+          "label": "course_provider: eligible public PT records missing a linked EN translation = 0",
+          "detail": {
+            "eligible": 10,
+            "translated": 0,
+            "allowlisted": 10,
+            "sample": []
+          }
+        },
+        {
+          "key": "post_type:course_provider:malformed_relationships",
+          "count": 0,
+          "label": "course_provider: every translation relationship is a bidirectional link to a PT master",
+          "detail": {
+            "sample": []
+          }
+        },
+        {
+          "key": "post_type:event:missing_en",
+          "count": 0,
+          "label": "event: eligible public PT records missing a linked EN translation = 0",
+          "detail": {
+            "eligible": 645,
+            "translated": 1,
+            "allowlisted": 644,
+            "sample": []
+          }
+        },
+        {
+          "key": "post_type:event:malformed_relationships",
+          "count": 0,
+          "label": "event: every translation relationship is a bidirectional link to a PT master",
+          "detail": {
+            "sample": []
+          }
+        },
+        {
+          "key": "post_type:guide:empty_population",
+          "count": 0,
+          "label": "guide: the B1 population has enough PT records for the invariant to be non-vacuous (eligible PT >= 11)",
+          "detail": {
+            "eligible": 55,
+            "floor": 11
+          }
+        },
+        {
+          "key": "post_type:guide:missing_en",
+          "count": 1,
+          "label": "guide: eligible public PT records missing a linked EN translation = 0",
+          "detail": {
+            "eligible": 55,
+            "translated": 54,
+            "allowlisted": 0,
+            "sample": [
+              "carteira-motorista-brasileiros"
+            ]
+          }
+        },
+        {
+          "key": "post_type:guide:malformed_relationships",
+          "count": 0,
+          "label": "guide: every translation relationship is a bidirectional link to a PT master",
+          "detail": {
+            "sample": []
+          }
+        },
+        {
+          "key": "post_type:job:missing_en",
+          "count": 0,
+          "label": "job: eligible public PT records missing a linked EN translation = 0",
+          "detail": {
+            "eligible": 2,
+            "translated": 2,
+            "allowlisted": 0,
+            "sample": []
+          }
+        },
+        {
+          "key": "post_type:job:malformed_relationships",
+          "count": 0,
+          "label": "job: every translation relationship is a bidirectional link to a PT master",
+          "detail": {
+            "sample": []
+          }
+        },
+        {
+          "key": "post_type:leisure:missing_en",
+          "count": 0,
+          "label": "leisure: eligible public PT records missing a linked EN translation = 0",
+          "detail": {
+            "eligible": 293,
+            "translated": 1,
+            "allowlisted": 292,
+            "sample": []
+          }
+        },
+        {
+          "key": "post_type:leisure:malformed_relationships",
+          "count": 0,
+          "label": "leisure: every translation relationship is a bidirectional link to a PT master",
+          "detail": {
+            "sample": []
+          }
+        },
+        {
+          "key": "post_type:page:empty_population",
+          "count": 0,
+          "label": "page: the B1 population has enough PT records for the invariant to be non-vacuous (eligible PT >= 1)",
+          "detail": {
+            "eligible": 45,
+            "floor": 1
+          }
+        },
+        {
+          "key": "post_type:page:missing_en",
+          "count": 0,
+          "label": "page: eligible public PT records missing a linked EN translation = 0",
+          "detail": {
+            "eligible": 45,
+            "translated": 35,
+            "allowlisted": 10,
+            "sample": []
+          }
+        },
+        {
+          "key": "post_type:page:malformed_relationships",
+          "count": 2,
+          "label": "page: every translation relationship is a bidirectional link to a PT master",
+          "detail": {
+            "sample": [
+              "en_without_pt:empregos-3",
+              "en_without_pt:empregos"
+            ]
+          }
+        },
+        {
+          "key": "post_type:post:empty_population",
+          "count": 0,
+          "label": "post: the B1 population has enough PT records for the invariant to be non-vacuous (eligible PT >= 11)",
+          "detail": {
+            "eligible": 43,
+            "floor": 11
+          }
+        },
+        {
+          "key": "post_type:post:missing_en",
+          "count": 0,
+          "label": "post: eligible public PT records missing a linked EN translation = 0",
+          "detail": {
+            "eligible": 43,
+            "translated": 43,
+            "allowlisted": 0,
+            "sample": []
+          }
+        },
+        {
+          "key": "post_type:post:malformed_relationships",
+          "count": 0,
+          "label": "post: every translation relationship is a bidirectional link to a PT master",
+          "detail": {
+            "sample": []
+          }
+        },
+        {
+          "key": "post_type:sponsor:missing_en",
+          "count": 0,
+          "label": "sponsor: eligible public PT records missing a linked EN translation = 0",
+          "detail": {
+            "eligible": 7,
+            "translated": 1,
+            "allowlisted": 6,
+            "sample": []
+          }
+        },
+        {
+          "key": "post_type:sponsor:malformed_relationships",
+          "count": 0,
+          "label": "sponsor: every translation relationship is a bidirectional link to a PT master",
+          "detail": {
+            "sample": []
+          }
+        }
+      ],
+      "output_tail": [
+        "  sponsor          eligible PT=7 translated=1 allowlisted=6 missing EN=0 malformed=0",
+        "  PASS: sponsor: eligible public PT records missing a linked EN translation = 0",
+        "  PASS: sponsor: every translation relationship is a bidirectional link to a PT master",
+        "  PASS: every discovered content type was evaluated (no type silently skipped)",
+        "",
+        "21 passed, 2 failed",
+        "  violations: 3 (1 pre-existing, 2 new)",
+        "    - post_type:guide:missing_en: 1 (guide: eligible public PT records missing a linked EN translation = 0)",
+        "    - post_type:page:malformed_relationships: 2 (page: every translation relationship is a bidirectional link to a PT master)",
+        "  allowlisted: 962 (by documented policy)",
+        "    first 20: course_provider:microcreds, course_provider:apprenticeship-ie, course_provider:etbi, course_provider:courses-ie, course_provider:local-enterprise-office, course_provider:solas-ecollege, course_provider:skillnet-ireland, course_provider:springboard-plus, course_provider:qualifax, course_provider:fetch-courses, event:test-event-for-wicklow-23, event:test-event-for-dublin-23, event:test-event-for-galway-23, event:test-event-for-laois-23, event:test-event-for-carlow-23, event:test-event-for-cavan-23, event:test-event-for-clare-23, event:test-event-for-cork-23, event:unrelated-cache-test-23, event:test-event-for-wicklow-22",
+        "GATE-RESULT {\"gate\":\"translation_completeness\",\"status\":\"fail\",\"passed\":21,\"failed\":2,\"violations\":3,\"pre_existing\":1,\"new\":2,\"prerequisites\":[\"polylang\",\"published PT content\"],\"allowlisted\":[\"course_provider:microcreds\",\"course_provider:apprenticeship-ie\",\"course_provider:etbi\",\"course_provider:courses-ie\",\"course_provider:local-enterprise-office\",\"course_provider:solas-ecollege\",\"course_provider:skillnet-ireland\",\"course_provider:springboard-plus\",\"course_provider:qualifax\",\"course_provider:fetch-courses\",\"event:test-event-for-wicklow-23\",\"event:test-event-for-dublin-23\",\"event:test-event-for-galway-23\",\"event:test-event-for-laois-23\",\"event:test-event-for-carlow-23\",\"event:test-event-for-cavan-23\",\"event:test-event-for-clare-23\",\"event:test-event-for-cork-23\",\"event:unrelated-cache-test-23\",\"event:test-event-for-wicklow-22\"],\"allowlisted_count\":962,\"details\":[{\"key\":\"post_type:course_provider:missing_en\",\"count\":0,\"label\":\"course_provider: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":10,\"translated\":0,\"allowlisted\":10,\"sample\":[]}},{\"key\":\"post_type:course_provider:malformed_relationships\",\"count\":0,\"label\":\"course_provider: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:event:missing_en\",\"count\":0,\"label\":\"event: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":645,\"translated\":1,\"allowlisted\":644,\"sample\":[]}},{\"key\":\"post_type:event:malformed_relationships\",\"count\":0,\"label\":\"event: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:guide:empty_population\",\"count\":0,\"label\":\"guide: the B1 population has enough PT records for the invariant to be non-vacuous (eligible PT >= 11)\",\"detail\":{\"eligible\":55,\"floor\":11}},{\"key\":\"post_type:guide:missing_en\",\"count\":1,\"label\":\"guide: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":55,\"translated\":54,\"allowlisted\":0,\"sample\":[\"carteira-motorista-brasileiros\"]}},{\"key\":\"post_type:guide:malformed_relationships\",\"count\":0,\"label\":\"guide: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:job:missing_en\",\"count\":0,\"label\":\"job: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":2,\"translated\":2,\"allowlisted\":0,\"sample\":[]}},{\"key\":\"post_type:job:malformed_relationships\",\"count\":0,\"label\":\"job: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:leisure:missing_en\",\"count\":0,\"label\":\"leisure: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":293,\"translated\":1,\"allowlisted\":292,\"sample\":[]}},{\"key\":\"post_type:leisure:malformed_relationships\",\"count\":0,\"label\":\"leisure: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:page:empty_population\",\"count\":0,\"label\":\"page: the B1 population has enough PT records for the invariant to be non-vacuous (eligible PT >= 1)\",\"detail\":{\"eligible\":45,\"floor\":1}},{\"key\":\"post_type:page:missing_en\",\"count\":0,\"label\":\"page: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":45,\"translated\":35,\"allowlisted\":10,\"sample\":[]}},{\"key\":\"post_type:page:malformed_relationships\",\"count\":2,\"label\":\"page: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[\"en_without_pt:empregos-3\",\"en_without_pt:empregos\"]}},{\"key\":\"post_type:post:empty_population\",\"count\":0,\"label\":\"post: the B1 population has enough PT records for the invariant to be non-vacuous (eligible PT >= 11)\",\"detail\":{\"eligible\":43,\"floor\":11}},{\"key\":\"post_type:post:missing_en\",\"count\":0,\"label\":\"post: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":43,\"translated\":43,\"allowlisted\":0,\"sample\":[]}},{\"key\":\"post_type:post:malformed_relationships\",\"count\":0,\"label\":\"post: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:sponsor:missing_en\",\"count\":0,\"label\":\"sponsor: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":7,\"translated\":1,\"allowlisted\":6,\"sample\":[]}},{\"key\":\"post_type:sponsor:malformed_relationships\",\"count\":0,\"label\":\"sponsor: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}}]}"
+      ]
+    },
+    "cache_scoping": {
+      "gate": "cache_scoping",
+      "domain": "cache_scoping",
+      "kind": "php",
+      "command": "docker compose exec -T wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-cache-language-scoping.php",
+      "exit_code": 0,
+      "status": "pass",
+      "passed": 9,
+      "failed": 0,
+      "violations": 0,
+      "pre_existing": 0,
+      "new": 0,
+      "allowlisted": 0,
+      "prerequisites": [
+        "polylang",
+        "conexao_lang_cache_key() + conexao_flush_language_cache()"
+      ],
+      "details": [
+        {
+          "key": "cache:lang_cache_key_not_language_scoped",
+          "count": 0,
+          "label": "conexao_lang_cache_key() returns a distinct key for every language",
+          "detail": {
+            "keys": {
+              "pt": "conexao_gate_probe_pt",
+              "en": "conexao_gate_probe_en"
+            }
+          }
+        },
+        {
+          "key": "cache:lang_cache_key_base_changed",
+          "count": 0,
+          "label": "conexao_lang_cache_key() keeps the base key as a prefix",
+          "detail": {
+            "keys": []
+          }
+        },
+        {
+          "key": "cache:pt_en_transient_collision",
+          "count": 0,
+          "label": "an EN-scoped read never returns the PT-scoped cached value",
+          "detail": {
+            "pt_key": "conexao_gate_runtime_probe_pt",
+            "en_key": "conexao_gate_runtime_probe_en",
+            "en_saw": false
+          }
+        },
+        {
+          "key": "cache:probe_write_lost",
+          "count": 0,
+          "label": "the PT-scoped entry is readable under its own key",
+          "detail": {
+            "pt_key": "conexao_gate_runtime_probe_pt",
+            "value": "pt-value"
+          }
+        },
+        {
+          "key": "cache:flush_left_language_variants",
+          "count": 0,
+          "label": "conexao_flush_language_cache() clears every language variant and the base key",
+          "detail": {
+            "survivors": [],
+            "seeded": {
+              "pt": "conexao_gate_flush_probe_pt",
+              "en": "conexao_gate_flush_probe_en"
+            }
+          }
+        },
+        {
+          "key": "cache:probe_entries_left_behind",
+          "count": 0,
+          "label": "the gate removed every transient it created",
+          "detail": {
+            "leftovers": []
+          }
+        }
+      ],
+      "output_tail": [
+        "",
+        "  languages: pt, en",
+        "  generated keys: {\"pt\":\"conexao_gate_probe_pt\",\"en\":\"conexao_gate_probe_en\"}",
+        "  PASS: conexao_lang_cache_key() returns a distinct key for every language",
+        "  PASS: conexao_lang_cache_key() keeps the base key as a prefix",
+        "  PASS: an EN-scoped read never returns the PT-scoped cached value",
+        "  PASS: the PT-scoped entry is readable under its own key",
+        "  PASS: conexao_flush_language_cache() clears every language variant and the base key",
+        "  PASS: the gate removed every transient it created",
+        "",
+        "9 passed, 0 failed",
+        "GATE-RESULT {\"gate\":\"cache_scoping\",\"status\":\"pass\",\"passed\":9,\"failed\":0,\"violations\":0,\"pre_existing\":0,\"new\":0,\"prerequisites\":[\"polylang\",\"conexao_lang_cache_key() + conexao_flush_language_cache()\"],\"allowlisted\":[],\"allowlisted_count\":0,\"details\":[{\"key\":\"cache:lang_cache_key_not_language_scoped\",\"count\":0,\"label\":\"conexao_lang_cache_key() returns a distinct key for every language\",\"detail\":{\"keys\":{\"pt\":\"conexao_gate_probe_pt\",\"en\":\"conexao_gate_probe_en\"}}},{\"key\":\"cache:lang_cache_key_base_changed\",\"count\":0,\"label\":\"conexao_lang_cache_key() keeps the base key as a prefix\",\"detail\":{\"keys\":[]}},{\"key\":\"cache:pt_en_transient_collision\",\"count\":0,\"label\":\"an EN-scoped read never returns the PT-scoped cached value\",\"detail\":{\"pt_key\":\"conexao_gate_runtime_probe_pt\",\"en_key\":\"conexao_gate_runtime_probe_en\",\"en_saw\":false}},{\"key\":\"cache:probe_write_lost\",\"count\":0,\"label\":\"the PT-scoped entry is readable under its own key\",\"detail\":{\"pt_key\":\"conexao_gate_runtime_probe_pt\",\"value\":\"pt-value\"}},{\"key\":\"cache:flush_left_language_variants\",\"count\":0,\"label\":\"conexao_flush_language_cache() clears every language variant and the base key\",\"detail\":{\"survivors\":[],\"seeded\":{\"pt\":\"conexao_gate_flush_probe_pt\",\"en\":\"conexao_gate_flush_probe_en\"}}},{\"key\":\"cache:probe_entries_left_behind\",\"count\":0,\"label\":\"the gate removed every transient it created\",\"detail\":{\"leftovers\":[]}}]}"
+      ]
+    },
+    "cache_scoping_static": {
+      "gate": "cache_scoping_static",
+      "domain": "cache_scoping",
+      "kind": "static",
+      "command": "python3 tests/scripts/verify-cache-key-scoping.py",
+      "exit_code": 0,
+      "status": "pass",
+      "passed": 2,
+      "failed": 0,
+      "violations": 0,
+      "pre_existing": 0,
+      "new": 0,
+      "allowlisted": 0,
+      "prerequisites": [],
+      "details": [],
+      "output_tail": [
+        "   scope: wp-content/plugins/conexao-data-model",
+        "   scope: wp-content/plugins/conexao-content",
+        "   scope: wp-content/plugins/conexao-admin-ux",
+        "   scope: wp-content/plugins/conexao-event-runtime",
+        "   scope: wp-content/plugins/conexao-commemorative",
+        "   scope: wp-content/plugins/conexao-translation-rollout",
+        "   scope: wp-content/plugins/conexao-translation-automation",
+        "",
+        "   scanned 168 production PHP files (PHP token_get_all)",
+        "   unscoped conexao_* cache keys: 0",
+        "2 passed, 0 failed",
+        "GATE-RESULT {\"gate\": \"cache_scoping_static\", \"status\": \"pass\", \"passed\": 2, \"failed\": 0, \"violations\": 0, \"details\": []}"
+      ]
+    },
+    "redirect_precedence": {
+      "gate": "redirect_precedence",
+      "domain": "redirect_precedence",
+      "kind": "php",
+      "command": "docker compose exec -T wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-redirect-precedence.php",
+      "exit_code": 0,
+      "status": "pass",
+      "passed": 15,
+      "failed": 0,
+      "violations": 0,
+      "pre_existing": 0,
+      "new": 0,
+      "allowlisted": 0,
+      "prerequisites": [
+        "polylang",
+        "conexao_seo_redirects()"
+      ],
+      "details": [
+        {
+          "key": "redirect:legacy_path_not_detected",
+          "count": 0,
+          "label": "the legacy EN path is detected by the redirect table",
+          "detail": {
+            "path": "/contact",
+            "decision": {
+              "redirected": true,
+              "status": 301,
+              "location": "http://localhost:8080/contato/"
+            }
+          }
+        },
+        {
+          "key": "redirect:legacy_status_not_301",
+          "count": 0,
+          "label": "the legacy EN path keeps its permanent 301 status",
+          "detail": {
+            "path": "/contact",
+            "status": 301
+          }
+        },
+        {
+          "key": "redirect:legacy_destination_not_pt",
+          "count": 0,
+          "label": "the legacy EN path redirects to the PT destination",
+          "detail": {
+            "expected": "/contato/",
+            "location": "http://localhost:8080/contato/"
+          }
+        },
+        {
+          "key": "redirect:en_page_took_precedence",
+          "count": 0,
+          "label": "a newly created EN page with the same slug does NOT take precedence over the legacy redirect",
+          "detail": {
+            "path": "/contact",
+            "decision": {
+              "redirected": true,
+              "status": 301,
+              "location": "http://localhost:8080/contato/"
+            }
+          }
+        },
+        {
+          "key": "redirect:status_changed_by_conflict",
+          "count": 0,
+          "label": "the redirect status stays 301 when an EN page shares the slug",
+          "detail": {
+            "status": 301
+          }
+        },
+        {
+          "key": "redirect:en_page_became_destination",
+          "count": 0,
+          "label": "the redirect destination is never the conflicting EN page (/en/...)",
+          "detail": {
+            "location": "http://localhost:8080/contato/"
+          }
+        },
+        {
+          "key": "redirect:destination_not_pt_after_conflict",
+          "count": 0,
+          "label": "the redirect destination remains the PT path after the conflict",
+          "detail": {
+            "expected": "/contato/",
+            "location": "http://localhost:8080/contato/"
+          }
+        },
+        {
+          "key": "redirect:hook_missing",
+          "count": 0,
+          "label": "the legacy redirect is registered on template_redirect",
+          "detail": {
+            "priority": 2
+          }
+        },
+        {
+          "key": "redirect:hook_priority_regression",
+          "count": 0,
+          "label": "the legacy redirect runs BEFORE Polylang language canonical (priority 4)",
+          "detail": {
+            "legacy_priority": 2,
+            "polylang_priority": null
+          }
+        },
+        {
+          "key": "redirect:fixture_left_behind",
+          "count": 0,
+          "label": "the conflicting EN page fixture was removed",
+          "detail": {
+            "survivor": 0
+          }
+        }
+      ],
+      "output_tail": [
+        "  PASS: the conflicting EN page resolves by its slug (the collision is real)",
+        "  PASS: a newly created EN page with the same slug does NOT take precedence over the legacy redirect",
+        "  PASS: the redirect status stays 301 when an EN page shares the slug",
+        "  PASS: the redirect destination is never the conflicting EN page (/en/...)",
+        "  PASS: the redirect destination remains the PT path after the conflict",
+        "  PASS: the legacy redirect is registered on template_redirect",
+        "  PASS: the legacy redirect is registered on template_redirect",
+        "  PASS: the legacy redirect runs BEFORE Polylang language canonical (priority 4)",
+        "  PASS: the conflicting EN page fixture was removed",
+        "",
+        "15 passed, 0 failed",
+        "GATE-RESULT {\"gate\":\"redirect_precedence\",\"status\":\"pass\",\"passed\":15,\"failed\":0,\"violations\":0,\"pre_existing\":0,\"new\":0,\"prerequisites\":[\"polylang\",\"conexao_seo_redirects()\"],\"allowlisted\":[],\"allowlisted_count\":0,\"details\":[{\"key\":\"redirect:legacy_path_not_detected\",\"count\":0,\"label\":\"the legacy EN path is detected by the redirect table\",\"detail\":{\"path\":\"\\/contact\",\"decision\":{\"redirected\":true,\"status\":301,\"location\":\"http:\\/\\/localhost:8080\\/contato\\/\"}}},{\"key\":\"redirect:legacy_status_not_301\",\"count\":0,\"label\":\"the legacy EN path keeps its permanent 301 status\",\"detail\":{\"path\":\"\\/contact\",\"status\":301}},{\"key\":\"redirect:legacy_destination_not_pt\",\"count\":0,\"label\":\"the legacy EN path redirects to the PT destination\",\"detail\":{\"expected\":\"\\/contato\\/\",\"location\":\"http:\\/\\/localhost:8080\\/contato\\/\"}},{\"key\":\"redirect:en_page_took_precedence\",\"count\":0,\"label\":\"a newly created EN page with the same slug does NOT take precedence over the legacy redirect\",\"detail\":{\"path\":\"\\/contact\",\"decision\":{\"redirected\":true,\"status\":301,\"location\":\"http:\\/\\/localhost:8080\\/contato\\/\"}}},{\"key\":\"redirect:status_changed_by_conflict\",\"count\":0,\"label\":\"the redirect status stays 301 when an EN page shares the slug\",\"detail\":{\"status\":301}},{\"key\":\"redirect:en_page_became_destination\",\"count\":0,\"label\":\"the redirect destination is never the conflicting EN page (\\/en\\/...)\",\"detail\":{\"location\":\"http:\\/\\/localhost:8080\\/contato\\/\"}},{\"key\":\"redirect:destination_not_pt_after_conflict\",\"count\":0,\"label\":\"the redirect destination remains the PT path after the conflict\",\"detail\":{\"expected\":\"\\/contato\\/\",\"location\":\"http:\\/\\/localhost:8080\\/contato\\/\"}},{\"key\":\"redirect:hook_missing\",\"count\":0,\"label\":\"the legacy redirect is registered on template_redirect\",\"detail\":{\"priority\":2}},{\"key\":\"redirect:hook_priority_regression\",\"count\":0,\"label\":\"the legacy redirect runs BEFORE Polylang language canonical (priority 4)\",\"detail\":{\"legacy_priority\":2,\"polylang_priority\":null}},{\"key\":\"redirect:fixture_left_behind\",\"count\":0,\"label\":\"the conflicting EN page fixture was removed\",\"detail\":{\"survivor\":0}}]}"
+      ]
+    },
+    "documentation_drift": {
+      "gate": "documentation_drift",
+      "domain": "documentation_drift",
+      "kind": "static",
+      "command": "python3 tests/scripts/verify-documentation-drift.py",
+      "exit_code": 0,
+      "status": "pass",
+      "passed": 14,
+      "failed": 0,
+      "violations": 0,
+      "pre_existing": 0,
+      "new": 0,
+      "allowlisted": 0,
+      "prerequisites": [],
+      "details": [],
+      "output_tail": [
+        "   historical/audit documents without the marker (reported, not gated): 214",
+        "",
+        "   -- §9.2 no root-level report/evidence file --",
+        "   root files scanned: 17, offenders: 0",
+        "",
+        "   -- §9.2 AGENTS.md remains orientation --",
+        "   AGENTS.md lines: 230",
+        "",
+        "   -- authoritative sources referenced by the governance layer --",
+        "   authoritative sources checked: 7",
+        "14 passed, 0 failed",
+        "GATE-RESULT {\"gate\": \"documentation_drift\", \"status\": \"pass\", \"passed\": 14, \"failed\": 0, \"violations\": 0, \"details\": []}"
+      ]
+    },
+    "i18n_freshness": {
+      "gate": "i18n_freshness",
+      "domain": "i18n_freshness",
+      "kind": "static",
+      "command": "python3 tests/scripts/verify-i18n-freshness.py",
+      "exit_code": 1,
+      "status": "fail",
+      "passed": 3,
+      "failed": 3,
+      "violations": 3,
+      "pre_existing": 2,
+      "new": 1,
+      "allowlisted": 0,
+      "prerequisites": [],
+      "details": [
+        {
+          "component": "conexao-br-irlanda",
+          "catalogue": "wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot",
+          "newest_source": "wp-content/themes/conexao-br-irlanda/inc/commemorative-modules.php",
+          "catalogue_ts": 1793965014,
+          "newest_source_ts": 1793973654,
+          "lag_seconds": 8640
+        },
+        {
+          "component": "conexao-admin-ux",
+          "catalogue": "wp-content/plugins/conexao-admin-ux/languages/conexao-admin-ux.pot",
+          "newest_source": "wp-content/plugins/conexao-admin-ux/includes/class-editor.php",
+          "catalogue_ts": 1793965014,
+          "newest_source_ts": 1793971097,
+          "lag_seconds": 6083
+        },
+        {
+          "component": "conexao-commemorative",
+          "catalogue": "wp-content/plugins/conexao-commemorative/languages/conexao-commemorative.pot",
+          "newest_source": "wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php",
+          "catalogue_ts": 1793965014,
+          "newest_source_ts": 1793971097,
+          "lag_seconds": 6083
+        }
+      ],
+      "output_tail": [
+        "   conexao-event-importer   catalogue=1792653196 newest-source=1792616365 (wp-content/plugins/conexao-event-importer/includes/class-event-cleanup.php) fresh",
+        "   conexao-leisure-migration catalogue=1791787669 newest-source=1790325155 (wp-content/plugins/conexao-leisure-migration/includes/class-leisure-exporter.php) fresh",
+        "   conexao-sponsor-migration catalogue=1791787669 newest-source=1789994211 (wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-importer.php) fresh",
+        "   conexao-translation-automation catalogue=1791787669 newest-source=1790861950 (wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-batch-control.php) fresh",
+        "",
+        "   stale catalogues: 3",
+        "FAIL: conexao-br-irlanda: wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot is older than wp-content/themes/conexao-br-irlanda/inc/commemorative-modules.php by 8640s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)",
+        "FAIL: conexao-admin-ux: wp-content/plugins/conexao-admin-ux/languages/conexao-admin-ux.pot is older than wp-content/plugins/conexao-admin-ux/includes/class-editor.php by 6083s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)",
+        "FAIL: conexao-commemorative: wp-content/plugins/conexao-commemorative/languages/conexao-commemorative.pot is older than wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php by 6083s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)",
+        "3 passed, 3 failed",
+        "  stale catalogues: 2 pre-existing, 1 new",
+        "GATE-RESULT {\"gate\": \"i18n_freshness\", \"status\": \"fail\", \"passed\": 3, \"failed\": 3, \"violations\": 3, \"pre_existing\": 2, \"new\": 1, \"details\": [{\"component\": \"conexao-br-irlanda\", \"catalogue\": \"wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot\", \"newest_source\": \"wp-content/themes/conexao-br-irlanda/inc/commemorative-modules.php\", \"catalogue_ts\": 1793965014, \"newest_source_ts\": 1793973654, \"lag_seconds\": 8640}, {\"component\": \"conexao-admin-ux\", \"catalogue\": \"wp-content/plugins/conexao-admin-ux/languages/conexao-admin-ux.pot\", \"newest_source\": \"wp-content/plugins/conexao-admin-ux/includes/class-editor.php\", \"catalogue_ts\": 1793965014, \"newest_source_ts\": 1793971097, \"lag_seconds\": 6083}, {\"component\": \"conexao-commemorative\", \"catalogue\": \"wp-content/plugins/conexao-commemorative/languages/conexao-commemorative.pot\", \"newest_source\": \"wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php\", \"catalogue_ts\": 1793965014, \"newest_source_ts\": 1793971097, \"lag_seconds\": 6083}]}"
+      ]
+    },
+    "commemorative_no_asset_without_event": {
+      "gate": "commemorative_no_asset_without_event",
+      "domain": "commemorative_assets",
+      "kind": "php",
+      "command": "docker compose exec -T wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-commemorative-gate-assets.php",
+      "exit_code": 0,
+      "status": "pass",
+      "passed": 5,
+      "failed": 0,
+      "violations": 0,
+      "pre_existing": 0,
+      "new": 0,
+      "allowlisted": 0,
+      "prerequisites": [
+        "theme-active",
+        "conexao-commemorative plugin active"
+      ],
+      "details": [
+        {
+          "key": "asset:planned_without_event:styles",
+          "count": 0,
+          "label": "the no-event plan schedules no commemorative stylesheet",
+          "detail": {
+            "handles": []
+          }
+        },
+        {
+          "key": "asset:planned_without_event:scripts",
+          "count": 0,
+          "label": "the no-event plan schedules no commemorative script",
+          "detail": {
+            "handles": []
+          }
+        },
+        {
+          "key": "asset:planned_without_event:shared",
+          "count": 0,
+          "label": "the no-event plan does not load the shared framework",
+          "detail": []
+        },
+        {
+          "key": "asset:enqueued_without_event",
+          "count": 0,
+          "label": "no commemorative handle is enqueued on a request with no active event",
+          "detail": {
+            "handles": []
+          }
+        },
+        {
+          "key": "gate:injected_negative_not_detected",
+          "count": 0,
+          "label": "the gate can detect the forbidden condition (an injected active placement IS reported)",
+          "detail": {
+            "injected": {
+              "styles": [
+                "conexao-ce-css-presentations-halloween"
+              ],
+              "scripts": [
+                "conexao-ce-js-presentations-halloween-halloween"
+              ],
+              "shared": true
+            },
+            "package": "halloween"
+          }
+        }
+      ],
+      "output_tail": [
+        "No commemorative CSS/JS handle is enqueued (or planned) when no commemorative placement is displayed.",
+        "  prerequisites: theme-active, conexao-commemorative plugin active",
+        "",
+        "=== Real request: an internal page with no active event ===",
+        "  PASS: the no-event plan schedules no commemorative stylesheet",
+        "  PASS: the no-event plan schedules no commemorative script",
+        "  PASS: the no-event plan does not load the shared framework",
+        "  PASS: no commemorative handle is enqueued on a request with no active event",
+        "  PASS: the gate can detect the forbidden condition (an injected active placement IS reported)",
+        "",
+        "5 passed, 0 failed",
+        "GATE-RESULT {\"gate\":\"commemorative_no_asset_without_event\",\"status\":\"pass\",\"passed\":5,\"failed\":0,\"violations\":0,\"pre_existing\":0,\"new\":0,\"prerequisites\":[\"theme-active\",\"conexao-commemorative plugin active\"],\"allowlisted\":[],\"allowlisted_count\":0,\"details\":[{\"key\":\"asset:planned_without_event:styles\",\"count\":0,\"label\":\"the no-event plan schedules no commemorative stylesheet\",\"detail\":{\"handles\":[]}},{\"key\":\"asset:planned_without_event:scripts\",\"count\":0,\"label\":\"the no-event plan schedules no commemorative script\",\"detail\":{\"handles\":[]}},{\"key\":\"asset:planned_without_event:shared\",\"count\":0,\"label\":\"the no-event plan does not load the shared framework\",\"detail\":[]},{\"key\":\"asset:enqueued_without_event\",\"count\":0,\"label\":\"no commemorative handle is enqueued on a request with no active event\",\"detail\":{\"handles\":[]}},{\"key\":\"gate:injected_negative_not_detected\",\"count\":0,\"label\":\"the gate can detect the forbidden condition (an injected active placement IS reported)\",\"detail\":{\"injected\":{\"styles\":[\"conexao-ce-css-presentations-halloween\"],\"scripts\":[\"conexao-ce-js-presentations-halloween-halloween\"],\"shared\":true},\"package\":\"halloween\"}}]}"
+      ]
+    },
+    "commemorative_no_public_activation": {
+      "gate": "commemorative_no_public_activation",
+      "domain": "commemorative_security",
+      "kind": "php",
+      "command": "docker compose exec -T wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-commemorative-gate-public-activation.php",
+      "exit_code": 0,
+      "status": "pass",
+      "passed": 5,
+      "failed": 0,
+      "violations": 0,
+      "pre_existing": 0,
+      "new": 0,
+      "allowlisted": 0,
+      "prerequisites": [
+        "conexao-commemorative plugin active",
+        "an administrator account"
+      ],
+      "details": [
+        {
+          "key": "public_activation:anonymous",
+          "count": 0,
+          "label": "an unauthenticated request cannot activate an event or a package through a query parameter",
+          "detail": {
+            "paths": []
+          }
+        },
+        {
+          "key": "gate:injected_positive_not_detected",
+          "count": 0,
+          "label": "the gate can detect AUTHORISED activation (the signed preview still works for an administrator)",
+          "detail": []
+        },
+        {
+          "key": "public_activation:bad_nonce",
+          "count": 0,
+          "label": "an administrator session with an invalid nonce is still refused",
+          "detail": []
+        }
+      ],
+      "output_tail": [
+        "",
+        "=== Anonymous request with a preview key and a bogus nonce ===",
+        "  PASS: an unauthenticated request cannot activate an event or a package through a query parameter",
+        "",
+        "=== Authorised administrator with a valid nonce (injected positive proof) ===",
+        "  PASS: the gate prerequisite is available: an administrator account",
+        "  PASS: the gate prerequisite is available: the halloween event record",
+        "  PASS: the gate can detect AUTHORISED activation (the signed preview still works for an administrator)",
+        "  PASS: an administrator session with an invalid nonce is still refused",
+        "",
+        "5 passed, 0 failed",
+        "GATE-RESULT {\"gate\":\"commemorative_no_public_activation\",\"status\":\"pass\",\"passed\":5,\"failed\":0,\"violations\":0,\"pre_existing\":0,\"new\":0,\"prerequisites\":[\"conexao-commemorative plugin active\",\"an administrator account\"],\"allowlisted\":[],\"allowlisted_count\":0,\"details\":[{\"key\":\"public_activation:anonymous\",\"count\":0,\"label\":\"an unauthenticated request cannot activate an event or a package through a query parameter\",\"detail\":{\"paths\":[]}},{\"key\":\"gate:injected_positive_not_detected\",\"count\":0,\"label\":\"the gate can detect AUTHORISED activation (the signed preview still works for an administrator)\",\"detail\":[]},{\"key\":\"public_activation:bad_nonce\",\"count\":0,\"label\":\"an administrator session with an invalid nonce is still refused\",\"detail\":[]}]}"
+      ]
+    },
+    "commemorative_cpt_privacy": {
+      "gate": "commemorative_cpt_privacy",
+      "domain": "commemorative_privacy",
+      "kind": "php",
+      "command": "docker compose exec -T wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-commemorative-gate-cpt-privacy.php",
+      "exit_code": 0,
+      "status": "pass",
+      "passed": 11,
+      "failed": 0,
+      "violations": 0,
+      "pre_existing": 0,
+      "new": 0,
+      "allowlisted": 0,
+      "prerequisites": [
+        "theme-active",
+        "conexao-commemorative plugin active",
+        "the seeded landing pages"
+      ],
+      "details": [
+        {
+          "key": "cpt:public_exposure",
+          "count": 0,
+          "label": "the CPT is private on every axis (route, archive, query var, REST, search)",
+          "detail": {
+            "flags": {
+              "public": false,
+              "publicly_queryable": false,
+              "has_archive": false,
+              "query_var": false,
+              "show_in_rest": false,
+              "show_ui": true
+            },
+            "exposure": []
+          }
+        },
+        {
+          "key": "cpt:rest_route",
+          "count": 0,
+          "label": "no REST route is registered for the commemorative CPT",
+          "detail": {
+            "routes": []
+          }
+        },
+        {
+          "key": "cpt:public_permalink",
+          "count": 0,
+          "label": "the CPT exposes no archive link and no public PATH-based permalink",
+          "detail": {
+            "archive": "",
+            "public_paths": []
+          }
+        },
+        {
+          "key": "sitemap:forbidden_url",
+          "count": 0,
+          "label": "the sitemap publishes no commemorative CPT URL and no archived landing page",
+          "detail": {
+            "offenders": [],
+            "bytes": 319915
+          }
+        },
+        {
+          "key": "gate:injected_negative_not_detected",
+          "count": 0,
+          "label": "the gate detects a sitemap that DOES publish the forbidden URLs",
+          "detail": {
+            "fixture_offenders": [
+              "sitemap:contains:/natal/",
+              "sitemap:contains:commemorative_event"
+            ]
+          }
+        },
+        {
+          "key": "gate:sitemap_check_is_vacuous",
+          "count": 0,
+          "label": "the sitemap check is not vacuous: a normal published page is still listed",
+          "detail": {
+            "page": "documentos"
+          }
+        }
+      ],
+      "output_tail": [
+        "=== Injected negative proof: the same check CAN see a forbidden URL ===",
+        "  PASS: the gate detects a sitemap that DOES publish the forbidden URLs",
+        "  PASS: the sitemap check is not vacuous: a normal published page is still listed",
+        "",
+        "=== The landing pages are opt-in PAGES, not CPT exposure ===",
+        "  PASS: the gate prerequisite is available: the PT landing page",
+        "  PASS: the landing page is a page record",
+        "  PASS: the landing page is recognised through its opt-in meta",
+        "  PASS: the landing page is excluded from the sitemap",
+        "",
+        "11 passed, 0 failed",
+        "GATE-RESULT {\"gate\":\"commemorative_cpt_privacy\",\"status\":\"pass\",\"passed\":11,\"failed\":0,\"violations\":0,\"pre_existing\":0,\"new\":0,\"prerequisites\":[\"theme-active\",\"conexao-commemorative plugin active\",\"the seeded landing pages\"],\"allowlisted\":[],\"allowlisted_count\":0,\"details\":[{\"key\":\"cpt:public_exposure\",\"count\":0,\"label\":\"the CPT is private on every axis (route, archive, query var, REST, search)\",\"detail\":{\"flags\":{\"public\":false,\"publicly_queryable\":false,\"has_archive\":false,\"query_var\":false,\"show_in_rest\":false,\"show_ui\":true},\"exposure\":[]}},{\"key\":\"cpt:rest_route\",\"count\":0,\"label\":\"no REST route is registered for the commemorative CPT\",\"detail\":{\"routes\":[]}},{\"key\":\"cpt:public_permalink\",\"count\":0,\"label\":\"the CPT exposes no archive link and no public PATH-based permalink\",\"detail\":{\"archive\":\"\",\"public_paths\":[]}},{\"key\":\"sitemap:forbidden_url\",\"count\":0,\"label\":\"the sitemap publishes no commemorative CPT URL and no archived landing page\",\"detail\":{\"offenders\":[],\"bytes\":319915}},{\"key\":\"gate:injected_negative_not_detected\",\"count\":0,\"label\":\"the gate detects a sitemap that DOES publish the forbidden URLs\",\"detail\":{\"fixture_offenders\":[\"sitemap:contains:\\/natal\\/\",\"sitemap:contains:commemorative_event\"]}},{\"key\":\"gate:sitemap_check_is_vacuous\",\"count\":0,\"label\":\"the sitemap check is not vacuous: a normal published page is still listed\",\"detail\":{\"page\":\"documentos\"}}]}"
+      ]
+    },
+    "commemorative_single_package": {
+      "gate": "commemorative_single_package",
+      "domain": "commemorative_dispatch",
+      "kind": "php",
+      "command": "docker compose exec -T wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-commemorative-gate-single-package.php",
+      "exit_code": 0,
+      "status": "pass",
+      "passed": 6,
+      "failed": 0,
+      "violations": 0,
+      "pre_existing": 0,
+      "new": 0,
+      "allowlisted": 0,
+      "prerequisites": [
+        "theme-active",
+        "conexao-commemorative plugin active"
+      ],
+      "details": [
+        {
+          "key": "package:leaked_placement",
+          "count": 0,
+          "label": "no plan ever renders a placement that belongs to another package",
+          "detail": {
+            "violations": []
+          }
+        },
+        {
+          "key": "multiple:selected_events",
+          "count": 0,
+          "label": "a resolution holds exactly one selected event",
+          "detail": []
+        },
+        {
+          "key": "gate:injected_negative_not_detected",
+          "count": 0,
+          "label": "the gate detects a placement that does not belong to the selected package",
+          "detail": {
+            "fixture_violations": [
+              "placement_not_owned_by_package:landing_page",
+              "template_mismatch:landing_page"
+            ]
+          }
+        }
+      ],
+      "output_tail": [
+        "  PASS: the gate prerequisite is available: a resolvable package on the homepage",
+        "  PASS: the gate prerequisite is available: the stolen placement definition",
+        "",
+        "Warning: Undefined array key \"landing_page\" in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-commemorative-gate-single-package.php on line 64",
+        "",
+        "Warning: Trying to access array offset on null in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-commemorative-gate-single-package.php on line 64",
+        "  PASS: the gate detects a placement that does not belong to the selected package",
+        "",
+        "6 passed, 0 failed",
+        "GATE-RESULT {\"gate\":\"commemorative_single_package\",\"status\":\"pass\",\"passed\":6,\"failed\":0,\"violations\":0,\"pre_existing\":0,\"new\":0,\"prerequisites\":[\"theme-active\",\"conexao-commemorative plugin active\"],\"allowlisted\":[],\"allowlisted_count\":0,\"details\":[{\"key\":\"package:leaked_placement\",\"count\":0,\"label\":\"no plan ever renders a placement that belongs to another package\",\"detail\":{\"violations\":[]}},{\"key\":\"multiple:selected_events\",\"count\":0,\"label\":\"a resolution holds exactly one selected event\",\"detail\":[]},{\"key\":\"gate:injected_negative_not_detected\",\"count\":0,\"label\":\"the gate detects a placement that does not belong to the selected package\",\"detail\":{\"fixture_violations\":[\"placement_not_owned_by_package:landing_page\",\"template_mismatch:landing_page\"]}}]}",
+        "[06-Nov-2026 16:12:36 UTC] PHP Warning:  Undefined array key \"landing_page\" in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-commemorative-gate-single-package.php on line 64",
+        "[06-Nov-2026 16:12:36 UTC] PHP Warning:  Trying to access array offset on null in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-commemorative-gate-single-package.php on line 64"
+      ]
+    },
+    "commemorative_ambient_decorative": {
+      "gate": "commemorative_ambient_decorative",
+      "domain": "commemorative_a11y",
+      "kind": "php",
+      "command": "docker compose exec -T wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-commemorative-gate-ambient-decoration.php",
+      "exit_code": 0,
+      "status": "pass",
+      "passed": 7,
+      "failed": 0,
+      "violations": 0,
+      "pre_existing": 0,
+      "new": 0,
+      "allowlisted": 0,
+      "prerequisites": [
+        "theme-active",
+        "conexao-commemorative plugin active"
+      ],
+      "details": [
+        {
+          "key": "ambient:decorative_contract",
+          "count": 0,
+          "label": "the ambient layer is aria-hidden, non-focusable and free of interactive nodes",
+          "detail": {
+            "findings": []
+          }
+        },
+        {
+          "key": "ambient:stylesheet_contract",
+          "count": 0,
+          "label": "the shared stylesheet keeps every ambient node non-interactive",
+          "detail": {
+            "findings": []
+          }
+        },
+        {
+          "key": "ambient:scheduler_contract",
+          "count": 0,
+          "label": "the shared scheduler marks every decoration decorative and removes it afterwards",
+          "detail": {
+            "findings": []
+          }
+        },
+        {
+          "key": "gate:injected_negative_not_detected",
+          "count": 0,
+          "label": "the gate detects a focusable, interactive, audible ambient fixture",
+          "detail": {
+            "fixture_findings": [
+              "ambient:not_aria_hidden",
+              "ambient:interactive_node:<button",
+              "ambient:interactive_node:<a ",
+              "ambient:interactive_node:<audio",
+              "ambient:focusable_tabindex"
+            ]
+          }
+        },
+        {
+          "key": "gate:injected_negative_not_detected:css",
+          "count": 0,
+          "label": "the gate detects an ambient layer that accepts pointer events",
+          "detail": []
+        }
+      ],
+      "output_tail": [
+        "=== The shared stylesheet and scheduler keep it non-interactive ===",
+        "  PASS: the shared stylesheet keeps every ambient node non-interactive",
+        "  PASS: the shared scheduler marks every decoration decorative and removes it afterwards",
+        "",
+        "=== Injected negative proof: a violating layer IS detected ===",
+        "  PASS: the gate detects a focusable, interactive, audible ambient fixture",
+        "",
+        "=== Injected negative proof: a non-decorative stylesheet IS detected ===",
+        "  PASS: the gate detects an ambient layer that accepts pointer events",
+        "",
+        "7 passed, 0 failed",
+        "GATE-RESULT {\"gate\":\"commemorative_ambient_decorative\",\"status\":\"pass\",\"passed\":7,\"failed\":0,\"violations\":0,\"pre_existing\":0,\"new\":0,\"prerequisites\":[\"theme-active\",\"conexao-commemorative plugin active\"],\"allowlisted\":[],\"allowlisted_count\":0,\"details\":[{\"key\":\"ambient:decorative_contract\",\"count\":0,\"label\":\"the ambient layer is aria-hidden, non-focusable and free of interactive nodes\",\"detail\":{\"findings\":[]}},{\"key\":\"ambient:stylesheet_contract\",\"count\":0,\"label\":\"the shared stylesheet keeps every ambient node non-interactive\",\"detail\":{\"findings\":[]}},{\"key\":\"ambient:scheduler_contract\",\"count\":0,\"label\":\"the shared scheduler marks every decoration decorative and removes it afterwards\",\"detail\":{\"findings\":[]}},{\"key\":\"gate:injected_negative_not_detected\",\"count\":0,\"label\":\"the gate detects a focusable, interactive, audible ambient fixture\",\"detail\":{\"fixture_findings\":[\"ambient:not_aria_hidden\",\"ambient:interactive_node:<button\",\"ambient:interactive_node:<a \",\"ambient:interactive_node:<audio\",\"ambient:focusable_tabindex\"]}},{\"key\":\"gate:injected_negative_not_detected:css\",\"count\":0,\"label\":\"the gate detects an ambient layer that accepts pointer events\",\"detail\":[]}]}"
+      ]
+    },
+    "commemorative_placement_assets": {
+      "gate": "commemorative_placement_assets",
+      "domain": "commemorative_assets",
+      "kind": "php",
+      "command": "docker compose exec -T wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-commemorative-gate-placement-assets.php",
+      "exit_code": 0,
+      "status": "pass",
+      "passed": 4,
+      "failed": 0,
+      "violations": 0,
+      "pre_existing": 0,
+      "new": 0,
+      "allowlisted": 0,
+      "prerequisites": [
+        "theme-active",
+        "conexao-commemorative plugin active"
+      ],
+      "details": [
+        {
+          "key": "asset:unrendered_placement",
+          "count": 0,
+          "label": "no asset is planned for a placement that does not render on the route",
+          "detail": {
+            "findings": []
+          }
+        },
+        {
+          "key": "asset:hero_on_internal_route",
+          "count": 0,
+          "label": "the homepage-hero assets are never enqueued on an internal route",
+          "detail": {
+            "placements": [
+              "site_wide_ambient"
+            ]
+          }
+        },
+        {
+          "key": "asset:non_selected_package",
+          "count": 0,
+          "label": "only the selected package enqueues assets",
+          "detail": {
+            "handles": []
+          }
+        },
+        {
+          "key": "gate:injected_negative_not_detected",
+          "count": 0,
+          "label": "the gate detects an asset belonging to a placement that does not render",
+          "detail": {
+            "fixture_findings": [
+              "asset_for_unrendered_placement:site_wide_ambient"
+            ]
+          }
+        }
+      ],
+      "output_tail": [
+        "",
+        "=== The hero asset is absent on an internal page ===",
+        "  PASS: the homepage-hero assets are never enqueued on an internal route",
+        "",
+        "=== The non-selected package ships nothing ===",
+        "  PASS: only the selected package enqueues assets",
+        "",
+        "=== Injected negative proof: an asset for an unrendered placement IS detected ===",
+        "  PASS: the gate detects an asset belonging to a placement that does not render",
+        "",
+        "4 passed, 0 failed",
+        "GATE-RESULT {\"gate\":\"commemorative_placement_assets\",\"status\":\"pass\",\"passed\":4,\"failed\":0,\"violations\":0,\"pre_existing\":0,\"new\":0,\"prerequisites\":[\"theme-active\",\"conexao-commemorative plugin active\"],\"allowlisted\":[],\"allowlisted_count\":0,\"details\":[{\"key\":\"asset:unrendered_placement\",\"count\":0,\"label\":\"no asset is planned for a placement that does not render on the route\",\"detail\":{\"findings\":[]}},{\"key\":\"asset:hero_on_internal_route\",\"count\":0,\"label\":\"the homepage-hero assets are never enqueued on an internal route\",\"detail\":{\"placements\":[\"site_wide_ambient\"]}},{\"key\":\"asset:non_selected_package\",\"count\":0,\"label\":\"only the selected package enqueues assets\",\"detail\":{\"handles\":[]}},{\"key\":\"gate:injected_negative_not_detected\",\"count\":0,\"label\":\"the gate detects an asset belonging to a placement that does not render\",\"detail\":{\"fixture_findings\":[\"asset_for_unrendered_placement:site_wide_ambient\"]}}]}"
+      ]
+    },
+    "commemorative_ambient_runtime": {
+      "gate": "commemorative_ambient_runtime",
+      "domain": "commemorative_runtime",
+      "kind": "static",
+      "command": "python3 tests/scripts/verify-commemorative-runtime.py",
+      "exit_code": 0,
+      "status": "pass",
+      "passed": 66,
+      "failed": 0,
+      "violations": 0,
+      "pre_existing": 0,
+      "new": 0,
+      "allowlisted": 0,
+      "prerequisites": [
+        "node"
+      ],
+      "details": [],
+      "output_tail": [
+        "   assertions passed:      11",
+        "",
+        "   -- tests/node/christmas-journey.test.js --",
+        "   runtime cases executed: 8",
+        "   assertions passed:      8",
+        "",
+        "   -- tests/node/christmas-welcome.test.js --",
+        "   runtime cases executed: 14",
+        "   assertions passed:      14",
+        "",
+        "66 passed, 0 failed",
+        "GATE-RESULT {\"gate\": \"commemorative_ambient_runtime\", \"status\": \"pass\", \"passed\": 66, \"failed\": 0, \"violations\": 0, \"pre_existing\": 0, \"new\": 0, \"prerequisites\": [\"node\"], \"allowlisted\": [], \"allowlisted_count\": 0, \"details\": []}"
+      ]
+    },
+    "commemorative_translation_ownership": {
+      "gate": "commemorative_translation_ownership",
+      "domain": "commemorative_polylang",
+      "kind": "php",
+      "command": "docker compose exec -T wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-commemorative-gate-translation-ownership.php",
+      "exit_code": 0,
+      "status": "pass",
+      "passed": 30,
+      "failed": 0,
+      "violations": 0,
+      "pre_existing": 0,
+      "new": 0,
+      "allowlisted": 0,
+      "prerequisites": [
+        "theme-active",
+        "conexao-data-model + conexao-admin-ux + conexao-commemorative active",
+        "polylang active",
+        "a commemorative record with its linked translation"
+      ],
+      "details": [
+        {
+          "key": "copy:filter_not_registered",
+          "count": 0,
+          "label": "the shared keys are excluded through the documented `pll_copy_post_metas` filter",
+          "detail": []
+        },
+        {
+          "key": "copy:shared_key_copied",
+          "count": 0,
+          "label": "a commemorative copy list carries no shared scheduling/presentation key",
+          "detail": {
+            "leaks": []
+          }
+        },
+        {
+          "key": "copy:over_excluded",
+          "count": 0,
+          "label": "only the shared keys are excluded — translated copy, identity and unrelated meta are still copied",
+          "detail": {
+            "over_excluded": []
+          }
+        },
+        {
+          "key": "copy:unrelated_post_type_changed",
+          "count": 0,
+          "label": "a non-commemorative post type keeps its copy list unchanged",
+          "detail": {
+            "page": 27
+          }
+        },
+        {
+          "key": "gate:copy_leak_not_detected",
+          "count": 0,
+          "label": "the copy check flags a list that DOES still carry a shared key",
+          "detail": {
+            "detected": [
+              "_ce_description",
+              "_ce_enabled",
+              "_ce_priority",
+              "_ce_year_precedence",
+              "_ce_presentation",
+              "_ce_rule",
+              "_ce_date",
+              "_ce_variable",
+              "_ce_one_off_date",
+              "_ce_window_start",
+              "_ce_window_end",
+              "_ce_lead_in_days"
+            ]
+          }
+        },
+        {
+          "key": "editor:shared_field_editable",
+          "count": 0,
+          "label": "every shared field is read-only on the translation",
+          "detail": {
+            "editable": []
+          }
+        },
+        {
+          "key": "editor:translated_field_locked",
+          "count": 0,
+          "label": "the translated copy stays editable on the translation (only the shared set is locked)",
+          "detail": {
+            "locked": []
+          }
+        },
+        {
+          "key": "editor:shared_field_renders_input",
+          "count": 0,
+          "label": "the read-only control emits NO submittable input",
+          "detail": {
+            "html_bytes": 453
+          }
+        },
+        {
+          "key": "gate:locked_render_check_is_vacuous",
+          "count": 0,
+          "label": "the lock check can tell a locked control apart from an editable one",
+          "detail": []
+        },
+        {
+          "key": "editor:canonical_field_locked",
+          "count": 0,
+          "label": "the canonical PT record has no read-only field",
+          "detail": {
+            "locked": 0
+          }
+        },
+        {
+          "key": "save:shared_key_writable_on_translation",
+          "count": 0,
+          "label": "a translation may persist NO shared key (a crafted POST is dropped, not hidden)",
+          "detail": {
+            "writable_shared": []
+          }
+        },
+        {
+          "key": "save:canonical_shared_key_not_writable",
+          "count": 0,
+          "label": "the canonical record may still persist every shared key the editor owns",
+          "detail": {
+            "missing": []
+          }
+        },
+        {
+          "key": "save:editor_guard_not_wired",
+          "count": 0,
+          "label": "the editor save path persists only the writable field list",
+          "detail": {
+            "body_bytes": 8542
+          }
+        },
+        {
+          "key": "save:precedence_guard_not_wired",
+          "count": 0,
+          "label": "the annual-preference save refuses a non-canonical record BEFORE writing",
+          "detail": {
+            "guard_at": 884
+          }
+        },
+        {
+          "key": "data:canonical_missing_shared_rows",
+          "count": 0,
+          "label": "the canonical record actually carries the shared configuration",
+          "detail": {
+            "shared_rows": 7
+          }
+        },
+        {
+          "key": "data:translation_carries_shared_rows",
+          "count": 0,
+          "label": "the translation carries no shared `_ce_*` row",
+          "detail": {
+            "rows": []
+          }
+        }
+      ],
+      "output_tail": [
+        "  PASS: the translation may still persist `_ce_cta_url`",
+        "  PASS: the translation may still persist `_ce_event_key`",
+        "  PASS: the editor save path persists only the writable field list",
+        "  PASS: the annual-preference save refuses a non-canonical record BEFORE writing",
+        "",
+        "=== The stored data matches the invariant ===",
+        "  PASS: the canonical record actually carries the shared configuration",
+        "  PASS: the translation carries no shared `_ce_*` row",
+        "  PASS: the translation carries `_ce_event_key` (identity is not shared configuration)",
+        "",
+        "30 passed, 0 failed",
+        "GATE-RESULT {\"gate\":\"commemorative_translation_ownership\",\"status\":\"pass\",\"passed\":30,\"failed\":0,\"violations\":0,\"pre_existing\":0,\"new\":0,\"prerequisites\":[\"theme-active\",\"conexao-data-model + conexao-admin-ux + conexao-commemorative active\",\"polylang active\",\"a commemorative record with its linked translation\"],\"allowlisted\":[],\"allowlisted_count\":0,\"details\":[{\"key\":\"copy:filter_not_registered\",\"count\":0,\"label\":\"the shared keys are excluded through the documented `pll_copy_post_metas` filter\",\"detail\":[]},{\"key\":\"copy:shared_key_copied\",\"count\":0,\"label\":\"a commemorative copy list carries no shared scheduling\\/presentation key\",\"detail\":{\"leaks\":[]}},{\"key\":\"copy:over_excluded\",\"count\":0,\"label\":\"only the shared keys are excluded \\u2014 translated copy, identity and unrelated meta are still copied\",\"detail\":{\"over_excluded\":[]}},{\"key\":\"copy:unrelated_post_type_changed\",\"count\":0,\"label\":\"a non-commemorative post type keeps its copy list unchanged\",\"detail\":{\"page\":27}},{\"key\":\"gate:copy_leak_not_detected\",\"count\":0,\"label\":\"the copy check flags a list that DOES still carry a shared key\",\"detail\":{\"detected\":[\"_ce_description\",\"_ce_enabled\",\"_ce_priority\",\"_ce_year_precedence\",\"_ce_presentation\",\"_ce_rule\",\"_ce_date\",\"_ce_variable\",\"_ce_one_off_date\",\"_ce_window_start\",\"_ce_window_end\",\"_ce_lead_in_days\"]}},{\"key\":\"editor:shared_field_editable\",\"count\":0,\"label\":\"every shared field is read-only on the translation\",\"detail\":{\"editable\":[]}},{\"key\":\"editor:translated_field_locked\",\"count\":0,\"label\":\"the translated copy stays editable on the translation (only the shared set is locked)\",\"detail\":{\"locked\":[]}},{\"key\":\"editor:shared_field_renders_input\",\"count\":0,\"label\":\"the read-only control emits NO submittable input\",\"detail\":{\"html_bytes\":453}},{\"key\":\"gate:locked_render_check_is_vacuous\",\"count\":0,\"label\":\"the lock check can tell a locked control apart from an editable one\",\"detail\":[]},{\"key\":\"editor:canonical_field_locked\",\"count\":0,\"label\":\"the canonical PT record has no read-only field\",\"detail\":{\"locked\":0}},{\"key\":\"save:shared_key_writable_on_translation\",\"count\":0,\"label\":\"a translation may persist NO shared key (a crafted POST is dropped, not hidden)\",\"detail\":{\"writable_shared\":[]}},{\"key\":\"save:canonical_shared_key_not_writable\",\"count\":0,\"label\":\"the canonical record may still persist every shared key the editor owns\",\"detail\":{\"missing\":[]}},{\"key\":\"save:editor_guard_not_wired\",\"count\":0,\"label\":\"the editor save path persists only the writable field list\",\"detail\":{\"body_bytes\":8542}},{\"key\":\"save:precedence_guard_not_wired\",\"count\":0,\"label\":\"the annual-preference save refuses a non-canonical record BEFORE writing\",\"detail\":{\"guard_at\":884}},{\"key\":\"data:canonical_missing_shared_rows\",\"count\":0,\"label\":\"the canonical record actually carries the shared configuration\",\"detail\":{\"shared_rows\":7}},{\"key\":\"data:translation_carries_shared_rows\",\"count\":0,\"label\":\"the translation carries no shared `_ce_*` row\",\"detail\":{\"rows\":[]}}]}"
+      ]
+    }
+  },
+  "total_passed": 216,
+  "total_failed": 5,
+  "total_violations": 6,
+  "total_pre_existing": 3,
+  "total_new": 3,
+  "total_blocked": 0
+}

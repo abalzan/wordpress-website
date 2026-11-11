@@ -1,0 +1,43 @@
+
+== Halloween homepage presentation ==
+
+=== Selected event controls presentation output ===
+  PASS: the engine selects the Halloween event inside its window
+  PASS: the selected Halloween event renders its presentation
+  PASS: the presentation stays hidden until the deferred enhancement initializes
+  PASS: the presentation has a labelled semantic heading
+  PASS: the presentation renders the localized Halloween greeting
+  PASS: the dismiss control is a real button
+  PASS: the dismiss control has a localized accessible name
+  PASS: bat artwork includes distinct articulated wings
+  PASS: the greeting includes the signature pumpkin motif
+  PASS: the inline pumpkin inherits the presentation theme palette with a readable fallback
+  PASS: every decorative scene is hidden from assistive technology
+  PASS: the dismiss control is marked for the no-JS rule
+  PASS: Halloween light-mode styles are readable
+  PASS: Halloween dark-mode styles are readable
+  PASS: the welcome card has a warm light-mode surface
+  PASS: light-mode greeting text uses a deep plum token
+  PASS: the card uses its scoped semantic surface token
+  PASS: dark-mode palette follows the existing root theme attribute
+  PASS: dark mode has its own cinematic card surface
+  PASS: dark-mode supporting copy uses a high-contrast token
+  PASS: the dismissal key is namespaced by occasion and occurrence year
+
+=== No selected event, and a different package, never render Halloween ===
+  PASS: no event is selected outside every window
+  PASS: no active event renders no Halloween wrapper
+  PASS: the Christmas window selects the christmas package
+  PASS: a different selected package renders no Halloween presentation
+  PASS: the Christmas package renders its own component instead
+
+=== Homepage integration is generic (no event identity in the template) ===
+  PASS: front-page.php is readable for the integration check
+  PASS: the homepage calls the generic dispatcher
+  PASS: the homepage asks for the homepage_hero placement
+  PASS: the homepage template contains no holiday identity
+  PASS: the homepage no longer reads the legacy occasion engine directly
+  PASS: header.php contains no holiday identity
+  PASS: the header still fires the body-open hook that prints the generic marker
+
+seasonal-halloween-presentation: 33 passed, 0 failed

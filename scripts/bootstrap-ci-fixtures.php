@@ -967,6 +967,22 @@ if ( $apply ) {
 				$pt_meta['_event_location'] = (string) $pair['town'] . ', ' . (string) $pair['county'];
 				$pt_meta['_event_status']   = 'published';
 
+				// An OPTIONAL event-date offset, separate from the publication
+				// date above. `offset` drives `post_date`; a `post_date` in the
+				// future is derived to `post_status = future`, which removes the
+				// record from every public query. A fixture that must be
+				// UPCOMING therefore needs the two dates apart: publish today,
+				// happen later. `_event_date` is contractually `Y-m-d` — the
+				// runtime's recurrence evaluator validates exactly that shape —
+				// so this branch writes a date, never a datetime.
+				if ( isset( $pair['event_offset'] ) ) {
+					$event_offset           = (int) $pair['event_offset'];
+					$pt_meta['_event_date'] = gmdate(
+						'Y-m-d',
+						strtotime( current_time( 'Y-m-d' ) . ' ' . ( $event_offset >= 0 ? '+' : '' ) . $event_offset . ' days' )
+					);
+				}
+
 				// The event SOURCE language, which is a different fact from the
 				// record language. An event imported from an already-English source
 				// has no Portuguese original to translate, so the EN record IS the
@@ -1666,6 +1682,31 @@ if ( $apply ) {
 	if ( class_exists( 'Conexao_Event_Query' ) ) {
 		Conexao_Event_Query::flush_cache();
 	}
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// STEP 5b — commemorative events and landing pages.
+//
+// The commemorative engine has NO runtime fallback to a built-in list (§8.2):
+// a brand-new install has zero `commemorative_event` records until the one-time
+// seed migration runs. The acceptance matrix and the landing-page suite both
+// assert against `/natal/` and `/en/christmas/`, so these records must exist on
+// the deterministic CI site.
+//
+// `seed-commemorative-events.php` creates the six legacy occasions as
+// `commemorative_event` records (idempotent, keyed by `_ce_event_key`).
+// `seed-commemorative-landing-pages.php` creates the opted-in PT `/natal/` and
+// linked EN `/christmas/` landing pages for the `christmas` package.
+//
+// Both run AFTER the directory seeders because the landing-page modules
+// reference existing leisure/guide/post records, and BEFORE the EN translation
+// stages so Polylang can link the PT/EN landing-page pair.
+// ═════════════════════════════════════════════════════════════════════════════
+if ( $apply ) {
+	echo "\n=== step 5b: commemorative events and landing pages ===\n";
+
+	conexao_ci_run_script( 'seed-commemorative-events.php', array( '--apply' ), $stats );
+	conexao_ci_run_script( 'seed-commemorative-landing-pages.php', array( '--apply' ), $stats );
 }
 
 // ═════════════════════════════════════════════════════════════════════════════

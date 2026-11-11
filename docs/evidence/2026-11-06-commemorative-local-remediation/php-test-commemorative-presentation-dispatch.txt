@@ -1,0 +1,117 @@
+
+== Commemorative presentation dispatch ==
+
+=== Engine and registry are wired ===
+  PASS: the plugin public API is available
+  PASS: the theme registry is available
+  PASS: the six package identities are registered
+  PASS: halloween and christmas are registered
+  PASS: halloween is an implemented package
+  PASS: christmas is an implemented package
+  PASS: new_year is documented as a planned identity
+  PASS: new_year registers no placement yet
+  PASS: st_patricks_day is documented as a planned identity
+  PASS: st_patricks_day registers no placement yet
+  PASS: valentines_day is documented as a planned identity
+  PASS: valentines_day registers no placement yet
+  PASS: easter is documented as a planned identity
+  PASS: easter registers no placement yet
+
+=== No active event: no plan, no markup, no assets ===
+  PASS: the engine selects no event on 2026-11-06
+  PASS: no package is resolved
+  PASS: no placement is planned
+  PASS: the dispatcher reports nothing to render
+  PASS: no stylesheet would be enqueued
+  PASS: no script would be enqueued
+  PASS: the shared framework would not load either
+  PASS: the homepage_hero placement renders nothing with no active event
+  PASS: the homepage_hero placement outputs no bytes with no active event
+  PASS: the site_wide_ambient placement renders nothing with no active event
+  PASS: the site_wide_ambient placement outputs no bytes with no active event
+  PASS: the landing_page placement renders nothing with no active event
+  PASS: the landing_page placement outputs no bytes with no active event
+
+=== Halloween: one package, two placements, route-specific ===
+  PASS: the engine selects an event inside the Halloween window
+  PASS: the selected event is halloween
+  PASS: the event carries its package slug
+  PASS: the selected package is halloween
+  PASS: the occurrence year is 2026
+  PASS: the package declares its signature motif
+  PASS: the localised title resolves from the record (no engine warnings)
+  PASS: the homepage hero is planned on the homepage
+  PASS: the ambient layer is planned on the homepage
+  PASS: exactly the two Halloween placements are planned
+  PASS: the shared framework loads for a rendered placement
+  PASS: one package stylesheet is enqueued
+  PASS: one package script is enqueued
+  PASS: the Halloween stylesheet handle is conditional
+  PASS: the Halloween script handle is conditional
+  PASS: both placements appear in the asset plan
+  PASS: the homepage hero is NEVER planned on an internal page
+  PASS: the ambient layer IS planned on an internal page
+  PASS: only the ambient placement is planned on an internal page
+  PASS: no hero assets are enqueued on an internal page
+  PASS: the ambient placement assets are enqueued
+  PASS: the hero outputs nothing on an internal page
+  PASS: the ambient placement renders on an internal page
+  PASS: the ambient markup is the shared shell
+  PASS: the package publishes its own client marker
+  PASS: the package art moved into the package asset directory
+  PASS: the hero renders on the homepage
+  PASS: the hero uses the shared placement shell
+  PASS: the shared shell exposes the package motif
+  PASS: the design tokens are emitted as namespaced custom properties
+  PASS: the signature pumpkin motif is present
+  PASS: the hero carries the no-JS reveal hook
+  PASS: the dismiss control is marked so no-JS can hide it
+  PASS: the dismissal key is scoped to the occurrence year
+  PASS: no other package leaks into the hero
+
+=== Christmas: the second package reuses the same dispatcher ===
+  PASS: the engine selects christmas inside its window
+  PASS: the christmas package resolves
+  PASS: christmas declares a different signature motif
+  PASS: christmas declares a different energy level
+  PASS: christmas renders a homepage hero
+  PASS: christmas renders the ambient layer
+  PASS: the christmas stylesheet is enqueued
+  PASS: the halloween stylesheet is NOT enqueued
+  PASS: the christmas hero renders its own component
+  PASS: the christmas motif is exposed
+  PASS: no Halloween markup leaks into the christmas hero
+  PASS: the christmas hero is not a dismissible overlay
+  PASS: the christmas hero is homepage-only
+  PASS: christmas ambient renders on internal pages
+
+=== The landing page is independent of the active event (archival) ===
+  PASS: the PT landing page exists (scripts/seed-commemorative-landing-pages.php --apply)
+  PASS: the page opts into the christmas package
+  PASS: the page is recognised as a commemorative landing page
+  PASS: christmas is not the active event in February
+  PASS: the landing placement is resolved without an active event (archival)
+  PASS: the landing page resolves its own package from the page opt-in
+  PASS: the landing route does not add the homepage hero
+  PASS: the landing placement owns its assets
+  PASS: the landing page loads its package stylesheet
+  PASS: the landing placement renders in February (archival)
+  PASS: the landing page renders its real modules
+  PASS: the landing page uses its package identity
+  PASS: at least three modules are rendered (empty-page rule)
+
+=== A page without the opt-in is not a landing page ===
+  PASS: a normal page has no landing package
+  PASS: a normal page never resolves a landing placement
+  PASS: the landing placement outputs nothing on a normal page
+
+=== No placement ever leaks from another package ===
+  PASS: 2026-02-10 12:00:00: no package means no placement
+  PASS: 2026-03-10 12:00:00: no package means no placement
+  PASS: 2026-10-20 12:00:00: every planned placement belongs to the selected package
+  PASS: 2026-10-20 12:00:00: exactly one package renders
+  PASS: 2026-12-15 12:00:00: every planned placement belongs to the selected package
+  PASS: 2026-12-15 12:00:00: exactly one package renders
+  PASS: 2026-12-30 12:00:00: no package means no placement
+
+commemorative-presentation-dispatch: 99 passed, 0 failed

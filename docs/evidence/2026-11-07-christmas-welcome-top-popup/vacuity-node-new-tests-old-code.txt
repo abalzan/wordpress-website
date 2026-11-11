@@ -1,0 +1,69 @@
+✔ the welcome opens immediately on the first eligible view (7.245925ms)
+✔ no placement on the page means no controller and no error (1.538782ms)
+✔ dismissal is remembered for the tab session and nothing stays inline (1.431344ms)
+✔ a fresh session is eligible again (0.380898ms)
+✔ storage that throws never breaks the page and still caps this document (0.603725ms)
+✔ Escape (the native close event) dismisses and is remembered (0.3858ms)
+✔ a genuine backdrop click dismisses, a click inside the card does not (0.684398ms)
+✔ nothing reopens the welcome on resize, orientation or focus changes (1.808696ms)
+✔ the CTA keeps its normal navigation (0.75637ms)
+✔ an incomplete welcome fails closed and never becomes an inline card (0.620405ms)
+✔ an engine without showModal() fails closed instead of faking a dialog (0.310032ms)
+✔ a showModal() that throws leaves the safe fallback, never a half-open dialog (0.29953ms)
+✔ a repeated boot claims nothing twice: one controller, one showModal(), no duplicate listeners (0.277383ms)
+✔ a late controller legitimately overrides the guard timeout instead of racing it (0.175311ms)
+✖ the signed preview auto-opens the real modal, never reveals the trigger, and never touches dismissal state (1.452536ms)
+✖ the open card is pinned below the admin bar, the sticky header and the preview notice (0.553324ms)
+✔ focus enters the dialog on open and returns to the previously focused element on close (0.238044ms)
+✔ it is not a scheduler: no timer, interval or requestAnimationFrame (0.343444ms)
+✔ the dismissal key is session-scoped and never persistent (0.860689ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 17
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 120.167382
+
+✖ failing tests:
+
+test at tests/node/christmas-welcome.test.js:552:1
+✖ the signed preview auto-opens the real modal, never reveals the trigger, and never touches dismissal state (1.452536ms)
+  AssertionError [ERR_ASSERTION]: a preview auto-opens the same modal — no gesture, no trigger click
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (/tmp/xmas-vacuity/tests/node/christmas-welcome.test.js:558:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1062:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:752:18)
+      at Test.postRun (node:internal/test_runner/test:1191:19)
+      at Test.run (node:internal/test_runner/test:1119:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:752:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual'
+  }
+
+test at tests/node/christmas-welcome.test.js:596:1
+✖ the open card is pinned below the admin bar, the sticky header and the preview notice (0.553324ms)
+  AssertionError [ERR_ASSERTION]: the lowest bottom edge (160) plus the 12 px gap pins the card below every obstruction
+  
+  '' !== '172px'
+  
+      at TestContext.<anonymous> (/tmp/xmas-vacuity/tests/node/christmas-welcome.test.js:607:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1062:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:752:18)
+      at Test.postRun (node:internal/test_runner/test:1191:19)
+      at Test.run (node:internal/test_runner/test:1119:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:752:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: '',
+    expected: '172px',
+    operator: 'strictEqual'
+  }

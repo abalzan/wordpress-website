@@ -1,0 +1,31 @@
+# M5 — in-memory precedence demonstration (supplementary; NOT the independent-administrator evidence)
+# executed: docker compose exec -T wordpress php /tmp/ce-precedence-probe.php
+# date: 2026-11-06T12:09:47+00:00
+# actor: the implementing agent (NOT an independent administrator)
+# fixtures: two synthetic in-memory event arrays (alpha, beta); no WordPress record created, modified or deleted
+# cleanup: nothing to clean up (no persistent state was touched)
+
+engine: 1.0.0 | packages registered: 6 (using 'halloween')
+injected clock: 2026-12-15T12:00:00+00:00 (Europe/Dublin)
+mutations: none (pure in-memory event arrays)
+
+1. no preference, equal priority (deterministic tie-break)
+  alpha=ok year=2026 | beta=ok year=2026
+  PASS  expected=alpha actual=alpha
+2. beta preferred for 2026
+  alpha=ok year=2026 | beta=ok (preferred) year=2026
+  PASS  expected=beta actual=beta
+3. beta preferred for 2027 only (adjacent year unaffected)
+  alpha=ok year=2026 | beta=ok year=2026
+  PASS  expected=alpha actual=alpha
+4. beta preferred for 2026 but DISABLED
+  alpha=ok year=2026 | beta=disabled year=2026
+  PASS  expected=alpha actual=alpha
+5. beta preferred for 2026 but DRAFT
+  alpha=ok year=2026 | beta=draft year=2026
+  PASS  expected=alpha actual=alpha
+6. beta preferred for 2026 but OUT OF WINDOW (July window)
+  alpha=ok year=2026 | beta=outside_window year=2027
+  PASS  expected=alpha actual=alpha
+
+result: PASS

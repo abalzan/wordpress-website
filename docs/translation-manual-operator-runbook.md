@@ -47,7 +47,7 @@ identify PT scope → inventory → manifest → dry-run → snapshot → review
 
 There is **no cron, no webhook, no automatic trigger, no external broker and no
 permanent provider credential**. Automatic translation was retired in Stage 17
-([report](../reports/2026-10-02-stage-17-retire-automatic-translation.md)) and
+([report](reports/2026-10-02-stage-17-retire-automatic-translation.md)) and
 the machine-checkable statement of that is
 `tests/scripts/verify-stage17-retirement.py`, which fails closed if any of it
 returns.
@@ -240,7 +240,7 @@ docker compose exec -T wordpress php /var/www/html/scripts/run-en-translation.ph
 non-zero when any stage's numeric gate fails.
 
 A real, recorded run of exactly these commands is in
-[`docs/evidence/2026-10-02-stage-18-operator-runbook/`](../evidence/2026-10-02-stage-18-operator-runbook/)
+[`docs/evidence/2026-10-02-stage-18-operator-runbook/`](evidence/2026-10-02-stage-18-operator-runbook/)
 and reported in §9 below.
 
 ## 8. Manual production translation
@@ -366,3 +366,4 @@ relax a gate to make a box tickable.
 ---
 
 _Last verified: 2026-10-02 by Stage 18 — manual translation operator workflow_
+_Last verified: 2026-11-07 by the agent, skills and documentation audit (report and evidence links corrected)_

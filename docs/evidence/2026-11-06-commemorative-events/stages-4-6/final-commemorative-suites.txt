@@ -1,0 +1,20 @@
+conexao test harness
+  repository:    /home/andrei/IdeaProjects/wordpress-website
+  php:           8.5.4
+  environment:   host (docker compose exec)
+  base url:      http://localhost:8080
+
+In-process PHP suites (serial, one process per suite)
+[PASS] plugin/conexao-commemorative/test-commemorative-admin.php — 41 passed, 0 failed
+[PASS] plugin/conexao-commemorative/test-commemorative-cache-boundary.php — 40 passed, 0 failed
+[PASS] plugin/conexao-commemorative/test-commemorative-migration.php — 25 passed, 0 failed
+[PASS] plugin/conexao-commemorative/test-commemorative-preview.php — 20 passed, 0 failed
+[PASS] plugin/conexao-commemorative/test-commemorative-resolution.php — 27 passed, 0 failed
+[PASS] plugin/conexao-commemorative/test-commemorative-schedule.php — 56 passed, 0 failed
+
+----------------------------------------
+In-process PHP suites: 6 total, 6 passed, 0 failed
+Assertions: 209 passed, 0 failed
+----------------------------------------
+ALL TESTS PASSED
+EXIT=0

@@ -34,6 +34,7 @@ its workflow, and consults the canonical documents the skill names.
 | [`wp-release-deploy`](wp-release-deploy/SKILL.md) | building artifacts, recording a release, verifying a deployment, rolling one back | `docs/releases.md`, `plugins.json` |
 | [`wp-production-operations`](wp-production-operations/SKILL.md) | auditing or operating the live WordPress.com site: plugin/theme state, admin-only capabilities, safe updates | `docs/releases.md`, `docs/deployment.md` |
 | [`wp-update-docs`](wp-update-docs/SKILL.md) | any change that alters what a maintainer or agent must know, or that must not rot | `docs/README.md`, `docs/engineering-standard.md` §9 |
+| [`wp-commemorative-event`](wp-commemorative-event/SKILL.md) | planning, adding, enhancing, debugging, reviewing, or preparing a seasonal/commemorative event in the Conexão BR WordPress theme/engine | `docs/commemorative-events.md`, `docs/plugins/conexao-commemorative.md` |
 
 ## Ownership rules
 
@@ -59,14 +60,16 @@ Every active skill is an executable workflow with these sections, in this order:
 `Verification` · `Failure handling` · `Evidence and reporting` ·
 `Definition of done`
 
-The six sections `When to use`, `Required reading`, `Steps`, `Guardrails`,
-`Verification` and `Definition of done` are required by
-`docs/engineering-standard.md` §13.1 and are enforced, in order, by
-`tests/scripts/verify-agent-governance.py` — together with the index-drift,
-dangling-reference and single-source-of-truth checks. Run it directly with:
+All twelve sections are required by `docs/engineering-standard.md` §13.1 and
+are enforced, in order, by `tests/scripts/verify-agent-governance.py` —
+together with the index-drift, dangling-reference, single-source-of-truth,
+`_Last verified_` marker and production-safety checks. Run it directly with:
 
 ```bash
 python3 tests/scripts/verify-agent-governance.py
 ```
 
-_Last verified: 2026-09-30 by the agent skills / documentation migration_
+Every active skill ends with its `_Last verified: YYYY-MM-DD by <area>_`
+line (engineering standard §9.2).
+
+_Last verified: 2026-11-09 by the agent skills review and hardening_

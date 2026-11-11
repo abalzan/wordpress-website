@@ -128,6 +128,74 @@ animation. Full behavior and browser evidence are recorded in the
 [frontend contract](../frontend.md#occasional-mobile-appearances) and
 [mobile experience report](../reports/2026-10-27-halloween-mobile-experience-report.md).
 
+## Commemorative presentation framework (r10 Stages 4–6)
+
+The Halloween block above is now ONE package inside a small presentation framework.
+The system contract lives in [`docs/commemorative-events.md`](../commemorative-events.md);
+this section is the theme-internals map.
+
+| Piece | Where |
+|---|---|
+| Package registry + placement catalogue + dispatcher + conditional enqueue + preview banner | `inc/commemorative-presentations.php` |
+| Landing-page content modules (records by slug, upcoming events) | `inc/commemorative-modules.php` |
+| Shared components | `template-parts/commemorative/{homepage-hero,ambient-layer,landing-page}.php`, `template-parts/commemorative/modules/module.php` |
+| Package content | `template-parts/commemorative/halloween/`, `template-parts/commemorative/christmas/` (hero, ambient, landing, plus the reusable `star` motif and the `journey` signature scene) |
+| Shared framework assets | `assets/css/commemorative.css`, `assets/js/commemorative.js` |
+| Package assets | `assets/css/presentations/*.css`, `assets/js/presentations/*`, `assets/images/presentations/*` |
+| Landing page template | `page-commemorative-landing.php` (assigned template + `_ce_landing_package`) |
+
+- `front-page.php` and `header.php` no longer contain any holiday identity: the
+  homepage calls `conexao_commemorative_render_placement( 'homepage_hero' )`, the
+  footer calls the ambient placement, and the generic client marker is printed on
+  `wp_body_open`.
+- Halloween's presentation CSS, JS and art were **moved out of `main.css`,
+  `dark-mode.css` and `main.js`** into `assets/css/presentations/halloween.css`,
+  `assets/js/presentations/halloween/halloween.js` and
+  `assets/images/presentations/halloween/decorations/`. The global bundles shrank by
+  ~24 KB of JS and ~19 KB of CSS and no longer contain the word `halloween`.
+- Every asset is conditional on the placement that needs it, so a request with no
+  active commemorative event ships **no** commemorative bytes.
+
+### The Christmas signature scene (theme internals)
+
+`christmas` is the only package with a user-controlled feature, so its internals are
+worth knowing before touching it:
+
+| Piece | Where | Contract |
+|---|---|---|
+| Shared star motif | `template-parts/commemorative/christmas/star.php` | Code-drawn SVG (8-point star, optional light trails). Decorative by default (`aria-hidden`, `focusable="false"`); a unique `id` per instance keeps the gradient ids from colliding. Never a raster cut-out of the panorama. |
+| **Homepage welcome** | `template-parts/commemorative/christmas/hero.php` | The hero is rendered **once**, inside a native `<dialog>` that ships **CLOSED** — a server-rendered `open` would be a non-modal in-flow card (the broken bottom banner this contract forbids). A **compact fallback card** (heading + the same landing CTA, no artwork) ships visible by default and covers no-JS / no-`showModal()` / failed-open; it is hidden in every state a wired controller owns — `pending`, `open`, `dismissed` and the closed signed preview — so no card ever sits in the hero flow while the modal is operating (the never-revealed **preview trigger** markup stays in that card for hand use). One dialog, one `<img>`, one `<h2>`, one paragraph, two links to the SAME destination (modal CTA + fallback CTA) — the modal never has a second copy of the artwork. |
+| Welcome controller | `assets/js/presentations/christmas/christmas.js` → `createWelcome()` | Opens on the first eligible homepage view of a **tab session** (`showModal()`), locks the background scroll (`position: fixed` + negative `top`), restores focus and the exact scroll offset on close, and writes `sessionStorage['ce_christmas_welcome_dismissed_v1']` **only on dismissal, never from a signed preview**. The card opens at the **top of the screen**: `open()` measures `#wpadminbar`, `.site-header` and `.conexao-preview-banner`, writes `--ce-xmas-welcome-obstruction-top` on the dialog (re-measured on `load`, `fonts.ready` and `resize` while open, cleared on settle) and the stylesheet pins the card below that frame — horizontally centred, never vertically centred. The **signed preview auto-opens the same modal** (an editor sees the exact visitor experience) while its close never writes the dismissal key, so a reload shows the popup again. No timer, interval, `requestAnimationFrame`, cookie, `localStorage`, network request, analytics or date computation. The page states live on `<html data-ce-welcome-state>`: `pending` (parse-time guard) → `open` / `dismissed` / `fallback` / `preview` (`preview` = closed signed preview, nothing inline). Claiming a root is idempotent (`data-ce-welcome-claimed`), so a repeated boot never adds listeners or opens twice. Fails closed: no dialog, no close control or no `showModal()` keeps the dialog closed and leaves the fallback card — never an inline dialog, never a dead button. A `showModal()` that throws lands in the same `fallback` state. Proven by `tests/node/christmas-welcome.test.js` (19 cases) and the in-process suite. |
+| Welcome styles | `assets/css/presentations/christmas.css` §11 | Scoped to this package only (no global `dialog`/overlay rule). The closed dialog is `display:none`; `.is-welcome-open` draws the card in the browser's top layer with a visible `::backdrop` and pins it to the **top** of the screen (`inset: var(--ce-xmas-welcome-frame-top) 0 auto 0`, where the frame is `max(16px, env(safe-area-inset-top), var(--ce-xmas-welcome-obstruction-top))`) — horizontally centred by `margin-inline: auto`, never vertically centred. The signed preview's own mark on the dialog lightens only its backdrop (`rgba(8, 12, 34, 0.45)` vs the public 66%) so the notice above the card stays readable. The fallback card is visible by default and hidden by the `pending` / `open` / `dismissed` / `preview` states. `dvh` + `env(safe-area-inset-*)`, stacked on phones, two columns on desktop, internal scrolling on short viewports, a gold CTA with sufficient contrast in both site themes, and reduced motion removes every entrance transform. The hero reserves **no** padding: the placement is `position: static` in flow for this package at every width, so with JavaScript the welcome node is empty and the hero keeps its exact original geometry. |
+| Signature scene | `template-parts/commemorative/christmas/journey.php` | Both skies are server-rendered in full (heading, paragraph, three details, nuance note) from ONE two-key data structure. The tab control ships inside a `hidden` container and **no** tab roles are emitted, so a visitor without JavaScript reads both skies and never meets an unusable control. |
+| Scene controller | `assets/js/presentations/christmas/christmas.js` → `createJourney()` | Upgrades that pair into a WAI-ARIA tabs widget (roles, `aria-controls`/`aria-labelledby`, `aria-selected`, roving tabindex, Arrow/Home/End, focus follow). It creates **no** timer, interval, storage entry, request or analytics event; an incomplete scene fails closed and is left as plain markup. Proven at runtime by `tests/node/christmas-journey.test.js`. |
+| Artwork | `assets/images/presentations/christmas/two-skies/` | Six WebP derivatives of the three supplied GPT Images panoramas, served through `<img srcset>` with intrinsic width/height. The multi-megabyte PNG masters are deliberately **not** shipped. The ambient `decorations/star.svg` is the only other image request. |
+| Per-language copy | the package templates | Copy is resolved with `$ce_english ? __( … ) : __( … )` (the package's existing convention) so the English page is never left showing Portuguese headings while a `.pot` regeneration is pending. |
+
+Nothing is reserved server-side for the welcome any more: with JavaScript the
+placement is an empty wrapper (closed dialog + hidden fallback), so the hero keeps
+its exact original geometry, and without JavaScript the compact fallback card joins
+the normal flow under the hero content — it can never cover the copy or the
+sponsor carousel. The band that used to sit in the hero (and the
+`padding-bottom: clamp(286px, …)` that reserved its height) is gone.
+
+#### The homepage welcome — display, frequency and failure behaviour
+
+| Question | Answer |
+|---|---|
+| Where does it appear? | Only where the dispatcher already renders the Christmas `homepage_hero` placement — the front page, while the event is window-eligible. Landing pages, internal pages, other packages and no-event states render nothing and load no Christmas asset. |
+| When does it open? | Immediately on the first eligible view of a **tab session**, as soon as the deferred package script runs (`document.readyState === "interactive"`). No scroll, hover, timer or second gesture. |
+| How often? | Once per tab session. Dismissal writes `ce_christmas_welcome_dismissed_v1` to `sessionStorage`; a reload, or returning from the landing page, does not reopen it. A **new** session is eligible again. Nothing is persisted beyond the tab: no cookie, option, post meta, account or remote store. |
+| What if storage is denied? | Every access is guarded; the dismissal falls back to a per-document in-memory flag and the page keeps working. |
+| What after dismissal? | **Nothing** is left behind: the dialog stays closed and the fallback stays hidden (`data-ce-welcome-state="dismissed"`), so there is no band, no reserved `.hero-section` height and no gap — the homepage looks exactly as it did before the modal appeared. The close control hides again. |
+| What without JavaScript / if the script fails? | The dialog stays CLOSED (never an inline card) and the compact fallback card is visible: the heading and the landing CTA in the flow under the hero content. The parse-time guard sets `data-ce-welcome-state="pending"` only when `showModal()` really exists (hiding the fallback before first paint), and its `DOMContentLoaded` fallback reveals the fallback to state `fallback` if the controller never claims it — a controller that arrives later legitimately overrides that state, so the hand-off never races. |
+| What in the signed private preview? | The template marks BOTH the root and the dialog with `data-ce-welcome-preview="1"`. The controller then **auto-opens the same modal** as the public view — no click, no trigger — while its close never reads or writes `ce_christmas_welcome_dismissed_v1`, so a reload (or a preview opened after a public dismissal) shows the popup again. The card is pinned below the preview notice, the WordPress admin bar and the sticky header through the measured `--ce-xmas-welcome-obstruction-top`, and the preview-only backdrop tint keeps the notice readable above the card. Closing leaves state `preview`: nothing in the hero flow, no card, no trigger. Preview authorisation, signatures and WordPress data are untouched; `ConexaoChristmas.openWelcome()` remains available to drive it programmatically. |
+| What about the old `[data-ce-reveal]` hooks? | `template-parts/commemorative/homepage-hero.php` still ships a `<noscript>` block for `[data-ce-reveal]` / `[data-ce-dismiss]`. Those hooks are real for **Halloween** and have always been inert for Christmas (the Christmas hero never carried them), so the welcome ships its own explicit contract above instead of relying on them. |
+
+_Last verified: 2026-11-06 by the Christmas homepage welcome modal_
+_Last verified: 2026-11-06 by the Christmas homepage popup UI fix (closed dialog, compact fallback, preview trigger, no reserved band)_
+_Last verified: 2026-11-07 by the Christmas welcome top-of-screen popup fix (preview auto-open, top-pinned card, notice-safe backdrop)_
+
 ## Homepage Apoiadores Carousel
 
 The Featured Apoiadores carousel is a compact supporting showcase **inside the homepage Hero** (right-hand column beside the copy at every breakpoint, including mobile), rendered by the reusable template part `template-parts/featured-sponsors.php`. It is a responsive, dependency-free carousel over the **existing sponsor data model** — no new content type, no duplicated supporter data:
@@ -691,7 +759,7 @@ Breadcrumb hierarchy (`conexao_seo_breadcrumb_data()`), rendered by `header.php`
 - Blog archive `/blog/` (incl. `?categoria=` filtered views): Início → Blog (current page).
 - Blog single: Início → Blog (`/blog/` posts page) → Category (native `category` taxonomy, i.e. `/category/{slug}/` — the `?categoria=` filter is only used by the archive UI) → Post title. With multiple categories, the first term returned by `get_the_terms()` (ordered by name) is used.
 - Other CPT singles: Início → CPT archive → `conexao_category` term (when present) → `conexao_county` term for events/apoiadores → title.
-- **Guides (`guide`)**: the `conexao_category` crumb links to the EXISTING filtered Guias archive (`/guias/?categoria=<slug>` — the same tax_query the archive filter bar applies), built through the shared `conexao_get_guide_category_url()` helper. It never links to the taxonomy term archive (`/categories/<slug>/` would 301 to the standalone `/<slug>/` static page, e.g. `/moradia/`). Multiple categories: first term returned by `get_the_terms()` (ordered by name) is used, the same deterministic rule applied before. See `docs/guias-breadcrumb-filter-report.md`.
+- **Guides (`guide`)**: the `conexao_category` crumb links to the EXISTING filtered Guias archive (`/guias/?categoria=<slug>` — the same tax_query the archive filter bar applies), built through the shared `conexao_get_guide_category_url()` helper. It never links to the taxonomy term archive (`/categories/<slug>/` would 301 to the standalone `/<slug>/` static page, e.g. `/moradia/`). Multiple categories: first term returned by `get_the_terms()` (ordered by name) is used, the same deterministic rule applied before. See [`docs/reports/2026-09-27-guias-breadcrumb-filter-report.md`](reports/2026-09-27-guias-breadcrumb-filter-report.md).
 
 ### Navigation Logic
 
