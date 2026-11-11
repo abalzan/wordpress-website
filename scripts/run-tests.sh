@@ -46,6 +46,13 @@ PRODUCTION_HOSTS="conexaobr.ie www.conexaobr.ie"
 # Per-suite timeout. Serial execution (PHASE 22) keeps failures reproducible.
 SUITE_TIMEOUT="${CONEXAO_TEST_TIMEOUT:-300}"
 
+# Worker pool size for PARALLEL-classified suites.
+#   1  = fully sequential (default, preserves existing behaviour)
+#   2  = initial rollout for the proven read-only group
+#   4  = only after the two-worker configuration is stable
+#   6  = only when resource capacity permits and timing shows benefit
+CONEXAO_TEST_WORKERS="${CONEXAO_TEST_WORKERS:-1}"
+
 WORK_DIR="$(mktemp -d)"
 trap 'rm -rf "$WORK_DIR"' EXIT
 
@@ -233,6 +240,276 @@ suite_variants() {
 	esac
 }
 
+# Suite concurrency classification (PHASE 2 / PHASE 4 classification).
+#
+# Every suite starts as SERIAL. A suite is PARALLEL only after its source,
+# dependencies, setup and teardown have been reviewed and proven safe for
+# concurrent execution against the shared WordPress database.
+#
+#   "<suite path>|PARALLEL"   — explicitly approved for concurrent execution
+#   "<suite path>|SERIAL"     — shared-state writes or not yet reviewed (default)
+#   "<suite path>|MANUAL:<reason>"  — documented special handling, never run by default
+#
+# Default: SERIAL. Every discovered suite that is not listed here is SERIAL.
+suite_classification() {
+	case "$1" in
+		# PARALLEL: proven read-only, no shared-state mutation
+		wp-content/themes/conexao-br-irlanda/tests/test-i18n-foundation.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-polylang-foundation.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-taxonomy-policy.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-cache-language-scoping.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/plugins/conexao-commemorative/tests/test-commemorative-schedule.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-commemorative-packages.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-event-date-badge.php)
+			printf 'PARALLEL\n'
+			;;
+		# Additional PARALLEL: proven read-only, no shared-state mutation
+		wp-content/themes/conexao-br-irlanda/tests/test-blog-en-translation.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-commemorative-ambient.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-commemorative-christmas-journey.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-commemorative-christmas-welcome.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-commemorative-gate-ambient-decoration.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-commemorative-gate-assets.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-commemorative-gate-cpt-privacy.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-commemorative-gate-placement-assets.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-commemorative-gate-public-activation.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-commemorative-gate-single-package.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-commemorative-gate-translation-ownership.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-commemorative-landing-page.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-commemorative-presentation-dispatch.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-cursos-infinite-scroll.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-empregos-job-resources.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-empregos-landing-cta.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-en-archive-rewrite-guard.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-eventos-infinite-scroll.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-guide-en-translation.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-header-cta-dark-mode.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-header-menu-selection.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-hero-preload-fallback.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-homepage-content-type-label.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-homepage-shortcut-consolidation.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-job-en-translation.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-jobs-en-language.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-language-switcher-flag.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-nav-language-context-logic.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-nav-language-context.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-nav-menu-regression.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-recurrence-i18n.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-seasonal-halloween-nav-effects.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-seasonal-halloween-presentation.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-seasonal-occasion.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-stage32-bilingual.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-stage33-bilingual.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-stage45-pages.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-translation-completeness.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-ui-convergence-t2.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/themes/conexao-br-irlanda/tests/test-ui-polish-p3.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/plugins/conexao-en-translation/tests/test-shared-slug-newsletter.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/plugins/conexao-event-importer/tests/test-county-registry.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/plugins/conexao-event-importer/tests/test-event-address.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/plugins/conexao-event-importer/tests/test-eventbrite-api-contract.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/plugins/conexao-event-importer/tests/test-eventbrite-importer.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/plugins/conexao-event-importer/tests/test-eventbrite-rate-limit.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/plugins/conexao-event-importer/tests/test-eventbrite-source-expansion.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/plugins/conexao-event-importer/tests/test-eventbrite-volatility.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/plugins/conexao-event-importer/tests/test-event-image-sync.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/plugins/conexao-event-importer/tests/test-motorsport-ireland-importer.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/plugins/conexao-event-importer/tests/test-multi-file-import-ui.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/plugins/conexao-event-importer/tests/test-past-event-filter.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/plugins/conexao-event-importer/tests/test-request-budget.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/plugins/conexao-event-importer/tests/test-request-retry-policy.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/plugins/conexao-event-importer/tests/test-request-reuse.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/plugins/conexao-event-importer/tests/test-town-sanitization.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/plugins/conexao-translation-automation/tests/test-automation-admin-trigger.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/plugins/conexao-translation-automation/tests/test-automation-apply-safety.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/plugins/conexao-translation-automation/tests/test-automation-audit.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/plugins/conexao-translation-automation/tests/test-automation-boundary.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/plugins/conexao-translation-automation/tests/test-automation-change-detection.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/plugins/conexao-translation-automation/tests/test-automation-promotion.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/plugins/conexao-translation-automation/tests/test-automation-provider-implementation.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/plugins/conexao-translation-automation/tests/test-automation-provider.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/plugins/conexao-translation-automation/tests/test-automation-provider-secrets.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/plugins/conexao-translation-automation/tests/test-automation-secret-scan.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/plugins/conexao-translation-automation/tests/test-automation-translation-plan.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/plugins/conexao-translation-automation/tests/test-automation-transport-shape.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/plugins/conexao-translation-automation/tests/test-automation-trigger.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/plugins/conexao-translation-automation/tests/test-manual-translation-workflow.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/plugins/conexao-translation-rollout/tests/test-future-stage-smoke.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/plugins/conexao-translation-rollout/tests/test-legacy-apply-endpoint-closure.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/plugins/conexao-translation-rollout/tests/test-rollout-failure-proofs.php)
+			printf 'PARALLEL\n'
+			;;
+		wp-content/plugins/conexao-translation-rollout/tests/test-translation-rollout-engine.php)
+			printf 'PARALLEL\n'
+			;;
+		# MANUAL: existing documented special handling
+		wp-content/plugins/conexao-event-runtime/tests/test-plugin-separation.php)
+			printf 'MANUAL:requires a deliberate plugin-activation change '
+			printf '(docker compose exec wordpress wp --allow-root plugin deactivate conexao-event-importer)\n'
+			;;
+		# SERIAL: everything else (default)
+		*)
+			printf 'SERIAL\n'
+			;;
+	esac
+}
+
 # Emit "<suite>\t<arg>" lines, one per variant. Manual suites emit nothing.
 suite_instances() {
 	local suite="$1" arg first=1
@@ -312,9 +589,16 @@ reject_production_base_url() {
 
 if [ "$DO_LIST" = "1" ]; then
 	head1 "In-process PHP suites"
+	log "  PARALLEL = approved for concurrent execution  SERIAL = serial only  MANUAL = documented special handling"
 	while IFS= read -r p; do
 		[ -n "$p" ] || continue
-		printf '  %-72s [%s]\n' "$(suite_name "$p")" "$(component_of "$p")"
+		cls="$(suite_classification "$p")"
+		case "$cls" in
+			PARALLEL)  cls_label="PARALLEL" ;;
+			MANUAL:*)  cls_label="MANUAL" ;;
+			*)         cls_label="SERIAL" ;;
+		esac
+		printf '  %-72s [%s] %s\n' "$(suite_name "$p")" "$(component_of "$p")" "$cls_label"
 	done < <(discover_php_suites | filter_suites)
 	head1 "Manual suites (documented, NOT run by default)"
 	report_manual_suites
@@ -355,6 +639,17 @@ extract_counts() {
 	printf '%s %s' "${n:-}" "${m:-}"
 }
 
+# Run one PHP suite, capture exit code to a result file.
+# Used by the parallel worker pool (PHASE 3).
+run_php_captured() {
+	local suite="$1" arg="${2:-}" out_file="$3" result_file="$4"
+	set +e
+	run_php "$suite" "$arg" >"$out_file" 2>&1
+	local code=$?
+	set -e
+	printf '%s' "$code" > "$result_file"
+}
+
 run_php_layer() {
 	local suites total=0 passed=0 failed=0 blocked=0 prereq=0 ap=0 af=0
 	local instances="" s
@@ -373,69 +668,207 @@ run_php_layer() {
 		return 0
 	fi
 
-	head1 "In-process PHP suites (serial, one process per suite)"
-
-	local suite arg
+	# Classify every suite into PARALLEL or SERIAL (default).
+	# MANUAL suites are not run by default. A missing/malformed/ambiguous
+	# classification degrades to SERIAL (fail-safe).
+	local -a par_suite=() par_arg=() par_name=() par_out=()
+	local -a ser_suite=() ser_arg=() ser_name=() ser_out=()
+	local manual_count=0
+	local suite arg cls
 	while IFS=$'\t' read -r suite arg <&3; do
 		[ -n "$suite" ] || continue
-		total=$((total + 1))
-		local name out_file out code n m
-		name="$(suite_name "$suite")"
-		[ -n "$arg" ] && name="$name ($arg)"
-		out_file="$WORK_DIR/$(printf '%s' "$name" | tr '/ ()' '____').out"
-
-		set +e
-		run_php "$suite" "$arg" >"$out_file" 2>&1
-		code=$?
-		set -e
-
-		out="$(cat "$out_file")"
-
-		# A WordPress bootstrap failure is a real failure, never a skip.
-		if grep -q 'conexao-test-bootstrap:' <<<"$out"; then
-			blocked=$((blocked + 1))
-			printf '%s[BLOCKED]%s %s — WordPress bootstrap failed\n' "$C_BLOCK" "$C_RESET" "$name"
-			printf '%s\n' "$out" | sed 's/^/         /'
-			continue
-		fi
-
-		read -r n m <<<"$(extract_counts "$out")"
-		[ -n "${n:-}" ] && ap=$((ap + n))
-		[ -n "${m:-}" ] && af=$((af + m))
-
-		if grep -qE '^[[:space:]]*insufficient data: ' <<<"$out"; then
-			prereq=$((prereq + 1))
-		fi
-
-		if [ "$code" -eq 0 ]; then
-			passed=$((passed + 1))
-			if [ -n "${n:-}" ] && [ -n "${m:-}" ]; then
-				printf '%s[PASS]%s %s — %s passed, %s failed\n' "$C_PASS" "$C_RESET" "$name" "$n" "$m"
-			else
-				printf '%s[PASS]%s %s — no assertion summary emitted\n' "$C_PASS" "$C_RESET" "$name"
-			fi
-		elif [ "$code" -eq 124 ]; then
-			failed=$((failed + 1))
-			printf '%s[TIMEOUT]%s %s — exceeded %ss\n' "$C_FAIL" "$C_RESET" "$name" "$SUITE_TIMEOUT"
-		else
-			failed=$((failed + 1))
-			failed_names="${failed_names}${name}"$'\n'
-			printf '%s[FAIL]%s %s' "$C_FAIL" "$C_RESET" "$name"
-			if [ -n "${n:-}" ] && [ -n "${m:-}" ]; then
-				printf ' — %s passed, %s failed' "$n" "$m"
-			fi
-			printf ' (exit %s)\n' "$code"
-			# Show the failing assertions, capped, so CI logs stay readable.
-			printf '%s' "$out" | grep -aE 'FAIL:|insufficient data:|Fatal error|Warning:' | head -10 | sed 's/^/         /'
-			# Keep the full output available for artifact upload.
-			cp "$out_file" "$WORK_DIR/FAILED-$(printf '%s' "$name" | tr '/' '_').log" 2>/dev/null || true
-		fi
+		cls="$(suite_classification "$suite")"
+		case "$cls" in
+			PARALLEL)
+				par_suite+=("$suite")
+				par_arg+=("${arg:-}")
+				local pname="$(suite_name "$suite")"
+				[ -n "$arg" ] && pname="$pname ($arg)"
+				par_name+=("$pname")
+				par_out+=("$WORK_DIR/$(printf '%s' "$pname" | tr '/ ()' '____').out")
+				;;
+			MANUAL:*)
+				manual_count=$((manual_count + 1))
+				;;
+			*)
+				# SERIAL: shared-state writes or not yet reviewed (default).
+				ser_suite+=("$suite")
+				ser_arg+=("${arg:-}")
+				local sname="$(suite_name "$suite")"
+				[ -n "$arg" ] && sname="$sname ($arg)"
+				ser_name+=("$sname")
+				ser_out+=("$WORK_DIR/$(printf '%s' "$sname" | tr '/ ()' '____').out")
+				;;
+		esac
 	done 3<<<"$suites"
+
+	if [ "$manual_count" -gt 0 ]; then
+		log "  $manual_count manual suite(s) skipped (not run by default)"
+	fi
+
+	# --- Serial group: run one at a time (deterministic) ---------------------
+
+	local serial_total=0 serial_passed=0 serial_failed=0
+	local serial_blocked=0 serial_prereq=0 serial_ap=0 serial_af=0
+	local serial_failed_names=""
+
+	if [ "${#ser_suite[@]}" -gt 0 ]; then
+		head1 "In-process PHP suites (serial, one process per suite)"
+		local i
+		for ((i=0; i<${#ser_suite[@]}; i++)); do
+			serial_total=$((serial_total + 1))
+			local name="${ser_name[$i]}"
+			local out_file="${ser_out[$i]}"
+			local out code n m
+
+			set +e
+			run_php "${ser_suite[$i]}" "${ser_arg[$i]}" >"$out_file" 2>&1
+			code=$?
+			set -e
+
+			out="$(cat "$out_file")"
+
+			# A WordPress bootstrap failure is a real failure, never a skip.
+			if grep -q 'conexao-test-bootstrap:' <<<"$out"; then
+				serial_blocked=$((serial_blocked + 1))
+				printf '%s[BLOCKED]%s %s — WordPress bootstrap failed\n' "$C_BLOCK" "$C_RESET" "$name"
+				printf '%s\n' "$out" | sed 's/^/         /'
+				continue
+			fi
+
+			read -r n m <<<"$(extract_counts "$out")"
+			[ -n "${n:-}" ] && serial_ap=$((serial_ap + n))
+			[ -n "${m:-}" ] && serial_af=$((serial_af + m))
+
+			if grep -qE '^[[:space:]]*insufficient data: ' <<<"$out"; then
+				serial_prereq=$((serial_prereq + 1))
+			fi
+
+			if [ "$code" -eq 0 ]; then
+				serial_passed=$((serial_passed + 1))
+				if [ -n "${n:-}" ] && [ -n "${m:-}" ]; then
+					printf '%s[PASS]%s %s — %s passed, %s failed\n' "$C_PASS" "$C_RESET" "$name" "$n" "$m"
+				else
+					printf '%s[PASS]%s %s — no assertion summary emitted\n' "$C_PASS" "$C_RESET" "$name"
+				fi
+			elif [ "$code" -eq 124 ]; then
+				serial_failed=$((serial_failed + 1))
+				printf '%s[TIMEOUT]%s %s — exceeded %ss\n' "$C_FAIL" "$C_RESET" "$name" "$SUITE_TIMEOUT"
+			else
+				serial_failed=$((serial_failed + 1))
+				serial_failed_names="${serial_failed_names}${name}"$'\n'
+				printf '%s[FAIL]%s %s' "$C_FAIL" "$C_RESET" "$name"
+				if [ -n "${n:-}" ] && [ -n "${m:-}" ]; then
+					printf ' — %s passed, %s failed' "$n" "$m"
+				fi
+				printf ' (exit %s)\n' "$code"
+				printf '%s' "$out" | grep -aE 'FAIL:|insufficient data:|Fatal error|Warning:' | head -10 | sed 's/^/         /'
+				cp "$out_file" "$WORK_DIR/FAILED-$(printf '%s' "$name" | tr '/' '_').log" 2>/dev/null || true
+			fi
+		done
+	fi
+
+	# --- Parallel group: bounded worker pool ---------------------------------
+
+	local parallel_total=0 parallel_passed=0 parallel_failed=0
+	local parallel_blocked=0 parallel_prereq=0 parallel_ap=0 parallel_af=0
+	local parallel_failed_names=""
+
+	if [ "${#par_suite[@]}" -gt 0 ]; then
+		head1 "In-process PHP suites (parallel, workers=$CONEXAO_TEST_WORKERS)"
+
+		local count="${#par_suite[@]}"
+		local idx=0 active=0
+		local -a pids=()   # PIDs of running workers
+		local -a pidx=()   # Index into par_* arrays for each PID
+
+		while [ "$idx" -lt "$count" ] || [ "$active" -gt 0 ]; do
+			# Launch new workers while under capacity and work remains.
+			while [ "$active" -lt "$CONEXAO_TEST_WORKERS" ] && [ "$idx" -lt "$count" ]; do
+				local sout="${par_out[$idx]}"
+				local resfile="$WORK_DIR/par-result-$idx"
+				set +e
+				run_php_captured "${par_suite[$idx]}" "${par_arg[$idx]}" "$sout" "$resfile" &
+				local pid=$!
+				pids+=("$pid")
+				pidx+=("$idx")
+				active=$((active + 1))
+				idx=$((idx + 1))
+				set -e
+			done
+
+			if [ "$active" -gt 0 ]; then
+				wait -n   # blocks until any child exits; reaps it
+				active=$((active - 1))
+			fi
+		done
+
+		# All workers are done. Collect results from result files.
+		local i
+		for ((i=0; i<count; i++)); do
+			parallel_total=$((parallel_total + 1))
+			local name="${par_name[$i]}"
+			local out_file="${par_out[$i]}"
+			local resfile="$WORK_DIR/par-result-$i"
+			local code out n m
+
+			code="$(cat "$resfile" 2>/dev/null || printf '1')"
+			out="$(cat "$out_file")"
+
+			# A WordPress bootstrap failure is a real failure, never a skip.
+			if grep -q 'conexao-test-bootstrap:' <<<"$out"; then
+				parallel_blocked=$((parallel_blocked + 1))
+				printf '%s[BLOCKED]%s %s — WordPress bootstrap failed\n' "$C_BLOCK" "$C_RESET" "$name"
+				printf '%s\n' "$out" | sed 's/^/         /'
+				continue
+			fi
+
+			read -r n m <<<"$(extract_counts "$out")"
+			[ -n "${n:-}" ] && parallel_ap=$((parallel_ap + n))
+			[ -n "${m:-}" ] && parallel_af=$((parallel_af + m))
+
+			if grep -qE '^[[:space:]]*insufficient data: ' <<<"$out"; then
+				parallel_prereq=$((parallel_prereq + 1))
+			fi
+
+			if [ "$code" -eq 0 ]; then
+				parallel_passed=$((parallel_passed + 1))
+				if [ -n "${n:-}" ] && [ -n "${m:-}" ]; then
+					printf '%s[PASS]%s %s — %s passed, %s failed\n' "$C_PASS" "$C_RESET" "$name" "$n" "$m"
+				else
+					printf '%s[PASS]%s %s — no assertion summary emitted\n' "$C_PASS" "$C_RESET" "$name"
+				fi
+			elif [ "$code" -eq 124 ]; then
+				parallel_failed=$((parallel_failed + 1))
+				printf '%s[TIMEOUT]%s %s — exceeded %ss\n' "$C_FAIL" "$C_RESET" "$name" "$SUITE_TIMEOUT"
+			else
+				parallel_failed=$((parallel_failed + 1))
+				parallel_failed_names="${parallel_failed_names}${name}"$'\n'
+				printf '%s[FAIL]%s %s' "$C_FAIL" "$C_RESET" "$name"
+				if [ -n "${n:-}" ] && [ -n "${m:-}" ]; then
+					printf ' — %s passed, %s failed' "$n" "$m"
+				fi
+				printf ' (exit %s)\n' "$code"
+				printf '%s' "$out" | grep -aE 'FAIL:|insufficient data:|Fatal error|Warning:' | head -10 | sed 's/^/         /'
+				cp "$out_file" "$WORK_DIR/FAILED-$(printf '%s' "$name" | tr '/' '_').log" 2>/dev/null || true
+			fi
+		done
+	fi
+
+	# --- Aggregate ------------------------------------------------------------
+
+	total=$((serial_total + parallel_total))
+	passed=$((serial_passed + parallel_passed))
+	failed=$((serial_failed + parallel_failed))
+	blocked=$((serial_blocked + parallel_blocked))
+	prereq=$((serial_prereq + parallel_prereq))
+	ap=$((serial_ap + parallel_ap))
+	af=$((serial_af + parallel_af))
 
 	PHP_TOTAL=$total; PHP_PASSED=$passed; PHP_FAILED=$failed
 	PHP_BLOCKED=$blocked; PHP_PREREQ=$prereq
 	PHP_ASSERT_PASS=$ap; PHP_ASSERT_FAIL=$af
-	PHP_FAILED_NAMES="$failed_names"
+	PHP_FAILED_NAMES="${serial_failed_names}${parallel_failed_names}"
 
 	if [ "$failed" -gt 0 ] || [ "$blocked" -gt 0 ]; then
 		return 1

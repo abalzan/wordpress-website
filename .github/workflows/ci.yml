@@ -226,12 +226,67 @@ jobs:
           retention-days: 30
 
   # ---------------------------------------------------------------------
+  # Stage I — script contracts (static repository checks).
+  #
+  # The 21 tests under tests/scripts/verify-*.py are static checks over the
+  # scripts/ estate. They need NO WordPress, NO Docker, NO network and NO
+  # database. They run in their own job so they can execute concurrently with
+  # the Docker/WordPress integration job rather than waiting for it.
+  #
+  # Uses the canonical command: ./scripts/run-tests.sh --scripts
+  # Discovery is convention-based (tests/scripts/verify-*.py); nothing is
+  # hardcoded here.
+  # ---------------------------------------------------------------------
+  script-contracts:
+    name: Script contracts (Stage I, static checks)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up PHP
+        # The script-contract layer inspects PHP source with a real PHP
+        # tokenizer, so PHP must be available on the runner.
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          coverage: none
+          tools: composer:v2
+
+      # Script contracts run in their own job, concurrently with the
+      # Docker/WordPress integration job. They are blocking — a failure here
+      # fails the workflow just like any other required check.
+      - name: Run script-contract suites
+        run: |
+          set -uo pipefail
+          mkdir -p "$RUNNER_TEMP/ci-evidence"
+          ./scripts/run-tests.sh --scripts 2>&1 | tee "$RUNNER_TEMP/ci-evidence/run-tests-scripts.log"
+          status="${PIPESTATUS[0]}"
+          echo "run-tests.sh --scripts exit status: $status"
+          exit "$status"
+
+      - name: Upload script-contract evidence
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: script-contract-evidence
+          path: ${{ runner.temp }}/ci-evidence
+          if-no-files-found: warn
+          retention-days: 30
+
+  # ---------------------------------------------------------------------
   # Stage E — Docker/WordPress integration job.
   #
   # Runs the shared test harness (scripts/run-tests.sh): the in-process PHP
   # suites and the HTTP acceptance suites against a LOCAL, EPHEMERAL
   # WordPress. The Stage D static-quality job above is unchanged; this job
-  # owns the two-layer test contract and nothing else.
+  # owns the two runtime-dependent test layers and nothing else.
+  #
+  # The script-contract layer (tests/scripts/verify-*.py) has moved to the
+  # `script-contracts` job above, which runs concurrently. It is NOT executed
+  # here anymore.
   #
   # Safety:
   #   - no production host, no production credentials, no repository secrets;
@@ -505,26 +560,32 @@ jobs:
           docker compose ps
           curl -s -o /dev/null -w 'front page: %{http_code}\n' http://localhost:8080/
 
-      # PHASE 50: the runner owns discovery. The job never hardcodes suite names.
+      # PHASE 5: the runner owns discovery. The job never hardcodes suite names.
       #
-      # Stage I: ./scripts/run-tests.sh runs three layers — the in-process PHP
-      # suites, the script-contract gate (tests/scripts/verify-*.py, which needs
-      # neither WordPress nor the network) and the HTTP acceptance suites. The
-      # script-contract gate is therefore BLOCKING here, with no second
-      # workflow and no duplicated job. It can also be run on its own with
-      # `./scripts/run-tests.sh --scripts`.
+      # Stage I (script contracts) has moved to the `script-contracts` job
+      # above, which runs concurrently. This job runs only the PHP and HTTP
+      # acceptance layers — both need WordPress.
+      #
       # `tee` captures the COMPLETE stdout+stderr to a file so a red run can be
       # diagnosed from the uploaded artifact rather than by re-running locally.
       # The harness exit status is preserved explicitly (`PIPESTATUS`), so
       # capturing output never converts a failure into a pass. Not
       # continue-on-error: a real failure fails the job.
-      - name: Run the shared test harness
+      - name: Run in-process PHP suites
         run: |
           set -uo pipefail
           mkdir -p "$RUNNER_TEMP/ci-evidence"
-          ./scripts/run-tests.sh 2>&1 | tee "$RUNNER_TEMP/ci-evidence/run-tests.log"
+          ./scripts/run-tests.sh --php 2>&1 | tee "$RUNNER_TEMP/ci-evidence/run-tests-php.log"
           status="${PIPESTATUS[0]}"
-          echo "run-tests.sh exit status: $status"
+          echo "run-tests.sh --php exit status: $status"
+          exit "$status"
+
+      - name: Run HTTP acceptance suites
+        run: |
+          set -uo pipefail
+          ./scripts/run-tests.sh --acceptance 2>&1 | tee -a "$RUNNER_TEMP/ci-evidence/run-tests-php.log"
+          status="${PIPESTATUS[0]}"
+          echo "run-tests.sh --acceptance exit status: $status"
           exit "$status"
 
       # -------------------------------------------------------------------
