@@ -626,7 +626,7 @@ fi
 
 PHP_TOTAL=0; PHP_PASSED=0; PHP_FAILED=0; PHP_BLOCKED=0; PHP_PREREQ=0
 PHP_ASSERT_PASS=0; PHP_ASSERT_FAIL=0
-failed_names=""
+PHP_FAILED_NAMES=""
 
 # Extract "N passed, M failed" from a suite's output. Suites that have not yet
 # been migrated to test_finish() may print a different shape; those are
