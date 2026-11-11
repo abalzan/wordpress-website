@@ -233,7 +233,7 @@ jobs:
   # database. They run in their own job so they can execute concurrently with
   # the Docker/WordPress integration job rather than waiting for it.
   #
-  # Uses the canonical command: ./scripts/run-tests.sh --scripts
+  # Uses the canonical command: ./scripts/run-tests.sh --scripts-static
   # Discovery is convention-based (tests/scripts/verify-*.py); nothing is
   # hardcoded here.
   # ---------------------------------------------------------------------
@@ -262,7 +262,7 @@ jobs:
         run: |
           set -uo pipefail
           mkdir -p "$RUNNER_TEMP/ci-evidence"
-          ./scripts/run-tests.sh --scripts 2>&1 | tee "$RUNNER_TEMP/ci-evidence/run-tests-scripts.log"
+          ./scripts/run-tests.sh --scripts-static 2>&1 | tee "$RUNNER_TEMP/ci-evidence/run-tests-scripts.log"
           status="${PIPESTATUS[0]}"
           echo "run-tests.sh --scripts exit status: $status"
           exit "$status"
@@ -559,6 +559,18 @@ jobs:
           set -euo pipefail
           docker compose ps
           curl -s -o /dev/null -w 'front page: %{http_code}\n' http://localhost:8080/
+      # Stage 14 - WordPress-dependent script-contract gate.
+      # verify-stage14-secret-scan.py executes the PHP runtime secret scanner,
+      # so it needs the running WordPress environment. It is discovered by the
+      # canonical runner (--scripts-wordpress) and is NOT part of the static
+      # script-contracts job. A missing prerequisite FAILS, it never skips.
+      - name: Run WordPress-dependent script-contract suites (Stage 14)
+        run: |
+          set -uo pipefail
+          ./scripts/run-tests.sh --scripts-wordpress 2>&1 | tee "$RUNNER_TEMP/ci-evidence/run-tests-scripts-wordpress.log"
+          status="${PIPESTATUS[0]}"
+          echo "run-tests.sh --scripts-wordpress exit status: $status"
+          exit "$status"
 
       # PHASE 5: the runner owns discovery. The job never hardcodes suite names.
       #
@@ -575,7 +587,7 @@ jobs:
         run: |
           set -uo pipefail
           mkdir -p "$RUNNER_TEMP/ci-evidence"
-          ./scripts/run-tests.sh --php 2>&1 | tee "$RUNNER_TEMP/ci-evidence/run-tests-php.log"
+          CONEXAO_TEST_WORKERS=2 ./scripts/run-tests.sh --php 2>&1 | tee "$RUNNER_TEMP/ci-evidence/run-tests-php.log"
           status="${PIPESTATUS[0]}"
           echo "run-tests.sh --php exit status: $status"
           exit "$status"
