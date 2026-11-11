@@ -250,6 +250,7 @@ suite_variants() {
 #   "<suite path>|SERIAL"     — shared-state writes or not yet reviewed (default)
 #   "<suite path>|MANUAL:<reason>"  — documented special handling, never run by default
 #
+# Suites listed as PARALLEL have been verified as read-only: no wp_insert_post, no update_option, no taxonomy changes, no shared cache writes.
 # Default: SERIAL. Every discovered suite that is not listed here is SERIAL.
 suite_classification() {
 	case "$1" in
@@ -625,7 +626,6 @@ fi
 
 PHP_TOTAL=0; PHP_PASSED=0; PHP_FAILED=0; PHP_BLOCKED=0; PHP_PREREQ=0
 PHP_ASSERT_PASS=0; PHP_ASSERT_FAIL=0
-PHP_FAILED_NAMES=""
 failed_names=""
 
 # Extract "N passed, M failed" from a suite's output. Suites that have not yet
@@ -682,7 +682,7 @@ run_php_layer() {
 			PARALLEL)
 				par_suite+=("$suite")
 				par_arg+=("${arg:-}")
-				local pname="$(suite_name "$suite")"
+				local pname; pname="$(suite_name "$suite")"
 				[ -n "$arg" ] && pname="$pname ($arg)"
 				par_name+=("$pname")
 				par_out+=("$WORK_DIR/$(printf '%s' "$pname" | tr '/ ()' '____').out")
@@ -694,7 +694,7 @@ run_php_layer() {
 				# SERIAL: shared-state writes or not yet reviewed (default).
 				ser_suite+=("$suite")
 				ser_arg+=("${arg:-}")
-				local sname="$(suite_name "$suite")"
+				local sname; sname="$(suite_name "$suite")"
 				[ -n "$arg" ] && sname="$sname ($arg)"
 				ser_name+=("$sname")
 				ser_out+=("$WORK_DIR/$(printf '%s' "$sname" | tr '/ ()' '____').out")
