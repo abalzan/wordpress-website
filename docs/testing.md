@@ -835,14 +835,17 @@ _Last verified: 2026-11-07 by the Christmas welcome top-of-screen popup fix (the
 
 ## PHP Suite Classifications (Phase 2)
 The 137 in-process PHP test suites are classified into three categories:
-### PARALLEL (82 suites)
+### PARALLEL (81 suites)
 Proven read-only: no wp_insert_post, no update_option, no taxonomy changes, no shared cache writes.
 These suites may execute concurrently via the CONEXAO_TEST_WORKERS worker pool.
 
-### SERIAL (56 suites)
+### SERIAL (55 suites)
 Shared-state writes or not yet reviewed.
 Isolated-write suites may be promoted to PARALLEL after verification.
 Shared-state mutations must remain SERIAL.
-### MANUAL (3 suites)
+### MANUAL (1 suite)
 Documented special handling, never run by default.
 test-plugin-separation.php requires deliberate plugin-activation change.
+*Counting method: suites classified as MANUAL in `scripts/run-tests.sh --list`, excluding the section header line.*
+
+_Last verified: 2026-11-11 by CI optimization and PHP suite classification update_
