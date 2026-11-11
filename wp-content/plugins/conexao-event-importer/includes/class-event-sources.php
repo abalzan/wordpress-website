@@ -908,6 +908,8 @@ class Conexao_Event_Sources {
 			wp_die( esc_html__( 'You do not have permission to perform this action.', 'conexao-event-importer' ) );
 		}
 
+		check_admin_referer( 'conexao_event_sources', 'conexao_event_sources_nonce' );
+
 		$bulk_action_type = sanitize_text_field( wp_unslash( $_POST['bulk_action_type'] ) );
 		$raw_ids          = isset( $_POST['bulk_source_ids'] ) ? $_POST['bulk_source_ids'] : array();
 		$submitted_ids    = array_map( 'sanitize_text_field', array_map( 'wp_unslash', (array) $raw_ids ) );
@@ -915,7 +917,7 @@ class Conexao_Event_Sources {
 		// Whitelist the requested bulk action.
 		$allowed_actions = array( 'disable', 'delete' );
 		if ( ! in_array( $bulk_action_type, $allowed_actions, true ) ) {
-			wp_redirect(
+			wp_safe_redirect(
 				add_query_arg(
 					array(
 						'bulk_message' => esc_html__( 'Invalid bulk action requested.', 'conexao-event-importer' ),
@@ -928,7 +930,7 @@ class Conexao_Event_Sources {
 		}
 
 		if ( empty( $submitted_ids ) ) {
-			wp_redirect(
+			wp_safe_redirect(
 				add_query_arg(
 					array(
 						'bulk_message' => esc_html__( 'No sources were selected.', 'conexao-event-importer' ),
@@ -960,7 +962,7 @@ class Conexao_Event_Sources {
 					implode( ', ', array_map( 'esc_html', $invalid_ids ) )
 				)
 				: esc_html__( 'No valid sources selected.', 'conexao-event-importer' );
-			wp_redirect(
+			wp_safe_redirect(
 				add_query_arg(
 					array(
 						'bulk_message' => $message,
@@ -1066,7 +1068,7 @@ class Conexao_Event_Sources {
 			$status = 'error';
 		}
 
-		wp_redirect(
+		wp_safe_redirect(
 			add_query_arg(
 				array(
 					'bulk_message' => $message,
@@ -1130,7 +1132,7 @@ class Conexao_Event_Sources {
 					printf(
 						/* translators: %d: number of selected sources. */
 						esc_html__( ' of %d selected', 'conexao-event-importer' ),
-						$source_count
+						(int) $source_count
 					);
 					?>
 				</span>
