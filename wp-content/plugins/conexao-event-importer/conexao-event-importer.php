@@ -195,7 +195,7 @@ final class Conexao_Event_Importer {
 	 * Runtime plugin; only import tooling screens are covered here.
 	 */
 	public function admin_assets( $hook ) {
-		$is_import_screen = false !== strpos( $hook, 'conexao-events' ) || false !== strpos( $hook, 'conexao-event-import' ) || false !== strpos( $hook, 'conexao-event-export' ) || false !== strpos( $hook, 'conexao-event-cleanup' ) || false !== strpos( $hook, 'conexao-import-log' );
+		$is_import_screen = false !== strpos( $hook, 'conexao-events' ) || false !== strpos( $hook, 'conexao-event-import' ) || false !== strpos( $hook, 'conexao-event-export' ) || false !== strpos( $hook, 'conexao-event-cleanup' ) || false !== strpos( $hook, 'conexao-import-log' ) || false !== strpos( $hook, 'conexao-event-sources' );
 		if ( ! $is_import_screen ) {
 			return;
 		}
@@ -262,6 +262,8 @@ final class Conexao_Event_Importer {
 					'fileSucceeded'       => __( '%1$s — %2$d created, %3$d updated', 'conexao-event-importer' ),
 					/* translators: 1: file name, 2: failure reason. */
 					'fileFailedDetail'    => __( '%1$s — %2$s', 'conexao-event-importer' ),
+					/* translators: %d: number of sources to delete. */
+					'bulkDeleteConfirm'   => __( 'Delete %d source(s)?\n\nThis will remove the selected Event Source configurations. Imported events will remain in the database.', 'conexao-event-importer' ),
 				),
 				'nonces'    => array(
 					'importFile' => wp_create_nonce( 'conexao_import_events_multi_file' ),

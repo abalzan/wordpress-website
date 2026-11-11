@@ -487,7 +487,15 @@ class Conexao_Event_Sources {
 			return;
 		}
 
-		// Handle actions: toggle, save, run import, delete.
+		// Display bulk action result notice from redirect.
+		$bulk_message = isset( $_GET['bulk_message'] ) ? sanitize_text_field( wp_unslash( $_GET['bulk_message'] ) ) : '';
+		$bulk_status  = isset( $_GET['bulk_status'] ) ? sanitize_text_field( wp_unslash( $_GET['bulk_status'] ) ) : '';
+		if ( '' !== $bulk_message && in_array( $bulk_status, array( 'success', 'error' ), true ) ) {
+			$notice_class = 'success' === $bulk_status ? 'notice-success' : 'notice-error';
+			echo '<div class="notice notice-' . esc_attr( $notice_class ) . ' is-dismissible"><p>' . esc_html( $bulk_message ) . '</p></div>';
+		}
+
+		// Handle actions: toggle, save, run import, delete, bulk_action.
 		if ( isset( $_POST['conexao_source_action'] ) && check_admin_referer( 'conexao_event_sources', 'conexao_event_sources_nonce' ) ) {
 			$action = sanitize_text_field( wp_unslash( $_POST['conexao_source_action'] ) );
 
@@ -505,6 +513,9 @@ class Conexao_Event_Sources {
 				$this->handle_run_import();
 			} elseif ( 'delete' === $action && isset( $_POST['source_id'] ) ) {
 				$this->handle_delete_source();
+			} elseif ( 'bulk_action' === $action && isset( $_POST['bulk_source_ids'] ) && isset( $_POST['bulk_action_type'] ) ) {
+				$this->handle_bulk_action();
+				// handle_bulk_action() issues wp_redirect() and exits.
 			}
 		}
 
@@ -513,6 +524,9 @@ class Conexao_Event_Sources {
 		<div class="wrap conexao-event-sources">
 			<h1><?php esc_html_e( 'Event Sources', 'conexao-event-importer' ); ?></h1>
 			<p><?php esc_html_e( 'Manage the sources from which events are imported. Only active sources are processed during an import run.', 'conexao-event-importer' ); ?></p>
+
+			<?php $this->render_bulk_actions_controls( $sources ); ?>
+
 			<?php $this->render_sources_table( $sources ); ?>
 			<script>
 			(function() {
@@ -883,6 +897,188 @@ class Conexao_Event_Sources {
 	}
 
 	/**
+	 * Handle a bulk action (disable/delete) on selected event sources.
+	 *
+	 * Validates the nonce, capability, and submitted source IDs against the
+	 * configured sources, then processes each source safely. Redirects back to
+	 * the Event Sources page with an admin notice summarizing results.
+	 */
+	protected function handle_bulk_action() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'You do not have permission to perform this action.', 'conexao-event-importer' ) );
+		}
+
+		$bulk_action_type = sanitize_text_field( wp_unslash( $_POST['bulk_action_type'] ) );
+		$raw_ids          = isset( $_POST['bulk_source_ids'] ) ? $_POST['bulk_source_ids'] : array();
+		$submitted_ids    = array_map( 'sanitize_text_field', array_map( 'wp_unslash', (array) $raw_ids ) );
+
+		// Whitelist the requested bulk action.
+		$allowed_actions = array( 'disable', 'delete' );
+		if ( ! in_array( $bulk_action_type, $allowed_actions, true ) ) {
+			wp_redirect(
+				add_query_arg(
+					array(
+						'bulk_message' => esc_html__( 'Invalid bulk action requested.', 'conexao-event-importer' ),
+						'bulk_status'  => 'error',
+					),
+					admin_url( 'admin.php?page=conexao-event-sources' )
+				)
+			);
+			exit;
+		}
+
+		if ( empty( $submitted_ids ) ) {
+			wp_redirect(
+				add_query_arg(
+					array(
+						'bulk_message' => esc_html__( 'No sources were selected.', 'conexao-event-importer' ),
+						'bulk_status'  => 'error',
+					),
+					admin_url( 'admin.php?page=conexao-event-sources' )
+				)
+			);
+			exit;
+		}
+
+		$sources = $this->get_all();
+		$valid_ids = array();
+		$invalid_ids = array();
+
+		foreach ( $submitted_ids as $source_id ) {
+			if ( isset( $sources[ $source_id ] ) ) {
+				$valid_ids[] = $source_id;
+			} else {
+				$invalid_ids[] = $source_id;
+			}
+		}
+
+		if ( empty( $valid_ids ) ) {
+			$message = ! empty( $invalid_ids )
+				? sprintf(
+					/* translators: %s: comma-separated list of invalid source IDs. */
+					esc_html__( 'No valid sources selected. Invalid IDs: %s', 'conexao-event-importer' ),
+					implode( ', ', array_map( 'esc_html', $invalid_ids ) )
+				)
+				: esc_html__( 'No valid sources selected.', 'conexao-event-importer' );
+			wp_redirect(
+				add_query_arg(
+					array(
+						'bulk_message' => $message,
+						'bulk_status'  => 'error',
+					),
+					admin_url( 'admin.php?page=conexao-event-sources' )
+				)
+			);
+			exit;
+		}
+
+		$success_count = 0;
+		$failure_count = 0;
+		$skipped_count = 0;
+		$failure_messages = array();
+
+		foreach ( $valid_ids as $source_id ) {
+			$source = $this->get( $source_id );
+			if ( ! $source ) {
+				$failure_count++;
+				$failure_messages[] = $source_id;
+				continue;
+			}
+
+			if ( 'disable' === $bulk_action_type ) {
+				// Only disable active sources; already-disabled sources stay disabled.
+				if ( 'active' === $source['status'] ) {
+					$result = $this->set_status( $source_id, 'inactive' );
+					if ( $result ) {
+						$success_count++;
+					} else {
+						$failure_count++;
+						$failure_messages[] = $source['name'];
+					}
+				} else {
+					$skipped_count++;
+				}
+			} elseif ( 'delete' === $bulk_action_type ) {
+				$result = $this->delete( $source_id );
+				if ( $result ) {
+					Conexao_Import_Log::add( $source_id, 'info', sprintf( 'Event Source "%s" was bulk-deleted by %s.', $source['name'], wp_get_current_user()->user_login ) );
+					$success_count++;
+				} else {
+					$failure_count++;
+					$failure_messages[] = $source['name'];
+				}
+			}
+		}
+
+		// Build the summary message.
+		if ( 'disable' === $bulk_action_type ) {
+			$parts = array();
+			if ( $success_count > 0 ) {
+				$parts[] = sprintf(
+					/* translators: %d: number of sources disabled. */
+					esc_html__( '%d source(s) disabled.', 'conexao-event-importer' ),
+					$success_count
+				);
+			}
+			if ( $skipped_count > 0 ) {
+				$parts[] = sprintf(
+					/* translators: %d: number of sources already disabled. */
+					esc_html__( '%d source(s) were already disabled.', 'conexao-event-importer' ),
+					$skipped_count
+				);
+			}
+			if ( $failure_count > 0 ) {
+				$parts[] = sprintf(
+					/* translators: %d: number of sources that failed. */
+					esc_html__( '%d source(s) could not be disabled.', 'conexao-event-importer' ),
+					$failure_count
+				);
+			}
+			$message = implode( ' ', $parts );
+			$status  = ( $failure_count > 0 ) ? 'error' : 'success';
+		} else {
+			// delete
+			$parts = array();
+			if ( $success_count > 0 ) {
+				$parts[] = sprintf(
+					/* translators: %d: number of sources deleted. */
+					esc_html__( '%d source(s) deleted successfully.', 'conexao-event-importer' ),
+					$success_count
+				);
+			}
+			if ( $failure_count > 0 ) {
+				$parts[] = sprintf(
+					/* translators: %d: number of sources that failed. */
+					esc_html__( '%d source(s) could not be deleted.', 'conexao-event-importer' ),
+					$failure_count
+				);
+			}
+			$message = implode( ' ', $parts );
+			$status  = ( $failure_count > 0 ) ? 'error' : 'success';
+		}
+
+		if ( ! empty( $invalid_ids ) ) {
+			$message .= ' ' . sprintf(
+				/* translators: %s: comma-separated list of invalid source IDs. */
+				esc_html__( 'Invalid IDs ignored: %s.', 'conexao-event-importer' ),
+				implode( ', ', array_map( 'esc_html', $invalid_ids ) )
+			);
+			$status = 'error';
+		}
+
+		wp_redirect(
+			add_query_arg(
+				array(
+					'bulk_message' => $message,
+					'bulk_status'  => $status,
+				),
+				admin_url( 'admin.php?page=conexao-event-sources' )
+			)
+		);
+		exit;
+	}
+
+	/**
 	 * Get the display label for a source type.
 	 *
 	 * @param string $type Source type.
@@ -914,6 +1110,42 @@ class Conexao_Event_Sources {
 	}
 
 	/**
+	 * Render the bulk action controls above the sources table.
+	 *
+	 * @param array $sources Source list.
+	 */
+	protected function render_bulk_actions_controls( $sources ) {
+		$source_count = count( $sources );
+		?>
+		<form method="post" id="conexao-bulk-actions-form" class="conexao-bulk-actions">
+			<?php wp_nonce_field( 'conexao_event_sources', 'conexao_event_sources_nonce' ); ?>
+			<input type="hidden" name="conexao_source_action" value="bulk_action">
+			<h2 class="screen-reader-text"><?php esc_html_e( 'Bulk actions for Event Sources', 'conexao-event-importer' ); ?></h2>
+			<div class="conexao-bulk-controls">
+				<button type="button" class="button button-secondary" id="conexao-bulk-select-all"><?php esc_html_e( 'Select All', 'conexao-event-importer' ); ?></button>
+				<button type="button" class="button button-secondary" id="conexao-bulk-deselect-all"><?php esc_html_e( 'Deselect All', 'conexao-event-importer' ); ?></button>
+				<span class="conexao-bulk-count" id="conexao-bulk-count">
+					<span class="conexao-bulk-selected-count">0</span>
+					<?php
+					printf(
+						/* translators: %d: number of selected sources. */
+						esc_html__( ' of %d selected', 'conexao-event-importer' ),
+						$source_count
+					);
+					?>
+				</span>
+				<select name="bulk_action_type" id="conexao-bulk-action-select" class="regular-text">
+					<option value=""><?php esc_html_e( 'Bulk action', 'conexao-event-importer' ); ?></option>
+					<option value="disable"><?php esc_html_e( 'Disable Selected', 'conexao-event-importer' ); ?></option>
+					<option value="delete"><?php esc_html_e( 'Delete Selected', 'conexao-event-importer' ); ?></option>
+				</select>
+				<button type="submit" class="button button-primary" id="conexao-bulk-apply" disabled><?php esc_html_e( 'Apply', 'conexao-event-importer' ); ?></button>
+			</div>
+		</form>
+		<?php
+	}
+
+	/**
 	 * Render the sources table.
 	 *
 	 * @param array $sources Source list.
@@ -923,6 +1155,7 @@ class Conexao_Event_Sources {
 		<table class="widefat striped">
 			<thead>
 				<tr>
+					<th scope="col" class="check-column"><input type="checkbox" id="conexao-bulk-header-checkbox"></th>
 					<th><?php esc_html_e( 'Name', 'conexao-event-importer' ); ?></th>
 					<th><?php esc_html_e( 'Feed URL', 'conexao-event-importer' ); ?></th>
 					<th><?php esc_html_e( 'Type', 'conexao-event-importer' ); ?></th>
@@ -935,6 +1168,7 @@ class Conexao_Event_Sources {
 			<tbody>
 				<?php foreach ( $sources as $source ) : ?>
 					<tr>
+						<th scope="row" class="check-column"><input type="checkbox" name="bulk_source_ids[]" value="<?php echo esc_attr( $source['id'] ); ?>" class="conexao-bulk-row-checkbox"></th>
 						<td>
 							<strong><?php echo esc_html( $source['name'] ); ?></strong>
 							<?php if ( 'icalendar' === $source['type'] ) : ?>
