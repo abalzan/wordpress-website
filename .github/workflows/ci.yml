@@ -358,13 +358,36 @@ jobs:
           tools: composer:v2
 
       - name: Start the local WordPress stack (ephemeral)
-        run: docker compose up -d
+        run: |
+          echo "##[group]Docker stack startup"
+          START=$(date +%s)
+          # BuildKit layer caching: pre-build the WordPress image with a cache
+          # exported to and imported from the GitHub Actions cache, keyed on the
+          # committed Dockerfile and its inputs. An unchanged build reuses all
+          # layers and is near-instant; a Dockerfile or dependency change
+          # invalidates the cache. The database and WordPress data volumes are
+          # NEVER cached — every run starts from an isolated, deterministic
+          # environment.
+          docker buildx create --use --name builder 2>/dev/null || true
+          docker buildx build \
+            --file docker/wordpress/Dockerfile \
+            --tag conexao-local/wordpress:latest \
+            --cache-from type=gha,scope=wordpress-image \
+            --cache-to type=gha,scope=wordpress-image,mode=max \
+            --load \
+            ./docker/wordpress
+          docker compose up -d
+          END=$(date +%s)
+          echo "Docker stack startup duration: $((END - START))s"
+          echo "##[endgroup]"
 
       - name: Wait for WordPress to be ready
         # An actual readiness check, not `sleep 10`: poll the front page until
         # it serves a 200 (or a redirect to the installer, which still proves
         # PHP + MySQL are answering). Also require the DB healthcheck.
         run: |
+          echo "##[group]WordPress startup and configuration"
+          START=$(date +%s)
           set -euo pipefail
           # 1. Database healthy.
           for i in $(seq 1 60); do
@@ -381,14 +404,15 @@ jobs:
             case "$code" in
               200|301|302)
                 echo "WordPress is serving (status $code)"
-                exit 0
+                break
                 ;;
             esac
+            if [ "$i" -eq 90 ]; then echo "::error::WordPress did not become ready"; docker compose logs wordpress; exit 1; fi
             sleep 2
           done
-          echo "::error::WordPress did not become ready"
-          docker compose logs wordpress
-          exit 1
+          END=$(date +%s)
+          echo "WordPress startup and configuration duration: $((END - START))s"
+          echo "##[endgroup]"
 
       # The CI-local WordPress is addressed through the running container, not
       # through a hard-coded container name (the Compose project name is derived
@@ -408,6 +432,8 @@ jobs:
       # `docker run` does not inherit. No credential is hard-coded.
       - name: Install WordPress (WP-CLI, single site, no prompts)
         run: |
+          echo "##[group]WordPress installation and configuration"
+          START=$(date +%s)
           set -euo pipefail
           WP_CONTAINER="$(docker compose ps -q wordpress)"
           [ -n "$WP_CONTAINER" ] || { echo "::error::no wordpress container"; exit 1; }
@@ -438,9 +464,14 @@ jobs:
           else
             echo "WordPress already installed; skipping core install"
           fi
+          END=$(date +%s)
+          echo "WordPress installation and configuration duration: $((END - START))s"
+          echo "##[endgroup]"
 
       - name: Activate the repository theme and plugins
         run: |
+          echo "##[group]WordPress installation and configuration"
+          START=$(date +%s)
           set -euo pipefail
           WP_CONTAINER="$(docker compose ps -q wordpress)"
           for v in WORDPRESS_DB_HOST WORDPRESS_DB_NAME WORDPRESS_DB_USER WORDPRESS_DB_PASSWORD; do
@@ -499,6 +530,9 @@ jobs:
           wp plugin activate conexao-translation-rollout
           wp plugin activate conexao-en-translation
           wp plugin list
+          END=$(date +%s)
+          echo "WordPress installation and configuration duration: $((END - START))s"
+          echo "##[endgroup]"
 
       # -------------------------------------------------------------------
       # Create the local test administrator used by the HTTP acceptance suites.
@@ -513,7 +547,10 @@ jobs:
         env:
           WP_USERNAME: ${{ env.WP_USERNAME }}
           WP_TEST_USER_PASSWORD: ${{ env.WP_TEST_USER_PASSWORD }}
+          WP_APPLICATION_PASSWORD: ${{ env.WP_APPLICATION_PASSWORD }}
         run: |
+          echo "##[group]Fixture/bootstrap execution"
+          START=$(date +%s)
           set -euo pipefail
           WP_CONTAINER="$(docker compose ps -q wordpress)"
           [ -n "$WP_CONTAINER" ] || { echo "::error::no wordpress container"; exit 1; }
@@ -524,6 +561,9 @@ jobs:
           done
           docker compose exec -T -e WP_USERNAME -e WP_TEST_USER_PASSWORD -e WP_APPLICATION_PASSWORD wordpress \
             php /var/www/html/scripts/ensure-local-test-user.php --apply
+          END=$(date +%s)
+          echo "Fixture/bootstrap execution duration: $((END - START))s"
+          echo "##[endgroup]"
 
       # -------------------------------------------------------------------
       # The deterministic synthetic site.
@@ -545,6 +585,8 @@ jobs:
       # deterministic site is exactly the failure this job exists to catch.
       - name: Build the deterministic synthetic site
         run: |
+          echo "##[group]Fixture/bootstrap execution"
+          START=$(date +%s)
           set -euo pipefail
           mkdir -p "$RUNNER_TEMP/ci-evidence"
           docker compose exec -T wordpress env HTTP_HOST=localhost REQUEST_URI=/ \
@@ -552,6 +594,9 @@ jobs:
             2>&1 | tee "$RUNNER_TEMP/ci-evidence/bootstrap-fixtures.log"
           status="${PIPESTATUS[0]}"
           echo "bootstrap-ci-fixtures.php exit status: $status"
+          END=$(date +%s)
+          echo "Fixture/bootstrap execution duration: $((END - START))s"
+          echo "##[endgroup]"
           exit "$status"
 
       - name: Report the test environment
@@ -566,9 +611,14 @@ jobs:
       # script-contracts job. A missing prerequisite FAILS, it never skips.
       - name: Run WordPress-dependent script-contract suites (Stage 14)
         run: |
+          echo "##[group]Stage 14"
+          START=$(date +%s)
           set -uo pipefail
           ./scripts/run-tests.sh --scripts-wordpress 2>&1 | tee "$RUNNER_TEMP/ci-evidence/run-tests-scripts-wordpress.log"
           status="${PIPESTATUS[0]}"
+          END=$(date +%s)
+          echo "Stage 14 duration: $((END - START))s"
+          echo "##[endgroup]"
           echo "run-tests.sh --scripts-wordpress exit status: $status"
           exit "$status"
 
@@ -585,18 +635,28 @@ jobs:
       # continue-on-error: a real failure fails the job.
       - name: Run in-process PHP suites
         run: |
+          echo "##[group]PHP suites"
+          START=$(date +%s)
           set -uo pipefail
           mkdir -p "$RUNNER_TEMP/ci-evidence"
           CONEXAO_TEST_WORKERS=2 ./scripts/run-tests.sh --php 2>&1 | tee "$RUNNER_TEMP/ci-evidence/run-tests-php.log"
           status="${PIPESTATUS[0]}"
+          END=$(date +%s)
+          echo "PHP suites duration: $((END - START))s"
+          echo "##[endgroup]"
           echo "run-tests.sh --php exit status: $status"
           exit "$status"
 
       - name: Run HTTP acceptance suites
         run: |
+          echo "##[group]HTTP acceptance tests"
+          START=$(date +%s)
           set -uo pipefail
           ./scripts/run-tests.sh --acceptance 2>&1 | tee -a "$RUNNER_TEMP/ci-evidence/run-tests-php.log"
           status="${PIPESTATUS[0]}"
+          END=$(date +%s)
+          echo "HTTP acceptance tests duration: $((END - START))s"
+          echo "##[endgroup]"
           echo "run-tests.sh --acceptance exit status: $status"
           exit "$status"
 
@@ -625,7 +685,13 @@ jobs:
       # summary, and the job verdict is still the harness exit status above.
       - name: Stage L — permanent invariant gate summary
         if: always()
-        run: python3 scripts/verify-permanent-gates.py
+        run: |
+          echo "##[group]Stage L verification"
+          START=$(date +%s)
+          python3 scripts/verify-permanent-gates.py
+          END=$(date +%s)
+          echo "Stage L verification duration: $((END - START))s"
+          echo "##[endgroup]"
 
       # -------------------------------------------------------------------
       # Failure diagnostics.
@@ -641,6 +707,8 @@ jobs:
       - name: Collect failure diagnostics
         if: failure()
         run: |
+          echo "##[group]Failure diagnostics"
+          START=$(date +%s)
           set -uo pipefail
           EVIDENCE="$RUNNER_TEMP/ci-evidence"
           mkdir -p "$EVIDENCE"
@@ -663,6 +731,9 @@ jobs:
             docker compose exec -T db sh -c 'mysql -u"$WORDPRESS_DB_USER" -p"$WORDPRESS_DB_PASSWORD" "$WORDPRESS_DB_NAME" -N -B -e "SELECT taxonomy, COUNT(*) FROM wp_term_taxonomy GROUP BY taxonomy ORDER BY taxonomy;"' 2>/dev/null || true
           } > "$EVIDENCE/content-inventory.txt" 2>&1 || true
           ls -la "$EVIDENCE"
+          END=$(date +%s)
+          echo "Failure diagnostics duration: $((END - START))s"
+          echo "##[endgroup]"
 
       # One upload, one retention policy. `if: always()`: on success these files
       # are still the machine-readable PROOF that the gates ran and passed and
@@ -688,4 +759,9 @@ jobs:
       - name: Teardown (never masks the test exit status)
         if: always()
         run: |
+          echo "##[group]Artifact upload and teardown"
+          START=$(date +%s)
           docker compose down -v --remove-orphans || true
+          END=$(date +%s)
+          echo "Artifact upload and teardown duration: $((END - START))s"
+          echo "##[endgroup]"

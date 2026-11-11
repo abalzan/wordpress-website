@@ -672,15 +672,50 @@ extract_counts() {
 	printf '%s %s' "${n:-}" "${m:-}"
 }
 
+# --- Per-suite timing (PHASE 1 instrumentation) ----------------------------
+#
+# Every suite's wall-clock duration is measured and reported alongside its
+# PASS/FAIL result. Serial suites are timed at the parent; parallel suites are
+# timed inside the worker and the duration is written to the worker's result
+# file so the parent reports the worker's own measurement, not the collection
+# time.
+
+# Emit a duration in seconds with two decimal places.
+format_seconds() {
+	local total_cents="$1"
+	local secs=$(( total_cents / 100 ))
+	local cents=$(( total_cents % 100 ))
+	printf '%d.%02d' "$secs" "$cents"
+}
+
+# Wall-clock now, in centiseconds (hundredths of a second), using the shell's
+# own EPOCHREALTIME when available (bash 5.0+) and falling back to `date`.
+now_cs() {
+	if [ -n "${EPOCHREALTIME:-}" ]; then
+		# EPOCHREALTIME is seconds with fractional digits, e.g. 1234567890.123456.
+		printf '%d' "$(printf '%.0f' "$(printf '%s' "${EPOCHREALTIME}" | awk '{print $1 * 100}')")"
+	else
+		printf '%d' "$(date +%s%N | awk '{print int($1 / 10000000)}')"
+	fi
+}
+
 # Run one PHP suite, capture exit code to a result file.
 # Used by the parallel worker pool (PHASE 3).
 run_php_captured() {
 	local suite="$1" arg="${2:-}" out_file="$3" result_file="$4"
 	set +e
+	local par_start par_end par_cs par_dur
+	par_start="$(now_cs)"
 	run_php "$suite" "$arg" >"$out_file" 2>&1
 	local code=$?
+	par_end="$(now_cs)"
+	par_cs=$(( par_end - par_start ))
+	par_dur="$(format_seconds "$par_cs")"
 	set -e
 	printf '%s' "$code" > "$result_file"
+	# Duration is recorded by the worker itself, not by the parent at
+	# collection time, so it reflects the worker's own wall-clock time.
+	printf '%s' "$par_dur" > "${result_file}.dur"
 }
 
 run_php_layer() {
@@ -744,6 +779,8 @@ run_php_layer() {
 	local serial_total=0 serial_passed=0 serial_failed=0
 	local serial_blocked=0 serial_prereq=0 serial_ap=0 serial_af=0
 	local serial_failed_names=""
+	local serial_cs_total=0
+	local -a ser_dur=()
 
 	if [ "${#ser_suite[@]}" -gt 0 ]; then
 		head1 "In-process PHP suites (serial, one process per suite)"
@@ -753,11 +790,17 @@ run_php_layer() {
 			local name="${ser_name[$i]}"
 			local out_file="${ser_out[$i]}"
 			local out code n m
+			local serial_start serial_end serial_cs serial_dur
 
+			serial_start="$(now_cs)"
 			set +e
 			run_php "${ser_suite[$i]}" "${ser_arg[$i]}" >"$out_file" 2>&1
 			code=$?
 			set -e
+			serial_end="$(now_cs)"
+			serial_cs=$(( serial_end - serial_start ))
+			serial_dur="$(format_seconds "$serial_cs")"
+			ser_dur+=("$serial_cs")
 
 			out="$(cat "$out_file")"
 
@@ -780,17 +823,17 @@ run_php_layer() {
 			if [ "$code" -eq 0 ]; then
 				serial_passed=$((serial_passed + 1))
 				if [ -n "${n:-}" ] && [ -n "${m:-}" ]; then
-					printf '%s[PASS]%s %s — %s passed, %s failed\n' "$C_PASS" "$C_RESET" "$name" "$n" "$m"
+					printf '%s[PASS]%s %s (%ss) — %s passed, %s failed\n' "$C_PASS" "$C_RESET" "$name" "$serial_dur" "$n" "$m"
 				else
-					printf '%s[PASS]%s %s — no assertion summary emitted\n' "$C_PASS" "$C_RESET" "$name"
+					printf '%s[PASS]%s %s (%ss) — no assertion summary emitted\n' "$C_PASS" "$C_RESET" "$name" "$serial_dur"
 				fi
 			elif [ "$code" -eq 124 ]; then
 				serial_failed=$((serial_failed + 1))
-				printf '%s[TIMEOUT]%s %s — exceeded %ss\n' "$C_FAIL" "$C_RESET" "$name" "$SUITE_TIMEOUT"
+				printf '%s[TIMEOUT]%s %s (%ss) — exceeded %ss\n' "$C_FAIL" "$C_RESET" "$name" "$serial_dur" "$SUITE_TIMEOUT"
 			else
 				serial_failed=$((serial_failed + 1))
 				serial_failed_names="${serial_failed_names}${name}"$'\n'
-				printf '%s[FAIL]%s %s' "$C_FAIL" "$C_RESET" "$name"
+				printf '%s[FAIL]%s %s (%ss)' "$C_FAIL" "$C_RESET" "$name" "$serial_dur"
 				if [ -n "${n:-}" ] && [ -n "${m:-}" ]; then
 					printf ' — %s passed, %s failed' "$n" "$m"
 				fi
@@ -847,6 +890,11 @@ run_php_layer() {
 
 			code="$(cat "$resfile" 2>/dev/null || printf '1')"
 			out="$(cat "$out_file")"
+			# Duration measured by the worker itself (not the parent's
+			# collection time), falling back to 0.00s if the file is absent.
+			local par_dur_file="${resfile}.dur"
+			local par_dur
+			par_dur="$(cat "$par_dur_file" 2>/dev/null || printf '0.00')"
 
 			# A WordPress bootstrap failure is a real failure, never a skip.
 			if grep -q 'conexao-test-bootstrap:' <<<"$out"; then
@@ -867,17 +915,17 @@ run_php_layer() {
 			if [ "$code" -eq 0 ]; then
 				parallel_passed=$((parallel_passed + 1))
 				if [ -n "${n:-}" ] && [ -n "${m:-}" ]; then
-					printf '%s[PASS]%s %s — %s passed, %s failed\n' "$C_PASS" "$C_RESET" "$name" "$n" "$m"
+					printf '%s[PASS]%s %s (%ss) — %s passed, %s failed\n' "$C_PASS" "$C_RESET" "$name" "$par_dur" "$n" "$m"
 				else
-					printf '%s[PASS]%s %s — no assertion summary emitted\n' "$C_PASS" "$C_RESET" "$name"
+					printf '%s[PASS]%s %s (%ss) — no assertion summary emitted\n' "$C_PASS" "$C_RESET" "$name" "$par_dur"
 				fi
 			elif [ "$code" -eq 124 ]; then
 				parallel_failed=$((parallel_failed + 1))
-				printf '%s[TIMEOUT]%s %s — exceeded %ss\n' "$C_FAIL" "$C_RESET" "$name" "$SUITE_TIMEOUT"
+				printf '%s[TIMEOUT]%s %s (%ss) — exceeded %ss\n' "$C_FAIL" "$C_RESET" "$name" "$par_dur" "$SUITE_TIMEOUT"
 			else
 				parallel_failed=$((parallel_failed + 1))
 				parallel_failed_names="${parallel_failed_names}${name}"$'\n'
-				printf '%s[FAIL]%s %s' "$C_FAIL" "$C_RESET" "$name"
+				printf '%s[FAIL]%s %s (%ss)' "$C_FAIL" "$C_RESET" "$name" "$par_dur"
 				if [ -n "${n:-}" ] && [ -n "${m:-}" ]; then
 					printf ' — %s passed, %s failed' "$n" "$m"
 				fi
@@ -889,6 +937,21 @@ run_php_layer() {
 	fi
 
 	# --- Aggregate ------------------------------------------------------------
+
+	# Serial group aggregate duration (sum of per-suite wall-clock times).
+	local serial_cs_total=0
+	for d in "${ser_dur[@]}"; do
+		serial_cs_total=$(( serial_cs_total + d ))
+	done
+
+	# Parallel group aggregate duration (worker-measured).
+	local parallel_cs_total=0
+	local count="${#par_suite[@]}"
+	for ((i=0; i<count; i++)); do
+		local pd
+		pd="$(cat "${WORK_DIR}/par-result-$i.dur" 2>/dev/null || printf '0')"
+		parallel_cs_total=$(( parallel_cs_total + $(printf '%.0f' "$(printf '%s' "$pd" | awk '{print $1 * 100}')") ))
+	done
 
 	total=$((serial_total + parallel_total))
 	passed=$((serial_passed + parallel_passed))
@@ -902,6 +965,44 @@ run_php_layer() {
 	PHP_BLOCKED=$blocked; PHP_PREREQ=$prereq
 	PHP_ASSERT_PASS=$ap; PHP_ASSERT_FAIL=$af
 	PHP_FAILED_NAMES="${serial_failed_names}${parallel_failed_names}"
+
+	# --- Timing report (PHASE 1 instrumentation) ------------------------------
+	#
+	# Aggregate durations for the SERIAL and PARALLEL groups, plus the ten
+	# slowest suites overall. Serial group time is the wall-clock sum of the
+	# serial loop (suites run one at a time). Parallel group time is the sum of
+	# worker-measured durations (each suite's own wall-clock time).
+
+	head1 "PHP suite timing"
+	log "  SERIAL group:   ${#ser_suite[@]} suite(s), $(format_seconds "$serial_cs_total")s total"
+	log "  PARALLEL group: ${#par_suite[@]} suite(s), $(format_seconds "$parallel_cs_total")s total (worker-measured)"
+	log "  PHP layer total: ${#ser_suite[@]} serial + ${#par_suite[@]} parallel = $total suite(s)"
+
+	# Build a combined list of "duration\tname" lines for the ten slowest.
+	local -a slow=()
+	local si=0
+	for ((i=0; i<${#ser_suite[@]}; i++)); do
+		local d
+		d="${ser_dur[$si]:-0}"
+		si=$((si + 1))
+		slow+=("$(format_seconds "$d")\t${ser_name[$i]}")
+	done
+	for ((i=0; i<count; i++)); do
+		local pd
+		pd="$(cat "${WORK_DIR}/par-result-$i.dur" 2>/dev/null || printf '0.00')"
+		slow+=("$(printf '%s' "$pd" | awk '{printf "%.2f", $1}')\t${par_name[$i]}")
+	done
+
+	if [ "${#slow[@]}" -gt 0 ]; then
+		log "  Ten slowest suites (by measured duration):"
+		local n=0 line d nm
+		while IFS=$'\t' read -r d nm; do
+			[ -n "$nm" ] || continue
+			printf '    %4ss  %s\n' "$d" "$nm"
+			n=$((n + 1))
+			[ "$n" -ge 10 ] && break
+		done < <(printf '%s\n' "${slow[@]}" | sort -t$'\t' -k1,1rn)
+	fi
 
 	if [ "$failed" -gt 0 ] || [ "$blocked" -gt 0 ]; then
 		return 1

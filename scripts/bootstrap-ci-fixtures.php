@@ -83,6 +83,22 @@ require_once __DIR__ . '/data/ci-fixture-laois-ics.php';
 $apply  = ( 'apply' === $ctx['mode'] );
 $verify = in_array( '--verify', (array) ( $ctx['extra'] ?? array() ), true );
 
+// Per-step timing for CI performance profiling (PHASE 4).
+$bootstrap_step_times = array();
+$bootstrap_step_start = null;
+function bootstrap_step_start() {
+	global $bootstrap_step_start;
+	$bootstrap_step_start = microtime( true );
+}
+function bootstrap_step_end( $label ) {
+	global $bootstrap_step_start, $bootstrap_step_times;
+	if ( null === $bootstrap_step_start ) {
+		return;
+	}
+	$bootstrap_step_times[ $label ] = microtime( true ) - $bootstrap_step_start;
+	$bootstrap_step_start = null;
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Counters. `created` counts RECORDS THAT DID NOT EXIST, which is the number
 // that must be 0 on a second run. `repaired` counts existing records whose
@@ -471,6 +487,7 @@ function conexao_ci_run_script( string $relative, array $args, array &$stats ): 
 // activation until a much later test failed with a confusing symptom.
 // ═════════════════════════════════════════════════════════════════════════════
 echo "\n=== step 1: canonical PT pages (asserted, created by plugin activation) ===\n";
+bootstrap_step_start();
 
 $required_pages = array(
 	'inicio',
@@ -497,6 +514,7 @@ if ( ! empty( $missing_pages ) ) {
 	);
 }
 echo '  all ' . count( $required_pages ) . " canonical PT pages present\n";
+bootstrap_step_end( 'step 1: canonical PT pages' );
 
 // ═════════════════════════════════════════════════════════════════════════════
 // STEP 1b — retire the core draft pages whose slugs collide with authored EN.
@@ -525,6 +543,7 @@ echo '  all ' . count( $required_pages ) . " canonical PT pages present\n";
 // published record untouched.
 // ═════════════════════════════════════════════════════════════════════════════
 echo "\n=== step 1b: retire core drafts that collide with authored EN slugs ===\n";
+bootstrap_step_start();
 
 foreach ( array( 'privacy-policy', 'terms-of-use' ) as $core_slug ) {
 	$core_page = get_page_by_path( $core_slug, OBJECT, 'page' );
@@ -545,6 +564,7 @@ foreach ( array( 'privacy-policy', 'terms-of-use' ) as $core_slug ) {
 	wp_trash_post( (int) $core_page->ID );
 	printf( "  %s: core draft (ID %d) trashed, freeing the authored EN slug\n", $core_slug, (int) $core_page->ID );
 }
+bootstrap_step_end( 'step 1b: retire core drafts' );
 
 /**
  * The human-authored English NAME for a translated term.
@@ -642,6 +662,7 @@ function conexao_ci_fixture_english_term( string $taxonomy, array $pt_slugs ): a
 // It is therefore ASSERTED, not merely set: the bootstrap refuses to claim
 // success on a site whose locale is not the one the product requires.
 echo "\n=== step 1d: site locale ===\n";
+bootstrap_step_start();
 
 if ( 'pt_BR' !== (string) get_locale() ) {
 	conexao_script_fail(
@@ -656,6 +677,7 @@ if ( 'pt_BR' !== (string) get_locale() ) {
 	);
 }
 echo '  locale: ' . get_locale() . " (correct)\n";
+bootstrap_step_end( 'step 1d: site locale' );
 
 // The site TIMEZONE must be Europe/Dublin.
 //
@@ -670,6 +692,7 @@ echo '  locale: ' . get_locale() . " (correct)\n";
 // content in UTC is a real defect, and the bootstrap must not be able to
 // report success over it.
 echo "\n=== step 1e: site timezone ===\n";
+bootstrap_step_start();
 
 $tz_string = (string) get_option( 'timezone_string', '' );
 if ( 'Europe/Dublin' !== $tz_string ) {
@@ -684,6 +707,7 @@ if ( 'Europe/Dublin' !== $tz_string ) {
 	);
 }
 echo '  timezone: ' . wp_timezone_string() . " (correct)\n";
+bootstrap_step_end( 'step 1e: site timezone' );
 
 // ═════════════════════════════════════════════════════════════════════════════
 // STEP 1f — retire the WordPress "Sample Page".
@@ -699,6 +723,7 @@ echo '  timezone: ' . wp_timezone_string() . " (correct)\n";
 // Trashed, never deleted, and only on an exact slug match.
 // ═════════════════════════════════════════════════════════════════════════════
 echo "\n=== step 1f: retire the WordPress sample page ===\n";
+bootstrap_step_start();
 
 $sample_page = get_page_by_path( 'sample-page', OBJECT, 'page' );
 if ( ! $sample_page instanceof WP_Post ) {
@@ -707,6 +732,7 @@ if ( ! $sample_page instanceof WP_Post ) {
 	wp_trash_post( (int) $sample_page->ID );
 	printf( "  sample-page: WordPress scaffolding (ID %d) trashed\n", (int) $sample_page->ID );
 }
+bootstrap_step_end( 'step 1f: retire sample page' );
 
 
 
@@ -756,6 +782,7 @@ if ( ! $sample_page instanceof WP_Post ) {
 // can never touch real content.
 // ═════════════════════════════════════════════════════════════════════════════
 echo "\n=== step 1c: retire the WordPress sample post ===\n";
+bootstrap_step_start();
 
 $hello = get_page_by_path( 'hello-world', OBJECT, 'post' );
 if ( ! $hello instanceof WP_Post ) {
@@ -767,6 +794,7 @@ if ( ! $hello instanceof WP_Post ) {
 		(int) $hello->ID
 	);
 }
+bootstrap_step_end( 'step 1c: retire sample post' );
 
 // ═════════════════════════════════════════════════════════════════════════════
 // STEP 2 — PT synthetic guides.
@@ -776,6 +804,7 @@ if ( ! $hello instanceof WP_Post ) {
 // and the /en/guias/ archive would have nothing to serve.
 // ═════════════════════════════════════════════════════════════════════════════
 echo "\n=== step 2: synthetic PT guides ===\n";
+bootstrap_step_start();
 
 $guides = conexao_ci_fixture_guides();
 echo '  dataset: ' . count( $guides ) . ' guides across '
@@ -796,6 +825,7 @@ if ( $apply ) {
 		);
 	}
 	printf( "  created=%d repaired=%d\n", $stats['guide_created'], $stats['guide_repaired'] );
+bootstrap_step_end( 'step 2: synthetic PT guides' );
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
@@ -805,6 +835,7 @@ if ( $apply ) {
 // posts to pair with.
 // ═════════════════════════════════════════════════════════════════════════════
 echo "\n=== step 3: synthetic PT blog posts ===\n";
+bootstrap_step_start();
 
 $posts = conexao_ci_fixture_posts();
 echo '  dataset: ' . count( $posts ) . " posts\n";
@@ -827,6 +858,7 @@ if ( $apply ) {
 		);
 	}
 	printf( "  created=%d repaired=%d\n", $stats['post_created'], $stats['post_repaired'] );
+bootstrap_step_end( 'step 3: synthetic PT blog posts' );
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
@@ -839,6 +871,7 @@ if ( $apply ) {
 // the events that reference them are created together, here.
 // ═════════════════════════════════════════════════════════════════════════════
 echo "\n=== step 4: synthetic sponsors, events and shared county/town terms ===\n";
+bootstrap_step_start();
 
 if ( $apply ) {
 	$sponsors = conexao_ci_fixture_sponsors();
@@ -903,6 +936,7 @@ if ( $apply ) {
 	// the complete population when they snapshot and verify.
 	// ═════════════════════════════════════════════════════════════════════════════
 	echo "\n=== step 4b: named cross-language fixture pairs ===\n";
+bootstrap_step_start();
 
 	// Records whose `publish` status must be re-asserted after every write. See
 	// the Keadeen note below.
@@ -1332,6 +1366,7 @@ if ( $apply ) {
 
 		printf( "  named pairs: PT=%d EN=%d link-failures=%d\n", $pt_made, $en_made, $link_fail );
 	}
+bootstrap_step_end( 'step 4b: named cross-language pairs' );
 
 
 	// TRANSLATED taxonomy terms. These are a different contract from the two
@@ -1578,6 +1613,7 @@ if ( $apply ) {
 // multi-day timed event and a VALUE=DATE all-day range.
 // ═════════════════════════════════════════════════════════════════════════════
 echo "\n=== step 4c: Laois Tourism ICS import (real importer engine) ===\n";
+bootstrap_step_start();
 
 $ics_fixture = conexao_ci_fixture_laois_ics();
 
@@ -1630,6 +1666,7 @@ if ( ! $apply ) {
 		}
 	}
 }
+bootstrap_step_end( 'step 4c: Laois Tourism ICS import' );
 
 // ═════════════════════════════════════════════════════════════════════════════
 // STEP 5 — the EXISTING directory seeders, in dependency order.
@@ -1650,6 +1687,7 @@ if ( ! $apply ) {
 // ═════════════════════════════════════════════════════════════════════════════
 if ( $apply ) {
 	echo "\n=== step 5: existing directory seeders ===\n";
+	bootstrap_step_start();
 
 	conexao_ci_run_script( 'seed-course-providers.php', array(), $stats );
 	conexao_ci_run_script( 'seed-recruitment-agencies.php', array(), $stats );
@@ -1685,6 +1723,7 @@ if ( $apply ) {
 		Conexao_Event_Query::flush_cache();
 	}
 }
+bootstrap_step_end( 'step 5: existing directory seeders' );
 
 // ═════════════════════════════════════════════════════════════════════════════
 // STEP 5b — commemorative events and landing pages.
@@ -1706,10 +1745,12 @@ if ( $apply ) {
 // ═════════════════════════════════════════════════════════════════════════════
 if ( $apply ) {
 	echo "\n=== step 5b: commemorative events and landing pages ===\n";
+	bootstrap_step_start();
 
 	conexao_ci_run_script( 'seed-commemorative-events.php', array( '--apply' ), $stats );
 	conexao_ci_run_script( 'seed-commemorative-landing-pages.php', array( '--apply' ), $stats );
 }
+bootstrap_step_end( 'step 5b: commemorative events and landing pages' );
 
 // ═════════════════════════════════════════════════════════════════════════════
 // STEP 6 — the EN translation stages, through the ONE shared engine.
@@ -1732,6 +1773,7 @@ if ( $apply ) {
 // ═════════════════════════════════════════════════════════════════════════════
 if ( $apply ) {
 	echo "\n=== step 6: EN translation stages (shared engine, existing runner) ===\n";
+	bootstrap_step_start();
 
 	foreach ( array( 'page', 'guide', 'post', 'blog-page', 'jobs-page', 'leisure-description', 'course-provider-description' ) as $stage ) {
 		conexao_ci_run_script( 'run-en-translation.php', array( '--apply', '--only=' . $stage ), $stats );
@@ -1770,6 +1812,7 @@ if ( $apply ) {
 	// script or document references a retired translation runner, so this
 	// dependency cannot be silently reintroduced.
 }
+bootstrap_step_end( 'step 6: EN translation stages' );
 
 // ── Archive order normalisation ───────────────────────────────────────────────
 //
@@ -1865,10 +1908,12 @@ if ( ! empty( $status_reassert ) ) {
 // ═════════════════════════════════════════════════════════════════════════════
 if ( $apply ) {
 	echo "\n=== step 7: EN primary menu + Polylang per-language nav assignment ===\n";
+	bootstrap_step_start();
 
 	conexao_ci_run_script( 'assign-polylang-nav-menus.php', array(), $stats );
 	conexao_ci_run_script( 'create-en-primary-menu.php', array(), $stats );
 }
+bootstrap_step_end( 'step 7: EN primary menu + Polylang nav' );
 
 // ═════════════════════════════════════════════════════════════════════════════
 // STEP 8 — permalinks and derived state.
@@ -1880,8 +1925,10 @@ if ( $apply ) {
 // ═════════════════════════════════════════════════════════════════════════════
 if ( $apply ) {
 	echo "\n=== step 8: rewrite rules ===\n";
+	bootstrap_step_start();
 	flush_rewrite_rules();
 	echo "  rewrite rules flushed\n";
+	bootstrap_step_end( 'step 8: rewrite rules' );
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
@@ -1899,6 +1946,7 @@ if ( $apply ) {
 // make a run green.
 // ═════════════════════════════════════════════════════════════════════════════
 echo "\n=== step 9: fixture audit ===\n";
+bootstrap_step_start();
 
 /**
  * Count published records of a post type, optionally restricted to a language.
@@ -2336,6 +2384,19 @@ if ( ! empty( $shortfalls ) ) {
 		printf( "    - %s: %s\n", $key, $detail );
 	}
 	$stats['errors'] += count( $shortfalls );
+}
+bootstrap_step_end( 'step 9: fixture audit' );
+
+// ── Per-step timing summary (PHASE 4 instrumentation) ────────────────────────
+if ( ! empty( $bootstrap_step_times ) ) {
+	echo "\n=== bootstrap per-step timing ===\n";
+	$total = 0.0;
+	arsort( $bootstrap_step_times );
+	foreach ( $bootstrap_step_times as $label => $seconds ) {
+		$total += $seconds;
+		printf( "  %4.2fs  %s\n", $seconds, $label );
+	}
+	printf( "  %4.2fs  TOTAL\n", $total );
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
