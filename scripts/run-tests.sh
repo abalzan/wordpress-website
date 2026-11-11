@@ -12,6 +12,8 @@
 # Usage:
 #   ./scripts/run-tests.sh                    # all layers
 #   ./scripts/run-tests.sh --scripts          # script-contract gate only
+#   ./scripts/run-tests.sh --scripts-static     # static script-contracts only (CI script-contracts job)
+#   ./scripts/run-tests.sh --scripts-wordpress  # WordPress-dependent script-contracts (CI integration job)
 #   ./scripts/run-tests.sh --acceptance       # HTTP acceptance only
 #   ./scripts/run-tests.sh --php              # in-process PHP only
 #   ./scripts/run-tests.sh --only theme       # one component
@@ -71,19 +73,22 @@ blocked() { printf '%sBLOCKED: %s%s\n' "$C_BLOCK" "$*" "$C_RESET"; }
 fail()    { printf '%sERROR: %s%s\n' "$C_FAIL" "$*" "$C_RESET" >&2; }
 
 usage() {
-	sed -n '3,25p' "${BASH_SOURCE[0]}" | sed 's/^#\{1,\} \{0,1\}//'
+	sed -n '3,27p' "${BASH_SOURCE[0]}" | sed 's/^#\{1,\} \{0,1\}//'
 }
 
 # --- Argument parsing ------------------------------------------------------
 
-MODE="both"        # both | php | acceptance
+MODE="both"        # both | php | acceptance | scripts
 ONLY=""           # component filter
 DO_LIST=0
+SCRIPT_ENV="all"
 
 while [ $# -gt 0 ]; do
 	case "$1" in
 		--acceptance) MODE="acceptance" ;;
-		--scripts)    MODE="scripts" ;;
+		--scripts)           MODE="scripts"; SCRIPT_ENV="all" ;;
+		--scripts-static)    MODE="scripts"; SCRIPT_ENV="static" ;;
+		--scripts-wordpress) MODE="scripts"; SCRIPT_ENV="wordpress" ;;
 		--php)        MODE="php" ;;
 		--only)
 			shift
@@ -139,6 +144,34 @@ discover_script_suites() {
 		[ -f "$f" ] || continue
 		printf '%s\n' "$f"
 	done | LC_ALL=C sort
+}
+
+# Execution environment required by a script-contract suite. The default is
+# static (only python3; no WordPress, no network). A suite that also needs a
+# running WordPress MUST declare it here, so it can never silently pass or be
+# silently skipped in a job that cannot satisfy it.
+script_suite_environment() {
+    case "$1" in
+        tests/scripts/verify-stage14-secret-scan.py)
+            printf 'wordpress\n'
+            ;;
+        *)
+            printf 'static\n'
+            ;;
+    esac
+}
+
+# Emit only the discovered script suites whose declared environment matches
+# the requested filter (all emits every suite).
+filter_script_env() {
+    local want="$1" f env
+    while IFS= read -r f; do
+        [ -n "$f" ] || continue
+        env="$(script_suite_environment "$f")"
+        if [ "$want" = "all" ] || [ "$want" = "$env" ]; then
+            printf '%s\n' "$f"
+        fi
+    done
 }
 
 # Component of a suite path: the theme or plugin slug, or a layer name.
@@ -250,6 +283,7 @@ suite_variants() {
 #   "<suite path>|SERIAL"     — shared-state writes or not yet reviewed (default)
 #   "<suite path>|MANUAL:<reason>"  — documented special handling, never run by default
 #
+# Suites listed as PARALLEL have been verified as read-only: no wp_insert_post, no update_option, no taxonomy changes, no shared cache writes.
 # Default: SERIAL. Every discovered suite that is not listed here is SERIAL.
 suite_classification() {
 	case "$1" in
@@ -605,7 +639,7 @@ if [ "$DO_LIST" = "1" ]; then
 	head1 "Script-contract suites"
 	while IFS= read -r p; do
 		[ -n "$p" ] || continue
-		printf '  %s\n' "$p"
+		printf '  %s [env: %s]\n' "$p" "$(script_suite_environment "$p")"
 	done < <(discover_script_suites)
 	head1 "HTTP acceptance suites"
 	while IFS= read -r p; do
@@ -626,7 +660,6 @@ fi
 PHP_TOTAL=0; PHP_PASSED=0; PHP_FAILED=0; PHP_BLOCKED=0; PHP_PREREQ=0
 PHP_ASSERT_PASS=0; PHP_ASSERT_FAIL=0
 PHP_FAILED_NAMES=""
-failed_names=""
 
 # Extract "N passed, M failed" from a suite's output. Suites that have not yet
 # been migrated to test_finish() may print a different shape; those are
@@ -682,7 +715,7 @@ run_php_layer() {
 			PARALLEL)
 				par_suite+=("$suite")
 				par_arg+=("${arg:-}")
-				local pname="$(suite_name "$suite")"
+				local pname; pname="$(suite_name "$suite")"
 				[ -n "$arg" ] && pname="$pname ($arg)"
 				par_name+=("$pname")
 				par_out+=("$WORK_DIR/$(printf '%s' "$pname" | tr '/ ()' '____').out")
@@ -694,7 +727,7 @@ run_php_layer() {
 				# SERIAL: shared-state writes or not yet reviewed (default).
 				ser_suite+=("$suite")
 				ser_arg+=("${arg:-}")
-				local sname="$(suite_name "$suite")"
+				local sname; sname="$(suite_name "$suite")"
 				[ -n "$arg" ] && sname="$sname ($arg)"
 				ser_name+=("$sname")
 				ser_out+=("$WORK_DIR/$(printf '%s' "$sname" | tr '/ ()' '____').out")
@@ -903,14 +936,14 @@ acceptance_available() {
 
 run_script_layer() {
 	local suites total=0 passed=0 failed=0
-	suites="$(discover_script_suites | filter_suites)"
+	suites="$(discover_script_suites | filter_script_env "${SCRIPT_ENV:-all}" | filter_suites)"
 
 	if [ -z "$suites" ]; then
 		log "no script-contract suites discovered under tests/scripts/"
 		return 0
 	fi
 
-	head1 "Script-contract suites (static, no WordPress, no network)"
+	head1 "Script-contract suites (environment: ${SCRIPT_ENV:-all})"
 
 	require_cmd python3
 
