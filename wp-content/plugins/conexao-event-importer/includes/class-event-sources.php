@@ -1127,7 +1127,7 @@ class Conexao_Event_Sources {
 				<button type="button" class="button button-secondary" id="conexao-bulk-select-all"><?php esc_html_e( 'Select All', 'conexao-event-importer' ); ?></button>
 				<button type="button" class="button button-secondary" id="conexao-bulk-deselect-all"><?php esc_html_e( 'Deselect All', 'conexao-event-importer' ); ?></button>
 				<span class="conexao-bulk-count" id="conexao-bulk-count">
-					<span class="conexao-bulk-selected-count">0</span>
+					<span class="conexao-bulk-selected-count" id="conexao-bulk-selected-count">0</span>
 					<?php
 					printf(
 						/* translators: %d: number of selected sources. */
@@ -1170,7 +1170,7 @@ class Conexao_Event_Sources {
 			<tbody>
 				<?php foreach ( $sources as $source ) : ?>
 					<tr>
-						<th scope="row" class="check-column"><input type="checkbox" name="bulk_source_ids[]" value="<?php echo esc_attr( $source['id'] ); ?>" class="conexao-bulk-row-checkbox"></th>
+						<th scope="row" class="check-column"><input type="checkbox" name="bulk_source_ids[]" value="<?php echo esc_attr( $source['id'] ); ?>" class="conexao-bulk-row-checkbox" form="conexao-bulk-actions-form"></th>
 						<td>
 							<strong><?php echo esc_html( $source['name'] ); ?></strong>
 							<?php if ( 'icalendar' === $source['type'] ) : ?>

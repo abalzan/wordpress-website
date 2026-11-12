@@ -201,7 +201,7 @@ final class Conexao_Event_Importer {
 		}
 		wp_enqueue_style( 'conexao-event-importer-admin', CONEXAO_EVENT_IMPORTER_URL . 'assets/admin.css', array(), CONEXAO_EVENT_IMPORTER_VERSION );
 
-		wp_enqueue_script( 'conexao-event-importer-admin', CONEXAO_EVENT_IMPORTER_URL . 'assets/admin.js', array(), CONEXAO_EVENT_IMPORTER_VERSION, true );
+		wp_enqueue_script( 'conexao-event-importer-admin', CONEXAO_EVENT_IMPORTER_URL . 'assets/admin.js', array(), filemtime( CONEXAO_EVENT_IMPORTER_DIR . 'assets/admin.js' ), true );
 		wp_localize_script(
 			'conexao-event-importer-admin',
 			'conexaoEventImporter',

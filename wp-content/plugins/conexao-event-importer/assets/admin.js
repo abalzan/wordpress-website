@@ -689,7 +689,7 @@
 			if ( ! form ) { return; }
 
 			var headerCheckbox = document.getElementById( 'conexao-bulk-header-checkbox' );
-			var rowCheckboxes  = form.querySelectorAll( 'input[name="bulk_source_ids[]"]' );
+			var rowCheckboxes  = document.querySelectorAll( ".conexao-bulk-row-checkbox" );
 			var selectAllBtn   = document.getElementById( 'conexao-bulk-select-all' );
 			var deselectAllBtn = document.getElementById( 'conexao-bulk-deselect-all' );
 			var countEl        = document.getElementById( 'conexao-bulk-selected-count' );
@@ -701,14 +701,23 @@
 			}
 
 			function updateCount() {
-				var checked = form.querySelectorAll( 'input[name="bulk_source_ids[]"]:checked' ).length;
+				var checked = document.querySelectorAll( ".conexao-bulk-row-checkbox:checked" ).length;
 				countEl.textContent = checked;
 				applyBtn.disabled = checked === 0;
 				actionSelect.disabled = checked === 0;
 				if ( checked === 0 ) {
 					actionSelect.value = '';
 				}
-				headerCheckbox.checked = checked === rowCheckboxes.length && rowCheckboxes.length > 0;
+				if ( checked === 0 ) {
+					headerCheckbox.checked = false;
+					headerCheckbox.indeterminate = false;
+				} else if ( checked === rowCheckboxes.length && rowCheckboxes.length > 0 ) {
+					headerCheckbox.checked = true;
+					headerCheckbox.indeterminate = false;
+				} else {
+					headerCheckbox.checked = false;
+					headerCheckbox.indeterminate = true;
+				}
 			}
 
 			function setAll( checked ) {
@@ -737,7 +746,7 @@
 			updateCount();
 
 			form.addEventListener( 'submit', function (e) {
-				var checked = form.querySelectorAll( 'input[name="bulk_source_ids[]"]:checked' ).length;
+				var checked = document.querySelectorAll( ".conexao-bulk-row-checkbox:checked" ).length;
 				if ( checked === 0 ) {
 					e.preventDefault();
 					return;
@@ -753,7 +762,18 @@
 			} );
 		}
 
-		document.addEventListener( 'DOMContentLoaded', function () {
-			initBulkActions();
-		} );
+		/**
+		 * Initialise bulk selection, handling both before and after
+		 * DOMContentLoaded so the script works whether it runs in the admin
+		 * footer (DOM may already be parsed) or earlier.
+		 */
+		function initBulkSelection() {
+			if ( document.readyState === 'loading' ) {
+				document.addEventListener( 'DOMContentLoaded', initBulkActions );
+			} else {
+				initBulkActions();
+			}
+		}
+
+		initBulkSelection();
 })();
