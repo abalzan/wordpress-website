@@ -51,8 +51,7 @@ SUITE_TIMEOUT="${CONEXAO_TEST_TIMEOUT:-300}"
 # Worker pool size for PARALLEL-classified suites.
 #   1  = fully sequential (default, preserves existing behaviour)
 #   2  = initial rollout for the proven read-only group
-#   4  = only after the two-worker configuration is stable
-#   6  = only when resource capacity permits and timing shows benefit
+#   4  = proven stable; CI uses 4 after two-worker rollout validated
 CONEXAO_TEST_WORKERS="${CONEXAO_TEST_WORKERS:-1}"
 
 WORK_DIR="$(mktemp -d)"
@@ -693,7 +692,10 @@ format_seconds() {
 now_cs() {
 	if [ -n "${EPOCHREALTIME:-}" ]; then
 		# EPOCHREALTIME is seconds with fractional digits, e.g. 1234567890.123456.
-		printf '%d' "$(printf '%.0f' "$(printf '%s' "${EPOCHREALTIME}" | awk '{print $1 * 100}')")"
+		# Multiply by 100 to get centiseconds. Use awk printf "%.0f" to avoid
+		# scientific notation (e.g. 1.79448e+11) which loses precision when
+		# the outer printf '%d' truncates it.
+		printf '%d' "$(printf '%s' "${EPOCHREALTIME}" | awk '{printf "%.0f", $1 * 100}')"
 	else
 		printf '%d' "$(date +%s%N | awk '{print int($1 / 10000000)}')"
 	fi
@@ -891,10 +893,16 @@ run_php_layer() {
 			code="$(cat "$resfile" 2>/dev/null || printf '1')"
 			out="$(cat "$out_file")"
 			# Duration measured by the worker itself (not the parent's
-			# collection time), falling back to 0.00s if the file is absent.
+			# collection time). A missing .dur file is an instrumentation
+			# error, not a successful 0.00-second measurement.
 			local par_dur_file="${resfile}.dur"
 			local par_dur
-			par_dur="$(cat "$par_dur_file" 2>/dev/null || printf '0.00')"
+			if [ -f "$par_dur_file" ]; then
+				par_dur="$(cat "$par_dur_file")"
+			else
+				par_dur="INSTRUMENTATION-ERROR"
+				printf '%s[INSTRUMENTATION-ERROR]%s %s — missing worker timing data\n' "$C_FAIL" "$C_RESET" "$name"
+			fi
 
 			# A WordPress bootstrap failure is a real failure, never a skip.
 			if grep -q 'conexao-test-bootstrap:' <<<"$out"; then
@@ -950,7 +958,7 @@ run_php_layer() {
 	for ((i=0; i<count; i++)); do
 		local pd
 		pd="$(cat "${WORK_DIR}/par-result-$i.dur" 2>/dev/null || printf '0')"
-		parallel_cs_total=$(( parallel_cs_total + $(printf '%.0f' "$(printf '%s' "$pd" | awk '{print $1 * 100}')") ))
+		parallel_cs_total=$(( parallel_cs_total + $(printf '%s' "$pd" | awk '{printf "%.0f", $1 * 100}') ))
 	done
 
 	total=$((serial_total + parallel_total))
@@ -985,17 +993,17 @@ run_php_layer() {
 		local d
 		d="${ser_dur[$si]:-0}"
 		si=$((si + 1))
-		slow+=("$(format_seconds "$d")\t${ser_name[$i]}")
+		slow+=("$(format_seconds "$d")"$'\t'"${ser_name[$i]}")
 	done
 	for ((i=0; i<count; i++)); do
 		local pd
 		pd="$(cat "${WORK_DIR}/par-result-$i.dur" 2>/dev/null || printf '0.00')"
-		slow+=("$(printf '%s' "$pd" | awk '{printf "%.2f", $1}')\t${par_name[$i]}")
+		slow+=("$(printf '%s' "$pd" | awk '{printf "%.2f", $1}')"$'\t'"${par_name[$i]}")
 	done
 
 	if [ "${#slow[@]}" -gt 0 ]; then
 		log "  Ten slowest suites (by measured duration):"
-		local n=0 line d nm
+		local n=0 d nm
 		while IFS=$'\t' read -r d nm; do
 			[ -n "$nm" ] || continue
 			printf '    %4ss  %s\n' "$d" "$nm"

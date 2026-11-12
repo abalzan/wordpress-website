@@ -129,6 +129,19 @@ add_filter( 'conexao_eventbrite_request_delay_seconds', '__return_zero', 99 );
 add_filter( 'conexao_eventbrite_time_budget_seconds', '__return_zero', 99 );
 add_filter( 'conexao_heritage_week_time_budget_seconds', '__return_zero', 99 );
 
+// Inject a no-op sleeper into the shared pacing policy so a 429 cooldown
+// (20-60s in production) never blocks a test. The policy itself is unchanged;
+// only the wall-clock wait is removed.
+add_filter(
+	'conexao_eventbrite_pacing',
+	static function () {
+		$pacing = new Conexao_Eventbrite_Pacing();
+		$pacing->set_sleeper( static function () {} );
+		return $pacing;
+	},
+	99
+);
+
 $plugin = Conexao_Event_Importer::instance();
 
 /**

@@ -639,7 +639,7 @@ jobs:
           START=$(date +%s)
           set -uo pipefail
           mkdir -p "$RUNNER_TEMP/ci-evidence"
-          CONEXAO_TEST_WORKERS=2 ./scripts/run-tests.sh --php 2>&1 | tee "$RUNNER_TEMP/ci-evidence/run-tests-php.log"
+          CONEXAO_TEST_WORKERS=4 ./scripts/run-tests.sh --php 2>&1 | tee "$RUNNER_TEMP/ci-evidence/run-tests-php.log"
           status="${PIPESTATUS[0]}"
           END=$(date +%s)
           echo "PHP suites duration: $((END - START))s"
