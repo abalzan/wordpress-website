@@ -492,7 +492,7 @@ class Conexao_Event_Sources {
 		$bulk_status  = isset( $_GET['bulk_status'] ) ? sanitize_text_field( wp_unslash( $_GET['bulk_status'] ) ) : '';
 		if ( '' !== $bulk_message && in_array( $bulk_status, array( 'success', 'error' ), true ) ) {
 			$notice_class = 'success' === $bulk_status ? 'notice-success' : 'notice-error';
-			echo '<div class="notice notice-' . esc_attr( $notice_class ) . ' is-dismissible"><p>' . esc_html( $bulk_message ) . '</p></div>';
+			echo '<div class="notice ' . esc_attr( $notice_class ) . ' is-dismissible"><p>' . esc_html( $bulk_message ) . '</p></div>';
 		}
 
 		// Handle actions: toggle, save, run import, delete, bulk_action.
@@ -897,11 +897,15 @@ class Conexao_Event_Sources {
 	}
 
 	/**
-	 * Handle a bulk action (disable/delete) on selected event sources.
+	 * Handle a bulk action (enable/disable/delete) on selected event sources.
 	 *
-	 * Validates the nonce, capability, and submitted source IDs against the
-	 * configured sources, then processes each source safely. Redirects back to
-	 * the Event Sources page with an admin notice summarizing results.
+	 * Verifies the capability and the existing nonce, then delegates the work to
+	 * apply_bulk_action() and redirects back to the Event Sources page with ONE
+	 * admin notice summarising the outcome.
+	 *
+	 * The redirect target and the `bulk_message` / `bulk_status` query arguments
+	 * are the ones this page has always used and are rendered by
+	 * render_sources_page(); no second notice mechanism is introduced.
 	 */
 	protected function handle_bulk_action() {
 		if ( ! current_user_can( 'manage_options' ) ) {
@@ -910,174 +914,271 @@ class Conexao_Event_Sources {
 
 		check_admin_referer( 'conexao_event_sources', 'conexao_event_sources_nonce' );
 
-		$bulk_action_type = sanitize_text_field( wp_unslash( $_POST['bulk_action_type'] ) );
-		$raw_ids          = isset( $_POST['bulk_source_ids'] ) ? $_POST['bulk_source_ids'] : array();
-		$submitted_ids    = array_map( 'sanitize_text_field', array_map( 'wp_unslash', (array) $raw_ids ) );
-
-		// Whitelist the requested bulk action.
-		$allowed_actions = array( 'disable', 'delete' );
-		if ( ! in_array( $bulk_action_type, $allowed_actions, true ) ) {
-			wp_safe_redirect(
-				add_query_arg(
-					array(
-						'bulk_message' => esc_html__( 'Invalid bulk action requested.', 'conexao-event-importer' ),
-						'bulk_status'  => 'error',
-					),
-					admin_url( 'admin.php?page=conexao-event-sources' )
-				)
-			);
-			exit;
+		$bulk_action_type = '';
+		if ( isset( $_POST['bulk_action_type'] ) && is_string( wp_unslash( $_POST['bulk_action_type'] ) ) ) {
+			$bulk_action_type = sanitize_text_field( wp_unslash( $_POST['bulk_action_type'] ) );
 		}
 
-		if ( empty( $submitted_ids ) ) {
-			wp_safe_redirect(
-				add_query_arg(
-					array(
-						'bulk_message' => esc_html__( 'No sources were selected.', 'conexao-event-importer' ),
-						'bulk_status'  => 'error',
-					),
-					admin_url( 'admin.php?page=conexao-event-sources' )
-				)
-			);
-			exit;
-		}
+		$raw_ids = isset( $_POST['bulk_source_ids'] ) ? wp_unslash( $_POST['bulk_source_ids'] ) : array();
 
-		$sources = $this->get_all();
-		$valid_ids = array();
-		$invalid_ids = array();
-
-		foreach ( $submitted_ids as $source_id ) {
-			if ( isset( $sources[ $source_id ] ) ) {
-				$valid_ids[] = $source_id;
-			} else {
-				$invalid_ids[] = $source_id;
-			}
-		}
-
-		if ( empty( $valid_ids ) ) {
-			$message = ! empty( $invalid_ids )
-				? sprintf(
-					/* translators: %s: comma-separated list of invalid source IDs. */
-					esc_html__( 'No valid sources selected. Invalid IDs: %s', 'conexao-event-importer' ),
-					implode( ', ', array_map( 'esc_html', $invalid_ids ) )
-				)
-				: esc_html__( 'No valid sources selected.', 'conexao-event-importer' );
-			wp_safe_redirect(
-				add_query_arg(
-					array(
-						'bulk_message' => $message,
-						'bulk_status'  => 'error',
-					),
-					admin_url( 'admin.php?page=conexao-event-sources' )
-				)
-			);
-			exit;
-		}
-
-		$success_count = 0;
-		$failure_count = 0;
-		$skipped_count = 0;
-		$failure_messages = array();
-
-		foreach ( $valid_ids as $source_id ) {
-			$source = $this->get( $source_id );
-			if ( ! $source ) {
-				$failure_count++;
-				$failure_messages[] = $source_id;
-				continue;
-			}
-
-			if ( 'disable' === $bulk_action_type ) {
-				// Only disable active sources; already-disabled sources stay disabled.
-				if ( 'active' === $source['status'] ) {
-					$result = $this->set_status( $source_id, 'inactive' );
-					if ( $result ) {
-						$success_count++;
-					} else {
-						$failure_count++;
-						$failure_messages[] = $source['name'];
-					}
-				} else {
-					$skipped_count++;
-				}
-			} elseif ( 'delete' === $bulk_action_type ) {
-				$result = $this->delete( $source_id );
-				if ( $result ) {
-					Conexao_Import_Log::add( $source_id, 'info', sprintf( 'Event Source "%s" was bulk-deleted by %s.', $source['name'], wp_get_current_user()->user_login ) );
-					$success_count++;
-				} else {
-					$failure_count++;
-					$failure_messages[] = $source['name'];
-				}
-			}
-		}
-
-		// Build the summary message.
-		if ( 'disable' === $bulk_action_type ) {
-			$parts = array();
-			if ( $success_count > 0 ) {
-				$parts[] = sprintf(
-					/* translators: %d: number of sources disabled. */
-					esc_html__( '%d source(s) disabled.', 'conexao-event-importer' ),
-					$success_count
-				);
-			}
-			if ( $skipped_count > 0 ) {
-				$parts[] = sprintf(
-					/* translators: %d: number of sources already disabled. */
-					esc_html__( '%d source(s) were already disabled.', 'conexao-event-importer' ),
-					$skipped_count
-				);
-			}
-			if ( $failure_count > 0 ) {
-				$parts[] = sprintf(
-					/* translators: %d: number of sources that failed. */
-					esc_html__( '%d source(s) could not be disabled.', 'conexao-event-importer' ),
-					$failure_count
-				);
-			}
-			$message = implode( ' ', $parts );
-			$status  = ( $failure_count > 0 ) ? 'error' : 'success';
-		} else {
-			// delete
-			$parts = array();
-			if ( $success_count > 0 ) {
-				$parts[] = sprintf(
-					/* translators: %d: number of sources deleted. */
-					esc_html__( '%d source(s) deleted successfully.', 'conexao-event-importer' ),
-					$success_count
-				);
-			}
-			if ( $failure_count > 0 ) {
-				$parts[] = sprintf(
-					/* translators: %d: number of sources that failed. */
-					esc_html__( '%d source(s) could not be deleted.', 'conexao-event-importer' ),
-					$failure_count
-				);
-			}
-			$message = implode( ' ', $parts );
-			$status  = ( $failure_count > 0 ) ? 'error' : 'success';
-		}
-
-		if ( ! empty( $invalid_ids ) ) {
-			$message .= ' ' . sprintf(
-				/* translators: %s: comma-separated list of invalid source IDs. */
-				esc_html__( 'Invalid IDs ignored: %s.', 'conexao-event-importer' ),
-				implode( ', ', array_map( 'esc_html', $invalid_ids ) )
-			);
-			$status = 'error';
-		}
+		$notice = $this->build_bulk_notice( $this->apply_bulk_action( $bulk_action_type, $raw_ids ) );
 
 		wp_safe_redirect(
 			add_query_arg(
 				array(
-					'bulk_message' => $message,
-					'bulk_status'  => $status,
+					'bulk_message' => $notice['message'],
+					'bulk_status'  => $notice['status'],
 				),
 				admin_url( 'admin.php?page=conexao-event-sources' )
 			)
 		);
 		exit;
+	}
+
+	/**
+	 * Apply a bulk action to the submitted source IDs.
+	 *
+	 * This is the whole registry side of the operation: no capability check, no
+	 * nonce check, no redirect and no output. handle_bulk_action() runs exactly
+	 * this implementation, and the regression suite exercises it directly —
+	 * there is no second copy of the source-management logic.
+	 *
+	 * Semantics:
+	 *
+	 * - `enable` sets `active`, `disable` sets `inactive`, `delete` removes the
+	 *   configuration. The requested status is ALWAYS the one applied: a source
+	 *   is never toggled, so a bulk action can never reverse a state by accident.
+	 * - A source that is already in the requested state is reported as skipped,
+	 *   which makes the operation idempotent and the notice truthful.
+	 * - An empty selection is an error, never a request to affect every source.
+	 *
+	 * @param mixed $action  Requested bulk action (enable|disable|delete).
+	 * @param mixed $raw_ids Submitted `bulk_source_ids[]` value.
+	 * @return array {
+	 *     Result of the operation, always with the same keys.
+	 *
+	 *     @type string $action     Requested action, '' when it was not a string.
+	 *     @type string $error      '' | invalid_action | empty_selection | no_valid_sources.
+	 *     @type int    $requested  Submitted IDs before de-duplication.
+	 *     @type int    $duplicates Number of duplicate IDs removed.
+	 *     @type array  $invalid    Submitted IDs that are not in the registry.
+	 *     @type array  $updated    IDs changed (status set, or config deleted).
+	 *     @type array  $skipped    IDs already in the requested state.
+	 *     @type array  $failed     IDs that could not be processed.
+	 * }
+	 */
+	protected function apply_bulk_action( $action, $raw_ids ) {
+		$allowed_actions = array( 'enable', 'disable', 'delete' );
+
+		$result = array(
+			'action'     => is_string( $action ) ? sanitize_text_field( $action ) : '',
+			'error'      => '',
+			'requested'  => 0,
+			'duplicates' => 0,
+			'invalid'    => array(),
+			'updated'    => array(),
+			'skipped'    => array(),
+			'failed'     => array(),
+		);
+
+		if ( ! in_array( $result['action'], $allowed_actions, true ) ) {
+			$result['error'] = 'invalid_action';
+			return $result;
+		}
+
+		$submitted_ids = array();
+		foreach ( (array) $raw_ids as $raw_id ) {
+			if ( ! is_scalar( $raw_id ) ) {
+				continue;
+			}
+			$source_id = trim( sanitize_text_field( (string) $raw_id ) );
+			if ( '' === $source_id ) {
+				continue;
+			}
+			$submitted_ids[] = $source_id;
+		}
+
+		$result['requested']  = count( $submitted_ids );
+		$unique_ids           = array_values( array_unique( $submitted_ids ) );
+		$result['duplicates'] = count( $submitted_ids ) - count( $unique_ids );
+
+		if ( empty( $unique_ids ) ) {
+			$result['error'] = 'empty_selection';
+			return $result;
+		}
+
+		$sources   = $this->get_all();
+		$valid_ids = array();
+		foreach ( $unique_ids as $source_id ) {
+			if ( isset( $sources[ $source_id ] ) ) {
+				$valid_ids[] = $source_id;
+			} else {
+				$result['invalid'][] = $source_id;
+			}
+		}
+
+		if ( empty( $valid_ids ) ) {
+			$result['error'] = 'no_valid_sources';
+			return $result;
+		}
+
+		$target_status = ( 'enable' === $result['action'] ) ? 'active' : 'inactive';
+
+		foreach ( $valid_ids as $source_id ) {
+			$source = $sources[ $source_id ];
+
+			if ( 'delete' === $result['action'] ) {
+				if ( $this->delete( $source_id ) ) {
+					Conexao_Import_Log::add(
+						$source_id,
+						'info',
+						sprintf( 'Event Source "%s" was bulk-deleted by %s.', $source['name'], wp_get_current_user()->user_login )
+					);
+					$result['updated'][] = $source_id;
+				} else {
+					$result['failed'][] = $source_id;
+				}
+				continue;
+			}
+
+			// Already in the requested state: an idempotent no-op, reported
+			// separately so the operator is never told something changed.
+			if ( $target_status === $source['status'] ) {
+				$result['skipped'][] = $source_id;
+				continue;
+			}
+
+			// Explicitly set the requested status. Never toggle.
+			if ( $this->set_status( $source_id, $target_status ) ) {
+				$result['updated'][] = $source_id;
+			} else {
+				$result['failed'][] = $source_id;
+			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Build the redirect notice for a bulk-action result.
+	 *
+	 * Messages are plain, unescaped text: render_sources_page() escapes them when
+	 * it prints the admin notice, so escaping here would double-escape a source
+	 * ID that contains an HTML special character.
+	 *
+	 * @param array $result Result from apply_bulk_action().
+	 * @return array {
+	 *     @type string $message Notice text.
+	 *     @type string $status  success | error.
+	 * }
+	 */
+	protected function build_bulk_notice( array $result ) {
+		$invalid_list = implode( ', ', $result['invalid'] );
+
+		switch ( $result['error'] ) {
+			case 'invalid_action':
+				return array(
+					'message' => __( 'Invalid bulk action requested.', 'conexao-event-importer' ),
+					'status'  => 'error',
+				);
+			case 'empty_selection':
+				return array(
+					'message' => __( 'No sources were selected.', 'conexao-event-importer' ),
+					'status'  => 'error',
+				);
+			case 'no_valid_sources':
+				return array(
+					'message' => sprintf(
+						/* translators: %s: comma-separated list of invalid source IDs. */
+						__( 'No valid sources selected. Invalid IDs: %s', 'conexao-event-importer' ),
+						$invalid_list
+					),
+					'status'  => 'error',
+				);
+		}
+
+		$updated_count = count( $result['updated'] );
+		$skipped_count = count( $result['skipped'] );
+		$failed_count  = count( $result['failed'] );
+		$parts         = array();
+
+		if ( 'delete' === $result['action'] ) {
+			if ( $updated_count > 0 ) {
+				$parts[] = sprintf(
+					/* translators: %d: number of sources deleted. */
+					__( '%d source(s) deleted successfully.', 'conexao-event-importer' ),
+					$updated_count
+				);
+			}
+			if ( $failed_count > 0 ) {
+				$parts[] = sprintf(
+					/* translators: %d: number of sources that failed. */
+					__( '%d source(s) could not be deleted.', 'conexao-event-importer' ),
+					$failed_count
+				);
+			}
+		} elseif ( 'enable' === $result['action'] ) {
+			if ( $updated_count > 0 ) {
+				$parts[] = sprintf(
+					/* translators: %d: number of sources enabled. */
+					__( '%d source(s) enabled.', 'conexao-event-importer' ),
+					$updated_count
+				);
+			}
+			if ( $skipped_count > 0 ) {
+				$parts[] = sprintf(
+					/* translators: %d: number of sources already active. */
+					__( '%d source(s) were already active.', 'conexao-event-importer' ),
+					$skipped_count
+				);
+			}
+			if ( $failed_count > 0 ) {
+				$parts[] = sprintf(
+					/* translators: %d: number of sources that failed. */
+					__( '%d source(s) could not be enabled.', 'conexao-event-importer' ),
+					$failed_count
+				);
+			}
+		} else {
+			if ( $updated_count > 0 ) {
+				$parts[] = sprintf(
+					/* translators: %d: number of sources disabled. */
+					__( '%d source(s) disabled.', 'conexao-event-importer' ),
+					$updated_count
+				);
+			}
+			if ( $skipped_count > 0 ) {
+				$parts[] = sprintf(
+					/* translators: %d: number of sources already disabled. */
+					__( '%d source(s) were already disabled.', 'conexao-event-importer' ),
+					$skipped_count
+				);
+			}
+			if ( $failed_count > 0 ) {
+				$parts[] = sprintf(
+					/* translators: %d: number of sources that failed. */
+					__( '%d source(s) could not be disabled.', 'conexao-event-importer' ),
+					$failed_count
+				);
+			}
+		}
+
+		if ( ! empty( $result['invalid'] ) ) {
+			$parts[] = sprintf(
+				/* translators: %s: comma-separated list of invalid source IDs. */
+				__( 'Invalid IDs ignored: %s.', 'conexao-event-importer' ),
+				$invalid_list
+			);
+		}
+
+		if ( empty( $parts ) ) {
+			$parts[] = __( 'No sources were changed.', 'conexao-event-importer' );
+		}
+
+		return array(
+			'message' => implode( ' ', $parts ),
+			'status'  => ( $failed_count > 0 || ! empty( $result['invalid'] ) ) ? 'error' : 'success',
+		);
 	}
 
 	/**
@@ -1126,18 +1227,29 @@ class Conexao_Event_Sources {
 			<div class="conexao-bulk-controls">
 				<button type="button" class="button button-secondary" id="conexao-bulk-select-all"><?php esc_html_e( 'Select All', 'conexao-event-importer' ); ?></button>
 				<button type="button" class="button button-secondary" id="conexao-bulk-deselect-all"><?php esc_html_e( 'Deselect All', 'conexao-event-importer' ); ?></button>
+				<?php
+				/*
+				 * The counter keeps ONE translated suffix rendered by PHP. The
+				 * selected count and the total are separate numeric spans:
+				 * assets/admin.js updates their textContent only, so the suffix is
+				 * never duplicated and the total always reflects the live DOM
+				 * (it is re-counted whenever rows are added, removed or replaced).
+				 */
+				?>
 				<span class="conexao-bulk-count" id="conexao-bulk-count">
 					<span class="conexao-bulk-selected-count" id="conexao-bulk-selected-count">0</span>
 					<?php
 					printf(
-						/* translators: %d: number of selected sources. */
-						esc_html__( ' of %d selected', 'conexao-event-importer' ),
-						(int) $source_count
+						/* translators: %s: total number of Event Sources, rendered as a live-updated number. */
+						esc_html__( ' of %s selected', 'conexao-event-importer' ),
+						'<span class="conexao-bulk-total-count" id="conexao-bulk-total-count">' . (int) $source_count . '</span>'
 					);
 					?>
 				</span>
+				<span class="conexao-bulk-status" id="conexao-bulk-status" aria-live="polite"></span>
 				<select name="bulk_action_type" id="conexao-bulk-action-select" class="regular-text">
 					<option value=""><?php esc_html_e( 'Bulk action', 'conexao-event-importer' ); ?></option>
+					<option value="enable"><?php esc_html_e( 'Enable Selected', 'conexao-event-importer' ); ?></option>
 					<option value="disable"><?php esc_html_e( 'Disable Selected', 'conexao-event-importer' ); ?></option>
 					<option value="delete"><?php esc_html_e( 'Delete Selected', 'conexao-event-importer' ); ?></option>
 				</select>
@@ -1157,7 +1269,7 @@ class Conexao_Event_Sources {
 		<table class="widefat striped">
 			<thead>
 				<tr>
-					<th scope="col" class="check-column"><input type="checkbox" id="conexao-bulk-header-checkbox"></th>
+					<th scope="col" class="check-column"><input type="checkbox" id="conexao-bulk-header-checkbox" aria-label="<?php esc_attr_e( 'Select all Event Sources', 'conexao-event-importer' ); ?>"></th>
 					<th><?php esc_html_e( 'Name', 'conexao-event-importer' ); ?></th>
 					<th><?php esc_html_e( 'Feed URL', 'conexao-event-importer' ); ?></th>
 					<th><?php esc_html_e( 'Type', 'conexao-event-importer' ); ?></th>

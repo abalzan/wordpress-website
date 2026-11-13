@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Conexão BR Irlanda — Event Importer (Local Tools)
  * Description: Local-only event import/export tooling. Fetches, normalizes, deduplicates, and imports events from configured external sources into the local WordPress database. Event images are downloaded into the Media Library locally, then the complete event data (with embedded images) is exported to JSON for import into the production WordPress.com site. Production-critical event runtime behavior (meta/taxonomy registration, _event_status, public query filtering, status admin UI) lives in the separate "Conexão BR Irlanda — Event Runtime" plugin.
- * Version: 1.9.0
+ * Version: 1.9.1
  * Requires Plugins: conexao-data-model, conexao-event-runtime
  * Text Domain: conexao-event-importer
  *
@@ -12,7 +12,7 @@
 defined( 'ABSPATH' ) || exit;
 
 define( 'CONEXAO_EVENT_IMPORTER_FILE', __FILE__ );
-define( 'CONEXAO_EVENT_IMPORTER_VERSION', '1.9.0' );
+define( 'CONEXAO_EVENT_IMPORTER_VERSION', '1.9.1' );
 define( 'CONEXAO_EVENT_IMPORTER_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CONEXAO_EVENT_IMPORTER_URL', plugin_dir_url( __FILE__ ) );
 
@@ -263,7 +263,13 @@ final class Conexao_Event_Importer {
 					/* translators: 1: file name, 2: failure reason. */
 					'fileFailedDetail'    => __( '%1$s — %2$s', 'conexao-event-importer' ),
 					/* translators: %d: number of sources to delete. */
-					'bulkDeleteConfirm'   => __( 'Delete %d source(s)?\n\nThis will remove the selected Event Source configurations. Imported events will remain in the database.', 'conexao-event-importer' ),
+					'bulkDeleteConfirm'   => __( 'Delete %d source(s)? This will remove the selected Event Source configurations. Imported events will remain in the database.', 'conexao-event-importer' ),
+					/* translators: Accessible selection feedback (one source). */
+					'bulkSelectedOne'     => __( '1 source selected', 'conexao-event-importer' ),
+					/* translators: %d: number of selected sources. */
+					'bulkSelectedMany'    => __( '%d sources selected', 'conexao-event-importer' ),
+					'bulkNoSelection'     => __( 'Select at least one Event Source before applying a bulk action.', 'conexao-event-importer' ),
+					'bulkNoAction'        => __( 'Choose a bulk action before applying it.', 'conexao-event-importer' ),
 				),
 				'nonces'    => array(
 					'importFile' => wp_create_nonce( 'conexao_import_events_multi_file' ),

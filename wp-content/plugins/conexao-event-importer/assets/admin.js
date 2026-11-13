@@ -676,104 +676,263 @@
 		});
 	}
 
+	/* ------------------------------------------------------------------ */
+	/* Bulk selection — Event Sources table                                */
+	/* ------------------------------------------------------------------ */
+
+	/**
+	 * Bulk-selection controller for the Event Sources table.
+	 *
+	 * ONE function, syncSelectionState(), derives every piece of UI state from
+	 * the LIVE checkboxes: the selected count, the total, the header checkbox
+	 * (checked / unchecked / indeterminate), the Apply button and the bulk action
+	 * selector. No JavaScript selection array is kept, so the state can never
+	 * drift from the HTML — not even when rows are added, removed or replaced.
+	 *
+	 * All interaction is delegated from the stable `.wrap.conexao-event-sources`
+	 * container, so replacing the table body (or the whole table) needs no
+	 * re-initialisation and no page reload.
+	 */
+	var BULK_ROW_SELECTOR = '.conexao-bulk-row-checkbox';
+
+	/**
+	 * Read the bulk-action whitelist from the rendered option values.
+	 *
+	 * Deriving it from the DOM instead of keeping a second hardcoded list keeps
+	 * the client-side validation in step with the server-side whitelist: an
+	 * action PHP does not render cannot be submitted from the browser.
+	 *
+	 * @param {HTMLSelectElement|null} select Bulk action selector.
+	 * @return {string[]} Allowed action values.
+	 */
+	function bulkActionValues( select ) {
+		var values = [];
+		if ( ! select || ! select.options ) { return values; }
+		for ( var i = 0; i < select.options.length; i++ ) {
+			if ( select.options[ i ].value ) {
+				values.push( select.options[ i ].value );
+			}
+		}
+		return values;
+	}
+
+	/**
+	 * Read one localized string, with an English fallback.
+	 *
+	 * @param {string} key      Key in conexaoEventImporter.i18n.
+	 * @param {string} fallback Fallback text.
+	 * @return {string} Message.
+	 */
+	function bulkI18n( key, fallback ) {
+		var config = ( typeof window !== 'undefined' ) ? window.conexaoEventImporter : null;
+		if ( config && config.i18n && config.i18n[ key ] ) {
+			return config.i18n[ key ];
+		}
+		return fallback;
+	}
+
+	/**
+	 * Initialise the bulk-selection controller.
+	 *
+	 * Guarded: the `data-conexao-bulk-init` attribute is set on the form, which
+	 * lives OUTSIDE the table and therefore survives table/row replacement. A
+	 * second call registers no listeners at all.
+	 */
+	function initBulkActions() {
+		var form = document.getElementById( 'conexao-bulk-actions-form' );
+
+		if ( ! form ) { return; }
+
+		if ( '1' === form.getAttribute( 'data-conexao-bulk-init' ) ) { return; }
+		form.setAttribute( 'data-conexao-bulk-init', '1' );
+
+		// Stable delegation container: present on the Event Sources screen and
+		// unaffected by table-body replacement.
+		var container = document.querySelector( '.wrap.conexao-event-sources' ) || form.parentNode || document;
+
+		var lastAnnouncedCount = -1;
+
+		function byId( id ) { return document.getElementById( id ); }
+		function liveRows() { return container.querySelectorAll( BULK_ROW_SELECTOR ); }
+		function liveCheckedRows() { return container.querySelectorAll( BULK_ROW_SELECTOR + ':checked' ); }
+
 		/**
-		 * Bulk selection controls for the Event Sources table.
+		 * Write the accessible status line.
 		 *
-		 * Provides Select All / Deselect All, a selected-source count, and
-		 * enables/disables the Apply button based on selection. Confirms bulk
-		 * deletion before submitting. Works without JavaScript: the form posts
-		 * normally and the server validates everything.
+		 * @param {string}  message Text.
+		 * @param {boolean} isError True for a validation failure.
 		 */
-		function initBulkActions() {
-			var form = document.getElementById( 'conexao-bulk-actions-form' );
-			if ( ! form ) { return; }
+		function showStatus( message, isError ) {
+			var statusEl = byId( 'conexao-bulk-status' );
+			if ( ! statusEl ) { return; }
+			statusEl.className = isError ? 'conexao-bulk-status conexao-bulk-status--error' : 'conexao-bulk-status';
+			statusEl.textContent = message;
+		}
 
-			var headerCheckbox = document.getElementById( 'conexao-bulk-header-checkbox' );
-			var rowCheckboxes  = document.querySelectorAll( ".conexao-bulk-row-checkbox" );
-			var selectAllBtn   = document.getElementById( 'conexao-bulk-select-all' );
-			var deselectAllBtn = document.getElementById( 'conexao-bulk-deselect-all' );
-			var countEl        = document.getElementById( 'conexao-bulk-selected-count' );
-			var actionSelect   = document.getElementById( 'conexao-bulk-action-select' );
-			var applyBtn       = document.getElementById( 'conexao-bulk-apply' );
+		/**
+		 * Announce the selection count through the aria-live region.
+		 *
+		 * @param {number} checked Number of selected rows.
+		 */
+		function announceSelection( checked ) {
+			var statusEl = byId( 'conexao-bulk-status' );
+			var hadError = !! ( statusEl && statusEl.classList && statusEl.classList.contains( 'conexao-bulk-status--error' ) );
 
-			if ( ! headerCheckbox || ! selectAllBtn || ! deselectAllBtn || ! countEl || ! actionSelect || ! applyBtn ) {
+			if ( checked === lastAnnouncedCount && ! hadError ) { return; }
+			lastAnnouncedCount = checked;
+
+			if ( 0 === checked ) {
+				showStatus( '', false );
+			} else if ( 1 === checked ) {
+				showStatus( bulkI18n( 'bulkSelectedOne', '1 source selected' ), false );
+			} else {
+				showStatus( sprintf( bulkI18n( 'bulkSelectedMany', '%d sources selected' ), checked ), false );
+			}
+		}
+
+		/**
+		 * Recompute every derived piece of state from the live DOM.
+		 *
+		 * Re-queries the checkboxes, the header and the controls on every call, so
+		 * replaced rows, a replaced table or a replaced header are all reflected.
+		 *
+		 * @return {Object} { total, checked, action, hasAction }.
+		 */
+		function syncSelectionState() {
+			var total   = liveRows().length;
+			var checked = liveCheckedRows().length;
+
+			var countEl  = byId( 'conexao-bulk-selected-count' );
+			var totalEl  = byId( 'conexao-bulk-total-count' );
+			var header   = byId( 'conexao-bulk-header-checkbox' );
+			var select   = byId( 'conexao-bulk-action-select' );
+			var applyBtn = byId( 'conexao-bulk-apply' );
+
+			// Counter: numeric spans only. The translated suffix is rendered by
+			// PHP once and is never rewritten, so it can never be duplicated.
+			if ( countEl ) { countEl.textContent = String( checked ); }
+			if ( totalEl ) { totalEl.textContent = String( total ); }
+
+			// Header checkbox: all selected, none selected, or partial.
+			if ( header ) {
+				if ( 0 === checked || 0 === total ) {
+					header.checked = false;
+					header.indeterminate = false;
+				} else if ( checked === total ) {
+					header.checked = true;
+					header.indeterminate = false;
+				} else {
+					header.checked = false;
+					header.indeterminate = true;
+				}
+			}
+
+			var action    = select ? select.value : '';
+			var hasAction = '' !== action && bulkActionValues( select ).indexOf( action ) !== -1;
+
+			// Apply is usable only with a selection AND a valid action.
+			if ( applyBtn ) { applyBtn.disabled = ( 0 === checked ) || ! hasAction; }
+			if ( select ) { select.disabled = ( 0 === checked ); }
+
+			announceSelection( checked );
+
+			return { total: total, checked: checked, action: action, hasAction: hasAction };
+		}
+
+		/**
+		 * Check or uncheck every live row checkbox, then resync.
+		 *
+		 * @param {boolean} checked Desired state.
+		 */
+		function setAllRows( checked ) {
+			var rows = liveRows();
+			for ( var i = 0; i < rows.length; i++ ) {
+				rows[ i ].checked = checked;
+			}
+			syncSelectionState();
+		}
+
+		// Delegated change handling: individual row checkboxes, the header
+		// checkbox and the action selector. Delegation survives dynamic rows.
+		container.addEventListener( 'change', function ( event ) {
+			var target = event.target;
+
+			if ( ! target || ! target.matches ) { return; }
+
+			if ( target.matches( '#conexao-bulk-header-checkbox' ) ) {
+				// The header checkbox mirrors the rows; it carries no source ID
+				// and is never submitted with the form.
+				setAllRows( target.checked );
 				return;
 			}
 
-			function updateCount() {
-				var checked = document.querySelectorAll( ".conexao-bulk-row-checkbox:checked" ).length;
-				countEl.textContent = checked;
-				applyBtn.disabled = checked === 0;
-				actionSelect.disabled = checked === 0;
-				if ( checked === 0 ) {
-					actionSelect.value = '';
-				}
-				if ( checked === 0 ) {
-					headerCheckbox.checked = false;
-					headerCheckbox.indeterminate = false;
-				} else if ( checked === rowCheckboxes.length && rowCheckboxes.length > 0 ) {
-					headerCheckbox.checked = true;
-					headerCheckbox.indeterminate = false;
-				} else {
-					headerCheckbox.checked = false;
-					headerCheckbox.indeterminate = true;
-				}
+			if ( target.matches( BULK_ROW_SELECTOR ) || target.matches( '#conexao-bulk-action-select' ) ) {
+				syncSelectionState();
+			}
+		} );
+
+		// Delegated click handling for the two helper buttons.
+		container.addEventListener( 'click', function ( event ) {
+			var target = event.target;
+
+			if ( ! target || ! target.closest ) { return; }
+
+			if ( target.closest( '#conexao-bulk-select-all' ) ) {
+				setAllRows( true );
+				return;
 			}
 
-			function setAll( checked ) {
-				for ( var i = 0; i < rowCheckboxes.length; i++ ) {
-					rowCheckboxes[i].checked = checked;
-				}
-				updateCount();
+			if ( target.closest( '#conexao-bulk-deselect-all' ) ) {
+				setAllRows( false );
+			}
+		} );
+
+		// Submission: validate again, then confirm destructive actions only.
+		form.addEventListener( 'submit', function ( event ) {
+			var state = syncSelectionState();
+
+			if ( 0 === state.checked ) {
+				event.preventDefault();
+				showStatus(
+					bulkI18n( 'bulkNoSelection', 'Select at least one Event Source before applying a bulk action.' ),
+					true
+				);
+				return;
 			}
 
-			headerCheckbox.addEventListener( 'change', function () {
-				setAll( this.checked );
-			} );
-
-			selectAllBtn.addEventListener( 'click', function () {
-				setAll( true );
-			} );
-
-			deselectAllBtn.addEventListener( 'click', function () {
-				setAll( false );
-			} );
-
-			for ( var i = 0; i < rowCheckboxes.length; i++ ) {
-				rowCheckboxes[i].addEventListener( 'change', updateCount );
+			if ( ! state.hasAction ) {
+				event.preventDefault();
+				showStatus( bulkI18n( 'bulkNoAction', 'Choose a bulk action before applying it.' ), true );
+				return;
 			}
 
-			updateCount();
+			if ( 'delete' === state.action ) {
+				var template = bulkI18n(
+					'bulkDeleteConfirm',
+					'Delete %d source(s)? This will remove the selected Event Source configurations. Imported events will remain in the database.'
+				);
+				if ( ! window.confirm( sprintf( template, state.checked ) ) ) {
+					event.preventDefault();
+				}
+			}
+		} );
 
-			form.addEventListener( 'submit', function (e) {
-				var checked = document.querySelectorAll( ".conexao-bulk-row-checkbox:checked" ).length;
-				if ( checked === 0 ) {
-					e.preventDefault();
-					return;
-				}
-				if ( 'delete' === actionSelect.value ) {
-					var message = conexaoEventImporter && conexaoEventImporter.i18n && conexaoEventImporter.i18n.bulkDeleteConfirm
-						? conexaoEventImporter.i18n.bulkDeleteConfirm.replace( '%d', checked )
-						: 'Delete ' + checked + ' source(s)?\n\nThis will remove the selected Event Source configurations. Imported events will remain in the database.';
-					if ( ! confirm( message ) ) {
-						e.preventDefault();
-					}
-				}
-			} );
+		// Initial state, derived from the rendered checkboxes and options.
+		syncSelectionState();
+	}
+
+	/**
+	 * Initialise bulk selection whether this script runs before or after
+	 * DOMContentLoaded. The init function itself is guarded, so the two paths can
+	 * never register the listeners twice.
+	 */
+	function initBulkSelection() {
+		if ( 'loading' === document.readyState ) {
+			document.addEventListener( 'DOMContentLoaded', initBulkActions );
+		} else {
+			initBulkActions();
 		}
+	}
 
-		/**
-		 * Initialise bulk selection, handling both before and after
-		 * DOMContentLoaded so the script works whether it runs in the admin
-		 * footer (DOM may already be parsed) or earlier.
-		 */
-		function initBulkSelection() {
-			if ( document.readyState === 'loading' ) {
-				document.addEventListener( 'DOMContentLoaded', initBulkActions );
-			} else {
-				initBulkActions();
-			}
-		}
-
-		initBulkSelection();
+	initBulkSelection();
 })();

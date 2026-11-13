@@ -77,6 +77,7 @@ has gone blind fails instead of passing vacuously.
 | `commemorative_placement_assets` | placement assets are planned only for placements that render on that route (and a leaked asset IS detected) | `test-commemorative-gate-placement-assets.php` | In-process PHP |
 | `commemorative_translation_ownership` | the Polylang single-owner rule (r10 §3.6) is **enforced**: `pll_copy_post_metas` carries no shared key for a commemorative copy (and a list that still does IS detected), the translated editor renders every shared field read-only with no submittable input (and an unlocked field still renders an input), the save paths persist no shared key on a translation while the canonical record keeps them, and the stored translation carries only `_ce_event_key` plus its translated copy | `test-commemorative-gate-translation-ownership.php` | In-process PHP |
 | `commemorative_ambient_runtime` | the shared scheduler's **runtime** behaviour: interval/duration bounds, the initial/subsequent split, one decoration at a time, node cleanup, the session cap across a reload and its reset in a new session, the visibility pause + cooldown, and reduced motion — **plus** the Christmas runtime surfaces: the two-sky journey controller and the homepage welcome dialog (immediate `showModal()` open, once-per-tab-session dismissal leaving nothing inline, denial of storage, close/Escape/backdrop, no reopen on resize/focus, the closed-dialog fail-closed contract with the `fallback` state, a throwing `showModal()`, the signed-preview auto-open that never writes the dismissal key, the top-of-screen obstruction offset (admin bar / preview notice / sticky header) applied on open and cleared on close, the idempotent `data-ce-welcome-claimed` boot, and no timer/interval/`requestAnimationFrame`). Executed with `node --test`; Node being unavailable reports **blocked**, never pass | `verify-commemorative-runtime.py` + `tests/node/commemorative-ambient.test.js`, `tests/node/christmas-journey.test.js`, `tests/node/christmas-welcome.test.js` | Script contract (Node) |
+| `event_importer_bulk_selection_runtime` | the Event Sources bulk-selection controller's **runtime** behaviour, driven against the shipped `assets/admin.js`: initial state, one/several selections, deselection, Select All, Deselect All, the header checkbox's checked/unchecked/indeterminate states, the selected AND total counter, Apply gated on selection **and** a valid action, the two client-side validation messages, duplicate initialisation registering no second listener, dynamically added/removed rows and a wholly replaced table, and the translated counter suffix never being rewritten. Also asserts the rendered `bulk_action_type` options equal the server-side `$allowed_actions` whitelist. Executed with `node --test`; Node being unavailable reports **blocked**, never pass | `verify-event-importer-bulk-selection.py` + `tests/node/bulk-selection.test.js` | Script contract (Node) |
 
 The seven PHP gates are registered in `scripts/verify-permanent-gates.py`; all
 eight are discovered by `./scripts/run-tests.sh` through the normal conventions.
@@ -669,6 +670,47 @@ the Node suite above, and the admin-field suite
 > grid. Neither suite was weakened: the header-injection, single-request and
 > note-placement assertions were added, and only the assertions about the removed
 > retry relabel were retired.
+
+### The Event Sources bulk-selection browser proof
+
+`tests/browser/verify-event-sources-bulk-browser.py` is the sixth opt-in browser
+layer, and it exists because the bulk-selection controller is JavaScript: a
+counter, an indeterminate header checkbox, delegated change handling and a
+gated Apply button are not observable from PHP source text.
+
+```bash
+python3 tests/browser/verify-event-sources-bulk-browser.py                 # happy path
+python3 tests/browser/verify-event-sources-bulk-browser.py --negative-control
+```
+
+It seeds four suite-owned probe sources (`brbulk_probe_a..d`), two inactive and
+two active, plus one fixture event that references `brbulk_probe_d`, and deletes
+all of them at the end. **No real configured source is selected, disabled or
+deleted.** It then drives the real admin page and asserts:
+
+- the initial counter (`0 of N selected`, exactly one suffix), unchecked header,
+  disabled Apply and disabled action selector, and the `aria-live="polite"`
+  status region;
+- every row checkbox is associated with `#conexao-bulk-actions-form` through
+  `form=`, submits as `bulk_source_ids[]`, and the header checkbox is neither
+  named nor inside that form (no nested forms either);
+- one/several selections, deselection, Select All, Deselect All, and the header
+  checkbox's all/none/indeterminate states;
+- `FormData` contains exactly the selected IDs and never the header checkbox,
+  and the captured POST body contains the selected IDs only;
+- Enable Selected and Disable Selected change **only** the selected sources
+  (checked through `wp eval` against the registry option);
+- Delete Selected shows a confirmation with the actual count, removes only that
+  configuration, keeps the other sources, and leaves the imported event in place;
+- no uncaught JavaScript error and no console error.
+
+`--negative-control` serves a mutated `assets/admin.js` with the counter update
+removed and requires the counter assertion to go **red**, which is what proves
+the suite is measuring the shipped behaviour.
+
+Its browserless halves are blocking: the in-process suite
+`wp-content/plugins/conexao-event-importer/tests/test-bulk-actions.php` (action
+semantics, validation, notices, capability/nonce) and the Node gate above.
 
 ### What lives where
 

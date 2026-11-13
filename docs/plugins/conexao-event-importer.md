@@ -9,7 +9,7 @@
 | **Build** | yes |
 | **Compose mount** | yes |
 | **Dependencies** | `conexao-data-model`, `conexao-event-runtime` |
-| **Version** | 1.9.0 (authoritative source: `wp-content/plugins/conexao-event-importer/conexao-event-importer.php` header) |
+| **Version** | 1.9.1 (authoritative source: `wp-content/plugins/conexao-event-importer/conexao-event-importer.php` header) |
 | **Registry** | [`plugins.json`](../../plugins.json) |
 
 > **Local-only tooling.** Not a production steady-state dependency.
@@ -1599,6 +1599,62 @@ Submenus:
 - Cleanup — manual trigger + status/history
 - Import Logs — view, download, clear logs
 - Settings — importer settings storage (there is nothing to save; no Eventbrite API token)
+
+### Event Sources — bulk actions and the selection controller
+
+The Event Sources table supports three bulk actions on the rows selected with
+the per-row checkboxes:
+
+| Action | Effect |
+|---|---|
+| `enable` — Enable Selected | `set_status( $id, 'active' )` for every selected source |
+| `disable` — Disable Selected | `set_status( $id, 'inactive' )` for every selected source |
+| `delete` — Delete Selected | `delete( $id )`: the **configuration** only, never the imported events |
+
+Semantics that must not be "optimised" away:
+
+- **Explicit status, never a toggle.** A bulk action sets the requested status.
+  It never reuses the per-row toggle, so a bulk action cannot reverse a state by
+  accident.
+- **Idempotent and truthfully reported.** A source already in the requested state
+  is reported as *skipped* and is not rewritten; updated, skipped and failed
+  counts appear separately in the redirect notice.
+- **An empty selection is an error, never "all sources".** The request is
+  refused and no source is touched.
+- **The core is testable.** `handle_bulk_action()` (capability + nonce +
+  redirect) delegates to `apply_bulk_action( $action, $ids )`, which returns a
+  result array and never redirects or exits. The regression suite drives that
+  core directly and the handler itself in a child PHP process, because the
+  handler terminates its process by design.
+
+Security on the request: `manage_options`, the existing
+`conexao_event_sources_nonce`, `sanitize_text_field` on every ID, de-duplication
+of submitted IDs, validation of every ID against the registry, and a whitelist
+(`enable` / `disable` / `delete`) that must equal the rendered `bulk_action_type`
+options. Only `bulk_message` / `bulk_status` are added to the existing
+`wp_safe_redirect()` back to the page.
+
+Selection UI (`assets/admin.js`, `assets/admin.css`):
+
+- ONE function, `syncSelectionState()`, derives everything from the **live**
+  checkboxes: the selected count, the total, the header checkbox
+  (checked / unchecked / indeterminate), the Apply button and the bulk action
+  selector. There is no JavaScript selection array, so state cannot drift from
+  the HTML.
+- Change/click handling is **delegated** on `.wrap.conexao-event-sources`, so a
+  replaced table body or a replaced table keeps working with no page reload.
+- Initialisation is guarded by `data-conexao-bulk-init="1"` on the
+  `#conexao-bulk-actions-form` (outside the table), so a duplicated script
+  include cannot register the listeners twice.
+- The counter is `#conexao-bulk-selected-count` (selected) plus
+  `#conexao-bulk-total-count` (total, re-counted from the DOM) inside ONE
+  translated `of %s selected` suffix rendered by PHP. JavaScript writes the two
+  numeric spans only, so the suffix can never be duplicated.
+- `#conexao-bulk-status` is an `aria-live="polite"` region: it announces the
+  selection count and the two client-side validation failures (no selection, no
+  action). Delete Selected asks for confirmation with the **actual** count and
+  states that imported events are kept.
+
 
 ## Known fixed pitfalls
 

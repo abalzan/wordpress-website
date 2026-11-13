@@ -585,6 +585,10 @@
 	font-weight: 700;
 }
 
+.conexao-bulk-total-count {
+	font-weight: 700;
+}
+
 .conexao-bulk-actions #conexao-bulk-action-select {
 	min-width: 170px;
 }
@@ -592,6 +596,19 @@
 .conexao-bulk-actions #conexao-bulk-apply[disabled] {
 	opacity: 0.5;
 	cursor: not-allowed;
+}
+
+/* Accessible live region for selection feedback. */
+.conexao-bulk-status {
+	font-size: 12px;
+	color: #646970;
+	margin-left: 8px;
+}
+
+/* A validation failure must be visible, not only announced. */
+.conexao-bulk-status--error {
+	color: #b32d2e;
+	font-weight: 600;
 }
 
 /* Checkbox column in the sources table. */
