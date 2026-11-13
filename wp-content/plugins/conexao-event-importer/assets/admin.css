@@ -558,3 +558,50 @@
 .conexao-multi-retry-btn {
 	margin-top: 12px !important;
 }
+
+/* Bulk action controls for the Event Sources table. */
+.conexao-bulk-actions {
+	margin: 16px 0;
+	padding: 12px 16px;
+	background: #f7f7f7;
+	border: 1px solid #ccd0d4;
+	border-radius: 4px;
+}
+
+.conexao-bulk-controls {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+}
+
+.conexao-bulk-count {
+	font-size: 13px;
+	color: #1d2327;
+	margin: 0 8px;
+}
+
+.conexao-bulk-selected-count {
+	font-weight: 700;
+}
+
+.conexao-bulk-actions #conexao-bulk-action-select {
+	min-width: 170px;
+}
+
+.conexao-bulk-actions #conexao-bulk-apply[disabled] {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+/* Checkbox column in the sources table. */
+.conexao-event-sources .widefat th.check-column,
+.conexao-event-sources .widefat td.check-column {
+	width: 40px;
+	text-align: center;
+}
+
+.conexao-event-sources .widefat td.check-column input[type="checkbox"],
+.conexao-event-sources .widefat th.check-column input[type="checkbox"] {
+	margin: 0;
+}

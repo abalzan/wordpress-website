@@ -129,6 +129,19 @@ add_filter( 'conexao_eventbrite_request_delay_seconds', '__return_zero', 99 );
 add_filter( 'conexao_eventbrite_time_budget_seconds', '__return_zero', 99 );
 add_filter( 'conexao_heritage_week_time_budget_seconds', '__return_zero', 99 );
 
+// Inject a no-op sleeper into the shared pacing policy so a 429 cooldown
+// (20-60s in production) never blocks a test. The policy itself is unchanged;
+// only the wall-clock wait is removed.
+add_filter(
+	'conexao_eventbrite_pacing',
+	static function () {
+		$pacing = new Conexao_Eventbrite_Pacing();
+		$pacing->set_sleeper( static function () {} );
+		return $pacing;
+	},
+	99
+);
+
 $plugin = Conexao_Event_Importer::instance();
 
 /**
@@ -425,37 +438,41 @@ assert_true( 1 === (int) $result['found'], 'G1: the event from the healthy first
 // worth one bounded retry), so 502 now belongs to the retried group below.
 // 401/403/404/408 remain non-retryable: retrying an authentication or
 // not-found condition cannot change the outcome, it only multiplies traffic.
+//
+// NOTE: the exhaustive per-status classification is asserted in full at the
+// client level by test-request-retry-policy.php (Test 2: status matrix, and
+// Test 6: attempt-count matrix). This importer-level check retains only
+// representative cases — one non-retryable and one retryable — to prove the
+// policy is applied by run_source() without duplicating the full matrix here.
 test_section( 'G1/G4B: retry classification for the first page' );
 
-foreach ( array( 401, 403, 408 ) as $code ) {
-	$no_retry_source = g1_register_source( 'eventbrite', $eb_url, $eb_cfg );
+// Non-retryable: a 403 is issued exactly once — no blind retry.
+$no_retry_source = g1_register_source( 'eventbrite', $eb_url, $eb_cfg );
 
-	g1_install_http_double( array( $eb_url => array( 'code' => $code ) ) );
-	$plugin->importer->run_source( $no_retry_source, true );
-	g1_remove_http_double();
+g1_install_http_double( array( $eb_url => array( 'code' => 403 ) ) );
+$plugin->importer->run_source( $no_retry_source, true );
+g1_remove_http_double();
 
-	$attempted = count( (array) $GLOBALS['g1_http_requests'] );
+$attempted = count( (array) $GLOBALS['g1_http_requests'] );
 
-	assert_true(
-		1 === $attempted,
-		'Retry policy: HTTP ' . $code . ' is NOT blindly retried (1 request issued, got ' . $attempted . ')'
-	);
-}
+assert_true(
+	1 === $attempted,
+	'Retry policy: HTTP 403 is NOT blindly retried (1 request issued, got ' . $attempted . ')'
+);
 
-foreach ( array( 429, 500, 502, 503, 504 ) as $code ) {
-	$retry_source = g1_register_source( 'eventbrite', $eb_url, $eb_cfg );
+// Retryable: a 429 keeps the existing 3-attempt retry at the importer level.
+$retry_source = g1_register_source( 'eventbrite', $eb_url, $eb_cfg );
 
-	g1_install_http_double( array( $eb_url => array( 'code' => $code ) ) );
-	$plugin->importer->run_source( $retry_source, true );
-	g1_remove_http_double();
+g1_install_http_double( array( $eb_url => array( 'code' => 429 ) ) );
+$plugin->importer->run_source( $retry_source, true );
+g1_remove_http_double();
 
-	$attempted = count( (array) $GLOBALS['g1_http_requests'] );
+$attempted = count( (array) $GLOBALS['g1_http_requests'] );
 
-	assert_true(
-		3 === $attempted,
-		'Retry policy: HTTP ' . $code . ' keeps the existing 3-attempt retry (got ' . $attempted . ')'
-	);
-}
+assert_true(
+	3 === $attempted,
+	'Retry policy: HTTP 429 keeps the existing 3-attempt retry (got ' . $attempted . ')'
+);
 
 // ===========================================================================
 // Cleanup

@@ -195,13 +195,13 @@ final class Conexao_Event_Importer {
 	 * Runtime plugin; only import tooling screens are covered here.
 	 */
 	public function admin_assets( $hook ) {
-		$is_import_screen = false !== strpos( $hook, 'conexao-events' ) || false !== strpos( $hook, 'conexao-event-import' ) || false !== strpos( $hook, 'conexao-event-export' ) || false !== strpos( $hook, 'conexao-event-cleanup' ) || false !== strpos( $hook, 'conexao-import-log' );
+		$is_import_screen = false !== strpos( $hook, 'conexao-events' ) || false !== strpos( $hook, 'conexao-event-import' ) || false !== strpos( $hook, 'conexao-event-export' ) || false !== strpos( $hook, 'conexao-event-cleanup' ) || false !== strpos( $hook, 'conexao-import-log' ) || false !== strpos( $hook, 'conexao-event-sources' );
 		if ( ! $is_import_screen ) {
 			return;
 		}
 		wp_enqueue_style( 'conexao-event-importer-admin', CONEXAO_EVENT_IMPORTER_URL . 'assets/admin.css', array(), CONEXAO_EVENT_IMPORTER_VERSION );
 
-		wp_enqueue_script( 'conexao-event-importer-admin', CONEXAO_EVENT_IMPORTER_URL . 'assets/admin.js', array(), CONEXAO_EVENT_IMPORTER_VERSION, true );
+		wp_enqueue_script( 'conexao-event-importer-admin', CONEXAO_EVENT_IMPORTER_URL . 'assets/admin.js', array(), filemtime( CONEXAO_EVENT_IMPORTER_DIR . 'assets/admin.js' ), true );
 		wp_localize_script(
 			'conexao-event-importer-admin',
 			'conexaoEventImporter',
@@ -262,6 +262,8 @@ final class Conexao_Event_Importer {
 					'fileSucceeded'       => __( '%1$s — %2$d created, %3$d updated', 'conexao-event-importer' ),
 					/* translators: 1: file name, 2: failure reason. */
 					'fileFailedDetail'    => __( '%1$s — %2$s', 'conexao-event-importer' ),
+					/* translators: %d: number of sources to delete. */
+					'bulkDeleteConfirm'   => __( 'Delete %d source(s)?\n\nThis will remove the selected Event Source configurations. Imported events will remain in the database.', 'conexao-event-importer' ),
 				),
 				'nonces'    => array(
 					'importFile' => wp_create_nonce( 'conexao_import_events_multi_file' ),

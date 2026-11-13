@@ -675,4 +675,105 @@
 			return value === undefined ? match : String(value);
 		});
 	}
+
+		/**
+		 * Bulk selection controls for the Event Sources table.
+		 *
+		 * Provides Select All / Deselect All, a selected-source count, and
+		 * enables/disables the Apply button based on selection. Confirms bulk
+		 * deletion before submitting. Works without JavaScript: the form posts
+		 * normally and the server validates everything.
+		 */
+		function initBulkActions() {
+			var form = document.getElementById( 'conexao-bulk-actions-form' );
+			if ( ! form ) { return; }
+
+			var headerCheckbox = document.getElementById( 'conexao-bulk-header-checkbox' );
+			var rowCheckboxes  = document.querySelectorAll( ".conexao-bulk-row-checkbox" );
+			var selectAllBtn   = document.getElementById( 'conexao-bulk-select-all' );
+			var deselectAllBtn = document.getElementById( 'conexao-bulk-deselect-all' );
+			var countEl        = document.getElementById( 'conexao-bulk-selected-count' );
+			var actionSelect   = document.getElementById( 'conexao-bulk-action-select' );
+			var applyBtn       = document.getElementById( 'conexao-bulk-apply' );
+
+			if ( ! headerCheckbox || ! selectAllBtn || ! deselectAllBtn || ! countEl || ! actionSelect || ! applyBtn ) {
+				return;
+			}
+
+			function updateCount() {
+				var checked = document.querySelectorAll( ".conexao-bulk-row-checkbox:checked" ).length;
+				countEl.textContent = checked;
+				applyBtn.disabled = checked === 0;
+				actionSelect.disabled = checked === 0;
+				if ( checked === 0 ) {
+					actionSelect.value = '';
+				}
+				if ( checked === 0 ) {
+					headerCheckbox.checked = false;
+					headerCheckbox.indeterminate = false;
+				} else if ( checked === rowCheckboxes.length && rowCheckboxes.length > 0 ) {
+					headerCheckbox.checked = true;
+					headerCheckbox.indeterminate = false;
+				} else {
+					headerCheckbox.checked = false;
+					headerCheckbox.indeterminate = true;
+				}
+			}
+
+			function setAll( checked ) {
+				for ( var i = 0; i < rowCheckboxes.length; i++ ) {
+					rowCheckboxes[i].checked = checked;
+				}
+				updateCount();
+			}
+
+			headerCheckbox.addEventListener( 'change', function () {
+				setAll( this.checked );
+			} );
+
+			selectAllBtn.addEventListener( 'click', function () {
+				setAll( true );
+			} );
+
+			deselectAllBtn.addEventListener( 'click', function () {
+				setAll( false );
+			} );
+
+			for ( var i = 0; i < rowCheckboxes.length; i++ ) {
+				rowCheckboxes[i].addEventListener( 'change', updateCount );
+			}
+
+			updateCount();
+
+			form.addEventListener( 'submit', function (e) {
+				var checked = document.querySelectorAll( ".conexao-bulk-row-checkbox:checked" ).length;
+				if ( checked === 0 ) {
+					e.preventDefault();
+					return;
+				}
+				if ( 'delete' === actionSelect.value ) {
+					var message = conexaoEventImporter && conexaoEventImporter.i18n && conexaoEventImporter.i18n.bulkDeleteConfirm
+						? conexaoEventImporter.i18n.bulkDeleteConfirm.replace( '%d', checked )
+						: 'Delete ' + checked + ' source(s)?\n\nThis will remove the selected Event Source configurations. Imported events will remain in the database.';
+					if ( ! confirm( message ) ) {
+						e.preventDefault();
+					}
+				}
+			} );
+		}
+
+		/**
+		 * Initialise bulk selection, handling both before and after
+		 * DOMContentLoaded so the script works whether it runs in the admin
+		 * footer (DOM may already be parsed) or earlier.
+		 */
+		function initBulkSelection() {
+			if ( document.readyState === 'loading' ) {
+				document.addEventListener( 'DOMContentLoaded', initBulkActions );
+			} else {
+				initBulkActions();
+			}
+		}
+
+		initBulkSelection();
 })();
