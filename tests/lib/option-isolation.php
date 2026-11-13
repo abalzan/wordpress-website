@@ -51,6 +51,13 @@ if ( ! defined( 'CONEXAO_TESTS_ROOT' ) ) {
 function test_options_isolate( array $option_names ) {
 	$snapshots = array();
 
+	// Load all autoloaded options ONCE, outside the per-option loop. Calling
+	// wp_load_alloptions() once per option name (as the old code did) means a
+	// suite isolating N options pays N full options-table scans. A single load
+	// up front is the same data for every option and is what makes isolation
+	// cheap even when many options are named.
+	$all_options = wp_load_alloptions();
+
 	foreach ( $option_names as $option_name ) {
 		$snapshots[ $option_name ] = array(
 			'existed'  => false,
@@ -81,7 +88,6 @@ function test_options_isolate( array $option_names ) {
 		//
 		// Membership of `alloptions` is ALSO the autoload flag, which is why it
 		// is recorded here and restored below.
-		$all_options = wp_load_alloptions();
 		if ( array_key_exists( $option_name, $all_options ) ) {
 			$snapshots[ $option_name ]['existed']  = true;
 			$snapshots[ $option_name ]['value']    = maybe_unserialize( $all_options[ $option_name ] );

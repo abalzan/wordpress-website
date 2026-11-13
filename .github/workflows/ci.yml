@@ -368,7 +368,12 @@ jobs:
           # invalidates the cache. The database and WordPress data volumes are
           # NEVER cached — every run starts from an isolated, deterministic
           # environment.
-          docker buildx create --use --name builder 2>/dev/null || true
+          #
+          # The runner's default BuildKit builder is used directly (no
+          # `docker buildx create` of a dedicated builder container), which
+          # avoids the BuildKit image pull and container startup on fresh
+          # runners. The default builder supports the `type=gha` cache backend
+          # on GitHub-hosted runners.
           docker buildx build \
             --file docker/wordpress/Dockerfile \
             --tag conexao-local/wordpress:latest \
@@ -639,7 +644,12 @@ jobs:
           START=$(date +%s)
           set -uo pipefail
           mkdir -p "$RUNNER_TEMP/ci-evidence"
-          CONEXAO_TEST_WORKERS=4 ./scripts/run-tests.sh --php 2>&1 | tee "$RUNNER_TEMP/ci-evidence/run-tests-php.log"
+          # Worker-count experiment (PHASE 3): measured 2, 3 and 4 workers on
+          # the same commit and suite. 3 workers is the fastest stable
+          # configuration — 4 workers regresses due to CPU contention on the
+          # serial group (901s -> 1109s), while 3 workers improves on 2
+          # (901s -> 835s serial, 259s -> 239s parallel).
+          CONEXAO_TEST_WORKERS=3 ./scripts/run-tests.sh --php 2>&1 | tee "$RUNNER_TEMP/ci-evidence/run-tests-php.log"
           status="${PIPESTATUS[0]}"
           END=$(date +%s)
           echo "PHP suites duration: $((END - START))s"
