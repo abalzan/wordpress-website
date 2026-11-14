@@ -277,6 +277,63 @@ class Conexao_Import_Log {
 	}
 
 	/**
+	 * Group log entries by the import run that produced them.
+	 *
+	 * The Import History table shows up to 100 rows and the log store retains
+	 * up to 2,000 entries. Calling get_for_run() once per row would rescan the
+	 * whole store once per row, so the dashboard builds this index ONCE per
+	 * render and reads each row's group out of it.
+	 *
+	 * Entries with no run ID are deliberately NOT grouped: a run-less entry
+	 * cannot be attributed to any historical run, and inventing an association
+	 * from the source slug or a loose timestamp match is exactly the mistake
+	 * this index exists to prevent.
+	 *
+	 * @param array $entries Log entries, newest first (as stored).
+	 * @return array<string, array[]> Run ID => entries, each group newest first.
+	 */
+	public static function index_entries_by_run( array $entries ) {
+		$index = array();
+
+		foreach ( $entries as $entry ) {
+			if ( ! is_array( $entry ) ) {
+				continue;
+			}
+
+			$run_id = isset( $entry['run_id'] ) ? trim( (string) $entry['run_id'] ) : '';
+
+			if ( '' === $run_id ) {
+				continue;
+			}
+
+			$index[ $run_id ][] = $entry;
+		}
+
+		return $index;
+	}
+
+	/**
+	 * Read one run's entries out of an index built by index_entries_by_run().
+	 *
+	 * Returns an empty array for an unknown run, which is the honest answer for
+	 * a history record whose run was never logged, or whose entries have since
+	 * been pruned by retention.
+	 *
+	 * @param array  $index  Run ID => entries.
+	 * @param string $run_id Run ID.
+	 * @return array Entries for that run, newest first.
+	 */
+	public static function entries_for_run_index( array $index, $run_id ) {
+		$run_id = trim( (string) $run_id );
+
+		if ( '' === $run_id || ! isset( $index[ $run_id ] ) || ! is_array( $index[ $run_id ] ) ) {
+			return array();
+		}
+
+		return $index[ $run_id ];
+	}
+
+	/**
 	 * Get the most recent error message for a source.
 	 *
 	 * @param string $source_id Source slug.

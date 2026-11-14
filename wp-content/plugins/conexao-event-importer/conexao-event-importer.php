@@ -152,14 +152,17 @@ final class Conexao_Event_Importer {
 		$this->sources   = new Conexao_Event_Sources();
 		$this->location  = new Conexao_Event_Location();
 		$this->importer  = new Conexao_Event_Importer_Engine( $this->sources, $this->location );
-		$this->dashboard = new Conexao_Import_Dashboard( $this->sources, $this->importer );
+
+		// Log actions (download / clear / retired-page redirect). Constructed
+		// BEFORE the dashboard so the dashboard can reuse the same instance for
+		// its retired Import Logs redirect instead of building a second one.
+		$this->log_admin = new Conexao_Import_Log_Admin();
+
+		$this->dashboard = new Conexao_Import_Dashboard( $this->sources, $this->importer, $this->log_admin );
 		$this->transfer  = new Conexao_Event_Transfer_Admin();
 		$this->image_sync = new Conexao_Event_Image_Sync_Admin();
 		$this->cleanup   = new Conexao_Event_Cleanup();
 		$this->cleanup_admin = new Conexao_Event_Cleanup_Admin( $this->cleanup );
-
-		// Import Logs admin screen + secure download / clear actions.
-		$this->log_admin = new Conexao_Import_Log_Admin();
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_assets' ) );
 
@@ -195,7 +198,7 @@ final class Conexao_Event_Importer {
 	 * Runtime plugin; only import tooling screens are covered here.
 	 */
 	public function admin_assets( $hook ) {
-		$is_import_screen = false !== strpos( $hook, 'conexao-events' ) || false !== strpos( $hook, 'conexao-event-import' ) || false !== strpos( $hook, 'conexao-event-export' ) || false !== strpos( $hook, 'conexao-event-cleanup' ) || false !== strpos( $hook, 'conexao-import-log' ) || false !== strpos( $hook, 'conexao-event-sources' );
+		$is_import_screen = false !== strpos( $hook, 'conexao-events' ) || false !== strpos( $hook, 'conexao-event-import' ) || false !== strpos( $hook, 'conexao-event-export' ) || false !== strpos( $hook, 'conexao-event-cleanup' ) || false !== strpos( $hook, 'conexao-event-sources' );
 		if ( ! $is_import_screen ) {
 			return;
 		}

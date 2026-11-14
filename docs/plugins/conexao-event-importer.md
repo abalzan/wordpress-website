@@ -96,6 +96,8 @@ production-side fetching. Everything is manual/on-demand.
 - Export/import events as portable JSON with stable UUIDs and **embedded base64 image data**
 - Log all import activity with download/clear capabilities (2,000-entry cap,
   90-day retention — see [Import logging](#import-logging))
+- Inspect a run's log inline in the Import History table, matched by `run_id`
+  (see [Import History lives on the dashboard](#import-history-lives-on-the-dashboard-v1100))
 - Manual cleanup of expired events and their exclusively-owned images
 - Auto-expire published events once their end date/time passes — expiry
   marking runs at the end of each import run (no cron; see
@@ -109,7 +111,7 @@ production-side fetching. Everything is manual/on-demand.
 - **Cap**: 2,000 entries (newest first); older entries are dropped
   automatically once the cap is reached.
 - **Retention**: entries older than 90 days are pruned opportunistically when
-  the Import Logs admin screen is opened.
+  the Import History dashboard is rendered (the one screen that reads the log).
 - **Write behavior**: during an import run the engine wraps the run in
   `Conexao_Import_Log::begin_run()` / `end_run()`. Entries are buffered in
   memory and persisted with a small number of bounded read-merge writes
@@ -140,8 +142,8 @@ production-side fetching. Everything is manual/on-demand.
 | `includes/class-source-fetch-exception.php` | `Conexao_Source_Fetch_Exception` | Structured transport/HTTP fetch failure |
 | `includes/class-import-cli.php` | `Conexao_Import_CLI` | WP-CLI commands (`wp conexao-events …`) |
 | `includes/class-import-result.php` | `Conexao_Import_Result` | Structured import result tracking |
-| `includes/class-import-log.php` | `Conexao_Import_Log` | Persistent log storage (run-buffered writes, 2,000-entry cap, 90-day retention) |
-| `includes/class-import-log-admin.php` | `Conexao_Import_Log_Admin` | Log admin UI, download, clear |
+| `includes/class-import-log.php` | `Conexao_Import_Log` | Persistent log storage (run-buffered writes, 2,000-entry cap, 90-day retention, run-index helper) |
+| `includes/class-import-log-admin.php` | `Conexao_Import_Log_Admin` | Protected log download/clear handlers, their URL builders, and the retired Import Logs screen's redirect |
 | `includes/class-import-history.php` | `Conexao_Import_History` | Import run history tracking |
 | `includes/class-event-export.php` | `Conexao_Event_Export` | JSON export with UUIDs + embedded base64 images |
 | `includes/class-event-import.php` | `Conexao_Event_Import` | JSON import with dedupe; creates attachments from embedded data |
@@ -568,7 +570,8 @@ Rules:
 Statistics are reported everywhere results are shown:
 `skipped=N (past=X, invalid_date=Y)` appears in the run summary log line, the
 WP-CLI report (`wp conexao-events import`), the admin result notice, and the
-history entry; per-event skip reasons appear in Import Logs.
+history entry; per-event skip reasons appear in the run's log (see
+[Logs in Import History](#logs-in-import-history)).
 
 ### Duplicate handling
 
@@ -1314,8 +1317,6 @@ and re-arms the continuation.
 
 ## Diagnostics: Import History, Import Logs and run correlation
 
-## Diagnostics: Import History, Import Logs and run correlation
-
 - **Import History** (`conexao_event_import_history`, 100 rows) records
   **run-level** status per source: counts, `status`, a human-readable message,
   `fatal_errors`, `failed_events`, `run_id`, the `complete` flag, and (G9) a
@@ -1335,13 +1336,17 @@ and re-arms the continuation.
 - **Import Logs** (`conexao_event_import_log`, 2,000 entries) preserve
   **diagnostic** entries: per-page and per-source detail with HTTP status and
   URL context. These are the records an operator reads to explain a failed run.
+  They are read **inline in the Import History table** — see
+  [Logs in Import History](#logs-in-import-history). The separate Import Logs
+  screen is retired.
 - **Run correlation**: the engine publishes a run ID through the
   `conexao_event_importer_current_run_id` filter. Every Eventbrite, Heritage
   Week and source-health diagnostic entry passes it as `run_id`, so
-  `Conexao_Import_Log::get_for_run()` resolves a run's entries and an Import
-  History row links to the diagnostics that explain it. There is exactly one
-  correlation identifier; no second one is invented. Entries written outside a
-  run keep an empty `run_id` and remain readable.
+  `Conexao_Import_Log::get_for_run()` resolves a run's entries and the Import
+  History row opens exactly the diagnostics that explain it. There is exactly
+  one correlation identifier; no second one is invented. Entries written outside
+  a run keep an empty `run_id`, are never attributed to a historical run, and
+  remain readable in the whole-log download.
 
 ### Test safety — diagnostics tests must not destroy operator history
 
@@ -1592,17 +1597,18 @@ Menu: Event Import (top-level menu, icon dashicons-calendar-alt)
 Submenus:
 - Event Import (dashboard) — last successful import, source statuses,
   **Import Events Now**, the Export Events link, and the **complete Import
-  History table**
+  History table with per-run Logs**
 - Event Sources — CRUD sources (incl. county, category), toggle, run single import
 - Export Events — JSON download (with embedded images)
 - Import Events — JSON upload/import (creates attachments from embedded data)
 - Image Sync — bulk sideload of remaining external banner images
 - Cleanup — manual trigger + status/history
-- Import Logs — view, download, clear logs
 - Settings — importer settings storage (there is nothing to save; no Eventbrite API token)
 
 There is no separate Import History submenu: `admin.php?page=conexao-import-history`
-was retired in v1.10.0 (see below).
+was retired in v1.10.0 (see below). There is no separate Import Logs submenu
+either: `admin.php?page=conexao-import-log` was retired once run-level log
+inspection moved into the Import History table (see below).
 
 ### Import History lives on the dashboard (v1.10.0)
 
@@ -1617,7 +1623,8 @@ which screen was complete. v1.10.0 consolidates them:
 - The history section is the complete table the dedicated page used to render:
   the same 13 columns — Time, Source, Found, New, Updated, Unchanged,
   Duplicates, Skipped, Errors, Status, **Listing**, **Progress**, **Cooldown** —
-  in the same order, with the same cells.
+  in the same order, with the same cells, plus the **Logs** column added later
+  (see [Logs in Import History](#logs-in-import-history)).
 - **The whole retained history is displayed**, not the latest 10 runs.
   `Conexao_Import_History::MAX_ENTRIES` (100) is the only limit, and it is
   applied when the run is recorded, not when the page is rendered.
@@ -1630,9 +1637,8 @@ which screen was complete. v1.10.0 consolidates them:
   continuation regression suite also drives — and **Cooldown** is unchanged. A
   checkpoint is never read as completeness, and the word "resumable" still
   appears only when a continuation is actually scheduled.
-- An empty history still renders `No imports yet.`, and the section still links
-  to the separate **Import Logs** page for detailed diagnostics.
-- The 13-column table sits in a horizontally scrollable wrapper
+- An empty history still renders `No imports yet.`
+- The 14-column table sits in a horizontally scrollable wrapper
   (`.conexao-import-history-scroll`), so narrow windows scroll the table instead
   of widening the page. No column is hidden and no JavaScript is involved.
 
@@ -1649,6 +1655,69 @@ Everyone else still gets WordPress's standard refusal.
 `record()`'s field shapes (`complete`, `cooldown`, `checkpoint`, the optional
 per-run extras) and every existing recorded row. This was a UI consolidation,
 not a data migration.
+
+### Logs in Import History
+
+The separate **Import Logs** screen (`admin.php?page=conexao-import-log`) is
+retired. Its useful part — reading the diagnostics of one import — now lives in
+the Import History table, so an operator traces an error to the run that
+produced it without leaving the table and searching an unrelated stream.
+
+**The Logs column.** Every history row has a compact 14th column, **Logs**:
+
+| State | What the cell shows |
+|---|---|
+| The run has entries | A `<details>` disclosure: `View logs (12 entries)` |
+| The run has none | `No logs` |
+| The record has no usable `run_id` | `Logs unavailable for this historical run` |
+
+The disclosure is a native `<details>` / `<summary>`, so it is keyboard-operable
+and needs no JavaScript. Expanding it shows that run's entries newest first, each
+with its timestamp, level (`DEBUG` / `INFO` / `WARNING` / `ERROR`), message, and
+— when the entry carries them — event title, source event ID, HTTP status and a
+small allowlisted set of safe context keys (URL, attempt, page, reason, post ID,
+rate-limit counters). Severity is carried by a word as well as a colour, so it
+never depends on colour alone. Long messages and URLs wrap inside the cell
+instead of widening the table.
+
+**Run association is by `run_id`, never by source.** The engine publishes a run
+ID through the `conexao_event_importer_current_run_id` filter and every
+diagnostic entry written during a run carries it. The renderer groups the stored
+log by `run_id` **once per render** (`Conexao_Import_Log::index_entries_by_run()`)
+and each row reads its own group out of that index — so a 100-row table does not
+rescan the 2,000-entry store 100 times. A source-wide fallback is deliberately
+**not** implemented: two runs on the same source must never share a log view.
+
+**Older records.** A history row written before run logging existed has no
+`run_id`. It says so (`Logs unavailable for this historical run`) rather than
+borrowing another run's entries or guessing from a timestamp. Existing history
+rows are never rewritten to add a run ID.
+
+**Downloads.** Each expanded run offers **Download this run**, which reuses the
+existing protected `admin-post.php?action=conexao_download_run_log` handler
+(`manage_options` + per-run nonce + sanitised run ID + sanitised filename). No
+new download endpoint was introduced. The whole-log download
+(`conexao_download_log`) is offered above the table.
+
+**Clear Logs.** The retired screen's destructive action survives as a **Clear
+Logs** control above the history table, still pointing at the same protected
+`conexao_clear_log` handler (`manage_options` + nonce). It requires an explicit
+confirmation and is deliberately **not** placed beside the per-row View logs
+control, so it cannot be triggered while inspecting a run. After clearing, the
+operator lands back on the dashboard.
+
+**Retired route.** `conexao-import-log` is no longer registered: no submenu, no
+page callback and no hidden page. A bookmarked URL is redirected to
+`admin.php?page=conexao-event-import` by
+`Conexao_Import_Log_Admin::maybe_redirect_retired_log_page()`, hooked to
+`admin_page_access_denied`, for a user with `manage_options` only.
+
+**What did NOT change.** The logging system itself is untouched:
+`conexao_event_import_log`, `MAX_ENTRIES = 2000`, `BUFFER_FLUSH_AT = 250`, run
+buffering (`begin_run()` / `end_run()` / `flush()`), 90-day pruning, context
+sanitisation, `get_for_run()`, `format_entry_line()` / `format_entries()`,
+`export_run()` / `export_all()` and every protected download/clear handler. Only
+the second **screen** was retired.
 
 ### Event Sources — bulk actions and the selection controller
 

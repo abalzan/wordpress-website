@@ -903,8 +903,8 @@ class Conexao_Event_Sources {
 			<?php endif; ?>
 
 			<p style="margin-top:10px;">
-				<a class="button button-secondary" href="<?php echo esc_url( admin_url( 'admin.php?page=conexao-import-log' ) ); ?>">
-					<?php esc_html_e( 'View / Download Import Logs', 'conexao-event-importer' ); ?>
+				<a class="button button-secondary" href="<?php echo esc_url( admin_url( 'admin.php?page=conexao-event-import' ) ); ?>">
+					<?php esc_html_e( 'View Import History & Logs', 'conexao-event-importer' ); ?>
 				</a>
 			</p>
 		</div>
@@ -1698,6 +1698,12 @@ class Conexao_Event_Sources {
 	 * bounds it lives in Conexao_Import_History::MAX_ENTRIES (100), applied
 	 * when a run is recorded, not when this page is rendered.
 	 *
+	 * The 14th column, **Logs**, is the run-level view of the diagnostic log:
+	 * each row opens the entries whose `run_id` equals that row's `run_id`, and
+	 * nothing else. It is the reason the separate Import Logs screen was retired
+	 * — an operator can now trace an error to the run that produced it without
+	 * leaving the history table.
+	 *
 	 * Public so the regression suite can drive the REAL renderer (including
 	 * records that predate `unchanged`, `skipped`, `complete`, `checkpoint`
 	 * and `cooldown`) instead of a copy of its logic — the same reason
@@ -1707,21 +1713,13 @@ class Conexao_Event_Sources {
 	 * @return void
 	 */
 	public function render_history_table( array $history ) {
+		$logs_index = $this->build_log_index();
 		?>
 		<h2><?php esc_html_e( 'Import History', 'conexao-event-importer' ); ?></h2>
 		<p class="description">
-			<?php
-			$logs_url = admin_url( 'admin.php?page=conexao-import-log' );
-			printf(
-				/* translators: %s: URL to the Import Logs page */
-				wp_kses(
-					__( 'For detailed import logs (including failures and API errors), see the <a href="%s">Import Logs</a> page.', 'conexao-event-importer' ),
-					array( 'a' => array( 'href' => array() ) )
-				),
-				esc_url( $logs_url )
-			);
-			?>
+			<?php esc_html_e( 'Each run row opens the log entries recorded for that exact import. Use the log actions to download the full log or clear it.', 'conexao-event-importer' ); ?>
 		</p>
+		<?php $this->render_log_store_actions(); ?>
 		<?php if ( empty( $history ) ) : ?>
 			<p><?php esc_html_e( 'No imports yet.', 'conexao-event-importer' ); ?></p>
 		<?php else : ?>
@@ -1742,6 +1740,7 @@ class Conexao_Event_Sources {
 							<th><?php esc_html_e( 'Listing', 'conexao-event-importer' ); ?></th>
 							<th><?php esc_html_e( 'Progress', 'conexao-event-importer' ); ?></th>
 							<th><?php esc_html_e( 'Cooldown', 'conexao-event-importer' ); ?></th>
+							<th><?php esc_html_e( 'Logs', 'conexao-event-importer' ); ?></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -1805,6 +1804,9 @@ class Conexao_Event_Sources {
 
 									echo esc_html( $text );
 									?>
+								</td>
+								<td class="conexao-history-logs-cell">
+									<?php $this->render_history_logs_cell( $entry, $logs_index ); ?>
 								</td>
 							</tr>
 						<?php endforeach; ?>
@@ -1917,5 +1919,249 @@ class Conexao_Event_Sources {
 		}
 
 		return $text . ' — ' . __( 'NOT scheduled — no continuation exists', 'conexao-event-importer' );
+	}
+
+	/**
+	 * Build the run-ID → log-entries index used by the Logs column.
+	 *
+	 * One read of the log store per render, not one per history row: the table
+	 * can show 100 rows while the store retains 2,000 entries, so a per-row
+	 * get_for_run() would rescan the whole store 100 times. The index is built
+	 * once here and each row reads its own group out of it.
+	 *
+	 * @return array<string, array[]> Run ID => entries, newest first.
+	 */
+	protected function build_log_index() {
+		if ( ! class_exists( 'Conexao_Import_Log' ) ) {
+			return array();
+		}
+
+		return Conexao_Import_Log::index_entries_by_run( Conexao_Import_Log::get_all() );
+	}
+
+	/**
+	 * Render the whole-log actions that used to live on the retired Import Logs
+	 * screen: download everything, and clear everything.
+	 *
+	 * Both reuse the existing protected admin-post handlers (capability check +
+	 * nonce + sanitisation) through Conexao_Import_Log_Admin, so retiring the
+	 * screen did not duplicate or weaken either action. Clear is destructive, so
+	 * it is deliberately NOT placed beside the per-row "View logs" control: it
+	 * sits here, above the table, behind an explicit confirmation.
+	 *
+	 * @return void
+	 */
+	protected function render_log_store_actions() {
+		if ( ! class_exists( 'Conexao_Import_Log_Admin' ) ) {
+			return;
+		}
+		?>
+		<p class="conexao-history-log-actions">
+			<a class="button button-secondary" href="<?php echo esc_url( Conexao_Import_Log_Admin::log_download_all_url() ); ?>">
+				<?php esc_html_e( 'Download Import Logs (.log)', 'conexao-event-importer' ); ?>
+			</a>
+			<a
+				class="button button-link-delete"
+				href="<?php echo esc_url( Conexao_Import_Log_Admin::clear_log_url() ); ?>"
+				data-conexao-confirm="<?php echo esc_attr__( 'This will permanently delete ALL Event Importer logs. This cannot be undone. Continue?', 'conexao-event-importer' ); ?>"
+			>
+				<?php esc_html_e( 'Clear Logs', 'conexao-event-importer' ); ?>
+			</a>
+		</p>
+		<?php
+	}
+
+	/**
+	 * Render one Import History row's Logs cell.
+	 *
+	 * The cell answers exactly one question: "what did THIS run log?" — so the
+	 * entries come from the row's own `run_id` and never from its source. A
+	 * source-wide fallback would mix messages from different runs into one row,
+	 * which is the confusion this column exists to remove.
+	 *
+	 * Three states, all honest:
+	 *   - a run with entries  → a <details> disclosure, "View logs (N)".
+	 *   - a run with none     → "No logs".
+	 *   - no usable run ID    → "Logs unavailable for this historical run".
+	 *
+	 * @param array $entry      One Import History entry.
+	 * @param array $logs_index Run ID => entries, from build_log_index().
+	 * @return void
+	 */
+	protected function render_history_logs_cell( array $entry, array $logs_index ) {
+		$run_id = isset( $entry['run_id'] ) ? trim( (string) $entry['run_id'] ) : '';
+
+		// A record written before run logging existed has no run to look up.
+		// Saying so is the only correct answer: the source-wide log is NOT this
+		// run's log, and a timestamp match would be a guess.
+		if ( '' === $run_id ) {
+			echo '<span class="conexao-history-logs-empty">' . esc_html__( 'Logs unavailable for this historical run', 'conexao-event-importer' ) . '</span>';
+			return;
+		}
+
+		$entries = Conexao_Import_Log::entries_for_run_index( $logs_index, $run_id );
+
+		if ( empty( $entries ) ) {
+			echo '<span class="conexao-history-logs-empty">' . esc_html__( 'No logs', 'conexao-event-importer' ) . '</span>';
+			return;
+		}
+
+		$run_entries   = $entries;
+		$preview_limit = 50;
+		$preview       = array_slice( $run_entries, 0, $preview_limit );
+		$total         = count( $run_entries );
+		?>
+		<details class="conexao-history-logs">
+			<summary>
+				<?php
+				echo esc_html(
+					sprintf(
+						/* translators: %d: number of log entries recorded for this run */
+						_n(
+							'View logs (%d entry)',
+							'View logs (%d entries)',
+							$total,
+							'conexao-event-importer'
+						),
+						$total
+					)
+				);
+				?>
+			</summary>
+			<div class="conexao-history-logs-panel">
+				<ul class="conexao-history-log-list">
+					<?php foreach ( $preview as $log_entry ) : ?>
+						<?php $this->render_history_log_entry( $log_entry ); ?>
+					<?php endforeach; ?>
+				</ul>
+				<?php if ( $total > $preview_limit ) : ?>
+					<p class="conexao-history-logs-more description">
+						<?php
+						echo esc_html(
+							sprintf(
+								/* translators: 1: number of entries shown, 2: total number of entries */
+								__( 'Showing the newest %1$d of %2$d entries. Download this run to read the complete log.', 'conexao-event-importer' ),
+								$preview_limit,
+								$total
+							)
+						);
+						?>
+					</p>
+				<?php endif; ?>
+				<p class="conexao-history-logs-download">
+					<a class="button button-small" href="<?php echo esc_url( Conexao_Import_Log_Admin::run_log_download_url( $run_id ) ); ?>">
+						<?php esc_html_e( 'Download this run', 'conexao-event-importer' ); ?>
+					</a>
+				</p>
+			</div>
+		</details>
+		<?php
+	}
+
+	/**
+	 * Render one structured log entry inside a run's Logs panel.
+	 *
+	 * Every value is escaped at output. The level is a word as well as a colour,
+	 * so the severity never depends on colour alone, and the message is a text
+	 * node rather than raw HTML — log content is data, never markup.
+	 *
+	 * @param array $log_entry Structured log entry.
+	 * @return void
+	 */
+	protected function render_history_log_entry( array $log_entry ) {
+		$level   = isset( $log_entry['level'] ) ? (string) $log_entry['level'] : 'info';
+		$time    = isset( $log_entry['time'] ) ? (string) $log_entry['time'] : '';
+		$message = isset( $log_entry['message'] ) ? (string) $log_entry['message'] : '';
+
+		$event_title = isset( $log_entry['event_title'] ) ? trim( (string) $log_entry['event_title'] ) : '';
+		$event_id    = isset( $log_entry['event_id'] ) ? trim( (string) $log_entry['event_id'] ) : '';
+		$http_status = isset( $log_entry['http_status'] ) ? (int) $log_entry['http_status'] : 0;
+		$context     = isset( $log_entry['context'] ) && is_array( $log_entry['context'] ) ? $log_entry['context'] : array();
+
+		// Only the context keys the on-screen view can actually explain. The
+		// store already drops sensitive keys; this is a second, display-side
+		// allowlist so a future stored key cannot leak into the panel.
+		$context_labels = array(
+			'url'               => __( 'URL', 'conexao-event-importer' ),
+			'source_url'        => __( 'Source URL', 'conexao-event-importer' ),
+			'attempt'           => __( 'Attempt', 'conexao-event-importer' ),
+			'post_id'           => __( 'Post ID', 'conexao-event-importer' ),
+			'page'              => __( 'Page', 'conexao-event-importer' ),
+			'reason'            => __( 'Reason', 'conexao-event-importer' ),
+			'reason_code'       => __( 'Reason code', 'conexao-event-importer' ),
+			'cooldown_seconds'  => __( 'Cooldown (s)', 'conexao-event-importer' ),
+			'retry_after'       => __( 'Retry after (s)', 'conexao-event-importer' ),
+			'rate_limit_hits'   => __( 'Rate-limit hits', 'conexao-event-importer' ),
+			'rate_limit_streak' => __( 'Rate-limit streak', 'conexao-event-importer' ),
+		);
+
+		$shown_context = array();
+		foreach ( $context_labels as $key => $label ) {
+			if ( ! isset( $context[ $key ] ) ) {
+				continue;
+			}
+
+			$value = $context[ $key ];
+
+			if ( ! is_scalar( $value ) || '' === (string) $value ) {
+				continue;
+			}
+
+			$shown_context[ $label ] = (string) $value;
+		}
+		?>
+		<li class="conexao-history-log-entry conexao-history-log-entry--<?php echo esc_attr( $level ); ?>">
+			<span class="conexao-history-log-meta">
+				<span class="conexao-history-log-level"><?php echo esc_html( strtoupper( $level ) ); ?></span>
+				<?php if ( '' !== $time ) : ?>
+					<span class="conexao-history-log-time"><?php echo esc_html( $time ); ?></span>
+				<?php endif; ?>
+				<?php if ( '' !== $event_title || '' !== $event_id ) : ?>
+					<span class="conexao-history-log-event">
+						<?php if ( '' !== $event_title ) : ?>
+							<?php echo esc_html( $event_title ); ?>
+						<?php endif; ?>
+						<?php if ( '' !== $event_id ) : ?>
+							<span class="conexao-history-log-event-id">
+								<?php
+								echo esc_html(
+									sprintf(
+										/* translators: %s: source event ID */
+										__( '(ID %s)', 'conexao-event-importer' ),
+										$event_id
+									)
+								);
+								?>
+							</span>
+						<?php endif; ?>
+					</span>
+				<?php endif; ?>
+				<?php if ( $http_status > 0 ) : ?>
+					<span class="conexao-history-log-http">
+						<?php
+						echo esc_html(
+							sprintf(
+								/* translators: %d: HTTP status code */
+								__( 'HTTP %d', 'conexao-event-importer' ),
+								$http_status
+							)
+						);
+						?>
+					</span>
+				<?php endif; ?>
+			</span>
+			<span class="conexao-history-log-message"><?php echo esc_html( $message ); ?></span>
+			<?php if ( ! empty( $shown_context ) ) : ?>
+				<span class="conexao-history-log-context">
+					<?php foreach ( $shown_context as $label => $value ) : ?>
+						<span class="conexao-history-log-context-item">
+							<span class="conexao-history-log-context-label"><?php echo esc_html( $label ); ?>:</span>
+							<span class="conexao-history-log-context-value"><?php echo esc_html( $value ); ?></span>
+						</span>
+					<?php endforeach; ?>
+				</span>
+			<?php endif; ?>
+		</li>
+		<?php
 	}
 }

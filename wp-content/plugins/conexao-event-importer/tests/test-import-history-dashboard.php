@@ -18,19 +18,21 @@
  * ## What it proves
  *
  *   A. The dashboard renders the FULL retained history (12 records, not 10),
- *      newest first, with the oldest record still present, in a 13-column table.
- *   B. Every detailed column survives: Listing, Progress, Cooldown — plus the
- *      ten summary columns that existed before.
+ *      newest first, with the oldest record still present, in a 14-column table.
+ *   B. Every detailed column survives: Listing, Progress, Cooldown, Logs —
+ *      plus the ten summary columns that existed before.
  *   C. The Progress cell is produced by the production helper
  *      `Conexao_Event_Sources::history_progress_text()`, not by a second
  *      calculation, and that helper is defined exactly once.
  *   D. An empty history renders the existing empty state, with no warning.
  *   E. A historical record that predates the optional fields still renders its
  *      documented fallbacks, with no warning or notice.
- *   F. The Import Logs link is still offered, so detailed diagnostics remain
- *      reachable from the single history screen.
+ *   F. The Import Logs screen is retired: its submenu is gone, its page
+ *      callback is gone, and the retired URL resolves to the dashboard for an
+ *      administrator (and only for one). The log store and its protected
+ *      download/clear handlers survive.
  *   G. `conexao-import-history` is no longer a registered submenu, its page
- *      callback is gone, the dashboard/Event Sources/Import Logs pages are still
+ *      callback is gone, the dashboard/Event Sources pages are still
  *      registered, and the retired URL resolves to the dashboard for an
  *      administrator (and only for one).
  *   H. Nothing about the storage contract moved: `MAX_ENTRIES`, the option key,
@@ -331,8 +333,8 @@ assert_true(
 );
 
 assert_true(
-	13 === count( $iah_headers ),
-	'Test A: the table renders all 13 columns (got ' . count( $iah_headers ) . ')'
+	14 === count( $iah_headers ),
+	'Test A: the table renders all 14 columns (got ' . count( $iah_headers ) . ')'
 );
 
 assert_true(
@@ -370,7 +372,7 @@ assert_true(
 // Test B — every detailed and summary column is present.
 // ---------------------------------------------------------------------------
 
-test_section( 'Test B — all 13 columns are present, in order' );
+test_section( 'Test B — all 14 columns are present, in order' );
 
 $iah_expected_headers = array(
 	__( 'Time', 'conexao-event-importer' ),
@@ -386,9 +388,10 @@ $iah_expected_headers = array(
 	__( 'Listing', 'conexao-event-importer' ),
 	__( 'Progress', 'conexao-event-importer' ),
 	__( 'Cooldown', 'conexao-event-importer' ),
+	__( 'Logs', 'conexao-event-importer' ),
 );
 
-assert_equals( $iah_expected_headers, $iah_headers, 'Test B: the 13 headers are exactly the retired page\'s headers' );
+assert_equals( $iah_expected_headers, $iah_headers, 'Test B: the 14 headers are the retired page\'s 13 plus Logs, in order' );
 
 foreach ( $iah_expected_headers as $iah_header ) {
 	assert_true(
@@ -572,26 +575,89 @@ assert_equals(
 );
 
 // ---------------------------------------------------------------------------
-// Test F — Import Logs stays reachable from the single history screen.
+// Test F — the separate Import Logs screen is retired, its actions survive.
 // ---------------------------------------------------------------------------
 
-test_section( 'Test F — the Import Logs link is preserved' );
+test_section( 'Test F — the Import Logs screen is retired, its actions survive' );
 
-$iah_log_links = $iah_xpath->query( '//a[contains(@href, "page=conexao-import-log")]' );
+$iah_log_admin_class = new Conexao_Import_Log_Admin();
 
 assert_true(
-	$iah_log_links->length >= 1,
-	'Test F: the dashboard links to the separate Import Logs page'
+	! method_exists( $iah_log_admin_class, 'render_logs_page' ),
+	'Test F: the retired screen renderer is removed (no second log-rendering implementation)'
 );
 
 assert_true(
-	false !== strpos( $iah_html, esc_url( admin_url( 'admin.php?page=conexao-import-log' ) ) ),
-	'Test F: the link points at admin.php?page=conexao-import-log'
+	! method_exists( $iah_log_admin_class, 'register_admin_menu' ),
+	'Test F: the retired screen no longer registers an admin menu'
 );
 
 assert_true(
-	method_exists( 'Conexao_Import_Log', 'get_all' ) && class_exists( 'Conexao_Import_Log_Admin' ),
-	'Test F: the Import Logs feature is still present, and still separate from history'
+	false === has_action( 'admin_menu', array( $iah_log_admin_class, 'register_admin_menu' ) ),
+	'Test F: the retired screen is not hooked to the admin menu'
+);
+
+// The protected actions the dashboard reuses must all still exist.
+assert_true(
+	method_exists( 'Conexao_Import_Log_Admin', 'run_log_download_url' ),
+	'Test F: the per-run download URL builder survives the retirement'
+);
+
+assert_true(
+	method_exists( 'Conexao_Import_Log_Admin', 'log_download_all_url' ),
+	'Test F: the whole-log download URL builder survives the retirement'
+);
+
+assert_true(
+	method_exists( 'Conexao_Import_Log_Admin', 'clear_log_url' ),
+	'Test F: the clear-log URL builder survives the retirement'
+);
+
+assert_true(
+	false !== has_action( 'admin_post_conexao_download_run_log', array( $iah_log_admin_class, 'handle_download_run_log' ) ),
+	'Test F: the protected per-run download handler is still armed'
+);
+
+assert_true(
+	false !== has_action( 'admin_post_conexao_download_log', array( $iah_log_admin_class, 'handle_download_log' ) ),
+	'Test F: the protected whole-log download handler is still armed'
+);
+
+assert_true(
+	false !== has_action( 'admin_post_conexao_clear_log', array( $iah_log_admin_class, 'handle_clear_log' ) ),
+	'Test F: the protected clear-log handler is still armed'
+);
+
+// The log store itself is untouched by the retirement.
+assert_true(
+	'conexao_event_import_log' === Conexao_Import_Log::OPTION_KEY,
+	'Test F: the log store option key is unchanged'
+);
+
+assert_true(
+	2000 === Conexao_Import_Log::MAX_ENTRIES,
+	'Test F: the log retention cap is unchanged'
+);
+
+assert_true(
+	method_exists( 'Conexao_Import_Log', 'get_for_run' ),
+	'Test F: run-level log retrieval is unchanged'
+);
+
+// The dashboard offers the consolidated actions in place of the retired page.
+assert_true(
+	false !== strpos( $iah_html, esc_url( Conexao_Import_Log_Admin::log_download_all_url() ) ),
+	'Test F: the dashboard offers the whole-log download action'
+);
+
+assert_true(
+	false !== strpos( $iah_html, esc_url( Conexao_Import_Log_Admin::clear_log_url() ) ),
+	'Test F: the dashboard offers the Clear Logs action'
+);
+
+assert_true(
+	false === strpos( $iah_html, 'page=conexao-import-log' ),
+	'Test F: the dashboard no longer links to the retired Import Logs screen'
 );
 
 // ---------------------------------------------------------------------------
@@ -634,7 +700,6 @@ $GLOBALS['menu']    = array();
 $GLOBALS['submenu'] = array();
 
 $iah_sources->register_admin_menu();
-( new Conexao_Import_Log_Admin() )->register_admin_menu();
 
 $iah_top_slugs = wp_list_pluck( (array) $GLOBALS['menu'], 2 );
 $iah_sub_slugs = isset( $GLOBALS['submenu']['conexao-event-import'] )
@@ -652,8 +717,8 @@ assert_true(
 );
 
 assert_true(
-	in_array( 'conexao-import-log', $iah_sub_slugs, true ),
-	'Test G: the Import Logs submenu is still registered'
+	! in_array( 'conexao-import-log', $iah_sub_slugs, true ),
+	'Test G: the retired Import Logs submenu is NOT registered'
 );
 
 assert_true(
@@ -665,14 +730,15 @@ $iah_retired_hooks = array_values(
 	array_filter(
 		array_keys( (array) $GLOBALS['_registered_pages'] ),
 		static function ( $hook ) {
-			return false !== strpos( (string) $hook, 'conexao-import-history' );
+			return false !== strpos( (string) $hook, 'conexao-import-history' )
+				|| false !== strpos( (string) $hook, 'conexao-import-log' );
 		}
 	)
 );
 
 assert_true(
 	empty( $iah_retired_hooks ),
-	'Test G: no admin page callback is registered for the retired slug',
+	'Test G: no admin page callback is registered for either retired slug',
 	implode( ', ', $iah_retired_hooks )
 );
 
@@ -696,10 +762,22 @@ $_GET['page'] = 'conexao-import-log';
 
 assert_true(
 	'' === $iah_sources->retired_history_redirect_url(),
-	'Test G: unrelated admin pages are not redirected'
+	'Test G: the retired Import Logs slug is not handled by the history redirect'
+);
+
+assert_true(
+	admin_url( 'admin.php?page=conexao-event-import' ) === $iah_log_admin_class->retired_log_redirect_url(),
+	'Test G: an administrator visiting the retired Import Logs URL is sent to the dashboard'
 );
 
 wp_set_current_user( 0 );
+
+$_GET['page'] = 'conexao-import-log';
+
+assert_true(
+	'' === $iah_log_admin_class->retired_log_redirect_url(),
+	'Test G: a visitor without manage_options is NOT redirected from the retired Import Logs URL'
+);
 
 $_GET['page'] = 'conexao-import-history';
 
@@ -712,7 +790,12 @@ unset( $_GET['page'] );
 
 assert_true(
 	false !== has_action( 'admin_page_access_denied', array( Conexao_Event_Importer::instance()->sources, 'maybe_redirect_retired_history_page' ) ),
-	'Test G: the retirement redirect is armed on admin_page_access_denied'
+	'Test G: the history retirement redirect is armed on admin_page_access_denied'
+);
+
+assert_true(
+	false !== has_action( 'admin_page_access_denied', array( Conexao_Event_Importer::instance()->dashboard->log_admin, 'maybe_redirect_retired_log_page' ) ),
+	'Test G: the Import Logs retirement redirect is armed on admin_page_access_denied'
 );
 
 assert_true(

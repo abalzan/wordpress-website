@@ -463,12 +463,6 @@ parameters:
 			path: wp-content/plugins/conexao-event-importer/includes/class-import-cli.php
 
 		-
-			message: '#^Parameter \#1 \$text of function esc_html expects string, int\<0, max\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: wp-content/plugins/conexao-event-importer/includes/class-import-log-admin.php
-
-		-
 			message: '#^Call to function is_array\(\) with array will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 3

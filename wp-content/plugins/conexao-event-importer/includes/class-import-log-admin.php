@@ -1,10 +1,21 @@
 <?php
 /**
- * Import Log admin screen + secure download / clear actions.
+ * Import Log actions: secure download, clear, and the retired screen's redirect.
  *
- * Provides a WordPress admin page under the Event Importer menu where an
- * authenticated administrator can review, download, and clear the Event
- * Importer logs.
+ * The separate "Import Logs" admin page (`admin.php?page=conexao-import-log`)
+ * is retired: run-level log inspection now lives inline in the Import History
+ * table on the Event Import dashboard, which is the one screen an operator
+ * needs. What this class keeps — and must keep — is everything that page did
+ * that is NOT a second rendering of the log:
+ *
+ *   - the authenticated, capability-checked, nonce-protected download handlers
+ *     (whole log and single run), which the dashboard's per-row actions reuse;
+ *   - the capability-checked, nonce-protected Clear Logs handler;
+ *   - a redirect from the retired URL to the dashboard for administrators.
+ *
+ * The underlying logging system (`Conexao_Import_Log`), its storage option,
+ * buffering, retention, pruning and sanitisation are untouched by the
+ * retirement: only the second SCREEN is gone.
  *
  * Downloads are served through a secure, authenticated WordPress admin
  * endpoint (admin-post.php) protected by capability checks, nonce
@@ -18,164 +29,127 @@ defined( 'ABSPATH' ) || exit;
 
 class Conexao_Import_Log_Admin {
 
-	/** @var string Capability required to view/manage import logs. */
+	/**
+	 * Capability required to view/manage import logs.
+	 */
 	const CAPABILITY = 'manage_options';
 
 	/**
-	 * Constructor. Wires up the admin menu + admin-post handlers.
+	 * Slug of the retired Import Logs screen.
+	 */
+	const RETIRED_PAGE = 'conexao-import-log';
+
+	/**
+	 * Wire up the download/clear handlers and the retired-page redirect.
+	 *
+	 * No admin menu is registered: the screen is retired.
+	 *
+	 * @return void
 	 */
 	public function __construct() {
-		add_action( 'admin_menu', array( $this, 'register_admin_menu' ) );
-
-		// Secure download + clear handlers.
+		// Secure download + clear handlers. These outlive the retired screen:
+		// the dashboard's per-row "Download" action posts to the same
+		// protected endpoints rather than inventing a second one.
 		add_action( 'admin_post_conexao_download_log', array( $this, 'handle_download_log' ) );
 		add_action( 'admin_post_conexao_download_run_log', array( $this, 'handle_download_run_log' ) );
 		add_action( 'admin_post_conexao_clear_log', array( $this, 'handle_clear_log' ) );
+
+		// The retired screen is no longer registered as a submenu or a page, so
+		// a bookmarked `admin.php?page=conexao-import-log` dies with WordPress's
+		// standard refusal. `admin_page_access_denied` is the one lifecycle
+		// point that still runs for an unregistered slug (wp-admin/menu.php
+		// fires it immediately before refusing), which makes it the place to
+		// turn that refusal into a hop to the dashboard.
+		add_action( 'admin_page_access_denied', array( $this, 'maybe_redirect_retired_log_page' ) );
 	}
 
 	/**
-	 * Register the "Import Logs" submenu page under the Event Importer menu.
+	 * The URL an administrator visiting the RETIRED Import Logs URL should be
+	 * sent to, or '' when the request must not be redirected.
+	 *
+	 * Deliberately a pure decision — capability + requested page slug → URL or
+	 * `''`, with no output and no exit — so the regression suite can prove both
+	 * directions without having to fake an `exit`.
+	 *
+	 * @return string
 	 */
-	public function register_admin_menu() {
-		add_submenu_page(
-			'conexao-event-import',
-			__( 'Import Logs', 'conexao-event-importer' ),
-			__( 'Import Logs', 'conexao-event-importer' ),
-			self::CAPABILITY,
-			'conexao-import-log',
-			array( $this, 'render_logs_page' )
+	public function retired_log_redirect_url() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only routing for a GET that changes nothing.
+		$page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
+
+		if ( self::RETIRED_PAGE !== $page ) {
+			return '';
+		}
+
+		// Only the operator who could have read the old screen is redirected;
+		// anyone else keeps WordPress's own refusal.
+		if ( ! current_user_can( self::CAPABILITY ) ) {
+			return '';
+		}
+
+		return admin_url( 'admin.php?page=conexao-event-import' );
+	}
+
+	/**
+	 * Redirect the retired Import Logs URL to the dashboard.
+	 *
+	 * @return void
+	 */
+	public function maybe_redirect_retired_log_page() {
+		$target = $this->retired_log_redirect_url();
+
+		if ( '' === $target ) {
+			return;
+		}
+
+		wp_safe_redirect( $target );
+		exit;
+	}
+
+	/**
+	 * The nonce-protected URL that downloads one import run's log.
+	 *
+	 * The single source of truth for that URL: the retired screen used it, and
+	 * the dashboard's per-row "Download" action uses it now. Reusing the
+	 * existing `conexao_download_run_log` action keeps the capability check,
+	 * the per-run nonce and the filename sanitisation in exactly one place.
+	 *
+	 * @param string $run_id Import run ID.
+	 * @return string
+	 */
+	public static function run_log_download_url( $run_id ) {
+		$run_id = sanitize_key( (string) $run_id );
+
+		return wp_nonce_url(
+			admin_url( 'admin-post.php?action=conexao_download_run_log&run=' . rawurlencode( $run_id ) ),
+			'conexao_download_run_log_' . $run_id
 		);
 	}
 
 	/**
-	 * Render the Import Logs admin page.
+	 * The nonce-protected URL that downloads the whole import log.
+	 *
+	 * @return string
 	 */
-	public function render_logs_page() {
-		if ( ! current_user_can( self::CAPABILITY ) ) {
-			wp_die( esc_html__( 'You do not have permission to view the import logs.', 'conexao-event-importer' ) );
-		}
-
-		// Prune old entries opportunistically (retention).
-		Conexao_Import_Log::prune_older_than_90_days();
-
-		$entries = Conexao_Import_Log::get_all();
-		$run_ids = Conexao_Import_Log::get_run_ids( 25 );
-
-		// Determine which run (if any) to expand for on-screen review.
-		$selected_run = isset( $_GET['run'] ) ? sanitize_key( wp_unslash( $_GET['run'] ) ) : '';
-		if ( $selected_run && ! in_array( $selected_run, $run_ids, true ) ) {
-			$selected_run = '';
-		}
-
-		$download_all_url = wp_nonce_url(
+	public static function log_download_all_url() {
+		return wp_nonce_url(
 			admin_url( 'admin-post.php?action=conexao_download_log' ),
 			'conexao_download_log'
 		);
+	}
 
-		$clear_url = wp_nonce_url(
+	/**
+	 * The nonce-protected URL that clears the whole import log.
+	 *
+	 * Destructive: every caller must gate it behind an explicit confirmation.
+	 *
+	 * @return string
+	 */
+	public static function clear_log_url() {
+		return wp_nonce_url(
 			admin_url( 'admin-post.php?action=conexao_clear_log' ),
 			'conexao_clear_log'
 		);
-
-		?>
-		<div class="wrap conexao-import-logs">
-			<h1><?php esc_html_e( 'Import Logs', 'conexao-event-importer' ); ?></h1>
-			<p class="description">
-				<?php esc_html_e( 'Review and download logs from previous Eventbrite and event-source imports. Logs help diagnose failed imports, API errors, and network problems.', 'conexao-event-importer' ); ?>
-			</p>
-
-			<div class="conexao-import-log-actions">
-				<a class="button button-primary" href="<?php echo esc_url( $download_all_url ); ?>">
-					<?php esc_html_e( 'Download Import Logs (.log)', 'conexao-event-importer' ); ?>
-				</a>
-				<a class="button button-link-delete" href="<?php echo esc_url( $clear_url ); ?>" onclick="return confirm('<?php echo esc_js( __( 'This will permanently delete ALL Event Importer logs. This cannot be undone. Continue?', 'conexao-event-importer' ) ); ?>');">
-					<?php esc_html_e( 'Clear Logs', 'conexao-event-importer' ); ?>
-				</a>
-			</div>
-
-			<?php if ( empty( $entries ) ) : ?>
-				<p><?php esc_html_e( 'No log entries yet. Run an import to generate logs.', 'conexao-event-importer' ); ?></p>
-			<?php else : ?>
-				<p class="description">
-					<?php
-					echo esc_html(
-						sprintf(
-							/* translators: %d: number of log entries retained */
-							__( '%d log entries are retained (newest first). Old entries are pruned automatically after 90 days.', 'conexao-event-importer' ),
-							count( $entries )
-						)
-					);
-					?>
-				</p>
-
-				<?php if ( ! empty( $run_ids ) ) : ?>
-					<h2><?php esc_html_e( 'Import Runs', 'conexao-event-importer' ); ?></h2>
-					<table class="widefat striped">
-						<thead>
-							<tr>
-								<th><?php esc_html_e( 'Run ID', 'conexao-event-importer' ); ?></th>
-								<th><?php esc_html_e( 'Entries', 'conexao-event-importer' ); ?></th>
-								<th><?php esc_html_e( 'Actions', 'conexao-event-importer' ); ?></th>
-							</tr>
-						</thead>
-						<tbody>
-							<?php foreach ( $run_ids as $run_id ) : ?>
-								<?php
-								$run_entries = Conexao_Import_Log::get_for_run( $run_id, 1000 );
-								$run_count   = count( $run_entries );
-								$download_run_url = wp_nonce_url(
-									admin_url( 'admin-post.php?action=conexao_download_run_log&run=' . rawurlencode( $run_id ) ),
-									'conexao_download_run_log_' . $run_id
-								);
-								?>
-								<tr>
-									<td>
-										<strong><?php echo esc_html( $run_id ); ?></strong>
-									</td>
-									<td><?php echo esc_html( $run_count ); ?></td>
-									<td>
-										<a class="button" href="<?php echo esc_url( $download_run_url ); ?>">
-											<?php esc_html_e( 'Download This Run', 'conexao-event-importer' ); ?>
-										</a>
-										<?php if ( $selected_run === $run_id ) : ?>
-											<a class="button" href="<?php echo esc_url( admin_url( 'admin.php?page=conexao-import-log' ) ); ?>">
-												<?php esc_html_e( 'Collapse', 'conexao-event-importer' ); ?>
-											</a>
-										<?php else : ?>
-											<a class="button" href="<?php echo esc_url( admin_url( 'admin.php?page=conexao-import-log&run=' . rawurlencode( $run_id ) ) ); ?>">
-												<?php esc_html_e( 'View', 'conexao-event-importer' ); ?>
-											</a>
-										<?php endif; ?>
-									</td>
-								</tr>
-							<?php endforeach; ?>
-						</tbody>
-					</table>
-				<?php endif; ?>
-
-				<?php
-				// Show the latest entries (or the selected run's entries) inline.
-				$display_entries = ( $selected_run ) ? array_slice( Conexao_Import_Log::get_for_run( $selected_run, 1000 ), 0, 200 ) : array_slice( $entries, 0, 200 );
-				?>
-				<h2>
-					<?php
-					if ( $selected_run ) {
-						echo esc_html( sprintf(
-							/* translators: %s: run ID */
-							__( 'Log entries for run %s', 'conexao-event-importer' ),
-							$selected_run
-						) );
-					} else {
-						esc_html_e( 'Latest log entries', 'conexao-event-importer' );
-					}
-					?>
-				</h2>
-				<div class="conexao-log-preview">
-					<pre><?php echo esc_html( Conexao_Import_Log::format_entries( $display_entries ) ); ?></pre>
-				</div>
-			<?php endif; ?>
-		</div>
-		<?php
 	}
 
 	/**
@@ -240,9 +214,15 @@ class Conexao_Import_Log_Admin {
 
 		Conexao_Import_Log::clear();
 
+		// The clear action is triggered from the Import History section of the
+		// Event Import dashboard, so the operator lands back there — the retired
+		// `conexao-import-log` slug is no longer a registered page.
 		wp_safe_redirect(
 			add_query_arg(
-				array( 'page' => 'conexao-import-log', 'cleared' => '1' ),
+				array(
+					'page'         => 'conexao-event-import',
+					'logs_cleared' => '1',
+				),
 				admin_url( 'admin.php' )
 			)
 		);

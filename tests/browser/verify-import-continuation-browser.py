@@ -309,10 +309,10 @@ def read_progress_cell_in_browser() -> str:
         )
 
         headers = [text.strip() for text in table.first.locator("thead th").all_inner_texts()]
-        check(len(headers) == 13, f"the dashboard table has the full 13 columns (got {len(headers)})")
+        check(len(headers) == 14, f"the dashboard table has the full 14 columns (got {len(headers)})")
         check(
-            headers[-3:] == ["Listing", "Progress", "Cooldown"],
-            f"Listing, Progress and Cooldown are present and last (got {headers[-3:]})",
+            headers[-4:] == ["Listing", "Progress", "Cooldown", "Logs"],
+            f"Listing, Progress, Cooldown and Logs are present and last (got {headers[-4:]})",
         )
 
         row = table.first.locator("tr", has=page.locator("td", has_text="g18_probe_cork")).first

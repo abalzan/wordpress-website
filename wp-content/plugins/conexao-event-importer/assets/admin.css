@@ -156,31 +156,164 @@
 }
 
 /* ============================================================
- * Import Logs screen
+ * Import History — per-run Logs column
+ *
+ * The Logs cell is deliberately the most compact thing in the row: a
+ * <details> disclosure whose summary is the only always-visible part. The
+ * panel opens inside the cell, so the table never widens and no navigation is
+ * needed to read a run's diagnostics.
  * ============================================================ */
-.conexao-import-logs .conexao-import-log-actions {
-	margin: 16px 0;
-	display: flex;
-	gap: 8px;
-	align-items: center;
+.conexao-import-history .conexao-history-logs-cell {
+	min-width: 220px;
+	max-width: 340px;
 }
 
-.conexao-import-logs .conexao-log-preview {
-	margin: 12px 0;
+.conexao-history-logs > summary {
+	cursor: pointer;
+	white-space: nowrap;
+	color: #2271b1;
 }
 
-.conexao-import-logs .conexao-log-preview pre {
+.conexao-history-logs > summary:hover {
+	color: #135e96;
+}
+
+.conexao-history-logs > summary:focus-visible {
+	outline: 2px solid #2271b1;
+	outline-offset: 2px;
+}
+
+.conexao-history-logs-panel {
+	margin-top: 8px;
+	padding: 8px 10px;
 	background: #f6f7f7;
 	border: 1px solid #dcdcde;
 	border-radius: 4px;
-	padding: 12px 14px;
-	font-size: 12px;
-	line-height: 1.6;
-	white-space: pre-wrap;
-	word-break: break-all;
-	max-height: 480px;
+	/* The panel is wider than the cell's text column, so it is allowed to
+	 * overflow the cell rather than squash the log text into a ribbon. */
+	position: relative;
+}
+
+.conexao-history-log-list {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	max-height: 320px;
 	overflow-y: auto;
+}
+
+.conexao-history-log-entry {
+	padding: 6px 0;
+	border-bottom: 1px solid #e5e5e5;
+	font-size: 12px;
+	line-height: 1.5;
+}
+
+.conexao-history-log-entry:last-child {
+	border-bottom: 0;
+}
+
+.conexao-history-log-meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	align-items: center;
+	margin-bottom: 2px;
+}
+
+.conexao-history-log-level {
+	display: inline-block;
+	padding: 1px 6px;
+	border-radius: 3px;
+	border: 1px solid #dcdcde;
+	background: #fff;
+	font-size: 10px;
+	font-weight: 700;
+	letter-spacing: 0.3px;
+	color: #50575e;
+}
+
+/* Severity is carried by a word as well as a colour, so it never depends on
+ * colour alone. */
+.conexao-history-log-entry--error .conexao-history-log-level {
+	background: #fdeaea;
+	border-color: #f0c0c0;
+	color: #b32d2e;
+}
+
+.conexao-history-log-entry--warning .conexao-history-log-level {
+	background: #fff8e1;
+	border-color: #f0e0a0;
+	color: #8a6d00;
+}
+
+.conexao-history-log-entry--debug .conexao-history-log-level {
+	background: #f1f1f1;
+	border-color: #d5d5d5;
+	color: #646970;
+}
+
+.conexao-history-log-entry--error {
+	background: #fff7f7;
+}
+
+.conexao-history-log-entry--warning {
+	background: #fffdf5;
+}
+
+.conexao-history-log-time,
+.conexao-history-log-event,
+.conexao-history-log-http {
+	color: #646970;
+	white-space: nowrap;
+}
+
+.conexao-history-log-event-id {
+	color: #787c82;
+}
+
+.conexao-history-log-message {
+	display: block;
 	color: #1d2327;
+	/* Long messages and URLs wrap instead of widening the table. */
+	overflow-wrap: anywhere;
+	word-break: break-word;
+}
+
+.conexao-history-log-context {
+	display: block;
+	margin-top: 2px;
+	color: #646970;
+}
+
+.conexao-history-log-context-item {
+	display: inline-block;
+	margin-right: 10px;
+	overflow-wrap: anywhere;
+}
+
+.conexao-history-log-context-label {
+	font-weight: 600;
+}
+
+.conexao-history-logs-more {
+	margin: 6px 0 0;
+}
+
+.conexao-history-logs-download {
+	margin: 8px 0 0;
+}
+
+.conexao-history-logs-empty {
+	color: #646970;
+}
+
+.conexao-history-log-actions {
+	margin: 8px 0 12px;
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	flex-wrap: wrap;
 }
 
 .conexao-status-badge--expired {
