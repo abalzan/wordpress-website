@@ -1,0 +1,37 @@
+# git status --short (final)
+Sat 14 Nov 2026 09:30:15 GMT
+ M docs/architecture.md
+ M docs/plugins/README.md
+ M docs/plugins/conexao-event-importer.md
+ M docs/project-inventory.md
+ M docs/testing.md
+ M tests/browser/verify-import-continuation-browser.py
+ M wp-content/plugins/conexao-event-importer/assets/admin.css
+ M wp-content/plugins/conexao-event-importer/conexao-event-importer.php
+ M wp-content/plugins/conexao-event-importer/includes/class-event-sources.php
+ M wp-content/plugins/conexao-event-importer/includes/class-import-dashboard.php
+ M wp-content/plugins/conexao-event-importer/tests/test-bulk-actions.php
+?? docs/evidence/2026-11-14-import-history-consolidation/
+?? docs/plans/2026-11-13-import-history-dashboard-consolidation.md
+?? docs/reports/2026-11-13-import-history-consolidation.md
+?? wp-content/plugins/conexao-event-importer/tests/test-import-history-dashboard.php
+?? wp-content/themes/conexao-br-irlanda/tests/test-christmas-egg.php
+
+# git diff --stat
+ docs/architecture.md                               |   2 +-
+ docs/plugins/README.md                             |   2 +-
+ docs/plugins/conexao-event-importer.md             | 100 ++++++-
+ docs/project-inventory.md                          |   2 +-
+ docs/testing.md                                    |  19 +-
+ .../browser/verify-import-continuation-browser.py  |  43 ++-
+ .../conexao-event-importer/assets/admin.css        |  33 +++
+ .../conexao-event-importer.php                     |   4 +-
+ .../includes/class-event-sources.php               | 271 +++++++++++-------
+ .../includes/class-import-dashboard.php            |   8 +
+ .../tests/test-bulk-actions.php                    | 313 +++++++++++++++++++++
+ 11 files changed, 671 insertions(+), 126 deletions(-)
+
+# new files of this task
+-rw-rw-r-- 1 andrei andrei 20703 Nov 13 21:08 docs/plans/2026-11-13-import-history-dashboard-consolidation.md
+-rw-rw-r-- 1 andrei andrei 20094 Nov 14 09:30 docs/reports/2026-11-13-import-history-consolidation.md
+-rw-rw-r-- 1 andrei andrei 26809 Nov 14 08:45 wp-content/plugins/conexao-event-importer/tests/test-import-history-dashboard.php

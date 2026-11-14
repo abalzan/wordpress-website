@@ -516,12 +516,13 @@ python3 tests/browser/verify-import-continuation-browser.py --negative-control
 
 It seeds a suite-owned probe source whose URL is a **local static fixture**, so
 the whole path runs over real HTTP with no external traffic, opens the real
-Import History page in Chromium and reads the Progress cell, and then **closes
-the browser**. Everything after that is a plain HTTP request with no browser,
-no tab, no JavaScript and no AJAX: nothing runs before the cooldown expires, the
-continuation executes when it does, the walk advances, and the final state is
-read by opening the browser once more. It creates only `g18_probe_*` sources and
-deletes them, and every event they created, at the end.
+Event Import dashboard in Chromium and reads the Progress cell of the Import
+History table there, and then **closes the browser**. Everything after that is a
+plain HTTP request with no browser, no tab, no JavaScript and no AJAX: nothing
+runs before the cooldown expires, the continuation executes when it does, the
+walk advances, and the final state is read by opening the browser once more. It
+creates only `g18_probe_*` sources and deletes them, and every event they created,
+at the end.
 
 `--negative-control` breaks the arming, and the cell must stop promising
 `resumable` — it reads
@@ -538,7 +539,11 @@ contracts **are** blocking: the multi-file UI contract lives in
 `wp-content/plugins/conexao-event-importer/tests/test-multi-file-import-ui.php`
 and the continuation contract in
 `wp-content/plugins/conexao-event-importer/tests/test-import-continuation.php`,
-both inside the in-process layer.
+both inside the in-process layer. The dashboard side of that same screen — the
+full retained Import History table, its 13 columns and the retirement of the
+old `conexao-import-history` page — is
+`wp-content/plugins/conexao-event-importer/tests/test-import-history-dashboard.php`,
+also in the in-process layer.
 
 One operational note: a browser proof and the test suite must not run
 **concurrently**. They share a data foundation, and a suite that drives its own

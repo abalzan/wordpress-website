@@ -9,14 +9,14 @@
 | **Build** | yes |
 | **Compose mount** | yes |
 | **Dependencies** | `conexao-data-model`, `conexao-event-runtime` |
-| **Version** | 1.9.1 (authoritative source: `wp-content/plugins/conexao-event-importer/conexao-event-importer.php` header) |
+| **Version** | 1.10.0 (authoritative source: `wp-content/plugins/conexao-event-importer/conexao-event-importer.php` header) |
 | **Registry** | [`plugins.json`](../../plugins.json) |
 
 > **Local-only tooling.** Not a production steady-state dependency.
 <!-- END GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
 
 - **Path**: `wp-content/plugins/conexao-event-importer/`
-- **Version**: 1.7.1
+- **Version**: 1.10.0
 - **Requires Plugins**: `conexao-data-model`, `conexao-event-runtime`
 - **Purpose**: Local-only event import/export tooling. Fetches events from external sources (Laois Tourism, National Heritage Week, Eventbrite multi-county) into the **local** WordPress installation, downloads all images into the local Media Library, then exports the complete event data as JSON for import into the production WordPress.com site.
 - **Rollout tooling — keep available on production.** All production-critical event behavior (meta/taxonomy registration, `_event_status` public query gate, status admin UI) lives in the separate [Event Runtime](conexao-event-runtime.md) plugin, so this plugin is **not required for runtime event rendering**. However, during the multi-county Events Expansion it is part of the rollout workflow and **must not be deactivated, removed, replaced, or treated as unnecessary production code**. It stays **dormant unless explicitly invoked**: there is no cron, polling, background sync, or frontend fetching, and production never contacts external sources.
@@ -1590,15 +1590,65 @@ The local export JSON gained ONE additive per-event field, `"lang"`:
 Menu: Event Import (top-level menu, icon dashicons-calendar-alt)
 
 Submenus:
-- Dashboard — overview, **Import Events Now**, Export Events link, recent history
+- Event Import (dashboard) — last successful import, source statuses,
+  **Import Events Now**, the Export Events link, and the **complete Import
+  History table**
 - Event Sources — CRUD sources (incl. county, category), toggle, run single import
-- Import History — historical import runs
 - Export Events — JSON download (with embedded images)
 - Import Events — JSON upload/import (creates attachments from embedded data)
 - Image Sync — bulk sideload of remaining external banner images
 - Cleanup — manual trigger + status/history
 - Import Logs — view, download, clear logs
 - Settings — importer settings storage (there is nothing to save; no Eventbrite API token)
+
+There is no separate Import History submenu: `admin.php?page=conexao-import-history`
+was retired in v1.10.0 (see below).
+
+### Import History lives on the dashboard (v1.10.0)
+
+Import history used to be rendered twice — a compact 10-row summary on the
+dashboard and a complete table on a dedicated `conexao-import-history` screen.
+The two disagreed about how much history existed, so the operator had to know
+which screen was complete. v1.10.0 consolidates them:
+
+- `admin.php?page=conexao-event-import` is the **one** place history is shown.
+  Its sections are, in order: Event Import heading, Import Summary (last
+  successful import), Sources, Run Import, Export Events, **Import History**.
+- The history section is the complete table the dedicated page used to render:
+  the same 13 columns — Time, Source, Found, New, Updated, Unchanged,
+  Duplicates, Skipped, Errors, Status, **Listing**, **Progress**, **Cooldown** —
+  in the same order, with the same cells.
+- **The whole retained history is displayed**, not the latest 10 runs.
+  `Conexao_Import_History::MAX_ENTRIES` (100) is the only limit, and it is
+  applied when the run is recorded, not when the page is rendered.
+- There is exactly **one** renderer, `Conexao_Event_Sources::render_history_table()`.
+  The retired `render_history_summary()` (10-row slice) and `render_history_page()`
+  are gone, so the two views cannot drift again.
+- **Listing** is still the completeness signal (`complete` / `incomplete`, with a
+  missing historical `complete` treated as complete), **Progress** is still
+  `Conexao_Event_Sources::history_progress_text()` — the single function the
+  continuation regression suite also drives — and **Cooldown** is unchanged. A
+  checkpoint is never read as completeness, and the word "resumable" still
+  appears only when a continuation is actually scheduled.
+- An empty history still renders `No imports yet.`, and the section still links
+  to the separate **Import Logs** page for detailed diagnostics.
+- The 13-column table sits in a horizontally scrollable wrapper
+  (`.conexao-import-history-scroll`), so narrow windows scroll the table instead
+  of widening the page. No column is hidden and no JavaScript is involved.
+
+**Retired route.** `conexao-import-history` is no longer registered: no submenu,
+no page callback and no hidden page. A direct visit to the old URL is redirected
+by `Conexao_Event_Sources::maybe_redirect_retired_history_page()`, hooked to
+`admin_page_access_denied` (the hook WordPress fires for an unregistered admin
+page immediately before it refuses it), to
+`admin.php?page=conexao-event-import` — for a user with `manage_options` only.
+Everyone else still gets WordPress's standard refusal.
+
+**What did NOT change.** History storage and recording are untouched:
+`conexao_event_import_history`, `MAX_ENTRIES = 100`, newest-first ordering,
+`record()`'s field shapes (`complete`, `cooldown`, `checkpoint`, the optional
+per-run extras) and every existing recorded row. This was a UI consolidation,
+not a data migration.
 
 ### Event Sources — bulk actions and the selection controller
 
@@ -1607,9 +1657,9 @@ the per-row checkboxes:
 
 | Action | Effect |
 |---|---|
-| `enable` — Enable Selected | `set_status( $id, 'active' )` for every selected source |
-| `disable` — Disable Selected | `set_status( $id, 'inactive' )` for every selected source |
-| `delete` — Delete Selected | `delete( $id )`: the **configuration** only, never the imported events |
+| `enable` — Enable Selected | Sets `active` on every selected source in one registry write |
+| `disable` — Disable Selected | Sets `inactive` on every selected source in one registry write |
+| `delete` — Delete Selected | Removes every selected source configuration in one registry write; imported events are preserved |
 
 Semantics that must not be "optimised" away:
 
@@ -1621,11 +1671,47 @@ Semantics that must not be "optimised" away:
   counts appear separately in the redirect notice.
 - **An empty selection is an error, never "all sources".** The request is
   refused and no source is touched.
+- **One registry write per batch.** `apply_bulk_action()` loads the source
+  registry once, calculates every change in memory, and persists the resulting
+  registry with a single `update_option()` call — not one write per selected
+  source. A no-op batch (every source already in the requested state) performs
+  no write at all.
+- **Failure reporting.** If the single `update_option()` cannot be verified as
+  persisted, every affected source is reported as failed and no successful
+  deletion log is written.
 - **The core is testable.** `handle_bulk_action()` (capability + nonce +
   redirect) delegates to `apply_bulk_action( $action, $ids )`, which returns a
   result array and never redirects or exits. The regression suite drives that
   core directly and the handler itself in a child PHP process, because the
   handler terminates its process by design.
+
+### Bulk persistence — how it works
+
+`apply_bulk_action()` operates on the registry array rather than calling the
+individual update methods repeatedly:
+
+1. **Load** the registry once via `get_all()` (lazy defaults, migrations and
+   registry rules continue to run as before).
+2. **Validate and deduplicate** the submitted IDs against the registry.
+3. **Calculate all changes in memory** — status flips for enable/disable,
+   removals for delete — preserving every non-status field of each source.
+4. **Persist once** with `update_option( self::OPTION_KEY, $sources, false )`.
+   `save()`, `set_status()` and `delete()` are never called inside the
+   per-source loop.
+5. **Report results** only after the write is verified. A read-back check
+   distinguishes a genuine write failure from `update_option()` returning
+   `false` because the stored value already matches.
+
+Concurrency: a single `update_option()` does not make the operation
+transactionally safe against concurrent writers. Two bulk operations running at
+the same time can still overwrite each other's changes to unrelated source
+metadata. This is the same limitation as the previous per-source writes and is
+documented here rather than addressed with a new locking system.
+
+Deleting a source configuration removes only the source's entry from
+`conexao_event_sources`. Imported event posts, attachments, media and the
+`_event_status` / `_event_source` / `_event_source_id` post meta are never
+touched by a bulk delete.
 
 Security on the request: `manage_options`, the existing
 `conexao_event_sources_nonce`, `sanitize_text_field` on every ID, de-duplication

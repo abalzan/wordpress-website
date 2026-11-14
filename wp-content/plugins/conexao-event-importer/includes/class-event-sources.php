@@ -468,15 +468,62 @@ class Conexao_Event_Sources {
 			'conexao-event-sources',
 			array( $this, 'render_sources_page' )
 		);
+	}
 
-		add_submenu_page(
-			'conexao-event-import',
-			__( 'Import History', 'conexao-event-importer' ),
-			__( 'Import History', 'conexao-event-importer' ),
-			'manage_options',
-			'conexao-import-history',
-			array( $this, 'render_history_page' )
-		);
+	/**
+	 * The URL an administrator visiting the RETIRED Import History URL should
+	 * be sent to, or '' when the request must not be redirected.
+	 *
+	 * The Import History screen is part of the dashboard since v1.10.0, so the
+	 * old `conexao-import-history` slug is no longer registered as a page — no
+	 * submenu, no callback, no hidden page. A bookmarked admin URL therefore
+	 * dies with WordPress's standard "you are not allowed to access this page"
+	 * refusal, which this redirect turns into a friendly hop to the one screen
+	 * that now owns the history.
+	 *
+	 * Deliberately a pure decision — capability + requested page slug → URL or
+	 * `''`, no output, no exit — so the regression suite can prove both
+	 * directions without having to fake an `exit`.
+	 *
+	 * @return string
+	 */
+	public function retired_history_redirect_url() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only routing for a GET that changes nothing.
+		$page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
+
+		if ( 'conexao-import-history' !== $page ) {
+			return '';
+		}
+
+		// Only the operator who could have read the old screen is redirected;
+		// anyone else keeps WordPress's own refusal.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return '';
+		}
+
+		return admin_url( 'admin.php?page=conexao-event-import' );
+	}
+
+	/**
+	 * Redirect the retired Import History URL to the dashboard.
+	 *
+	 * `wp-admin/admin.php` requires `menu.php` BEFORE `admin_init`, and
+	 * `menu.php` fires `admin_page_access_denied` immediately before it refuses
+	 * an unregistered admin page. That makes this hook the one lifecycle point
+	 * that runs for a retired `page=` slug, and `admin_init` too late to be
+	 * usable here.
+	 *
+	 * @return void
+	 */
+	public function maybe_redirect_retired_history_page() {
+		$target = $this->retired_history_redirect_url();
+
+		if ( '' === $target ) {
+			return;
+		}
+
+		wp_safe_redirect( $target );
+		exit;
 	}
 
 	/**
@@ -1024,20 +1071,18 @@ class Conexao_Event_Sources {
 
 		$target_status = ( 'enable' === $result['action'] ) ? 'active' : 'inactive';
 
+		$deleted_sources = array();
+		$changed         = false;
+
 		foreach ( $valid_ids as $source_id ) {
 			$source = $sources[ $source_id ];
 
 			if ( 'delete' === $result['action'] ) {
-				if ( $this->delete( $source_id ) ) {
-					Conexao_Import_Log::add(
-						$source_id,
-						'info',
-						sprintf( 'Event Source "%s" was bulk-deleted by %s.', $source['name'], wp_get_current_user()->user_login )
-					);
-					$result['updated'][] = $source_id;
-				} else {
-					$result['failed'][] = $source_id;
-				}
+				// Keep enough information to generate the deletion log message
+				// after the registry has been successfully persisted.
+				$deleted_sources[ $source_id ] = $source;
+				unset( $sources[ $source_id ] );
+				$changed = true;
 				continue;
 			}
 
@@ -1048,15 +1093,81 @@ class Conexao_Event_Sources {
 				continue;
 			}
 
-			// Explicitly set the requested status. Never toggle.
-			if ( $this->set_status( $source_id, $target_status ) ) {
-				$result['updated'][] = $source_id;
-			} else {
+			// Explicitly set the requested status. Never toggle. Preserve all
+			// other source metadata — only the status field changes.
+			$sources[ $source_id ]['status'] = $target_status;
+			$changed                         = true;
+		}
+
+		if ( ! $changed ) {
+			// No-op batch: nothing to persist, nothing to report as updated.
+			return $result;
+		}
+
+		// Persist the entire resulting registry in a single update_option()
+		// call. No per-source save(), set_status() or delete() inside the loop.
+		if ( ! $this->persist_sources( $sources ) ) {
+			// The write could not be verified as persisted: report every
+			// affected ID as failed and write no successful deletion logs.
+			foreach ( $valid_ids as $source_id ) {
 				$result['failed'][] = $source_id;
+			}
+			return $result;
+		}
+
+		// Persistence succeeded: report the changes now.
+		if ( 'delete' === $result['action'] ) {
+			foreach ( $deleted_sources as $source_id => $source ) {
+				Conexao_Import_Log::add(
+					$source_id,
+					'info',
+					sprintf( 'Event Source "%s" was bulk-deleted by %s.', $source['name'], wp_get_current_user()->user_login )
+				);
+				$result['updated'][] = $source_id;
+			}
+		} else {
+			foreach ( $valid_ids as $source_id ) {
+				if ( $target_status === $sources[ $source_id ]['status'] && ! in_array( $source_id, $result['skipped'], true ) ) {
+					$result['updated'][] = $source_id;
+				}
 			}
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Persist the complete source registry in a single update_option() call.
+	 *
+	 * Used by apply_bulk_action() so a bulk operation writes the option at
+	 * most once per batch instead of once per selected source.
+	 *
+	 * update_option() returns false both when the write genuinely fails and
+	 * when the stored value is already identical. Since this method is only
+	 * called when actual changes are planned, a false return is ambiguous: a
+	 * read-back verification distinguishes a failed write from a value that
+	 * happens to match what is already stored.
+	 *
+	 * @param array $sources Complete source registry to persist.
+	 * @return bool True when the registry was persisted (or already matches),
+	 *              false when the write could not be verified.
+	 */
+	protected function persist_sources( array $sources ) {
+		$written = update_option( self::OPTION_KEY, $sources, false );
+
+		if ( false !== $written ) {
+			return true;
+		}
+
+		// update_option() returns false when the value is unchanged as well as
+		// on a genuine failure. Since changes were planned, read back the
+		// stored value to confirm it matches what we intended to write.
+		$stored = get_option( self::OPTION_KEY, null );
+		if ( is_array( $stored ) && $stored === $sources ) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -1571,89 +1682,51 @@ class Conexao_Event_Sources {
 				</a>
 			</p>
 
-			<?php $this->render_history_summary(); ?>
+			<?php $this->render_history_table( Conexao_Import_History::get_all() ); ?>
 		</div>
 		<?php
 	}
 
 	/**
-	 * Render a compact history summary on the dashboard.
+	 * Render the complete Import History table.
+	 *
+	 * This is the ONE renderer for import history, and the dashboard is the
+	 * one screen that shows it. The table is the 13-column one the retired
+	 * `conexao-import-history` page used to render — same columns, same cells,
+	 * same fallbacks for records written before the optional fields existed —
+	 * over the FULL retained history, never a 10-row slice of it. The cap that
+	 * bounds it lives in Conexao_Import_History::MAX_ENTRIES (100), applied
+	 * when a run is recorded, not when this page is rendered.
+	 *
+	 * Public so the regression suite can drive the REAL renderer (including
+	 * records that predate `unchanged`, `skipped`, `complete`, `checkpoint`
+	 * and `cooldown`) instead of a copy of its logic — the same reason
+	 * history_progress_text() is public.
+	 *
+	 * @param array $history History entries, newest first.
+	 * @return void
 	 */
-	protected function render_history_summary() {
-		$history = Conexao_Import_History::get_all();
-		if ( empty( $history ) ) {
-			echo '<p>' . esc_html__( 'No imports yet.', 'conexao-event-importer' ) . '</p>';
-			return;
-		}
+	public function render_history_table( array $history ) {
 		?>
 		<h2><?php esc_html_e( 'Import History', 'conexao-event-importer' ); ?></h2>
-		<table class="widefat striped">
-			<thead>
-				<tr>
-					<th><?php esc_html_e( 'Time', 'conexao-event-importer' ); ?></th>
-					<th><?php esc_html_e( 'Source', 'conexao-event-importer' ); ?></th>
-					<th><?php esc_html_e( 'Found', 'conexao-event-importer' ); ?></th>
-					<th><?php esc_html_e( 'New', 'conexao-event-importer' ); ?></th>
-					<th><?php esc_html_e( 'Updated', 'conexao-event-importer' ); ?></th>
-					<th><?php esc_html_e( 'Unchanged', 'conexao-event-importer' ); ?></th>
-					<th><?php esc_html_e( 'Duplicates', 'conexao-event-importer' ); ?></th>
-					<th><?php esc_html_e( 'Skipped', 'conexao-event-importer' ); ?></th>
-					<th><?php esc_html_e( 'Errors', 'conexao-event-importer' ); ?></th>
-					<th><?php esc_html_e( 'Status', 'conexao-event-importer' ); ?></th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php foreach ( array_slice( $history, 0, 10 ) as $entry ) : ?>
-					<tr>
-						<td><?php echo esc_html( $entry['time'] ); ?></td>
-						<td><?php echo esc_html( $entry['source'] ); ?></td>
-						<td><?php echo esc_html( $entry['found'] ); ?></td>
-						<td><?php echo esc_html( $entry['new'] ); ?></td>
-						<td><?php echo esc_html( $entry['updated'] ); ?></td>
-						<td><?php echo esc_html( isset( $entry['unchanged'] ) ? $entry['unchanged'] : 0 ); ?></td>
-						<td><?php echo esc_html( $entry['duplicates'] ); ?></td>
-						<td><?php echo esc_html( isset( $entry['skipped'] ) ? $entry['skipped'] : 0 ); ?></td>
-						<td><?php echo esc_html( $entry['errors'] ); ?></td>
-						<td>
-							<span class="conexao-status-badge conexao-status-badge--<?php echo esc_attr( $entry['status'] ); ?>">
-								<?php echo esc_html( $entry['status'] ); ?>
-							</span>
-						</td>
-					</tr>
-				<?php endforeach; ?>
-			</tbody>
-		</table>
-		<?php
-	}
-
-	/**
-	 * Render the history page.
-	 */
-	public function render_history_page() {
-		if ( ! current_user_can( 'manage_options' ) ) {
-			return;
-		}
-		$history = Conexao_Import_History::get_all();
-		?>
-		<div class="wrap">
-			<h1><?php esc_html_e( 'Import History', 'conexao-event-importer' ); ?></h1>
-			<p class="description">
-				<?php
-				$logs_url = admin_url( 'admin.php?page=conexao-import-log' );
-				printf(
-					/* translators: %s: URL to the Import Logs page */
-					wp_kses(
-						__( 'For detailed import logs (including failures and API errors), see the <a href="%s">Import Logs</a> page.', 'conexao-event-importer' ),
-						array( 'a' => array( 'href' => array() ) )
-					),
-					esc_url( $logs_url )
-				);
-				?>
-			</p>
-			<?php if ( empty( $history ) ) : ?>
-				<p><?php esc_html_e( 'No imports yet.', 'conexao-event-importer' ); ?></p>
-			<?php else : ?>
-				<table class="widefat striped">
+		<p class="description">
+			<?php
+			$logs_url = admin_url( 'admin.php?page=conexao-import-log' );
+			printf(
+				/* translators: %s: URL to the Import Logs page */
+				wp_kses(
+					__( 'For detailed import logs (including failures and API errors), see the <a href="%s">Import Logs</a> page.', 'conexao-event-importer' ),
+					array( 'a' => array( 'href' => array() ) )
+				),
+				esc_url( $logs_url )
+			);
+			?>
+		</p>
+		<?php if ( empty( $history ) ) : ?>
+			<p><?php esc_html_e( 'No imports yet.', 'conexao-event-importer' ); ?></p>
+		<?php else : ?>
+			<div class="conexao-import-history-scroll">
+				<table class="widefat striped conexao-import-history">
 					<thead>
 						<tr>
 							<th><?php esc_html_e( 'Time', 'conexao-event-importer' ); ?></th>
@@ -1737,8 +1810,8 @@ class Conexao_Event_Sources {
 						<?php endforeach; ?>
 					</tbody>
 				</table>
-			<?php endif; ?>
-		</div>
+			</div>
+		<?php endif; ?>
 		<?php
 	}
 

@@ -17,7 +17,7 @@ Load order is the row order. Dependencies always precede their dependents.
 | 3 | `conexao-admin-ux` | platform | active | yes | yes | yes | - | 1.0.9 | [conexao-admin-ux](./conexao-admin-ux.md) |
 | 4 | `conexao-event-runtime` | platform | active | yes | yes | yes | `conexao-data-model` | 1.2.3 | [conexao-event-runtime](./conexao-event-runtime.md) |
 | 5 | `conexao-commemorative` | platform | active | yes | yes | yes | `conexao-data-model` | 1.0.0 | [conexao-commemorative](./conexao-commemorative.md) |
-| 6 | `conexao-event-importer` | tooling | active | no | yes | yes | `conexao-data-model`, `conexao-event-runtime` | 1.9.1 | [conexao-event-importer](./conexao-event-importer.md) |
+| 6 | `conexao-event-importer` | tooling | active | no | yes | yes | `conexao-data-model`, `conexao-event-runtime` | 1.10.0 | [conexao-event-importer](./conexao-event-importer.md) |
 | 7 | `conexao-leisure-migration` | tooling | active | no | yes | yes | - | 2.1.0 | [conexao-leisure-migration](./conexao-leisure-migration.md) |
 | 8 | `conexao-sponsor-migration` | tooling | active | no | yes | yes | - | 1.1.0 | [conexao-sponsor-migration](./conexao-sponsor-migration.md) |
 | 9 | `conexao-translation-rollout` | platform | active | yes | yes | yes | - | 1.2.0 | [conexao-translation-rollout](./conexao-translation-rollout.md) |

@@ -84,6 +84,39 @@
 	max-width: 700px;
 }
 
+/* ============================================================
+ * Import History (dashboard section)
+ *
+ * The table carries 13 columns. On a narrow window the TABLE scrolls
+ * horizontally inside this wrapper, so the admin page itself never widens and
+ * no column (Listing, Progress, Cooldown included) is ever hidden.
+ * ============================================================ */
+.conexao-import-history-scroll {
+	max-width: 100%;
+	overflow-x: auto;
+	/* Horizontal scrolling must not be mistaken for a vertical page shift. */
+	overscroll-behavior-x: contain;
+}
+
+.conexao-import-history-scroll .conexao-import-history {
+	/* Below this width the columns wrap into unreadable stacks, so the wrapper
+	 * scrolls instead. */
+	min-width: 1080px;
+	margin-top: 8px;
+}
+
+.conexao-import-history th {
+	white-space: nowrap;
+}
+
+.conexao-import-history td {
+	vertical-align: top;
+}
+
+.conexao-import-history .conexao-status-badge {
+	white-space: nowrap;
+}
+
 /* Event status badges on the admin list */
 .conexao-status-badge {
 	display: inline-block;
