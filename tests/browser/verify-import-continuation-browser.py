@@ -296,6 +296,46 @@ def read_progress_cell_in_browser() -> str:
 
         page.goto(f"{BASE}/wp-admin/admin.php?page=conexao-event-import", wait_until="load")
 
+        # The dashboard is a RUN/REVIEW screen: no source overview. Source
+        # management lives on the Event Sources screen, so a re-added Sources
+        # section is a regression, not a cosmetic difference.
+        headings = [text.strip() for text in page.locator("h2").all_inner_texts()]
+        check("Sources" not in headings, f"the dashboard renders no Sources section (got {headings})")
+        check(
+            page.locator("ul.conexao-source-list").count() == 0,
+            "the dashboard renders no conexao-source-list markup",
+        )
+        check(
+            page.locator(".conexao-source-indicator").count() == 0,
+            "the dashboard renders no active/inactive source indicator",
+        )
+        check(
+            page.locator(".conexao-source-error").count() == 0,
+            "the dashboard renders no per-source error message",
+        )
+
+        # What the dashboard IS still there for.
+        check(
+            page.get_by_role("heading", name="Event Import").count() >= 1,
+            "the Event Import heading is still rendered",
+        )
+        check(
+            page.locator(".conexao-import-stat-label", has_text="Last successful import").count() >= 1,
+            "the Last successful import summary is still rendered",
+        )
+        check(
+            page.locator('input[name="conexao_source_action"][value="run_import"]').count() == 1,
+            "the Run Import form is still rendered",
+        )
+        check(
+            page.locator('input[name="source_id"][value="all"]').count() == 1,
+            "the Run Import form still targets all sources",
+        )
+        check(
+            page.locator('a[href*="page=conexao-event-export"]').count() >= 1,
+            "the Export Events button is still rendered",
+        )
+
         table = page.locator("table.conexao-import-history")
         check(table.count() == 1, "the Event Import dashboard renders one Import History table")
 

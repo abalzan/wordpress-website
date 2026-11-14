@@ -1,6 +1,6 @@
 <?php
 /**
- * Importer settings storage + admin page.
+ * Importer settings storage.
  *
  * ## There is no Eventbrite API credential (G7)
  *
@@ -28,6 +28,10 @@
  *
  * Import execution is manual and local-only — there are no scheduling,
  * notification, REST, or auto-disable settings to configure.
+ *
+ * The former Settings admin page (`admin.php?page=conexao-import-settings`)
+ * was retired: no submenu, no page callback, no hidden page. The old URL
+ * redirects to the Event Import dashboard for `manage_options` users.
  *
  * @package Conexao_Event_Importer
  */
@@ -103,56 +107,4 @@ class Conexao_Import_Settings {
 		return update_option( self::OPTION_KEY, self::$cache, false );
 	}
 
-	/**
-	 * Register the Settings submenu under the Event Import menu.
-	 *
-	 * Hooked late (priority 20) so the parent menu from
-	 * Conexao_Event_Sources::register_admin_menu() exists first.
-	 */
-	public function register_admin_menu() {
-		add_submenu_page(
-			'conexao-event-import',
-			__( 'Import Settings', 'conexao-event-importer' ),
-			__( 'Settings', 'conexao-event-importer' ),
-			'manage_options',
-			'conexao-import-settings',
-			array( $this, 'render_page' )
-		);
-	}
-
-	/**
-	 * Render the settings page.
-	 *
-	 * G7: the "Eventbrite API token" field, its POST handler and the nonce-gated
-	 * save form were removed with the dead token path. There is now nothing to
-	 * configure here: the importer is manual and local-only, and Eventbrite
-	 * sources need no credential.
-	 *
-	 * The screen is RETAINED rather than deleted because it is the documented
-	 * landing page for importer configuration and because `cleanup_scope` still
-	 * reads from this option. It now states the truth instead of offering a
-	 * field that never did anything.
-	 */
-	public function render_page() {
-		if ( ! current_user_can( 'manage_options' ) ) {
-			return;
-		}
-
-		?>
-		<div class="wrap conexao-import-settings">
-			<h1><?php esc_html_e( 'Import Settings', 'conexao-event-importer' ); ?></h1>
-			<p class="description">
-				<?php esc_html_e( 'Event Importer is a manual, local-only tool. Click “Import Events Now” on the Dashboard to fetch events from the configured sources.', 'conexao-event-importer' ); ?>
-			</p>
-
-			<h2><?php esc_html_e( 'Nothing to configure', 'conexao-event-importer' ); ?></h2>
-			<p>
-				<?php esc_html_e( 'The importer has no settings to save. In particular there is NO Eventbrite API token: Eventbrite sources are read from the public county discovery pages over plain HTML, with no account, no OAuth token and no Authorization header.', 'conexao-event-importer' ); ?>
-			</p>
-			<p>
-				<?php esc_html_e( 'An Eventbrite API credential is not a prerequisite for importing, and configuring one changes nothing. The official Eventbrite API cannot list a county\'s events (its public search endpoint is retired and its organization discovery is per-user), so it was measured as unsuitable and the unused token setting was retired. If Eventbrite later changes those external capabilities, revisit that decision before adding a credential.', 'conexao-event-importer' ); ?>
-			</p>
-		</div>
-		<?php
-	}
 }

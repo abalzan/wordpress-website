@@ -1619,6 +1619,20 @@ class Conexao_Event_Sources {
 
 	/**
 	 * Render the import dashboard page.
+	 *
+	 * The dashboard is deliberately about RUNNING and REVIEWING imports: the
+	 * last successful import, the full-import trigger, the export link and the
+	 * complete Import History with its per-run Logs. It shows NO source
+	 * overview — no source names, no active/inactive indicators and no
+	 * per-source error text. Source configuration and status live on the
+	 * dedicated Event Sources screen (`render_sources_page()`), which is the
+	 * one place an operator manages them; repeating a read-only copy here only
+	 * gave two places to read the same state and implied the dashboard could
+	 * act on it.
+	 *
+	 * `$sources` is still read, and still read through `get_all()`, because the
+	 * Import Summary's "Last successful import" is derived from it. Removing
+	 * the source list must not remove that calculation.
 	 */
 	public function render_import_dashboard() {
 		if ( ! current_user_can( 'manage_options' ) ) {
@@ -1652,21 +1666,6 @@ class Conexao_Event_Sources {
 					</span>
 				</div>
 			</div>
-
-			<h2><?php esc_html_e( 'Sources', 'conexao-event-importer' ); ?></h2>
-			<ul class="conexao-source-list">
-				<?php foreach ( $sources as $source ) : ?>
-					<li>
-						<span class="conexao-source-indicator <?php echo 'active' === $source['status'] ? 'conexao-source-indicator--active' : 'conexao-source-indicator--inactive'; ?>">
-							<?php echo 'active' === $source['status'] ? '&#10003;' : '&#10007;'; ?>
-						</span>
-						<?php echo esc_html( $source['name'] ); ?>
-						<?php if ( 'error' === $source['last_import_status'] && ! empty( $source['last_error'] ) ) : ?>
-							<span class="conexao-source-error">(<?php echo esc_html( $source['last_error'] ); ?>)</span>
-						<?php endif; ?>
-					</li>
-				<?php endforeach; ?>
-			</ul>
 
 			<h2><?php esc_html_e( 'Run Import', 'conexao-event-importer' ); ?></h2>
 			<form method="post" data-conexao-import-form>

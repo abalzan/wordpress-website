@@ -38,6 +38,20 @@
  *   H. Nothing about the storage contract moved: `MAX_ENTRIES`, the option key,
  *      newest-first ordering and the stored rows themselves are unchanged, and
  *      rendering does not touch them.
+ *   I. The dashboard is a RUN/REVIEW screen, not a source overview: the
+ *      `Sources` heading, the `conexao-source-list` markup, the active/inactive
+ *      indicators and the per-source error text are all absent, while the
+ *      Event Import heading, the Last successful import summary, Run Import,
+ *      Export Events and the full 14-column history (with its log actions)
+ *      remain.
+ *   J. Run Import is unchanged: the form still carries the `conexao_event_sources`
+ *      nonce, `conexao_source_action=run_import` and `source_id=all`, and the
+ *      handler still routes `all` to the `conexao_event_importer_run_all` filter
+ *      — the one that imports every ACTIVE source.
+ *   K. The dedicated Event Sources screen is untouched: it still renders the
+ *      full table (names, statuses, per-source errors), the Add/Edit form, the
+ *      per-row actions and the bulk controls, and rendering the DASHBOARD never
+ *      writes `conexao_event_sources`.
  *
  * ## Safety
  *
@@ -55,6 +69,11 @@ require_once dirname( __DIR__, 4 ) . '/tests/bootstrap.php';
 // Admin menu registration lives in wp-admin; the real `add_submenu_page()` is
 // what this suite inspects, so it must be available in the CLI context.
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
+
+// `submit_button()` is a wp-admin form helper the Event Sources Add/Edit form
+// renders. Test K drives the REAL `render_sources_page()`, so the helper has to
+// exist in this CLI process exactly as it does on a real admin request.
+require_once ABSPATH . 'wp-admin/includes/template.php';
 
 require_once WP_PLUGIN_DIR . '/conexao-event-importer/conexao-event-importer.php';
 
@@ -887,6 +906,380 @@ assert_equals(
 // Leave the isolated store as the seeded history; the shutdown net restores the
 // operator's real option afterwards.
 update_option( Conexao_Import_History::OPTION_KEY, $iah_retained, false );
+
+// ---------------------------------------------------------------------------
+// Test I — the dashboard is a RUN/REVIEW screen, not a source overview.
+//
+// The Sources section (heading, `conexao-source-list` list, active/inactive
+// indicators, per-source error text) is REMOVED, not hidden: source management
+// lives on the dedicated Event Sources screen. Everything the operator needs to
+// run an import, export events and read the history stays.
+// ---------------------------------------------------------------------------
+
+test_section( 'Test I — the dashboard renders no source overview' );
+
+wp_set_current_user( $iah_admin_id );
+
+$iah_dash    = iah_render_capturing_warnings( 'iah_dashboard_html' );
+$iah_dash    = array( $iah_dash[0], $iah_dash[1] );
+$iah_dashdom = iah_parse( $iah_dash[0] );
+
+assert_true(
+	empty( $iah_dash[1] ),
+	'Test I: rendering the dashboard emits no PHP warning or notice',
+	implode( ' | ', $iah_dash[1] )
+);
+
+// The page still identifies itself.
+assert_contains(
+	__( 'Event Import', 'conexao-event-importer' ),
+	$iah_dash[0],
+	'Test I: the Event Import heading is still rendered'
+);
+
+// The Import Summary survives, and it is still the FIRST section.
+assert_contains(
+	__( 'Last successful import', 'conexao-event-importer' ),
+	$iah_dash[0],
+	'Test I: the Last successful import summary is still rendered'
+);
+
+assert_true(
+	false !== strpos( $iah_dash[0], 'conexao-import-summary' ),
+	'Test I: the Import Summary card markup is still rendered'
+);
+
+// The Sources heading is gone. Matched as a HEADING, so the "Event Sources"
+// submenu text elsewhere on the page can never satisfy it.
+$iah_h2s = array();
+foreach ( $iah_dashdom[1]->query( '//h2' ) as $iah_h2 ) {
+	$iah_h2s[] = trim( (string) $iah_h2->textContent );
+}
+
+assert_true(
+	! in_array( __( 'Sources', 'conexao-event-importer' ), $iah_h2s, true ),
+	'Test I: the Sources heading is absent from the dashboard',
+	implode( ' | ', $iah_h2s )
+);
+
+assert_true(
+	0 === $iah_dashdom[1]->query( '//*[contains(concat(" ", normalize-space(@class), " "), " conexao-source-list ")]' )->length,
+	'Test I: the conexao-source-list container is absent'
+);
+
+assert_true(
+	0 === $iah_dashdom[1]->query( '//*[contains(concat(" ", normalize-space(@class), " "), " conexao-source-indicator ")]' )->length,
+	'Test I: no active/inactive source indicator is rendered'
+);
+
+assert_true(
+	0 === $iah_dashdom[1]->query( '//*[contains(concat(" ", normalize-space(@class), " "), " conexao-source-error ")]' )->length,
+	'Test I: no per-source error message is rendered on the dashboard'
+);
+
+// The remaining sections, in order. Export Events is a LINK, not a heading, so
+// it is asserted on the rendered anchor rather than on the <h2> list.
+$iah_remaining = array(
+	__( 'Run Import', 'conexao-event-importer' ),
+	__( 'Import History', 'conexao-event-importer' ),
+);
+
+foreach ( $iah_remaining as $iah_heading ) {
+	assert_true(
+		in_array( $iah_heading, $iah_h2s, true ),
+		'Test I: the "' . $iah_heading . '" section is still rendered',
+		implode( ' | ', $iah_h2s )
+	);
+}
+
+assert_equals(
+	$iah_remaining,
+	array_values(
+		array_filter(
+			$iah_h2s,
+			static function ( $heading ) use ( $iah_remaining ) {
+				return in_array( $heading, $iah_remaining, true );
+			}
+		)
+	),
+	'Test I: the remaining sections keep their order (Run Import, Import History)'
+);
+
+// Export Events is a button-link to the export screen, and it survives.
+assert_true(
+	$iah_dashdom[1]->query( '//a[contains(concat(" ", normalize-space(@class), " "), " button ") and contains(., "' . __( 'Export Events', 'conexao-event-importer' ) . '")]' )->length > 0,
+	'Test I: the Export Events button is still rendered'
+);
+
+assert_contains(
+	esc_url( admin_url( 'admin.php?page=conexao-event-export' ) ),
+	$iah_dash[0],
+	'Test I: the Export Events button still points at the export screen'
+);
+
+// The history table and its Logs column survive the removal.
+assert_equals(
+	1,
+	$iah_dashdom[1]->query( '//table[contains(concat(" ", normalize-space(@class), " "), " conexao-import-history ")]' )->length,
+	'Test I: the Import History table is still rendered'
+);
+
+assert_equals(
+	14,
+	count( iah_history_headers( $iah_dashdom[1] ) ),
+	'Test I: the history table still renders all 14 columns'
+);
+
+assert_contains(
+	__( 'Logs', 'conexao-event-importer' ),
+	implode( ' | ', iah_history_headers( $iah_dashdom[1] ) ),
+	'Test I: the Logs column is still present'
+);
+
+// The log actions the dashboard owns are still offered.
+assert_contains(
+	esc_url( Conexao_Import_Log_Admin::log_download_all_url() ),
+	$iah_dash[0],
+	'Test I: the whole-log download action is still offered'
+);
+
+assert_contains(
+	esc_url( Conexao_Import_Log_Admin::clear_log_url() ),
+	$iah_dash[0],
+	'Test I: the Clear Logs action is still offered'
+);
+
+// ---------------------------------------------------------------------------
+// Test J — Run Import is unchanged: same nonce, same action, same "all" scope.
+// ---------------------------------------------------------------------------
+
+test_section( 'Test J — the Run Import form and its scope are unchanged' );
+
+$iah_forms = $iah_dashdom[1]->query( '//form[.//input[@name="conexao_source_action" and @value="run_import"]]' );
+
+assert_equals(
+	1,
+	$iah_forms->length,
+	'Test J: exactly one Run Import form is rendered on the dashboard'
+);
+
+$iah_run_form = $iah_forms->item( 0 );
+
+$iah_run_nonce = $iah_dashdom[1]->query( './input[@name="conexao_event_sources_nonce"]', $iah_run_form );
+
+assert_equals(
+	1,
+	$iah_run_nonce->length,
+	'Test J: the Run Import form still carries the conexao_event_sources nonce field'
+);
+
+$iah_run_nonce_field = $iah_run_nonce->item( 0 );
+
+assert_true(
+	'' !== (string) $iah_run_nonce_field->getAttribute( 'value' ),
+	'Test J: the nonce field carries a real value'
+);
+
+$iah_run_source = $iah_dashdom[1]->query( './input[@name="source_id"]', $iah_run_form );
+
+assert_equals(
+	1,
+	$iah_run_source->length,
+	'Test J: the Run Import form still submits a source_id'
+);
+
+$iah_run_source_field = $iah_run_source->item( 0 );
+
+assert_equals(
+	'all',
+	(string) $iah_run_source_field->getAttribute( 'value' ),
+	'Test J: the dashboard import still targets ALL sources (source_id=all)'
+);
+
+assert_equals(
+	'post',
+	strtolower( (string) $iah_run_form->getAttribute( 'method' ) ),
+	'Test J: the Run Import form still submits by POST'
+);
+
+// The handler's routing is unchanged: "all" goes to the run-all filter, which
+// is the one that walks every ACTIVE source. Proven by driving the real
+// dispatcher, not by reading its source text.
+$iah_import_dispatched = 0;
+$iah_import_args       = array();
+
+$iah_dispatch = static function ( $value ) use ( &$iah_import_dispatched, &$iah_import_args ) {
+	$iah_import_dispatched++;
+	$iah_import_args = $value;
+	return array( 'status' => 'success', 'created' => 0 );
+};
+
+add_filter( 'conexao_event_importer_run_all', $iah_dispatch, 10, 1 );
+
+$iah_sources_for_import = new Conexao_Event_Sources();
+$iah_run_import         = new ReflectionMethod( 'Conexao_Event_Sources', 'handle_run_import' );
+$iah_run_import->setAccessible( true );
+
+$_POST['source_id'] = 'all';
+
+$iah_rendered_notice = iah_render_capturing_warnings(
+	static function () use ( $iah_run_import, $iah_sources_for_import ) {
+		$iah_run_import->invoke( $iah_sources_for_import );
+	}
+);
+
+remove_filter( 'conexao_event_importer_run_all', $iah_dispatch, 10 );
+
+unset( $_POST['source_id'] );
+
+assert_equals(
+	1,
+	$iah_import_dispatched,
+	'Test J: source_id=all dispatches the run-all import exactly once'
+);
+
+assert_true(
+	empty( $iah_rendered_notice[1] ),
+	'Test J: the import result notice renders without a PHP warning',
+	implode( ' | ', $iah_rendered_notice[1] )
+);
+
+// The run-all engine reads the ACTIVE sources; that is the behaviour the
+// dashboard relies on and must not change.
+$iah_active = $iah_sources_for_import->get_active();
+
+assert_true(
+	count( $iah_active ) > 0,
+	'Test J: precondition — the registry has at least one active source to import'
+);
+
+foreach ( $iah_active as $iah_active_source ) {
+	assert_equals(
+		'active',
+		$iah_active_source['status'],
+		'Test J: every source the run-all engine receives is active (' . $iah_active_source['id'] . ')'
+	);
+}
+
+// ---------------------------------------------------------------------------
+// Test K — the dedicated Event Sources screen is untouched, and rendering the
+// dashboard never writes the source registry.
+// ---------------------------------------------------------------------------
+
+test_section( 'Test K — the Event Sources screen is unchanged and the dashboard writes nothing' );
+
+$iah_sources_before = get_option( Conexao_Event_Sources::OPTION_KEY );
+iah_dashboard_html();
+$iah_sources_after = get_option( Conexao_Event_Sources::OPTION_KEY );
+
+assert_true(
+	$iah_sources_before === $iah_sources_after,
+	'Test K: rendering the dashboard does not modify conexao_event_sources'
+);
+
+assert_true(
+	! empty( $iah_sources_after ),
+	'Test K: the source registry is still populated after rendering the dashboard'
+);
+
+// The dedicated screen still renders its own full overview.
+$iah_sources_page = iah_render_capturing_warnings(
+	static function () use ( $iah_sources_for_import ) {
+		$iah_sources_for_import->render_sources_page();
+	}
+);
+
+assert_true(
+	empty( $iah_sources_page[1] ),
+	'Test K: the Event Sources page renders without a PHP warning or notice',
+	implode( ' | ', $iah_sources_page[1] )
+);
+
+list( $iah_sp_dom, $iah_sp_xpath ) = iah_parse( $iah_sources_page[0] );
+
+assert_contains(
+	__( 'Event Sources', 'conexao-event-importer' ),
+	$iah_sources_page[0],
+	'Test K: the Event Sources page still renders its heading'
+);
+
+// The source table is the one carrying the bulk checkboxes; the Add/Edit form
+// also uses a <table class="form-table">, so the class is what identifies it.
+assert_equals(
+	1,
+	$iah_sp_xpath->query( '//table[.//input[@name="bulk_source_ids[]"]]' )->length,
+	'Test K: the Event Sources table is still rendered'
+);
+
+// The table still names the sources and still shows their status.
+$iah_sp_body = $iah_sp_xpath->query( '//table[.//input[@name="bulk_source_ids[]"]]/tbody/tr' );
+
+assert_true(
+	$iah_sp_body->length > 0,
+	'Test K: the Event Sources table still renders one row per source'
+);
+
+$iah_sp_status_cells = 0;
+foreach ( $iah_sp_body as $iah_sp_row ) {
+	if ( $iah_sp_xpath->query( './td/span[contains(concat(" ", normalize-space(@class), " "), " conexao-source-status ")]', $iah_sp_row )->length > 0 ) {
+		$iah_sp_status_cells++;
+	}
+}
+
+assert_equals(
+	$iah_sp_body->length,
+	$iah_sp_status_cells,
+	'Test K: every Event Sources row still renders its status indicator'
+);
+
+// Per-source actions survive.
+assert_true(
+	$iah_sp_xpath->query( '//a[contains(concat(" ", normalize-space(@class), " "), " button ")]' )->length > 0,
+	'Test K: the Event Sources rows still render action links'
+);
+
+assert_true(
+	$iah_sp_xpath->query( '//input[@name="conexao_source_action" and @value="toggle"]' )->length > 0,
+	'Test K: the per-source enable/disable action is still rendered'
+);
+
+assert_true(
+	$iah_sp_xpath->query( '//input[@name="conexao_source_action" and @value="delete"]' )->length > 0,
+	'Test K: the per-source delete action is still rendered'
+);
+
+// Bulk controls survive.
+assert_equals(
+	1,
+	$iah_sp_xpath->query( '//select[@id="conexao-bulk-action-select"]' )->length,
+	'Test K: the bulk action selector is still rendered'
+);
+
+assert_true(
+	$iah_sp_xpath->query( '//input[@name="bulk_source_ids[]"]' )->length > 0,
+	'Test K: the per-row bulk checkboxes are still rendered'
+);
+
+assert_true(
+	$iah_sp_xpath->query( '//*[@id="conexao-bulk-select-all"]' )->length > 0,
+	'Test K: the Select All control is still rendered'
+);
+
+assert_true(
+	$iah_sp_xpath->query( '//*[@id="conexao-bulk-deselect-all"]' )->length > 0,
+	'Test K: the Deselect All control is still rendered'
+);
+
+// Add/Edit form survives.
+assert_true(
+	$iah_sp_xpath->query( '//input[@name="source_url"]' )->length > 0,
+	'Test K: the Add/Edit Source form is still rendered'
+);
+
+assert_true(
+	$iah_sp_xpath->query( '//input[@name="source_status"]' )->length > 0,
+	'Test K: the source status field is still rendered'
+);
 
 wp_set_current_user( 0 );
 

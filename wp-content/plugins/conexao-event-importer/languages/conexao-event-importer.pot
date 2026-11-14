@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-14 10:10+0000\n"
+"POT-Creation-Date: 2026-11-14 12:06+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 
 
@@ -321,7 +321,7 @@ msgstr ""
 msgid "Cleanup History"
 msgstr ""
 #: wp-content/plugins/conexao-event-importer/includes/class-event-cleanup-admin.php:199
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1730
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1729
 msgid "Time"
 msgstr ""
 #: wp-content/plugins/conexao-event-importer/includes/class-event-cleanup-admin.php:200
@@ -340,7 +340,7 @@ msgstr ""
 msgid "Images Preserved"
 msgstr ""
 #: wp-content/plugins/conexao-event-importer/includes/class-event-cleanup-admin.php:205
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1738
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1737
 #: wp-content/plugins/conexao-event-importer/includes/class-event-transfer-admin.php:741
 #: wp-content/plugins/conexao-event-importer/includes/class-event-transfer-admin.php:985
 msgid "Errors"
@@ -1011,7 +1011,7 @@ msgid "Localização não identificada"
 msgstr ""
 #: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:454
 #: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:455
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1636
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1650
 msgid "Event Import"
 msgstr ""
 #: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:465
@@ -1252,7 +1252,7 @@ msgstr ""
 msgid "Type"
 msgstr ""
 #: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1387
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1739
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1738
 msgid "Status"
 msgstr ""
 #: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1388
@@ -1302,7 +1302,7 @@ msgid "Source ID"
 msgstr ""
 #: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1508
 #: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1571
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:2085
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:2084
 msgid "URL"
 msgstr ""
 #: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1511
@@ -1340,191 +1340,188 @@ msgstr ""
 #: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1615
 msgid "Save Source"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1640
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1654
 msgid "Last successful import"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1656
-msgid "Sources"
-msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1671
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1670
 msgid "Run Import"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1676
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1675
 msgid "Import Events Now"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1681
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1680
 #: wp-content/plugins/conexao-event-importer/includes/class-event-transfer-admin.php:49
 #: wp-content/plugins/conexao-event-importer/includes/class-event-transfer-admin.php:50
 #: wp-content/plugins/conexao-event-importer/includes/class-event-transfer-admin.php:622
 msgid "Export Events"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1718
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1717
 msgid "Import History"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1720
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1719
 msgid ""
 "Each run row opens the log entries recorded for that exact import. Use the "
 "log actions to download the full log or clear it."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1724
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1723
 msgid "No imports yet."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1731
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1730
 msgid "Source"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1732
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1731
 msgid "Found"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1733
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1732
 msgid "New"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1734
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1733
 msgid "Updated"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1735
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1734
 msgid "Unchanged"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1736
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1735
 msgid "Duplicates"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1737
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1736
 msgid "Skipped"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1740
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1739
 msgid "Listing"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1741
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1740
 msgid "Progress"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1742
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1741
 msgid "Cooldown"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1743
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1742
 msgid "Logs"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1775
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1873
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1774
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1872
 msgid "complete"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1776
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1775
 msgid "incomplete"
 msgstr ""
 #. translators: 1: reason code, 2: seconds remaining
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1791
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1790
 #, php-format
 msgid "cooling down (%1$s) — retry in ~%2$ds"
 msgstr ""
 #. translators: %s: reason code
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1798
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1797
 #, php-format
 msgid "cleared (last: %s)"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1802
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1843
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1801
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1842
 msgid "—"
 msgstr ""
 #. translators: 1: last confirmed page, 2: total pages, 3: failure class
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1854
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1853
 #, php-format
 msgid "page %1$d of %2$d (%3$s)"
 msgstr ""
 #. translators: 1: last confirmed page, 2: total pages
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1862
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1861
 #, php-format
 msgid "page %1$d of %2$d"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1896
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1895
 msgid "resuming — a worker is running it now"
 msgstr ""
 #. translators: %d: whole minutes until the next automatic attempt
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1904
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1903
 #, php-format
 msgid "resumable — next run in %d minute"
 msgid_plural "resumable — next run in %d minutes"
 msgstr[0] ""
 msgstr[1] ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1910
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1909
 msgid "resumable — resume scheduled"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1914
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1913
 msgid "NOT scheduled — the automatic continuation stopped; press Run to resume"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1918
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1917
 msgid "NOT scheduled — the continuation could not be scheduled"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1921
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1920
 msgid "NOT scheduled — no continuation exists"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1961
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1960
 msgid "Download Import Logs (.log)"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1966
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1965
 msgid ""
 "This will permanently delete ALL Event Importer logs. This cannot be undone. "
 "Continue?"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1968
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1967
 msgid "Clear Logs"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1998
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:1997
 msgid "Logs unavailable for this historical run"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:2005
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:2004
 msgid "No logs"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:2021
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:2020
 #, php-format
 msgid "View logs (%d entry)"
 msgid_plural "View logs (%d entries)"
 msgstr[0] ""
 msgstr[1] ""
 #. translators: 1: number of entries shown, 2: total number of entries
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:2043
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:2042
 #, php-format
 msgid ""
 "Showing the newest %1$d of %2$d entries. Download this run to read the "
 "complete log."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:2053
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:2052
 msgid "Download this run"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:2086
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:2085
 msgid "Source URL"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:2087
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:2086
 msgid "Attempt"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:2088
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:2087
 msgid "Post ID"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:2089
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:2088
 msgid "Page"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:2090
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:2089
 msgid "Reason"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:2091
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:2090
 msgid "Reason code"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:2092
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:2091
 msgid "Cooldown (s)"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:2093
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:2092
 msgid "Retry after (s)"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:2094
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:2093
 msgid "Rate-limit hits"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:2095
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:2094
 msgid "Rate-limit streak"
 msgstr ""
 #. translators: %s: source event ID
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:2130
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:2129
 #, php-format
 msgid "(ID %s)"
 msgstr ""
 #. translators: %d: HTTP status code
-#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:2145
+#: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:2144
 #, php-format
 msgid "HTTP %d"
 msgstr ""
@@ -1931,14 +1928,14 @@ msgstr ""
 #, php-format
 msgid "Eventbrite returned an unexpected HTTP %d response."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-import-log-admin.php:156
-#: wp-content/plugins/conexao-event-importer/includes/class-import-log-admin.php:175
+#: wp-content/plugins/conexao-event-importer/includes/class-import-log-admin.php:163
+#: wp-content/plugins/conexao-event-importer/includes/class-import-log-admin.php:182
 msgid "You do not have permission to download the import logs."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-import-log-admin.php:180
+#: wp-content/plugins/conexao-event-importer/includes/class-import-log-admin.php:187
 msgid "Invalid import run."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-import-log-admin.php:203
+#: wp-content/plugins/conexao-event-importer/includes/class-import-log-admin.php:210
 msgid "You do not have permission to clear the import logs."
 msgstr ""
 #: wp-content/plugins/conexao-event-importer/includes/class-import-result.php:121

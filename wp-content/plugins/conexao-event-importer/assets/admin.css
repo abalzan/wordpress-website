@@ -56,29 +56,6 @@
 	color: #1d2327;
 }
 
-.conexao-source-list {
-	margin: 10px 0 20px;
-}
-
-.conexao-source-list li {
-	margin-bottom: 6px;
-	font-size: 14px;
-}
-
-.conexao-source-indicator {
-	display: inline-block;
-	width: 20px;
-	text-align: center;
-}
-
-.conexao-source-indicator--active {
-	color: #1e8e3e;
-}
-
-.conexao-source-indicator--inactive {
-	color: #cc0000;
-}
-
 .conexao-source-form {
 	margin-top: 20px;
 	max-width: 700px;

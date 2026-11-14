@@ -166,11 +166,6 @@ final class Conexao_Event_Importer {
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_assets' ) );
 
-		// Settings page under the Event Import menu (late priority so the
-		// parent menu from Conexao_Event_Sources exists first).
-		$settings = new Conexao_Import_Settings();
-		add_action( 'admin_menu', array( $settings, 'register_admin_menu' ), 20 );
-
 		// Allow webcal:// protocol in iCalendar source URLs.
 		add_filter( 'kses_allowed_protocols', array( $this, 'allow_webcal_protocol' ) );
 	}

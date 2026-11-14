@@ -137,7 +137,7 @@ production-side fetching. Everything is manual/on-demand.
 | `includes/class-event-deduplicator.php` | `Conexao_Event_Deduplicator` | Find existing events by source_id, URL, or content |
 | `includes/class-event-importer.php` | `Conexao_Event_Importer_Engine` | Main import engine, upsert logic, dry-run support |
 | `includes/class-event-image-handler.php` | `Conexao_Event_Image_Handler` | Download/sideload external images + create attachments from embedded base64 data |
-| `includes/class-import-settings.php` | `Conexao_Import_Settings` | Settings storage (`cleanup_scope`) + admin page. **No Eventbrite API token** — the dead token setting was retired in G7 |
+| `includes/class-import-settings.php` | `Conexao_Import_Settings` | Settings storage (`cleanup_scope`). No admin page — the empty Settings screen was retired; `cleanup_scope` is read by Cleanup. **No Eventbrite API token** — the dead token setting was retired in G7 |
 | `includes/class-source-health.php` | `Conexao_Source_Health` | Informational per-source failure tracking (never auto-disables) |
 | `includes/class-source-fetch-exception.php` | `Conexao_Source_Fetch_Exception` | Structured transport/HTTP fetch failure |
 | `includes/class-import-cli.php` | `Conexao_Import_CLI` | WP-CLI commands (`wp conexao-events …`) |
@@ -1595,16 +1595,15 @@ The local export JSON gained ONE additive per-event field, `"lang"`:
 Menu: Event Import (top-level menu, icon dashicons-calendar-alt)
 
 Submenus:
-- Event Import (dashboard) — last successful import, source statuses,
-  **Import Events Now**, the Export Events link, and the **complete Import
-  History table with per-run Logs**
+- Event Import (dashboard) — last successful import, **Import Events Now**,
+  the Export Events link, and the **complete Import History table with per-run
+  Logs**. It shows no source overview: source configuration and status live on
+  the Event Sources screen below.
 - Event Sources — CRUD sources (incl. county, category), toggle, run single import
 - Export Events — JSON download (with embedded images)
 - Import Events — JSON upload/import (creates attachments from embedded data)
 - Image Sync — bulk sideload of remaining external banner images
 - Cleanup — manual trigger + status/history
-- Settings — importer settings storage (there is nothing to save; no Eventbrite API token)
-
 There is no separate Import History submenu: `admin.php?page=conexao-import-history`
 was retired in v1.10.0 (see below). There is no separate Import Logs submenu
 either: `admin.php?page=conexao-import-log` was retired once run-level log
@@ -1619,7 +1618,9 @@ which screen was complete. v1.10.0 consolidates them:
 
 - `admin.php?page=conexao-event-import` is the **one** place history is shown.
   Its sections are, in order: Event Import heading, Import Summary (last
-  successful import), Sources, Run Import, Export Events, **Import History**.
+  successful import), Run Import, Export Events, **Import History**. It carries
+  no Sources section — see
+  [The dashboard is not a source overview](#the-dashboard-is-not-a-source-overview).
 - The history section is the complete table the dedicated page used to render:
   the same 13 columns — Time, Source, Found, New, Updated, Unchanged,
   Duplicates, Skipped, Errors, Status, **Listing**, **Progress**, **Cooldown** —
@@ -1655,6 +1656,44 @@ Everyone else still gets WordPress's standard refusal.
 `record()`'s field shapes (`complete`, `cooldown`, `checkpoint`, the optional
 per-run extras) and every existing recorded row. This was a UI consolidation,
 not a data migration.
+
+### The dashboard is not a source overview
+
+The dashboard used to render a **Sources** section between the Import Summary
+and Run Import: a `conexao-source-list` of every source name, an active/inactive
+indicator per source, and each source's last error message. It was removed.
+
+It was a read-only copy of state the operator manages one screen away, so it
+gave two places to read the same fact and implied the dashboard could act on a
+source it could not. The dashboard is now purely about **running** an import,
+**exporting** events and **reviewing** what happened:
+
+| Section | What it does |
+|---|---|
+| Import Summary | The last successful import timestamp |
+| Run Import | **Import Events Now** — one full import across every active source |
+| Export Events | The JSON export download |
+| Import History | The complete 14-column table, with per-run Logs |
+
+**Source management is unchanged and still lives on its own screen:**
+`admin.php?page=conexao-event-sources` (the **Event Sources** submenu). That page
+keeps the full source table (name, feed URL, type, status, last import, events
+imported), the per-source Import Now / Edit / Enable-disable / Delete actions,
+the Add/Edit Source form with every configuration field and its validation, and
+the bulk controls (Select All, Deselect All, Enable Selected, Disable Selected,
+Delete Selected). Nothing about source configuration moved, was renamed or was
+retired.
+
+**What did NOT change.** `Conexao_Event_Sources::get_all()` is still read on
+every dashboard render, because the Import Summary's "Last successful import"
+is derived from it — removing the source list did not remove that calculation.
+The Run Import form is byte-for-byte the same request: the
+`conexao_event_sources` nonce, `conexao_source_action=run_import` and
+`source_id=all`, handled by `handle_run_import()` exactly as before, so the
+dashboard still imports across **all active sources** and never changes which
+sources are processed. Rendering the dashboard writes nothing: it does not touch
+`conexao_event_sources`, the import history or the log store, and it never starts
+an import.
 
 ### Logs in Import History
 
@@ -1718,6 +1757,26 @@ buffering (`begin_run()` / `end_run()` / `flush()`), 90-day pruning, context
 sanitisation, `get_for_run()`, `format_entry_line()` / `format_entries()`,
 `export_run()` / `export_all()` and every protected download/clear handler. Only
 the second **screen** was retired.
+
+### Import Settings — retired (empty page)
+
+The Import Settings screen (`admin.php?page=conexao-import-settings`) is
+retired: no submenu, no page callback and no hidden page. It displayed
+explanatory text only ("Nothing to configure") and provided no useful controls.
+
+**Retired route.** `conexao-import-settings` is no longer registered: no
+submenu, no page callback and no hidden page. A direct visit to the old URL is
+redirected by `Conexao_Event_Sources::maybe_redirect_retired_settings_page()`,
+hooked to `admin_page_access_denied` (the hook WordPress fires for an
+unregistered admin page immediately before it refuses it), to
+`admin.php?page=conexao-event-import` — for a user with `manage_options` only.
+Everyone else still gets WordPress's standard refusal.
+
+**What did NOT change.** The underlying settings storage is untouched:
+`Conexao_Import_Settings` remains loaded, `conexao_event_importer_settings`
+is unchanged, `cleanup_scope` keeps its current value and `'all'` fallback,
+and `Conexao_Event_Cleanup` continues to read `cleanup_scope` exactly as
+before. Only the **screen** was retired.
 
 ### Event Sources — bulk actions and the selection controller
 

@@ -60,5 +60,10 @@ class Conexao_Import_Dashboard {
 		// run-level inspection moved into the Import History table. Its
 		// download/clear handlers survive; only the second screen is gone.
 		add_action( 'admin_page_access_denied', array( $this->log_admin, 'maybe_redirect_retired_log_page' ) );
+
+		// The `conexao-import-settings` screen was retired the same way: it was an
+		// empty page with nothing to configure, so the submenu entry and the page
+		// callback are gone. A bookmarked URL is redirected to the dashboard.
+		add_action( 'admin_page_access_denied', array( $this->sources, 'maybe_redirect_retired_settings_page' ) );
 	}
 }
