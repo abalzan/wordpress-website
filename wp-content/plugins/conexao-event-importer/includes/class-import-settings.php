@@ -106,5 +106,4 @@ class Conexao_Import_Settings {
 
 		return update_option( self::OPTION_KEY, self::$cache, false );
 	}
-
 }

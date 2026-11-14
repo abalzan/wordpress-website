@@ -1,0 +1,81 @@
+conexao test harness
+  repository:    /home/andrei/IdeaProjects/wordpress-website
+  php:           8.5.4
+  environment:   host (docker compose exec)
+  base url:      http://localhost:8080
+
+In-process PHP suites (serial, one process per suite)
+[PASS] plugin/conexao-event-importer/test-bulk-actions.php (7.17s) — 149 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-error-handling.php (1.29s) — 55 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-event-cleanup-purge.php (196.42s) — 715 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-eventbrite-checkpoint.php (20.46s) — 77 passed, 0 failed
+[FAIL] plugin/conexao-event-importer/test-eventbrite-token-retirement.php (1.40s) (exit 255)
+         [14-Nov-2026 13:41:05 UTC] PHP Fatal error:  Uncaught Error: Call to undefined method Conexao_Import_Settings::render_page() in /var/www/html/wp-content/plugins/conexao-event-importer/tests/test-eventbrite-token-retirement.php:468
+         Fatal error: Uncaught Error: Call to undefined method Conexao_Import_Settings::render_page() in /var/www/html/wp-content/plugins/conexao-event-importer/tests/test-eventbrite-token-retirement.php:468
+[FAIL] plugin/conexao-event-importer/test-export-language.php (13.83s) (exit 255)
+         [14-Nov-2026 13:41:19 UTC] PHP Fatal error:  Allowed memory size of 536870912 bytes exhausted (tried to allocate 176128 bytes) in /var/www/html/wp-content/plugins/conexao-event-importer/includes/class-event-export.php on line 935
+         Fatal error: Allowed memory size of 536870912 bytes exhausted (tried to allocate 176128 bytes) in /var/www/html/wp-content/plugins/conexao-event-importer/includes/class-event-export.php on line 935
+[PASS] plugin/conexao-event-importer/test-ics-occurrence-dates.php (11.74s) — 172 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-import-continuation.php (231.38s) — 272 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-import-history-dashboard.php (20.32s) — 136 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-import-history-logs.php (1.87s) — 77 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-import-log-run-correlation.php (2.80s) — 21 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-import-log.php (6.40s) — 55 passed, 0 failed
+[FAIL] plugin/conexao-event-importer/test-import-settings-retirement.php (79.04s) — 18 passed, 1 failed (exit 1)
+           FAIL: Test G: with cleanup_scope absent, manual event IS selected (all fallback)
+[PASS] plugin/conexao-event-importer/test-ivvcc-importer.php (1.98s) — 46 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-language-identity.php (3.49s) — 29 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-mondello-park-importer.php (1.98s) — 142 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-multi-file-import.php (47.62s) — 149 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-reappearing-event-lifecycle.php (5.76s) — 5 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-source-county-hint.php (2.80s) — 18 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-source-fetch-failure.php (5.43s) — 132 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-source-not-found-reconciliation.php (27.12s) — 57 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-source-pagination-completeness.php (2.64s) — 24 passed, 0 failed
+
+In-process PHP suites (parallel, workers=1)
+[PASS] plugin/conexao-event-importer/test-county-registry.php (1.97s) — 482 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-event-address.php (1.11s) — 76 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-event-image-sync.php (6.84s) — 30 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-eventbrite-api-contract.php (1.02s) — 110 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-eventbrite-importer.php (7.78s) — 68 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-eventbrite-rate-limit.php (19.39s) — 73 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-eventbrite-source-expansion.php (9.76s) — 65 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-eventbrite-volatility.php (1.38s) — 77 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-motorsport-ireland-importer.php (2.71s) — 90 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-multi-file-import-ui.php (1.02s) — 41 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-past-event-filter.php (0.98s) — 29 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-request-budget.php (4.44s) — 33 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-request-retry-policy.php (2.10s) — 59 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-request-reuse.php (1.33s) — 53 passed, 0 failed
+[FAIL] plugin/conexao-event-importer/test-town-sanitization.php (0.94s) — 82 passed, 1 failed (exit 1)
+           FAIL: no Eircode-contaminated or non-town terms in conexao_town
+
+PHP suite timing
+  SERIAL group:   22 suite(s), 692.94s total
+  PARALLEL group: 15 suite(s), 62.77s total (worker-measured)
+  PHP layer total: 22 serial + 15 parallel = 37 suite(s)
+  Ten slowest suites (by measured duration):
+    231.38s  plugin/conexao-event-importer/test-import-continuation.php
+    196.42s  plugin/conexao-event-importer/test-event-cleanup-purge.php
+    79.04s  plugin/conexao-event-importer/test-import-settings-retirement.php
+    47.62s  plugin/conexao-event-importer/test-multi-file-import.php
+    27.12s  plugin/conexao-event-importer/test-source-not-found-reconciliation.php
+    20.46s  plugin/conexao-event-importer/test-eventbrite-checkpoint.php
+    20.32s  plugin/conexao-event-importer/test-import-history-dashboard.php
+    19.39s  plugin/conexao-event-importer/test-eventbrite-rate-limit.php
+    13.83s  plugin/conexao-event-importer/test-export-language.php
+    11.74s  plugin/conexao-event-importer/test-ics-occurrence-dates.php
+
+----------------------------------------
+In-process PHP suites: 37 total, 33 passed, 4 failed
+Assertions: 3717 passed, 2 failed
+----------------------------------------
+TESTS FAILED
+failing suites:
+  - plugin/conexao-event-importer/test-eventbrite-token-retirement.php
+  - plugin/conexao-event-importer/test-export-language.php
+  - plugin/conexao-event-importer/test-import-settings-retirement.php
+  - plugin/conexao-event-importer/test-town-sanitization.php
+full suite output kept in /tmp/tmp.lE5Q3pCzjy
+EXIT:1
