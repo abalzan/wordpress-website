@@ -1,0 +1,178 @@
+{
+    "label": "post-idempotence-vs-post-apply",
+    "generated_at_utc": "2026-11-14T20:35:08+00:00",
+    "before_source": "docs/evidence/2026-11-14-stage-0-event-importer-probe-deactivation/06-post-apply-registry.json",
+    "after_source": "docs/evidence/2026-11-14-stage-0-event-importer-probe-deactivation/08-post-idempotence-registry.json",
+    "manifest": "docs/evidence/2026-11-14-stage-0-event-importer-probe-deactivation/02-manifest-18-ids.json",
+    "manifest_count": 18,
+    "before_registry_count": 154,
+    "after_registry_count": 154,
+    "before_status_counts": {
+        "active": 136,
+        "inactive": 18
+    },
+    "after_status_counts": {
+        "active": 136,
+        "inactive": 18
+    },
+    "before_global_non_status_hash": "1075c8a8be8933922d511aae4b4905d5fb07625ee7598c0ea6abd67183591fda",
+    "after_global_non_status_hash": "1075c8a8be8933922d511aae4b4905d5fb07625ee7598c0ea6abd67183591fda",
+    "global_non_status_hash_identical": true,
+    "g1_probe_count_after": 18,
+    "named_ids_present_after": {
+        "g2_cavan_probe": false,
+        "g4c_budget_probe": false
+    },
+    "named_production_sources_status": {
+        "eventbrite": "active",
+        "eventbrite_cavan": "active",
+        "eventbrite_laois": "active",
+        "heritage_week": "active"
+    },
+    "created_ids": [],
+    "deleted_ids": [],
+    "missing_target_ids": [],
+    "not_inactive_target_ids": [],
+    "non_status_changed_target_ids": [],
+    "unauthorised_changes": [],
+    "per_target": {
+        "g1_probe_eventbrite_12a0be98": {
+            "original_status": "inactive",
+            "final_status": "inactive",
+            "non_status_hash_before": "241573f4e64647927d9b34de77fb16c8fc47e4a03f2f344fa121932ef7c19cd4",
+            "non_status_hash_after": "241573f4e64647927d9b34de77fb16c8fc47e4a03f2f344fa121932ef7c19cd4",
+            "non_status_identical": true
+        },
+        "g1_probe_eventbrite_1d540378": {
+            "original_status": "inactive",
+            "final_status": "inactive",
+            "non_status_hash_before": "2a77668c3084a0d77ae2fd75472f3cd2239f1a68a770c625b9448c2ddf115b11",
+            "non_status_hash_after": "2a77668c3084a0d77ae2fd75472f3cd2239f1a68a770c625b9448c2ddf115b11",
+            "non_status_identical": true
+        },
+        "g1_probe_eventbrite_217b99b8": {
+            "original_status": "inactive",
+            "final_status": "inactive",
+            "non_status_hash_before": "2c24bca8dbe6fe621ae6b5277ef40cd708dc26199bf920bffd0b61b285cbefb8",
+            "non_status_hash_after": "2c24bca8dbe6fe621ae6b5277ef40cd708dc26199bf920bffd0b61b285cbefb8",
+            "non_status_identical": true
+        },
+        "g1_probe_eventbrite_255d8e5d": {
+            "original_status": "inactive",
+            "final_status": "inactive",
+            "non_status_hash_before": "3891ae64663f1fa5c221d95610d28f8e2ae62d5689d463484fad257740aa3914",
+            "non_status_hash_after": "3891ae64663f1fa5c221d95610d28f8e2ae62d5689d463484fad257740aa3914",
+            "non_status_identical": true
+        },
+        "g1_probe_eventbrite_26089591": {
+            "original_status": "inactive",
+            "final_status": "inactive",
+            "non_status_hash_before": "b203c29a444e765b9fc1c800b821cbdfa1cbcf25fa54d388c69f3fa1676bc941",
+            "non_status_hash_after": "b203c29a444e765b9fc1c800b821cbdfa1cbcf25fa54d388c69f3fa1676bc941",
+            "non_status_identical": true
+        },
+        "g1_probe_eventbrite_337a55a7": {
+            "original_status": "inactive",
+            "final_status": "inactive",
+            "non_status_hash_before": "095706dcf4d4e4bec809994ae77236a9735783e38d02a6fcc617abd4ae33f5ed",
+            "non_status_hash_after": "095706dcf4d4e4bec809994ae77236a9735783e38d02a6fcc617abd4ae33f5ed",
+            "non_status_identical": true
+        },
+        "g1_probe_eventbrite_63e32fa4": {
+            "original_status": "inactive",
+            "final_status": "inactive",
+            "non_status_hash_before": "0c1117eb09a7be57bad14cacf4bfd19f310f2e2ce1485dcdffcddda7858d3b7a",
+            "non_status_hash_after": "0c1117eb09a7be57bad14cacf4bfd19f310f2e2ce1485dcdffcddda7858d3b7a",
+            "non_status_identical": true
+        },
+        "g1_probe_eventbrite_9695905a": {
+            "original_status": "inactive",
+            "final_status": "inactive",
+            "non_status_hash_before": "ee6dbc8d122eb2b70fac53ef2371276580bff001897b1b81b8193535c636b04c",
+            "non_status_hash_after": "ee6dbc8d122eb2b70fac53ef2371276580bff001897b1b81b8193535c636b04c",
+            "non_status_identical": true
+        },
+        "g1_probe_eventbrite_a7200d61": {
+            "original_status": "inactive",
+            "final_status": "inactive",
+            "non_status_hash_before": "a72f85534f7208d8b7177b9150e25715fdac576e9573247bc21237794d962eff",
+            "non_status_hash_after": "a72f85534f7208d8b7177b9150e25715fdac576e9573247bc21237794d962eff",
+            "non_status_identical": true
+        },
+        "g1_probe_eventbrite_f513d699": {
+            "original_status": "inactive",
+            "final_status": "inactive",
+            "non_status_hash_before": "f2c5278c1261ff7a39748e89d11faa2115ea48a1cdc4056fc49ce34807383bc3",
+            "non_status_hash_after": "f2c5278c1261ff7a39748e89d11faa2115ea48a1cdc4056fc49ce34807383bc3",
+            "non_status_identical": true
+        },
+        "g1_probe_heritage_week_0b81b474": {
+            "original_status": "inactive",
+            "final_status": "inactive",
+            "non_status_hash_before": "f5ad16105b94e1229bfa9ec5a801ad6010de54b054010b904ebbcac033b189f5",
+            "non_status_hash_after": "f5ad16105b94e1229bfa9ec5a801ad6010de54b054010b904ebbcac033b189f5",
+            "non_status_identical": true
+        },
+        "g1_probe_heritage_week_1a8e51f2": {
+            "original_status": "inactive",
+            "final_status": "inactive",
+            "non_status_hash_before": "2c86d3f6cb754144b3965d415796205e6e6672822adab7b846d160f6c085761d",
+            "non_status_hash_after": "2c86d3f6cb754144b3965d415796205e6e6672822adab7b846d160f6c085761d",
+            "non_status_identical": true
+        },
+        "g1_probe_heritage_week_3959e340": {
+            "original_status": "inactive",
+            "final_status": "inactive",
+            "non_status_hash_before": "5a7caa3bbaa32bf5732ba144f28bf9d65d112625d649c6a112494bf519aa2863",
+            "non_status_hash_after": "5a7caa3bbaa32bf5732ba144f28bf9d65d112625d649c6a112494bf519aa2863",
+            "non_status_identical": true
+        },
+        "g1_probe_heritage_week_502e0f5d": {
+            "original_status": "inactive",
+            "final_status": "inactive",
+            "non_status_hash_before": "aa0a750c4cc1a6e9f824ff81968698d46469c912909bb6fc2eacd2be8b450ee2",
+            "non_status_hash_after": "aa0a750c4cc1a6e9f824ff81968698d46469c912909bb6fc2eacd2be8b450ee2",
+            "non_status_identical": true
+        },
+        "g1_probe_heritage_week_5b8fe650": {
+            "original_status": "inactive",
+            "final_status": "inactive",
+            "non_status_hash_before": "bde034bce4e02b2a0a43cca6b4967641c35cb2f97d86643feeabf9799c687eb4",
+            "non_status_hash_after": "bde034bce4e02b2a0a43cca6b4967641c35cb2f97d86643feeabf9799c687eb4",
+            "non_status_identical": true
+        },
+        "g1_probe_heritage_week_79452265": {
+            "original_status": "inactive",
+            "final_status": "inactive",
+            "non_status_hash_before": "6d6afefc0878d886f88efb149f0cbd11b0bb672e966e606bb5ff0500feab2214",
+            "non_status_hash_after": "6d6afefc0878d886f88efb149f0cbd11b0bb672e966e606bb5ff0500feab2214",
+            "non_status_identical": true
+        },
+        "g1_probe_heritage_week_9f3deb1a": {
+            "original_status": "inactive",
+            "final_status": "inactive",
+            "non_status_hash_before": "e4524768e8c8c72e230f7af26429de53310d462e0a67808ae8e73a03a5c3b87f",
+            "non_status_hash_after": "e4524768e8c8c72e230f7af26429de53310d462e0a67808ae8e73a03a5c3b87f",
+            "non_status_identical": true
+        },
+        "g1_probe_heritage_week_e38a7b47": {
+            "original_status": "inactive",
+            "final_status": "inactive",
+            "non_status_hash_before": "dfc22d3bb8eb86cc3fd21d8fbeaffaa80087bc7ee5311330dd937d35019b6f38",
+            "non_status_hash_after": "dfc22d3bb8eb86cc3fd21d8fbeaffaa80087bc7ee5311330dd937d35019b6f38",
+            "non_status_identical": true
+        }
+    },
+    "gates": {
+        "target_manifest_records_missing": 0,
+        "target_records_not_inactive": 0,
+        "unauthorised_source_records_changed": 0,
+        "non_status_fields_changed_on_target_records": 0,
+        "source_records_created": 0,
+        "source_records_deleted": 0,
+        "total_registry_count_delta": 0,
+        "named_fixture_ids_created": 0
+    },
+    "gates_all_zero": true,
+    "result": "PASS"
+}
