@@ -247,6 +247,13 @@ The authorised follow-up to the BLOCKED finding above. The empty archive was a
 |---|---|
 | [`evidence-directory-audit-and-cleanup.md`](evidence-directory-audit-and-cleanup.md) | **Repository maintenance only.** A complete audit of `docs/evidence/`: all **1,445 files in 140 folders** read and SHA-256 hashed (121.71 MiB, 1,215 tracked), every folder name searched across 669 project files, **64 byte-identical groups** (152 files, 4.48 MiB) classified by what the equality *means*, and every folder assigned Class A–E. Findings: **130 of 140 folders are named by at least one report**, 7 are named nowhere and are self-documenting or the only record of a negative decision, and `2026-09-26-stage-l/gate.json` plus `2026-10-05-eventbrite-g16/` are **hard code dependencies** (CI artifact upload; live write target). Cleanup was deliberately minimal — **1 byte-identical `.bak` deleted, 8 empty directories removed**, net **+212 KiB** because the audit's own evidence outweighs what was safe to remove: the 4.04 MiB of cross-folder duplicates are idempotence / pre-apply-recheck proofs, and the 15.25 MiB database dump is the only pre-purge restore point (flagged as containing local user hashes, path only, not reproduced). `docs/evidence/README.md` was rewritten from a partial index (**29 of 140** folders described) into a **complete index of all folders** plus the A–E retention policy, the commit prohibitions and the add-evidence procedure. No code, data, schema, route or behaviour change; **no commit, no push**. |
 
+## Event importer test safety (2026-11-14)
+
+| Report | Content |
+|---|---|
+| [`2026-11-14-stage-0-5-test-safety-audit.md`](2026-11-14-stage-0-5-test-safety-audit.md) | Read-only audit: ordinary test execution destroyed the operator import log/history and every past event (`test-event-cleanup-purge.php` called `run_cleanup()` against the shared database). Establishes the failure modes and the isolation design. |
+| [`2026-11-14-stage-0-5-test-safety.md`](2026-11-14-stage-0-5-test-safety.md) | **Stage 0.5 implementation.** The four operator stores get a fail-closed storage seam (`option_key()` / `status_option()` / `history_option()`), a per-process suffix established before `wp-load.php`, a restrictive reset helper, guarded suites, the removal of the destructive cleanup operations, corrected `SERIAL` classifications, a 114-assertion acceptance suite and a 14-check static gate proven with negative controls N1–N8. Records the before/after hashes of all four operator options in every run mode. |
+
 ## Related: `docs/audit/` (engineering audits), `docs/engineering-standard.md`
 (the normative standard these reports are measured against).
 

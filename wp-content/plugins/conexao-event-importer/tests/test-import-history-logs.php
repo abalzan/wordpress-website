@@ -31,9 +31,9 @@
  * ## Safety
  *
  * `conexao_event_import_log` and `conexao_event_import_history` are OPERATOR
- * state, not fixtures. Both are snapshotted with `test_options_isolate()` and
- * restored verbatim, with a shutdown safety net. No content is created, no
- * network call is made, no import runs.
+ * state, not fixtures. Both store accessors redirect every read and write to
+ * this process's per-process test rows, which the bootstrap removes at shutdown.
+ * No content is created, no network call is made, no import runs.
  *
  * @package Conexao_Event_Importer
  */
@@ -75,6 +75,8 @@ require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
 require_once WP_PLUGIN_DIR . '/conexao-event-importer/conexao-event-importer.php';
 
+test_require_operator_store_isolation();
+
 test_prerequisite_hint( 'activate-plugin:conexao-event-importer' );
 test_require(
 	class_exists( 'Conexao_Event_Sources' ) && class_exists( 'Conexao_Import_Log' ),
@@ -83,17 +85,12 @@ test_require(
 	'activate the conexao-event-importer plugin'
 );
 
-$ihl_restore = test_options_isolate(
-	array(
-		Conexao_Import_Log::OPTION_KEY,
-		Conexao_Import_History::OPTION_KEY,
-	)
-);
-
+// Both stores this suite touches are redirected to this process's per-process
+// test rows by their accessors, so there is nothing to snapshot or restore. The
+// current user is still reset by the shutdown net, exactly as before.
 register_shutdown_function(
-	static function () use ( $ihl_restore ) {
+	static function () {
 		wp_set_current_user( 0 );
-		test_options_restore( $ihl_restore, true );
 	}
 );
 
@@ -245,7 +242,7 @@ function ihl_log_entry( $run_id, $level, $message, array $extra = array() ) {
  * @return array
  */
 function ihl_seed_log( array $entries ) {
-	update_option( Conexao_Import_Log::OPTION_KEY, $entries, false );
+	test_options_write_test_store( 'import_log', $entries );
 	return $entries;
 }
 
@@ -889,14 +886,27 @@ assert_equals(
 	'Test E: the index preserves newest-first order within a run'
 );
 
-// Rendering is a pure read: it must not rewrite the log store.
-$ihl_log_before = get_option( Conexao_Import_Log::OPTION_KEY );
+// Rendering is a pure read: it must not rewrite the log store — neither the
+// live option nor the per-process row the renderer actually reads.
+$ihl_log_before      = get_option( Conexao_Import_Log::OPTION_KEY );
+$ihl_log_before_test = Conexao_Import_Log::get_all();
 ihl_render_history( $ihl_history );
-$ihl_log_after = get_option( Conexao_Import_Log::OPTION_KEY );
+$ihl_log_after      = get_option( Conexao_Import_Log::OPTION_KEY );
+$ihl_log_after_test = Conexao_Import_Log::get_all();
 
 assert_true(
 	$ihl_log_before === $ihl_log_after,
-	'Test E: rendering the history table does not rewrite the log store'
+	'Test E: rendering the history table does not rewrite the LIVE log store'
+);
+
+assert_true(
+	$ihl_log_before_test === $ihl_log_after_test,
+	'Test E: rendering the history table does not rewrite the per-process log store it reads'
+);
+
+assert_true(
+	! empty( $ihl_log_after_test ),
+	'Test E: the per-process log store still holds the seeded entries after rendering'
 );
 
 // The index is built once per render, not once per row: a single call site.

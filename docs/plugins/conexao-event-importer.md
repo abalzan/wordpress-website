@@ -106,7 +106,10 @@ production-side fetching. Everything is manual/on-demand.
 ## Import logging
 
 `Conexao_Import_Log` stores structured entries in the
-`conexao_event_import_log` option (autoload off):
+`conexao_event_import_log` option (autoload off). The option name is resolved
+through `Conexao_Import_Log::option_key()`, which returns that name in
+production and a per-process test row when the shared test harness is loaded
+(see [Test safety](#test-safety--diagnostics-tests-must-not-destroy-operator-history)):
 
 - **Cap**: 2,000 entries (newest first); older entries are dropped
   automatically once the cap is reached.
@@ -1351,30 +1354,51 @@ and re-arms the continuation.
 ### Test safety — diagnostics tests must not destroy operator history
 
 `conexao_event_import_log`, `conexao_event_import_history`,
-`conexao_event_source_health` and `conexao_event_sources` are **operator state**,
-not test fixtures. A test that clears them destroys the record a maintainer
-needs, which is a defect in its own right.
+`conexao_event_cleanup_status` and `conexao_event_cleanup_history` are **operator
+state**, not test fixtures. A test that clears them destroys the record a
+maintainer needs, which is a defect in its own right.
 
-Diagnostic suites therefore use the shared harness helper
-`tests/lib/option-isolation.php`:
+Since Stage 0.5 the four stores have a **storage seam**. Each owning class
+exposes an accessor that every read and write goes through:
+
+| Class | Accessor | Production option | Per-process test prefix |
+|---|---|---|---|
+| `Conexao_Import_Log` | `option_key()` | `conexao_event_import_log` | `conexao_event_import_log__test__` |
+| `Conexao_Import_History` | `option_key()` | `conexao_event_import_history` | `conexao_event_import_history__test__` |
+| `Conexao_Event_Cleanup` | `status_option()` | `conexao_event_cleanup_status` | `conexao_event_cleanup_status__test__` |
+| `Conexao_Event_Cleanup` | `history_option()` | `conexao_event_cleanup_history` | `conexao_event_cleanup_history__test__` |
+
+- **Production** (neither harness marker defined) resolves the production name
+  exactly as before — one `defined()` check, no hook, no filter, same autoload
+  flag and same caps.
+- **A test process** resolves `PREFIX . p<pid>_<16 hex>`. The suffix is
+  established by `tests/bootstrap.php` **before** `wp-load.php`, because the
+  importer logs during plugin load (`wp_loaded` → `rearm_missing()`), and it is
+  removed at shutdown priority 999.
+- **Fail closed**: if `CONEXAO_TESTS_ROOT` or `CONEXAO_TEST_OPTION_SUFFIX` is
+  defined but the suffix is absent or malformed, the accessor throws a
+  `RuntimeException` instead of falling back to the production option. A test
+  suite never continues with production storage.
+
+Suites must not snapshot these four options any more. `test_options_isolate()`
+**refuses** them (snapshotting the production row and seeding it empty was the
+original defect), and `test_options_restore()` skips them. A suite that needs a
+value in one of them uses:
 
 ```php
-$restore = test_options_isolate( array( Conexao_Import_Log::OPTION_KEY ) );
-... exercise the code under test ...
-test_options_restore( $restore );
+test_options_write_test_store( 'import_log', $entries );     // validated write
+test_options_reset_test_store( array( 'cleanup_status' ) );   // validated delete
+test_require_operator_store_isolation();                      // secondary guard
 ```
 
-`test_options_isolate()` snapshots the current value (including "this option does
-not exist"), seeds an empty store, and registers a shutdown safety net so a
-suite that dies early still restores. `test_options_restore()` puts the snapshot
-back verbatim.
+The reset helper validates every requested key against a four-store allowlist
+before deleting anything, so a production key, an arbitrary option, another
+process's key or a mixed valid/invalid request deletes **nothing**.
 
 This is not theoretical. Before v1.7.2 `test-import-log.php` called
 `Conexao_Import_Log::clear()` against the live option and the canonical suite
-drove it 599 → 91 → 0. The same discipline also fixed
-`test-error-handling.php`, whose long-standing "History entry was added" failure
-was caused by `MAX_ENTRIES` saturating the real history so the count could not
-grow — an environment dependency, not a code defect.
+drove it 599 → 91 → 0. Snapshot/restore replaced that, but it could not survive
+abnormal termination or concurrent workers, which is why the seam exists.
 
 
 ## Event Meta (registered)

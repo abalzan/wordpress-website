@@ -26,18 +26,18 @@ require_once dirname( __DIR__, 4 ) . '/tests/bootstrap.php';
 
 require_once WP_PLUGIN_DIR . '/conexao-event-importer/conexao-event-importer.php';
 
+test_require_operator_store_isolation();
+
 $passed = 0;
 $failed = 0;
 
 // This suite CALLS Conexao_Import_Log::clear() (that is how it drives the
 // Eventbrite/Heritage Week handlers onto paths that write diagnostics), so it
-// must never do that against the live operator store. Every operator-state
-// option is isolated for the whole file and restored at the end, including
-// from a shutdown safety net if the suite dies early.
+// must never do that against the live operator store. The log and history
+// stores are redirected to this process's test rows by their accessors; the
+// remaining operator options are snapshotted and restored as before.
 $restore_options = test_options_isolate(
 	array(
-		Conexao_Import_Log::OPTION_KEY,
-		Conexao_Import_History::OPTION_KEY,
 		Conexao_Source_Health::OPTION_KEY,
 		// G18: run_source() now schedules a continuation when a source is left
 		// resumable, so the scheduler's state is another option the engine
@@ -53,6 +53,20 @@ register_shutdown_function(
 	static function () use ( $restore_options ) {
 		test_options_restore( $restore_options, true );
 	}
+);
+
+$live_log_raw_before = (string) $GLOBALS['wpdb']->get_var(
+	$GLOBALS['wpdb']->prepare(
+		"SELECT option_value FROM {$GLOBALS['wpdb']->options} WHERE option_name = %s",
+		Conexao_Import_Log::OPTION_KEY
+	)
+);
+
+$live_history_raw_before = (string) $GLOBALS['wpdb']->get_var(
+	$GLOBALS['wpdb']->prepare(
+		"SELECT option_value FROM {$GLOBALS['wpdb']->options} WHERE option_name = %s",
+		Conexao_Import_History::OPTION_KEY
+	)
 );
 
 $eb_url = 'https://www.eventbrite.ie/d/ireland--laois/all-events/';
@@ -95,59 +109,76 @@ add_filter( 'conexao_eventbrite_request_delay_seconds', '__return_zero', 99 );
 $plugin = Conexao_Event_Importer::instance();
 
 // ===========================================================================
-// Test 1 (G3A): the isolation helper preserves live operator state.
+// Test 1 (G3A): destructive log work never reaches the operator store.
 // ===========================================================================
-test_section( 'G3A: option isolation preserves live operator diagnostics' );
+test_section( 'G3A: destructive log work never reaches the operator store' );
 
-// Seed the live log with a realistic operator history BEFORE isolating.
+// Seed THIS PROCESS's test store with a realistic-looking history. The live
+// option is never written: the accessors redirect every read and write.
 $operator_entries = array();
 for ( $i = 0; $i < 25; $i++ ) {
 	$operator_entries[] = array(
 		'time'        => current_time( 'mysql' ),
 		'source'      => 'eventbrite_carlow',
 		'level'       => 'error',
-		'message'     => 'Operator diagnostic entry ' . $i,
-		'run_id'      => 'operator-run',
+		'message'     => 'Seeded diagnostic entry ' . $i,
+		'run_id'      => 'seeded-run',
 		'event_id'    => '',
 		'event_title' => '',
 		'http_status' => 429,
 		'context'     => array(),
 	);
 }
-update_option( Conexao_Import_Log::OPTION_KEY, $operator_entries, false );
+$test_log_key = test_options_write_test_store( 'import_log', $operator_entries );
 
-$live_before = count( Conexao_Import_Log::get_all() );
-assert_true( 25 === $live_before, 'G3A: the live log was seeded with 25 operator entries' );
+assert_true(
+	0 === strpos( $test_log_key, Conexao_Import_Log::TEST_OPTION_PREFIX ),
+	'G3A: the seed went to a test-prefixed key'
+);
+assert_true( 25 === count( Conexao_Import_Log::get_all() ), 'G3A: this process\'s test log holds the 25 seeded entries' );
 
-// Isolate, destroy it completely, then restore.
-$snapshot = test_options_isolate( array( Conexao_Import_Log::OPTION_KEY ) );
-
-assert_true( 0 === count( Conexao_Import_Log::get_all() ), 'G3A: the isolated store starts empty' );
-
+// Destroy it completely: a test process is allowed to do this to its own row.
 Conexao_Import_Log::clear();
+assert_true( 0 === count( Conexao_Import_Log::get_all() ), 'G3A: clear() empties this process\'s test store' );
+
 Conexao_Import_Log::add( 'probe', 'error', 'test noise' );
+assert_true( 1 === count( Conexao_Import_Log::get_all() ), 'G3A: the test row accepts new entries' );
 
-test_options_restore( $snapshot );
-$GLOBALS['conexao_test_option_snapshots'] = array();
+// The live option is byte-identical throughout.
+$live_log_raw_now = (string) $GLOBALS['wpdb']->get_var(
+	$GLOBALS['wpdb']->prepare(
+		"SELECT option_value FROM {$GLOBALS['wpdb']->options} WHERE option_name = %s",
+		Conexao_Import_Log::OPTION_KEY
+	)
+);
 
-$live_after = count( Conexao_Import_Log::get_all() );
+assert_true(
+	$live_log_raw_now === $live_log_raw_before,
+	'G3A: the live operator log is byte-identical after seeding, clearing and re-adding'
+);
 
-assert_true( $live_before === $live_after, sprintf( 'G3A: live log restored — %d before, %d after', $live_before, $live_after ) );
-assert_true( 0 !== $live_after, 'G3A: the live log was not wiped to zero' );
+$live_messages = wp_list_pluck( (array) get_option( Conexao_Import_Log::OPTION_KEY, array() ), 'message' );
+assert_true(
+	! in_array( 'test noise', $live_messages, true ),
+	'G3A: no test noise leaked into the operator log'
+);
+assert_true(
+	0 === strpos( $test_log_key, Conexao_Import_Log::TEST_OPTION_PREFIX )
+		&& $test_log_key !== Conexao_Import_Log::OPTION_KEY,
+	'G3A: the resolved key can never be the production option'
+);
 
-$restored_messages = wp_list_pluck( Conexao_Import_Log::get_all(), 'message' );
-assert_true( in_array( 'Operator diagnostic entry 0', $restored_messages, true ), 'G3A: the oldest operator entry survived' );
-assert_true( ! in_array( 'test noise', $restored_messages, true ), 'G3A: no test noise leaked into the operator log' );
-
-// The crash path: isolate, destroy, and prove the snapshot can restore it.
-$crash_snapshot            = test_options_isolate( array( Conexao_Import_Log::OPTION_KEY ) );
+// A second destructive pass proves the behaviour is not a one-shot.
 Conexao_Import_Log::clear();
-$after_crash_isolate       = count( Conexao_Import_Log::get_all() );
-assert_true( 0 === $after_crash_isolate, 'G3A: the crash-path isolation is genuinely destructive while the test runs' );
+assert_true( 0 === count( Conexao_Import_Log::get_all() ), 'G3A: a second clear() still targets the test store' );
 
-test_options_restore( $crash_snapshot );
-$GLOBALS['conexao_test_option_snapshots'] = array();
-assert_true( $live_before === count( Conexao_Import_Log::get_all() ), 'G3A: the shutdown-net snapshot restored the log as well' );
+$live_log_raw_again = (string) $GLOBALS['wpdb']->get_var(
+	$GLOBALS['wpdb']->prepare(
+		"SELECT option_value FROM {$GLOBALS['wpdb']->options} WHERE option_name = %s",
+		Conexao_Import_Log::OPTION_KEY
+	)
+);
+assert_true( $live_log_raw_again === $live_log_raw_before, 'G3A: and the live log is still byte-identical' );
 
 // ===========================================================================
 // Test 2 (G3B): Eventbrite diagnostic entries carry the run ID.
@@ -341,8 +372,33 @@ foreach ( (array) $plugin->sources->get_all() as $probe_id => $probe ) {
 	}
 }
 
-// Put the operator's real diagnostics, history, health and source registry back.
+// Put the snapshotted non-redirected operator options back. The log and history
+// stores were never snapshotted: they are redirected to this process's test
+// rows, so the live options must be untouched.
 test_options_restore( $restore_options );
 $GLOBALS['conexao_test_option_snapshots'] = array();
+
+$live_log_raw_after = (string) $GLOBALS['wpdb']->get_var(
+	$GLOBALS['wpdb']->prepare(
+		"SELECT option_value FROM {$GLOBALS['wpdb']->options} WHERE option_name = %s",
+		Conexao_Import_Log::OPTION_KEY
+	)
+);
+
+$live_history_raw_after = (string) $GLOBALS['wpdb']->get_var(
+	$GLOBALS['wpdb']->prepare(
+		"SELECT option_value FROM {$GLOBALS['wpdb']->options} WHERE option_name = %s",
+		Conexao_Import_History::OPTION_KEY
+	)
+);
+
+assert_true(
+	$live_log_raw_after === $live_log_raw_before,
+	'G3A: the live operator log is byte-identical after the whole suite'
+);
+assert_true(
+	$live_history_raw_after === $live_history_raw_before,
+	'G3A: the live operator history is byte-identical after the whole suite'
+);
 
 test_finish();

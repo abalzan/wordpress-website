@@ -1,0 +1,76 @@
+# Negative controls N1–N8 — the gate must fail on each injected violation
+
+Method: copy tests/, scripts/ and wp-content/ into a scratch directory, inject ONE
+violation there, run the gate with CONEXAO_REPO_ROOT pointing at the copy, then
+delete the copy. The working tree is never modified.
+
+N0 baseline (unmodified copy): exit=0
+
+N0: an unmodified scratch copy must PASS (else the gate is over-broad).
+
+## N1 — delete_option( 'conexao_event_cleanup_history' ) added to a suite
+```
+  FAIL 9: wp-content/plugins/conexao-event-importer/tests/test-import-log.php deletes the production option 'conexao_event_cleanup_history'
+  226 passed, 1 failed (14 checks)
+GATE-RESULT operator_log_isolation: passed=226 failed=1
+exit=1 (expected: non-zero, check 9)
+```
+
+## N2 — the isolation guard removed from one suite
+```
+  FAIL 6: test-source-pagination-completeness.php never calls test_require_operator_store_isolation()
+  224 passed, 1 failed (14 checks)
+GATE-RESULT operator_log_isolation: passed=224 failed=1
+exit=1 (expected: non-zero, check 6)
+```
+
+## N3 — a child code string without the bootstrap require
+```
+  FAIL 7: test-bulk-actions.php writes a child script but never passes the bootstrap path to it
+  225 passed, 1 failed (14 checks)
+GATE-RESULT operator_log_isolation: passed=225 failed=1
+exit=1 (expected: non-zero, check 7)
+```
+
+## N4 — the reset helper's production-key rejection branch deleted
+```
+  FAIL 8: the production-key rejection branch is missing
+  FAIL 8: test_options_isolate() validates AFTER it starts snapshotting
+  224 passed, 2 failed (14 checks)
+GATE-RESULT operator_log_isolation: passed=224 failed=2
+exit=1 (expected: non-zero, check 8)
+```
+
+## N5 — a production file defines CONEXAO_TEST_OPTION_SUFFIX
+```
+  FAIL 11: wp-content/plugins/conexao-event-importer/includes/class-leak.php defines CONEXAO_TEST_OPTION_SUFFIX in production code
+  226 passed, 1 failed (14 checks)
+GATE-RESULT operator_log_isolation: passed=226 failed=1
+exit=1 (expected: non-zero, check 11)
+```
+
+## N6 — the define moved below the wp-load.php require
+```
+  FAIL 4: the suffix is defined at line 353, after the wp-load.php require at 200
+  225 passed, 1 failed (14 checks)
+GATE-RESULT operator_log_isolation: passed=225 failed=1
+exit=1 (expected: non-zero, check 4)
+```
+
+## N7 — a store-touching suite re-added to the PARALLEL block
+```
+N7 injected
+  FAIL 14: test-import-log.php is classified PARALLEL but touches an operator store
+  226 passed, 1 failed (14 checks)
+GATE-RESULT operator_log_isolation: passed=226 failed=1
+exit=1 (expected: non-zero, check 14)
+```
+
+## N8 — a referenced suite deleted (missing prerequisite)
+```
+  FAIL 6: missing prerequisite: the discovered set does not contain the sentinel test-import-log.php
+  FAIL 6: missing prerequisite: wp-content/plugins/conexao-event-importer/tests/test-import-log.php
+  220 passed, 2 failed (14 checks)
+GATE-RESULT operator_log_isolation: passed=220 failed=2
+exit=1 (expected: non-zero, missing prerequisite)
+```

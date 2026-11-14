@@ -36,6 +36,8 @@ require_once dirname( __DIR__, 4 ) . '/tests/bootstrap.php';
 
 require_once WP_PLUGIN_DIR . '/conexao-event-importer/conexao-event-importer.php';
 
+test_require_operator_store_isolation();
+
 $passed = 0;
 $failed = 0;
 
@@ -43,8 +45,6 @@ $failed = 0;
 // import can never pollute or destroy the maintainer's diagnostics.
 $restore_options = test_options_isolate(
 	array(
-		Conexao_Import_History::OPTION_KEY,
-		Conexao_Import_Log::OPTION_KEY,
 		// G18: run_source() now schedules a continuation when a source is left
 		// resumable, so the scheduler's state is another option the engine
 		// writes. It must be isolated here like every other one: otherwise a

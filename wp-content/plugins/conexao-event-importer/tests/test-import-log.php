@@ -7,14 +7,18 @@
  * no-fail semantics are unchanged — while the number of option writes per
  * import run drops from one-per-entry to one (plus rare threshold flushes).
  *
- * ## Operator-state safety (G3)
+ * ## Operator-state safety (G3, Stage 0.5)
  *
  * `conexao_event_import_log` is the maintainer's diagnostic record of what an
  * import actually did — it is NOT a test fixture. This suite exercises
- * `clear()` heavily by design, so it runs against an ISOLATED, EMPTY copy and
- * restores the real log verbatim when it finishes (and from a shutdown safety
- * net if it dies early). Before this isolation the canonical suite drove the
- * live option 599 -> 91 -> 0, destroying real operator history.
+ * `clear()` heavily by design, so since Stage 0.5 it runs against THIS
+ * PROCESS's test store: `Conexao_Import_Log::option_key()` resolves
+ * `conexao_event_import_log__test__p<pid>_<token>` whenever the shared test
+ * harness is loaded, and the bootstrap removes that row at shutdown.
+ *
+ * The suite asserts the live option is byte-identical afterwards and received
+ * zero writes. Before the seam, the canonical suite drove the live option
+ * 599 -> 91 -> 0, destroying real operator history.
  *
  * Usage: docker compose exec wordpress php /var/www/html/wp-content/plugins/conexao-event-importer/tests/test-import-log.php
  */
@@ -25,31 +29,42 @@ require_once dirname( __DIR__, 4 ) . '/tests/bootstrap.php';
 
 require_once WP_PLUGIN_DIR . '/conexao-event-importer/conexao-event-importer.php';
 
+// Secondary safeguard: the bootstrap already established the per-process
+// suffix before wp-load.php; this proves it from inside the suite, before the
+// first store reference.
+test_require_operator_store_isolation();
+
 $passed = 0;
 $failed = 0;
 
-// Measure the REAL live entry count directly from the database, BEFORE any
-// isolation happens. This value must not be derived from the isolation
-// snapshot: if the isolation call were removed, a snapshot-derived count would
-// silently become 0 and the retention assertion would pass vacuously while the
-// operator's history was being destroyed. Reading the option here is what makes
-// the check at the end of this file meaningful.
+// Measure the REAL live entry count directly from the production option. This
+// suite deliberately calls clear() many times; after the Stage 0.5 storage seam
+// those writes land in this process's test store, so the live row must be
+// untouched from start to finish.
 $live_log_entries_before = count( (array) get_option( Conexao_Import_Log::OPTION_KEY, array() ) );
 
-// Isolate the operator's import log BEFORE any test touches it. The live value
-// is snapshotted and restored at the end of this file (and by the registered
-// shutdown net if the suite exits early).
-$live_log_snapshot = test_options_isolate( array( Conexao_Import_Log::OPTION_KEY ) );
+// The raw live bytes, for the byte-identical assertion at the end of the suite.
+$live_log_raw_before = (string) $GLOBALS['wpdb']->get_var(
+	$GLOBALS['wpdb']->prepare(
+		"SELECT option_value FROM {$GLOBALS['wpdb']->options} WHERE option_name = %s",
+		Conexao_Import_Log::OPTION_KEY
+	)
+);
 
-printf( "  INFO: isolated %s — %d live entries snapshotted and restored at the end\n", Conexao_Import_Log::OPTION_KEY, $live_log_entries_before );
+printf( "  INFO: the operator log stays live (%d entries); this suite writes %s\n", $live_log_entries_before, Conexao_Import_Log::option_key() );
 
-// Count successful update_option writes for the log option.
-$GLOBALS['log_writes'] = 0;
+// Count successful update_option writes for this process's test store, and
+// separately count ANY write to the live option (which must stay at zero).
+$GLOBALS['log_writes']           = 0;
+$GLOBALS['live_log_write_count'] = 0;
 add_action(
 	'updated_option',
 	function ( $option ) {
-		if ( Conexao_Import_Log::OPTION_KEY === $option ) {
+		if ( Conexao_Import_Log::option_key() === $option ) {
 			$GLOBALS['log_writes']++;
+		}
+		if ( Conexao_Import_Log::OPTION_KEY === $option ) {
+			$GLOBALS['live_log_write_count']++;
 		}
 	},
 	10,
@@ -62,6 +77,10 @@ function log_writes() {
 
 function reset_log_writes() {
 	$GLOBALS['log_writes'] = 0;
+}
+
+function live_log_writes() {
+	return $GLOBALS['live_log_write_count'];
 }
 
 
@@ -271,7 +290,13 @@ $seed       = array(
 		'run_id' => '', 'event_id' => '', 'event_title' => '', 'http_status' => 0, 'context' => array(),
 	),
 );
-update_option( Conexao_Import_Log::OPTION_KEY, $seed, false );
+test_options_write_test_store( 'import_log', $seed );
+$live_log_writes_after_seed = live_log_writes();
+
+assert_true(
+	0 === $live_log_writes_after_seed,
+	'Seeding the log writes the per-process test store, never the live option'
+);
 
 Conexao_Import_Log::begin_run();
 Conexao_Import_Log::add( 'eventbrite', 'info', 'buffered before prune', array() );
@@ -309,7 +334,7 @@ $run_b = array(
 		'http_status' => 0, 'context' => array(),
 	),
 );
-update_option( Conexao_Import_Log::OPTION_KEY, array_merge( $run_b, Conexao_Import_Log::get_all() ), false );
+test_options_write_test_store( 'import_log', array_merge( $run_b, Conexao_Import_Log::get_all() ) );
 
 Conexao_Import_Log::end_run(); // Run A flushes (re-reads and prepends).
 
@@ -368,12 +393,17 @@ assert_true( 200 === $persisted, 'After: all 200 entries persisted correctly' );
 // ---------------------------------------------------------------------------
 test_section( 'Operator-state safety: the live import log survives this suite' );
 
-// The suite above deliberately called clear() many times against the isolated
-// store. Restoring the snapshot puts the operator's real diagnostics back.
-test_options_restore( $live_log_snapshot );
-$GLOBALS['conexao_test_option_snapshots'] = array();
+// The suite above deliberately called clear() many times — against THIS
+// PROCESS's test store, which the accessors resolve. The live option must be
+// byte-identical, and it must never have been written at all.
+$live_log_raw_after = (string) $GLOBALS['wpdb']->get_var(
+	$GLOBALS['wpdb']->prepare(
+		"SELECT option_value FROM {$GLOBALS['wpdb']->options} WHERE option_name = %s",
+		Conexao_Import_Log::OPTION_KEY
+	)
+);
 
-$live_log_entries_after = count( Conexao_Import_Log::get_all() );
+$live_log_entries_after = count( (array) get_option( Conexao_Import_Log::OPTION_KEY, array() ) );
 
 assert_true(
 	$live_log_entries_after === $live_log_entries_before,
@@ -386,6 +416,25 @@ assert_true(
 assert_true(
 	0 !== $live_log_entries_after || 0 === $live_log_entries_before,
 	'Live import log was not wiped to zero by a non-empty starting state'
+);
+assert_true(
+	$live_log_raw_after === $live_log_raw_before,
+	'The live import log is byte-identical before and after the suite'
+);
+assert_true(
+	0 === live_log_writes(),
+	sprintf(
+		'The live import log option received ZERO writes during the suite (measured %d)',
+		live_log_writes()
+	)
+);
+assert_true(
+	Conexao_Import_Log::option_key() !== Conexao_Import_Log::OPTION_KEY,
+	'The suite wrote a per-process test store, not the production option'
+);
+assert_true(
+	$persisted === count( Conexao_Import_Log::get_all() ),
+	'The suite\'s 200 measured entries landed in its own test store, not the live option'
 );
 
 // ---------------------------------------------------------------------------

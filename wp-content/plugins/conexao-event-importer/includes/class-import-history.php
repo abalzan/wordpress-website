@@ -14,6 +14,56 @@ class Conexao_Import_History {
 
 	const OPTION_KEY = 'conexao_event_import_history';
 
+	/**
+	 * Prefix of the per-process test store.
+	 *
+	 * Only used when the shared test harness is loaded (`CONEXAO_TESTS_ROOT`)
+	 * and has established a per-process suffix. Never equal to `OPTION_KEY`.
+	 *
+	 * @var string
+	 */
+	const TEST_OPTION_PREFIX = 'conexao_event_import_history__test__';
+
+	/**
+	 * Resolve the option name this store reads from and writes to.
+	 *
+	 * Production (no test harness loaded) resolves `OPTION_KEY` exactly as
+	 * before; a test process resolves its own per-process row. A harness marker
+	 * without a valid suffix THROWS rather than falling back to the operator's
+	 * row.
+	 *
+	 * @throws RuntimeException When the harness is loaded without a valid suffix.
+	 * @return string Option name.
+	 */
+	public static function option_key() {
+		if ( ! defined( 'CONEXAO_TESTS_ROOT' ) && ! defined( 'CONEXAO_TEST_OPTION_SUFFIX' ) ) {
+			return self::OPTION_KEY;
+		}
+
+		$suffix = self::test_option_suffix();
+
+		if ( '' === $suffix ) {
+			throw new RuntimeException( 'conexao: operator-store isolation was not established for the import history store.' );
+		}
+
+		return self::TEST_OPTION_PREFIX . $suffix;
+	}
+
+	/**
+	 * Validated per-process test suffix, or '' when absent/malformed.
+	 *
+	 * @return string
+	 */
+	protected static function test_option_suffix() {
+		if ( ! defined( 'CONEXAO_TEST_OPTION_SUFFIX' ) ) {
+			return '';
+		}
+
+		$suffix = strtolower( (string) CONEXAO_TEST_OPTION_SUFFIX );
+
+		return preg_match( '/^p[1-9][0-9]{0,9}_[a-f0-9]{16}$/', $suffix ) ? $suffix : '';
+	}
+
 	/** @var int Maximum number of history entries retained. */
 	const MAX_ENTRIES = 100;
 
@@ -97,7 +147,7 @@ class Conexao_Import_History {
 		array_unshift( $history, $entry );
 		$history = array_slice( $history, 0, self::MAX_ENTRIES );
 
-		update_option( self::OPTION_KEY, $history, false );
+		update_option( self::option_key(), $history, false );
 
 		return $entry;
 	}
@@ -108,7 +158,7 @@ class Conexao_Import_History {
 	 * @return array
 	 */
 	public static function get_all() {
-		$history = get_option( self::OPTION_KEY, array() );
+		$history = get_option( self::option_key(), array() );
 		return is_array( $history ) ? $history : array();
 	}
 
@@ -166,7 +216,7 @@ class Conexao_Import_History {
 	 * Clear the history.
 	 */
 	public static function clear() {
-		update_option( self::OPTION_KEY, array(), false );
+		update_option( self::option_key(), array(), false );
 	}
 
 	/**

@@ -55,10 +55,12 @@
  *
  * ## Safety
  *
- * `conexao_event_import_history` and `conexao_event_sources` are OPERATOR
- * state, not fixtures. Both are snapshotted with `test_options_isolate()` and
- * restored verbatim, with a shutdown safety net. No content is created, no
- * network call is made, no import runs.
+ * `conexao_event_import_history` is OPERATOR state, not a fixture: the store
+ * accessor redirects every read and write to this process's per-process test
+ * row, which the bootstrap removes at shutdown. `conexao_event_sources` is
+ * snapshotted with `test_options_isolate()` and restored verbatim, with a
+ * shutdown safety net. No content is created, no network call is made, no
+ * import runs.
  *
  * @package Conexao_Event_Importer
  */
@@ -77,6 +79,8 @@ require_once ABSPATH . 'wp-admin/includes/template.php';
 
 require_once WP_PLUGIN_DIR . '/conexao-event-importer/conexao-event-importer.php';
 
+test_require_operator_store_isolation();
+
 test_prerequisite_hint( 'activate-plugin:conexao-event-importer' );
 test_require(
 	class_exists( 'Conexao_Event_Sources' ) && class_exists( 'Conexao_Import_History' ),
@@ -87,9 +91,7 @@ test_require(
 
 $iah_restore = test_options_isolate(
 	array(
-		Conexao_Import_History::OPTION_KEY,
 		Conexao_Event_Sources::OPTION_KEY,
-		Conexao_Import_Log::OPTION_KEY,
 	)
 );
 
@@ -504,7 +506,7 @@ assert_true(
 
 test_section( 'Test D — empty history renders "No imports yet." without notices' );
 
-update_option( Conexao_Import_History::OPTION_KEY, array(), false );
+test_options_write_test_store( 'import_history', array() );
 
 $iah_empty = iah_render_capturing_warnings( 'iah_dashboard_html' );
 
@@ -533,7 +535,7 @@ assert_true(
 );
 
 // Restore the seeded history for the remaining tests.
-update_option( Conexao_Import_History::OPTION_KEY, $iah_retained, false );
+test_options_write_test_store( 'import_history', $iah_retained );
 
 // ---------------------------------------------------------------------------
 // Test E — a historical record without the optional fields renders its fallbacks.
@@ -844,23 +846,31 @@ assert_true(
 	'Test H: the single recording entry point still exists'
 );
 
-// Rendering must be a pure read: the rendered page may not rewrite the option.
-$iah_before_render = get_option( Conexao_Import_History::OPTION_KEY );
+// Rendering must be a pure read: the rendered page may not rewrite either the
+// live option or the per-process test row the renderer actually reads.
+$iah_before_render      = get_option( Conexao_Import_History::OPTION_KEY );
+$iah_before_render_test = Conexao_Import_History::get_all();
 iah_dashboard_html();
-$iah_after_render = get_option( Conexao_Import_History::OPTION_KEY );
+$iah_after_render      = get_option( Conexao_Import_History::OPTION_KEY );
+$iah_after_render_test = Conexao_Import_History::get_all();
 
 assert_true(
 	$iah_before_render === $iah_after_render,
-	'Test H: rendering the dashboard neither trims, reorders nor clears the stored history'
+	'Test H: rendering the dashboard neither trims, reorders nor clears the stored LIVE history'
 );
 
 assert_true(
-	! empty( $iah_after_render ),
+	$iah_before_render_test === $iah_after_render_test,
+	'Test H: rendering the dashboard does not rewrite the per-process history row it reads'
+);
+
+assert_true(
+	! empty( $iah_after_render_test ),
 	'Test H: consolidating the interface did not clear the import history'
 );
 
 // The recorder still prepends and still caps at MAX_ENTRIES.
-update_option( Conexao_Import_History::OPTION_KEY, array(), false );
+test_options_write_test_store( 'import_history', array() );
 
 for ( $iah_i = 1; $iah_i <= Conexao_Import_History::MAX_ENTRIES + 1; $iah_i++ ) {
 	Conexao_Import_History::record(
@@ -903,9 +913,9 @@ assert_equals(
 	'Test H: the dashboard renders the whole 100-entry retained history'
 );
 
-// Leave the isolated store as the seeded history; the shutdown net restores the
-// operator's real option afterwards.
-update_option( Conexao_Import_History::OPTION_KEY, $iah_retained, false );
+// Leave this process's test row as the seeded history. The live operator
+// option was never written; the bootstrap removes the test row at shutdown.
+test_options_write_test_store( 'import_history', $iah_retained );
 
 // ---------------------------------------------------------------------------
 // Test I — the dashboard is a RUN/REVIEW screen, not a source overview.

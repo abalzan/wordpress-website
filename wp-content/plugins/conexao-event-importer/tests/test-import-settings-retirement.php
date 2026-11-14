@@ -30,6 +30,8 @@ require_once dirname( __DIR__, 4 ) . '/tests/bootstrap.php';
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
 require_once WP_PLUGIN_DIR . '/conexao-event-importer/conexao-event-importer.php';
+
+test_require_operator_store_isolation();
 require_once WP_PLUGIN_DIR . '/conexao-event-importer/includes/class-event-cleanup.php';
 
 test_prerequisite_hint( 'activate-plugin:conexao-event-importer' );
@@ -46,7 +48,6 @@ $restore_options = test_options_isolate(
 	array(
 		Conexao_Import_Settings::OPTION_KEY,
 		Conexao_Event_Sources::OPTION_KEY,
-		Conexao_Import_Log::OPTION_KEY,
 	)
 );
 

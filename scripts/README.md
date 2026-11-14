@@ -279,7 +279,7 @@ development and are not covered by `./scripts/run-tests.sh`.
 | `scripts/test-admin-ux-save-regression.php` | Simulate the wp-admin save flow and assert field persistence | local-write | none | apply | local WordPress | Yes (temporary posts) | 2026-09-26 |
 | `scripts/test-sponsor-contacts.php` | Apoiador multi-contact sanitizer/save/export/import coverage | local-write | none | apply | local WordPress | Yes (temporary posts) | 2026-09-26 |
 | `scripts/test-event-crud.php` | Event CRUD workflow coverage | local-write | none | apply | local WordPress | Yes (temporary posts) | 2026-09-26 |
-| `scripts/test-event-cleanup.php` | Event cleanup system coverage | local-write | none | apply | local WordPress | Yes (temporary posts) | 2026-09-26 |
+| `scripts/test-event-cleanup.php` | Event cleanup system coverage | local-write (manual, never by the runner) | none | apply | local WordPress | Yes (temporary posts; writes the cleanup status/history options but no longer clears them) | 2026-11-14 |
 | `scripts/test-event-imported-workflow.php` | Imported-event workflow coverage | local-write | none | apply | local WordPress | Yes (temporary posts) | 2026-09-26 |
 | `scripts/test-event-transfer.php` | Event export/import coverage | local-write | none | apply | local WordPress | Yes (temporary posts) | 2026-09-26 |
 | `scripts/add-wiki-import-method.py` | One-off source patcher (adds an AJAX method) | local-write | none | apply | a local checkout | Yes (edits a source file) | 2026-09-26 |

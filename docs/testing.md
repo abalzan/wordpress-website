@@ -399,6 +399,65 @@ The migrated suites already followed this (they delete their fixtures at the
 end). Running the suite twice in a row must give the same result — that is the
 repeatability gate, and it is checked.
 
+### Operator stores are redirected, not snapshotted
+
+Four options are **operator state**, not fixtures: `conexao_event_import_log`,
+`conexao_event_import_history`, `conexao_event_cleanup_status` and
+`conexao_event_cleanup_history`. Snapshot/restore cannot protect them: it empties
+the live row for the duration of the suite and cannot survive a fatal, a
+timeout or two workers.
+
+Since Stage 0.5 the owning classes expose accessors (`option_key()`,
+`status_option()`, `history_option()`) and every read/write goes through them.
+`tests/bootstrap.php` establishes `CONEXAO_TEST_OPTION_SUFFIX`
+(`p<pid>_<16 hex>`) **before** `wp-load.php`, so the stores resolve
+`PREFIX . suffix` for that process only. The suffix is removed from a
+pre-defined environment (a child may not inherit the parent's store), and an
+accessor that cannot resolve a valid suffix **throws** instead of falling back to
+production.
+
+| Rule | Detail |
+|---|---|
+| Never isolate a redirected store | `test_options_isolate()` refuses the four production keys, their test-prefixed keys and any of their constants; `test_options_restore()` skips them |
+| Seed through the writer | `test_options_write_test_store( 'import_log', $value )` resolves and validates the key first |
+| Delete through the reset helper | `test_options_reset_test_store( array( 'cleanup_status' ) )` validates every request, then deletes; one rejected entry means zero deletions |
+| Call the guard | `test_require_operator_store_isolation()` at the top of every store-touching suite (secondary safeguard after the bootstrap) |
+| Children isolate themselves | child code requires `tests/bootstrap.php`; the suffix is never passed through an argument or the environment |
+
+The cleaner runs on `shutdown` at priority 999 (after the log store's own flush
+at priority 5) and deletes only this process's four test keys, derived from the
+accessors.
+
+### Orphaned test rows
+
+A `SIGKILL`ed process cannot run a shutdown handler, so a
+`…__test__p<digits>_<hex16>` row can survive. That is a storage-hygiene issue,
+never a safety one: the dashboard and every accessor resolve the current
+process's key, so an orphan is unreadable, and no code path can mistake it for an
+operator option.
+
+Sweep them explicitly, one row at a time, from the list the acceptance suite
+prints (section I):
+
+```bash
+docker compose exec wordpress wp --allow-root option delete \
+  'conexao_event_import_log__test__p1234_0123456789abcdef'
+```
+
+Never a wildcard, never a script that deletes by prefix pattern — the static gate
+fails on `DELETE … LIKE` against `wp_options`, and the reset helper rejects any
+key that is not this process's own.
+
+### The staging gate
+
+`tests/scripts/verify-operator-log-isolation.py` is a static suite (no
+WordPress, no Docker, no database) discovered by the script-contract layer. It
+checks the fourteen structural properties — production names, prefixes,
+fail-closed accessors, bootstrap ordering, guard placement, child-process
+bootstrap use, reset-helper safeguards, no production `delete_option()`, no
+global cleanup, no production marker definitions, no wildcard cleanup, cleaner
+key derivation and the `SERIAL` classification of every store-touching suite.
+
 
 
 ---

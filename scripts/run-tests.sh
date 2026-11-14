@@ -272,7 +272,8 @@ suite_variants() {
 	esac
 }
 
-# Suite concurrency classification (PHASE 2 / PHASE 4 classification).
+# Suite concurrency classification (PHASE 2 / PHASE 4 classification, revised by
+# Stage 0.5).
 #
 # Every suite starts as SERIAL. A suite is PARALLEL only after its source,
 # dependencies, setup and teardown have been reviewed and proven safe for
@@ -282,7 +283,17 @@ suite_variants() {
 #   "<suite path>|SERIAL"     — shared-state writes or not yet reviewed (default)
 #   "<suite path>|MANUAL:<reason>"  — documented special handling, never run by default
 #
-# Suites listed as PARALLEL have been verified as read-only: no wp_insert_post, no update_option, no taxonomy changes, no shared cache writes.
+# The rule this stage enforces (checked by
+# tests/scripts/verify-operator-log-isolation.py, check 14):
+#
+#   A suite may be PARALLEL only if it neither references a redirected operator
+#   store nor writes any importer option, and has been reviewed for content and
+#   cache writes. Everything else is SERIAL.
+#
+# The earlier claim that "PARALLEL suites have no update_option" was stale: the
+# option-isolation helper made option writes common in PARALLEL suites long ago.
+# Re-promoting one of the store-touching suites now requires editing the gate as
+# well as this function — a visible decision instead of a one-line change.
 # Default: SERIAL. Every discovered suite that is not listed here is SERIAL.
 suite_classification() {
 	case "$1" in
@@ -432,22 +443,7 @@ suite_classification() {
 		wp-content/plugins/conexao-en-translation/tests/test-shared-slug-newsletter.php)
 			printf 'PARALLEL\n'
 			;;
-		wp-content/plugins/conexao-event-importer/tests/test-county-registry.php)
-			printf 'PARALLEL\n'
-			;;
 		wp-content/plugins/conexao-event-importer/tests/test-event-address.php)
-			printf 'PARALLEL\n'
-			;;
-		wp-content/plugins/conexao-event-importer/tests/test-eventbrite-api-contract.php)
-			printf 'PARALLEL\n'
-			;;
-		wp-content/plugins/conexao-event-importer/tests/test-eventbrite-importer.php)
-			printf 'PARALLEL\n'
-			;;
-		wp-content/plugins/conexao-event-importer/tests/test-eventbrite-rate-limit.php)
-			printf 'PARALLEL\n'
-			;;
-		wp-content/plugins/conexao-event-importer/tests/test-eventbrite-source-expansion.php)
 			printf 'PARALLEL\n'
 			;;
 		wp-content/plugins/conexao-event-importer/tests/test-eventbrite-volatility.php)
@@ -463,15 +459,6 @@ suite_classification() {
 			printf 'PARALLEL\n'
 			;;
 		wp-content/plugins/conexao-event-importer/tests/test-past-event-filter.php)
-			printf 'PARALLEL\n'
-			;;
-		wp-content/plugins/conexao-event-importer/tests/test-request-budget.php)
-			printf 'PARALLEL\n'
-			;;
-		wp-content/plugins/conexao-event-importer/tests/test-request-retry-policy.php)
-			printf 'PARALLEL\n'
-			;;
-		wp-content/plugins/conexao-event-importer/tests/test-request-reuse.php)
 			printf 'PARALLEL\n'
 			;;
 		wp-content/plugins/conexao-event-importer/tests/test-town-sanitization.php)

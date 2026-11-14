@@ -10,6 +10,17 @@
  *  - Manually uploaded images are preserved
  *  - Cleanup is idempotent (safe to run repeatedly)
  *
+ * ## This is a LOCAL-WRITE manual tool — not a regression test
+ *
+ * It is NOT run by ./scripts/run-tests.sh and is never run by CI. It calls the
+ * real Conexao_Event_Cleanup::run_cleanup(), which WRITES the local cleanup
+ * status/history options and DELETES every past event it finds — including
+ * events an operator cares about. Run it only on a site whose event content and
+ * cleanup record you do not need.
+ *
+ * Since Stage 0.5 it no longer CLEARS the cleanup operator history (the two
+ * unconditional delete_option() calls were removed); it still writes it.
+ *
  * Usage: docker compose exec wordpress php /var/www/html/scripts/test-event-cleanup.php
  */
 
@@ -237,9 +248,8 @@ wp_delete_attachment( $shared_attachment_id, true );
 wp_delete_attachment( $manual_attachment_id, true );
 wp_delete_attachment( $content_attachment_id, true );
 
-// Clear test cleanup status/history.
-delete_option( 'conexao_event_cleanup_status' );
-delete_option( 'conexao_event_cleanup_history' );
+// Clear the test cleanup fixtures. The operator's cleanup status/history are
+// NOT deleted: this manual tool writes them and must not destroy them.
 
 echo "\n=== Results: {$pass} passed, {$fail} failed ===\n";
 exit( $fail > 0 ? 1 : 0 );

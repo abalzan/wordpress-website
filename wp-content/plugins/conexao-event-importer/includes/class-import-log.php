@@ -25,6 +25,61 @@ class Conexao_Import_Log {
 	const OPTION_KEY = 'conexao_event_import_log';
 
 	/**
+	 * Prefix of the per-process test store.
+	 *
+	 * Only used when the shared test harness is loaded (`CONEXAO_TESTS_ROOT`)
+	 * and has established a per-process suffix. It is never equal to
+	 * `OPTION_KEY`, so a test row can never be mistaken for the operator's log.
+	 *
+	 * @var string
+	 */
+	const TEST_OPTION_PREFIX = 'conexao_event_import_log__test__';
+
+	/**
+	 * Resolve the option name this store reads from and writes to.
+	 *
+	 * Production (no test harness loaded) resolves `OPTION_KEY` exactly as
+	 * before. A test process resolves its own per-process row
+	 * (`TEST_OPTION_PREFIX . suffix`).
+	 *
+	 * If the harness marker is present but the suffix is missing or malformed,
+	 * this THROWS instead of falling back to `OPTION_KEY`: silently writing the
+	 * operator's log from a test process is the defect this seam exists to
+	 * remove, and `update_option()` cannot report a refusal to its caller.
+	 *
+	 * @throws RuntimeException When the harness is loaded without a valid suffix.
+	 * @return string Option name.
+	 */
+	public static function option_key() {
+		if ( ! defined( 'CONEXAO_TESTS_ROOT' ) && ! defined( 'CONEXAO_TEST_OPTION_SUFFIX' ) ) {
+			return self::OPTION_KEY;
+		}
+
+		$suffix = self::test_option_suffix();
+
+		if ( '' === $suffix ) {
+			throw new RuntimeException( 'conexao: operator-store isolation was not established for the import log store.' );
+		}
+
+		return self::TEST_OPTION_PREFIX . $suffix;
+	}
+
+	/**
+	 * Validated per-process test suffix, or '' when absent/malformed.
+	 *
+	 * @return string
+	 */
+	protected static function test_option_suffix() {
+		if ( ! defined( 'CONEXAO_TEST_OPTION_SUFFIX' ) ) {
+			return '';
+		}
+
+		$suffix = strtolower( (string) CONEXAO_TEST_OPTION_SUFFIX );
+
+		return preg_match( '/^p[1-9][0-9]{0,9}_[a-f0-9]{16}$/', $suffix ) ? $suffix : '';
+	}
+
+	/**
 	 * Maximum number of log entries retained.
 	 *
 	 * High enough to hold several full import runs even when each event is
@@ -223,7 +278,7 @@ class Conexao_Import_Log {
 		$log = array_merge( $entries, $log );
 		$log = array_slice( $log, 0, self::MAX_ENTRIES );
 
-		update_option( self::OPTION_KEY, $log, false );
+		update_option( self::option_key(), $log, false );
 	}
 
 	/**
@@ -232,7 +287,7 @@ class Conexao_Import_Log {
 	 * @return array
 	 */
 	public static function get_all() {
-		$log = get_option( self::OPTION_KEY, array() );
+		$log = get_option( self::option_key(), array() );
 		return is_array( $log ) ? $log : array();
 	}
 
@@ -354,7 +409,7 @@ class Conexao_Import_Log {
 	public static function clear() {
 		// Drop any buffered entries too: the caller asked for a clean slate.
 		self::$buffer = array();
-		update_option( self::OPTION_KEY, array(), false );
+		update_option( self::option_key(), array(), false );
 	}
 
 	/**
@@ -562,7 +617,7 @@ class Conexao_Import_Log {
 		}
 
 		if ( $removed > 0 ) {
-			update_option( self::OPTION_KEY, $filtered, false );
+			update_option( self::option_key(), $filtered, false );
 		}
 
 		return $removed;

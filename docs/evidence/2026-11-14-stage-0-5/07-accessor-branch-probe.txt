@@ -1,0 +1,37 @@
+# Accessor branch probe — REAL classes, no WordPress, no database
+
+Script: docs/evidence/2026-11-14-stage-0-5/07-accessor-branch-probe.php
+Run:    php docs/evidence/2026-11-14-stage-0-5/07-accessor-branch-probe.php <mode>
+
+## mode: production
+```
+import_log=conexao_event_import_log
+import_history=conexao_event_import_history
+cleanup_status=conexao_event_cleanup_status
+cleanup_history=conexao_event_cleanup_history
+```
+
+## mode: test:p4321_abcdefabcdefabcd
+```
+import_log=conexao_event_import_log__test__p4321_abcdefabcdefabcd
+import_history=conexao_event_import_history__test__p4321_abcdefabcdefabcd
+cleanup_status=conexao_event_cleanup_status__test__p4321_abcdefabcdefabcd
+cleanup_history=conexao_event_cleanup_history__test__p4321_abcdefabcdefabcd
+```
+
+## mode: nosuffix
+```
+import_log=THREW (conexao: operator-store isolation was not established for the import log store.)
+import_history=THREW (conexao: operator-store isolation was not established for the import history store.)
+cleanup_status=THREW (conexao: operator-store isolation was not established for the cleanup status store.)
+cleanup_history=THREW (conexao: operator-store isolation was not established for the cleanup history store.)
+```
+
+## mode: badsuffix
+```
+import_log=THREW (conexao: operator-store isolation was not established for the import log store.)
+import_history=THREW (conexao: operator-store isolation was not established for the import history store.)
+cleanup_status=THREW (conexao: operator-store isolation was not established for the cleanup status store.)
+cleanup_history=THREW (conexao: operator-store isolation was not established for the cleanup history store.)
+```
+
