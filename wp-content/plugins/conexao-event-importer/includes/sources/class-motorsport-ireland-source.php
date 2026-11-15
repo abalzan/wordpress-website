@@ -78,6 +78,22 @@ class Conexao_Source_Motorsport_Ireland extends Conexao_Source_Base {
 
 		$html = $this->fetch_html( $base_url );
 		if ( empty( $html ) ) {
+			// A 200 with an empty body is not an enumerable listing: mark the
+			// walk incomplete so it can never be recorded as a complete empty
+			// import nor authorise absence-based reconciliation
+			// (Stage 2 / P3+P4).
+			$this->mark_fetch_incomplete();
+
+			Conexao_Import_Log::add(
+				$this->get_id(),
+				'error',
+				'Motorsport Ireland calendar returned an empty body; the enumeration is incomplete.',
+				array(
+					'url'    => $base_url,
+					'run_id' => $this->get_current_run_id(),
+				)
+			);
+
 			return array();
 		}
 

@@ -115,6 +115,7 @@ class Conexao_Source_Mondello_Park extends Conexao_Source_Base {
 	 * Fetch raw events from the Mondello Park REST endpoint.
 	 *
 	 * @return array[]
+	 * @throws Conexao_Source_Fetch_Exception When the REST listing cannot be fetched.
 	 */
 	public function fetch_events() {
 		$base_url = isset( $this->config['url'] ) && $this->config['url']
@@ -139,7 +140,14 @@ class Conexao_Source_Mondello_Park extends Conexao_Source_Base {
 				'Falha ao buscar REST da Mondello Park: ' . $response->get_error_message(),
 				array( 'url' => $base_url )
 			);
-			return array();
+
+			// Stage 2 / P3 — an unreachable listing is a FAILED fetch, never an
+			// empty one. The engine records a failed source instead of
+			// `found=0, status=success`, and no reconciliation can run on it.
+			throw new Conexao_Source_Fetch_Exception(
+				esc_html( 'Falha ao buscar REST da Mondello Park: ' . $response->get_error_message() ),
+				0
+			);
 		}
 
 		$code = wp_remote_retrieve_response_code( $response );
@@ -149,16 +157,32 @@ class Conexao_Source_Mondello_Park extends Conexao_Source_Base {
 				'Resposta HTTP ' . $code . ' ao buscar REST da Mondello Park.',
 				array( 'url' => $base_url, 'http_status' => (int) $code )
 			);
-			return array();
+
+			throw new Conexao_Source_Fetch_Exception(
+				esc_html( 'Resposta HTTP ' . $code . ' ao buscar REST da Mondello Park.' ),
+				(int) $code
+			);
 		}
 
 		$body = wp_remote_retrieve_body( $response );
 		if ( empty( $body ) ) {
+			// Retrieved but empty: not an enumerable listing. Incomplete, so it
+			// is neither a complete empty import nor a reconciliation authority.
+			$this->mark_fetch_incomplete();
+
+			Conexao_Import_Log::add(
+				$this->get_id(), 'error',
+				'Resposta REST da Mondello Park veio vazia; a enumeração está incompleta.',
+				array( 'url' => $base_url )
+			);
+
 			return array();
 		}
 
 		$json = json_decode( $body, true );
 		if ( ! is_array( $json ) ) {
+			$this->mark_fetch_incomplete();
+
 			Conexao_Import_Log::add(
 				$this->get_id(), 'error',
 				'Resposta REST da Mondello Park não é JSON válido.',

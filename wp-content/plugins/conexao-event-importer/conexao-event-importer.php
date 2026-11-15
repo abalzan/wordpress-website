@@ -30,6 +30,9 @@ require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-jsonld-location.
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-location.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-address.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-jsonld-location.php';
+// Stage 2 / P5 — per-field partial-enrichment state (additive; read by the
+// normalizer and the importer's write path).
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-conexao-event-enrichment-state.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-normalizer.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-date-filter.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-conexao-ics-recurrence.php';

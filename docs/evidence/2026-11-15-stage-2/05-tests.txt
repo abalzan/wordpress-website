@@ -1,0 +1,130 @@
+Stage 2 — test evidence
+Captured 2026-11-15.
+
+Test database (all WordPress-dependent runs):
+  conexao_stage05_test_5bd9ece5c032  (disposable clone)
+  Preflight: ISOLATED_DB_PREFLIGHT=PASS database=conexao_stage05_test_5bd9ece5c032 host=db
+Shared database `wordpress`: NOT used. No WordPress bootstrap, import, scheduler,
+cleanup or test touched it.
+
+Provider traffic: none. Every request is answered by a pre_http_request double;
+tests/bootstrap.php defines WP_HTTP_BLOCK_EXTERNAL.
+
+================================================================================
+1. Targeted suites (run individually, isolated database)
+================================================================================
+
+test-source-fetch-contract.php
+  stage2-source-fetch-contract: 55 passed, 0 failed
+
+test-partial-enrichment-preservation.php
+  stage2-partial-enrichment-preservation: 42 passed, 0 failed
+
+test-reconciliation-pagination.php
+  stage2-reconciliation-pagination: 57 passed, 0 failed
+
+================================================================================
+2. Full importer component (serial + parallel groups)
+   Command:
+   CONEXAO_TEST_DB_NAME=conexao_stage05_test_5bd9ece5c032 \
+   CONEXAO_TEST_SHARED_DB_NAME=wordpress \
+   ./scripts/run-tests.sh --php --only conexao-event-importer
+================================================================================
+
+Per-suite results (42 suites, one process each):
+
+[PASS] test-bulk-actions.php (7.20s) — 149 passed, 0 failed
+[PASS] test-county-registry.php (1.45s) — 482 passed, 0 failed
+[PASS] test-error-handling.php (1.59s) — 55 passed, 0 failed
+[PASS] test-event-cleanup-purge.php (166.33s) — 749 passed, 0 failed
+[PASS] test-eventbrite-api-contract.php (1.36s) — 124 passed, 0 failed
+[PASS] test-eventbrite-checkpoint.php (18.68s) — 91 passed, 0 failed
+[PASS] test-eventbrite-importer.php (4.51s) — 68 passed, 0 failed
+[PASS] test-eventbrite-rate-limit.php (4.75s) — 87 passed, 0 failed
+[PASS] test-eventbrite-source-expansion.php (8.50s) — 65 passed, 0 failed
+[PASS] test-eventbrite-token-retirement.php (1.77s) — 57 passed, 0 failed
+[PASS] test-export-language.php (7.25s) — 58 passed, 0 failed
+[PASS] test-ics-occurrence-dates.php (12.48s) — 172 passed, 0 failed
+[FAIL] test-import-continuation.php (162.29s) — 255 passed, 29 failed (exit 1)
+[PASS] test-import-history-dashboard.php (18.32s) — 155 passed, 0 failed
+[PASS] test-import-history-logs.php (2.27s) — 98 passed, 0 failed
+[PASS] test-import-log-run-correlation.php (2.75s) — 25 passed, 0 failed
+[PASS] test-import-log.php (5.51s) — 62 passed, 0 failed
+[PASS] test-import-settings-retirement.php (68.45s) — 33 passed, 0 failed
+[PASS] test-ivvcc-importer.php (1.43s) — 46 passed, 0 failed
+[PASS] test-language-identity.php (2.39s) — 29 passed, 0 failed
+[PASS] test-mondello-park-importer.php (1.45s) — 142 passed, 0 failed
+[PASS] test-multi-file-import.php (35.47s) — 149 passed, 0 failed
+[PASS] test-operator-log-isolation.php (5.85s) — 286 passed, 0 failed
+[PASS] test-partial-enrichment-preservation.php (7.99s) — 42 passed, 0 failed
+[PASS] test-reappearing-event-lifecycle.php (4.34s) — 5 passed, 0 failed
+[PASS] test-reconciliation-pagination.php (37.13s) — 57 passed, 0 failed
+[PASS] test-request-budget.php (2.12s) — 33 passed, 0 failed
+[PASS] test-request-retry-policy.php (1.38s) — 59 passed, 0 failed
+[PASS] test-request-reuse.php (0.92s) — 53 passed, 0 failed
+[PASS] test-source-county-hint.php (2.01s) — 18 passed, 0 failed
+[PASS] test-source-fetch-contract.php (1.78s) — 55 passed, 0 failed
+[FAIL] test-source-fetch-failure.php (4.33s) — 122 passed, 10 failed (exit 1)
+[PASS] test-source-not-found-reconciliation.php (17.93s) — 57 passed, 0 failed
+[PASS] test-source-pagination-completeness.php (1.95s) — 24 passed, 0 failed
+[PASS] test-stage1-run-coordination.php (1.31s) — 47 passed, 0 failed
+[PASS] test-event-address.php (0.93s) — 76 passed, 0 failed
+[PASS] test-event-image-sync.php (4.85s) — 30 passed, 0 failed
+[PASS] test-eventbrite-volatility.php (1.00s) — 77 passed, 0 failed
+[PASS] test-motorsport-ireland-importer.php (2.37s) — 90 passed, 0 failed
+[PASS] test-multi-file-import-ui.php (1.01s) — 41 passed, 0 failed
+[PASS] test-past-event-filter.php (0.98s) — 29 passed, 0 failed
+[FAIL] test-town-sanitization.php (0.89s) — 82 passed, 1 failed (exit 1)
+
+Aggregate printed by the runner:
+
+  PHP suite timing
+    SERIAL group:   35 suite(s), 625.24s total
+    PARALLEL group: 7 suite(s), 12.03s total (worker-measured)
+    PHP layer total: 35 serial + 7 parallel = 42 suite(s)
+  ----------------------------------------
+  In-process PHP suites: 42 total, 39 passed, 3 failed
+  Assertions: 4434 passed, 40 failed
+  ----------------------------------------
+  TESTS FAILED
+  failing suites:
+    - plugin/conexao-event-importer/test-import-continuation.php
+    - plugin/conexao-event-importer/test-source-fetch-failure.php
+    - plugin/conexao-event-importer/test-town-sanitization.php
+
+The full run was executed twice: once before and once after the lint-only
+refactor (file rename, literal SQL placeholders, escaped exception messages).
+Both runs produced the same three failing suites; the counts quoted here are
+from the FINAL run. All three failures are pre-existing and analysed in
+`08-preexisting-failures.md`; none of them exercises Stage 2 code, and none of
+the Stage 2 suites or the Eventbrite regression suites fails.
+
+================================================================================
+3. Isolation runs for the pre-existing failures (suite alone, same database)
+================================================================================
+
+$ … wordpress php …/tests/test-source-fetch-failure.php
+122 passed, 10 failed
+  FAIL: Eventbrite first page 429: status is failed (got "rate_limited")
+  FAIL: Eventbrite first page 429: fatal_errors > 0 (failure evidence recorded)
+  FAIL: Eventbrite first page 429: the persisted history row is status=failed
+  FAIL: Eventbrite first page 429: the persisted history row carries fatal_errors
+  FAIL: Eventbrite first page 429: HTTP 429 is surfaced as failure evidence
+  (the same five for the Heritage Week 429 case)
+  — every non-429 failure class (500/502/503/timeout/connection) still PASSES as `failed`.
+
+$ … wordpress php …/tests/test-import-continuation.php
+G18 continuation: 262 passed, 22 failed
+  FAIL: G18.1: the time budget stopped the walk mid-listing at page 3 (got 2)
+  FAIL: G18.10: cork/wicklow/wexford/waterford/tipperary stopped at its own page 3
+  FAIL: G18.14: the cell states the position and the reason
+  (deterministic; identical in isolation and in the full run)
+
+$ … wordpress php …/tests/test-import-continuation.php     (after clearing the
+                                                            suite's own test
+                                                            stores in the clone)
+G18 continuation: 262 passed, 22 failed
+  — same 22 page-3 assertions; the 7 extra failures seen in the final full run
+    (29 instead of 22) came from a leftover `state: running` continuation
+    record for `g18_probe_cork` left by an earlier SIGKILLED run. See
+    `08-preexisting-failures.md` §2a.

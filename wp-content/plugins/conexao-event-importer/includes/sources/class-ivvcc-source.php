@@ -74,6 +74,22 @@ class Conexao_Source_Ivvcc extends Conexao_Source_Base {
 
 		$html = $this->fetch_html( $base_url );
 		if ( empty( $html ) ) {
+			// A 200 with an empty body is not an enumerable listing: the
+			// enumeration must never be reported as a complete empty walk
+			// (Stage 2 / P3+P4). Keep the events already collected, but mark
+			// the walk incomplete so reconciliation cannot run on it.
+			$this->mark_fetch_incomplete();
+
+			Conexao_Import_Log::add(
+				$this->get_id(),
+				'error',
+				'IVVCC calendar returned an empty body; the enumeration is incomplete.',
+				array(
+					'url'    => $base_url,
+					'run_id' => $this->get_current_run_id(),
+				)
+			);
+
 			return array();
 		}
 

@@ -35,6 +35,11 @@ class Conexao_Source_ICalendar extends Conexao_Source_Base {
 			$url = $this->get_feed_url();
 
 			if ( empty( $url ) ) {
+				// Configuration failure: no listing could be enumerated at all.
+				// Marking the walk incomplete keeps it out of both "complete
+				// empty import" and absence-based reconciliation (Stage 2 / P3+P4).
+				$this->mark_fetch_incomplete();
+
 				Conexao_Import_Log::add( $this->get_id(), 'error', 'No ICS file uploaded and no feed URL configured.' );
 				return array();
 			}
@@ -43,6 +48,9 @@ class Conexao_Source_ICalendar extends Conexao_Source_Base {
 		}
 
 		if ( empty( $ical_data ) ) {
+			// Retrieved but empty: not a parsed iCalendar listing.
+			$this->mark_fetch_incomplete();
+
 			Conexao_Import_Log::add( $this->get_id(), 'error', 'No iCalendar data available. Upload an ICS file or check the feed URL.' );
 			return array();
 		}

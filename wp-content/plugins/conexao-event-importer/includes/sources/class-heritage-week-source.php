@@ -862,6 +862,18 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 	 * @return array
 	 */
 	protected function enrich_event( $event ) {
+		/*
+		 * Stage 2 / P5 — per-field enrichment state.
+		 *
+		 * Everything this method can supply starts as `not_evaluated`, so any
+		 * early return below means "we did not learn these values", never
+		 * "the source says they are empty". The engine preserves the stored
+		 * value for every field in that state.
+		 */
+		$event['_enrichment'] = class_exists( 'Conexao_Event_Enrichment_State' )
+			? Conexao_Event_Enrichment_State::all_not_evaluated()
+			: array();
+
 		if ( empty( $event['url'] ) ) {
 			$event['detail_fetch_status'] = 'not_requested';
 			return $event;
@@ -870,16 +882,27 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 		$html = $this->fetch_detail_html( $event['url'] );
 		$event['detail_fetch_status'] = $this->last_detail_fetch_status;
 		if ( empty( $html ) ) {
+			// A transport/HTTP failure or an empty body tells us nothing about
+			// venue/description/address/location/organizer/image: the values
+			// are UNKNOWN, so they must not overwrite what is already stored.
+			$event['_enrichment'] = class_exists( 'Conexao_Event_Enrichment_State' )
+				? Conexao_Event_Enrichment_State::all_unavailable()
+				: array();
 			return $event;
 		}
 
 		$dom = $this->parse_html( $html );
 		if ( ! $dom ) {
 			$event['detail_fetch_status'] = 'invalid_html';
+			$event['_enrichment'] = class_exists( 'Conexao_Event_Enrichment_State' )
+				? Conexao_Event_Enrichment_State::all_unavailable()
+				: array();
 			return $event;
 		}
 
 		$xpath = new DOMXPath( $dom );
+
+		$enrichment = array();
 
 		// JSON-LD structured data: schema.org/Event.location is the strongest
 		// location representation on the detail page. Only Event.location is
@@ -887,16 +910,44 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 		// Values found here take precedence over the labelled details list.
 		$jsonld_location = ( new Conexao_Event_Jsonld_Location() )->extract( $html );
 		if ( ! empty( $jsonld_location['venue'] ) ) {
-			$event['venue'] = $jsonld_location['venue'];
+			$event['venue']            = $jsonld_location['venue'];
+			$enrichment['venue']       = Conexao_Event_Enrichment_State::POPULATED;
+		} else {
+			// No Event.location.name on the page. Omission is NOT proof that
+			// the event has no venue, so the stored value is preserved.
+			$enrichment['venue'] = Conexao_Event_Enrichment_State::UNAVAILABLE;
 		}
 		if ( ! empty( $jsonld_location['address'] ) ) {
-			$event['address'] = $jsonld_location['address'];
+			$event['address']          = $jsonld_location['address'];
+			$enrichment['address']     = Conexao_Event_Enrichment_State::POPULATED;
+		} else {
+			$enrichment['address'] = Conexao_Event_Enrichment_State::UNAVAILABLE;
 		}
 
-		// Description.
+		/*
+		 * Description.
+		 *
+		 * `div.text-block` is the documented description container on a
+		 * Heritage Week detail page. The source-specific contract used for
+		 * "genuine emptiness" is deliberately narrow:
+		 *
+		 *   - container present, text non-empty -> populated
+		 *   - container present, text EMPTY     -> genuinely empty (the page
+		 *     declares the description block and it is blank)
+		 *   - container ABSENT                  -> unavailable (parser drift or
+		 *     a page without that block is not evidence of a clear)
+		 */
 		$desc = $xpath->query( '//div[contains(concat(" ", normalize-space(@class), " "), " text-block ")]' );
 		if ( $desc && $desc->length > 0 ) {
-			$event['description'] = trim( preg_replace( '/\s+/', ' ', $desc->item( 0 )->textContent ) );
+			$desc_text = trim( preg_replace( '/\s+/', ' ', $desc->item( 0 )->textContent ) );
+
+			$event['description'] = $desc_text;
+
+			$enrichment['description'] = '' !== $desc_text
+				? Conexao_Event_Enrichment_State::POPULATED
+				: Conexao_Event_Enrichment_State::EMPTY_VALUE;
+		} else {
+			$enrichment['description'] = Conexao_Event_Enrichment_State::UNAVAILABLE;
 		}
 
 		// Full location details.
@@ -913,18 +964,25 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 		if ( ! empty( $loc_parts ) ) {
 			$event['location'] = implode( ', ', $loc_parts );
 		}
+		$enrichment['location'] = ! empty( $loc_parts )
+			? Conexao_Event_Enrichment_State::POPULATED
+			: Conexao_Event_Enrichment_State::UNAVAILABLE;
 
-		// Event type.
+		// Event type (not persisted, no state needed).
 		$type = $xpath->query( '//h3[contains(normalize-space(.), "Event Type")]/following-sibling::ul[1]//a' );
 		if ( $type && $type->length > 0 ) {
 			$event['event_type'] = trim( $type->item( 0 )->textContent );
 		}
 
 		// Organiser from "Further Information".
-		$org = $xpath->query( '//h3[contains(normalize-space(.), "Further Information")]/following-sibling::p[1]' );
-		if ( $org && $org->length > 0 ) {
-			$event['organizer'] = trim( $org->item( 0 )->textContent );
+		$org     = $xpath->query( '//h3[contains(normalize-space(.), "Further Information")]/following-sibling::p[1]' );
+		$org_val = ( $org && $org->length > 0 ) ? trim( $org->item( 0 )->textContent ) : '';
+		if ( '' !== $org_val ) {
+			$event['organizer'] = $org_val;
 		}
+		$enrichment['organizer'] = '' !== $org_val
+			? Conexao_Event_Enrichment_State::POPULATED
+			: Conexao_Event_Enrichment_State::UNAVAILABLE;
 
 		// Higher-resolution image from detail page.
 		// Collect all candidate URLs from the detail page and pick the best one.
@@ -978,6 +1036,16 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 				}
 			}
 		}
+
+		// The image can come from the listing card as well as the detail page,
+		// so it is "populated" whenever the event carries one after merging.
+		$enrichment['banner'] = ! empty( $event['image'] )
+			? Conexao_Event_Enrichment_State::POPULATED
+			: Conexao_Event_Enrichment_State::UNAVAILABLE;
+
+		$event['_enrichment'] = class_exists( 'Conexao_Event_Enrichment_State' )
+			? Conexao_Event_Enrichment_State::sanitize_map( $enrichment )
+			: array();
 
 		return $event;
 	}

@@ -9,174 +9,174 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-15 10:33+0000\n"
+"POT-Creation-Date: 2026-11-15 14:32+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 
 
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:103
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:106
 msgid ""
 "Conexão BR Irlanda — Event Importer (Local Tools) requires the \"Conexão BR "
 "Irlanda — Event Runtime\" plugin to be installed and active."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:209
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:212
 msgid "Importing… please wait. Do not close this page."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:210
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:213
 #, php-format
 msgid "Importing file %1$d of %2$d…"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:211
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:214
 #, php-format
 msgid "File %d: completed successfully."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:212
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:215
 #, php-format
 msgid "File %d: failed."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:213
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:216
 msgid "Import completed successfully."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:214
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:217
 msgid "Import stopped after a failure."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:215
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:218
 msgid "All files processed."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:216
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:219
 #, php-format
 msgid "Retrying file %d…"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:217
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:220
 msgid "Could not clean up temporary files."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:218
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:221
 msgid "Network error. Please check your connection and retry."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:219
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:222
 msgid "Server error. Please check the logs."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:224
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:227
 msgid "Import in progress"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:225
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:228
 msgid "Preparing…"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:226
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:229
 msgid "Importing…"
 msgstr ""
 #. translators: %d: file number.
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:228
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:231
 #, php-format
 msgid "File %d"
 msgstr ""
 #. translators: 1: current file number, 2: total file count.
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:230
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:233
 #, php-format
 msgid "File %1$d of %2$d"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:231
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:234
 msgid "Summary"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:232
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:235
 msgid "Events created:"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:233
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:236
 msgid "Events updated:"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:234
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:237
 msgid "Events skipped:"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:235
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:238
 msgid "Media processed:"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:236
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:239
 msgid "Errors:"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:237
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:240
 msgid "Total duration:"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:238
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:241
 msgid "Peak memory:"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:239
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:242
 msgid "Try again"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:240
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:243
 msgid "Not processed"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:241
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:244
 msgid "Unknown failure"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:245
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:248
 #: wp-content/plugins/conexao-event-importer/includes/class-event-transfer-admin.php:957
 msgid "Multi-file import"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:246
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:249
 msgid "Select at least one export file to import."
 msgstr ""
 #. translators: %d: number of selected files.
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:248
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:251
 #, php-format
 msgid "Staging %d file(s)…"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:249
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:252
 msgid "The files could not be staged on the server. Nothing was imported."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:250
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:253
 msgid "Too many files were selected for one batch."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:251
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:254
 msgid "The multipart manifest could not be validated."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:252
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:255
 msgid "Files rejected before import"
 msgstr ""
 #. translators: 1: file name, 2: rejection reason.
 #. translators: 1: file name, 2: failure reason.
 #. translators: 1: file name, 2: reason
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:254
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:262
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:257
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:265
 #: wp-content/plugins/conexao-event-importer/includes/class-event-transfer-admin.php:902
 #, php-format
 msgid "%1$s — %2$s"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:255
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:258
 msgid "Files processed:"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:256
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:259
 msgid "Files imported:"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:257
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:260
 msgid "Files unchanged:"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:258
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:261
 msgid "Files failed:"
 msgstr ""
 #. translators: 1: file name, 2: created count, 3: updated count.
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:260
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:263
 #, php-format
 msgid "%1$s — %2$d created, %3$d updated"
 msgstr ""
 #. translators: %d: number of sources to delete.
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:264
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:267
 #, php-format
 msgid ""
 "Delete %d source(s)? This will remove the selected Event Source "
 "configurations. Imported events will remain in the database."
 msgstr ""
 #. translators: Accessible selection feedback (one source).
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:266
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:269
 msgid "1 source selected"
 msgstr ""
 #. translators: %d: number of selected sources.
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:268
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:271
 #, php-format
 msgid "%d sources selected"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:269
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:272
 msgid "Select at least one Event Source before applying a bulk action."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:270
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:273
 msgid "Choose a bulk action before applying it."
 msgstr ""
 #. translators: %s: source slug
@@ -603,34 +603,34 @@ msgstr ""
 msgid "Event is missing a title."
 msgstr ""
 #. translators: 1: reused response count, 2: outbound request count, 3: requests used of the ceiling, 4: the ceiling, 5: requests blocked by the ceiling
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:140
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:157
 #, php-format
 msgid ""
 "Request accounting: %1$d reused responses served with no outbound request; "
 "%2$d outbound requests sent, %3$d of the %4$d request budget used, %5$d "
 "requests blocked by the ceiling."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:239
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:256
 msgid ""
 "No active event sources are configured. Enable at least one source to import "
 "events."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:249
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:266
 msgid "Run All is running."
 msgstr ""
 #. translators: 1: source count, 2: created, 3: updated, 4: unchanged, 5: event skipped, 6: failed events, 7: failed sources, 8: source skipped
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:383
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:400
 #, php-format
 msgid ""
 "Run All: %1$d source(s), %2$d created, %3$d updated, %4$d unchanged, %5$d "
 "event(s) skipped, %6$d event error(s), %7$d failed source(s), %8$d source(s) "
 "skipped/deferred."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:498
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:515
 msgid "Event source not found."
 msgstr ""
 #. translators: 1: source name, 2: seconds remaining, 3: reason code
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:548
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:565
 #, php-format
 msgid ""
 "Not attempted: %1$s is in cooldown after a %3$s response. No request was "
@@ -638,100 +638,100 @@ msgid ""
 "this is wrong."
 msgstr ""
 #. translators: %s: source name
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:601
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:618
 #, php-format
 msgid "Import started for %s."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:609
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:626
 msgid "No import handler is registered for this event source."
 msgstr ""
 #. translators: %s: source name
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:639
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:656
 #, php-format
 msgid "Failed to fetch events from %1$s. HTTP status: %2$d."
 msgstr ""
 #. translators: %s: source name
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:684
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:701
 #, php-format
 msgid ""
 "Failed to fetch events from %s. The source may be temporarily unavailable."
 msgstr ""
 #. translators: %s: source name
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:719
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:736
 #, php-format
 msgid "The %s source returned an invalid response. No events were imported."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:775
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:792
 msgid ""
 "Skipped: the event date could not be evaluated (missing, malformed, or "
 "unparseable date)."
 msgstr ""
 #. translators: %s: event title
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:782
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:799
 #, php-format
 msgid "Event skipped (invalid date): %s"
 msgstr ""
 #. translators: %s: event end date/time
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:797
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:814
 #, php-format
 msgid "Skipped: the event has already ended (%s)."
 msgstr ""
 #. translators: 1: event title, 2: event end date/time
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:806
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:823
 #, php-format
 msgid "Event skipped (past): %1$s — ended %2$s."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:823
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1141
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:840
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1158
 msgid "(untitled event)"
 msgstr ""
 #. translators: %s: list of missing/invalid required fields
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:826
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:843
 #, php-format
 msgid "Skipped: missing required data (%s)."
 msgstr ""
 #. translators: 1: event title, 2: validation problems
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:835
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:852
 #, php-format
 msgid "Event skipped (incomplete): %1$s — %2$s."
 msgstr ""
 #. translators: %s: event title
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:862
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:879
 #, php-format
 msgid "Event created: %s"
 msgstr ""
 #. translators: %s: event title
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:880
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:897
 #, php-format
 msgid "Event updated: %s"
 msgstr ""
 #. translators: 1: event title, 2: skip reason
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:904
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:921
 #, php-format
 msgid "Event skipped: %1$s. %2$s"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:917
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:934
 msgid "The event could not be saved to WordPress."
 msgstr ""
 #. translators: 1: event title, 2: error message
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:924
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:941
 #, php-format
 msgid "Failed to import event: %1$s. %2$s"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:938
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:955
 msgid "(unknown event)"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:941
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1169
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:958
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1186
 msgid "An unexpected error interrupted this event."
 msgstr ""
 #. translators: 1: event title, 2: error message
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:949
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:966
 #, php-format
 msgid "Unexpected error importing \"%1$s\": %2$s"
 msgstr ""
 #. translators: %s: source name
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:997
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1014
 #, php-format
 msgid ""
 "%s was enumerated to its final page but resumed from a stored checkpoint, so "
@@ -739,7 +739,7 @@ msgid ""
 "were left untouched (not marked source_not_found)."
 msgstr ""
 #. translators: %s: source name
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1007
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1024
 #, php-format
 msgid ""
 "%s resumed from its enumeration checkpoint. Absence-based reconciliation was "
@@ -747,29 +747,29 @@ msgid ""
 "in this run's result set."
 msgstr ""
 #. translators: 1: source name, 2: created count, 3: updated count, 4: total skipped, 5: skipped as past, 6: skipped with invalid date, 7: failed count
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1059
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1076
 #, php-format
 msgid ""
 "Import of %1$s completed: %2$d created, %3$d updated, %4$d skipped (%5$d "
 "past, %6$d invalid date), %7$d failed."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1121
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1138
 msgid ""
 "Would skip: the event date could not be evaluated (missing, malformed, or "
 "unparseable date)."
 msgstr ""
 #. translators: %s: event end date/time
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1132
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1149
 #, php-format
 msgid "Would skip: the event has already ended (%s)."
 msgstr ""
 #. translators: %s: list of missing/invalid required fields
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1146
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1163
 #, php-format
 msgid "Would skip: missing required data (%s)."
 msgstr ""
 #. translators: 1: source name, 2: found count, 3: would-create count, 4: would-update count, 5: would-skip count
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1189
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1206
 #, php-format
 msgid ""
 "Dry-run of %1$s completed: %2$d found, %3$d would be created, %4$d would be "
@@ -777,95 +777,113 @@ msgid ""
 "Nothing was written."
 msgstr ""
 #. translators: %d: number of failed events
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1285
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1302
 #, php-format
 msgid "%d event(s) failed to import."
 msgstr ""
 #. translators: %d: number of failed events
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1293
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1310
 #, php-format
 msgid "%d event(s) failed but the rest were imported."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1306
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1323
 msgid "Unknown import failure."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1328
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1345
 msgid "Import failed. See details below."
 msgstr ""
 #. translators: %d: number of events found
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1334
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1351
 #, php-format
 msgid "%d events found"
 msgstr ""
 #. translators: %d: number of events created
 #. translators: %d: count
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1340
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1357
 #: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:801
 #, php-format
 msgid "%d created"
 msgstr ""
 #. translators: %d: number of events updated
 #. translators: %d: count
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1347
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1364
 #: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:804
 #, php-format
 msgid "%d updated"
 msgstr ""
 #. translators: %d: number of unchanged events
 #. translators: %d: count
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1354
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1371
 #: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:807
 #, php-format
 msgid "%d unchanged"
 msgstr ""
 #. translators: 1: total skipped, 2: skipped because already ended, 3: skipped with invalid dates
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1365
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1382
 #: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:819
 #, php-format
 msgid "%1$d skipped (%2$d past, %3$d invalid date)"
 msgstr ""
 #. translators: %d: number of skipped events
 #. translators: %d: count
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1373
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1390
 #: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:825
 #, php-format
 msgid "%d skipped"
 msgstr ""
 #. translators: %d: number of failed events
 #. translators: %d: count
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1381
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1398
 #: wp-content/plugins/conexao-event-importer/includes/class-event-sources.php:829
 #, php-format
 msgid "%d failed"
 msgstr ""
+#. translators: 1: event title, 2: comma-separated field names
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1573
+#, php-format
+msgid ""
+"Partial enrichment for \"%1$s\": could not retrieve %2$s, so the stored "
+"value(s) were preserved."
+msgstr ""
 #. translators: %s: event title
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1498
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1617
 #, php-format
 msgid ""
 "Event skipped (language conflict): %s was matched to a translated record. "
 "The importer only writes to records in the import language."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1511
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1630
 msgid ""
 "Matched a translated record: the importer never writes to another language."
 msgstr ""
 #. translators: 1: event title, 2: error message
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1719
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1867
 #, php-format
 msgid "The event \"%1$s\" was imported but taxonomy assignment failed: %2$s"
 msgstr ""
 #. translators: 1: event title
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1961
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:2109
 #, php-format
 msgid ""
 "The image for \"%1$s\" could not be downloaded. The external Eventbrite "
 "image URL will be used instead."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:2313
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:2461
 msgid ""
 "The source listing was only partially enumerated. Events absent from this "
 "walk were left untouched (not marked source_not_found); the next run will "
 "pick up the remainder."
+msgstr ""
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:2527
+msgid ""
+"Absence-based reconciliation refused before any candidate query: the source "
+"enumeration is incomplete or resumed from a checkpoint. No event was marked "
+"source_not_found."
+msgstr ""
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:2565
+msgid ""
+"Absence-based reconciliation was aborted: the candidate list could not be "
+"enumerated completely. No event was marked source_not_found."
 msgstr ""
 #: wp-content/plugins/conexao-event-importer/includes/class-event-multi-import.php:53
 msgid "The file exceeds the upload_max_filesize directive in php.ini."

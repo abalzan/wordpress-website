@@ -18,6 +18,23 @@ defined( 'ABSPATH' ) || exit;
 
 class Conexao_Event_Importer_Engine {
 
+	/**
+	 * Bounded page size for the absence-reconciliation candidate enumeration.
+	 *
+	 * Stage 2 / P10. Reconciliation is keyset-paginated instead of asking for
+	 * one arbitrary slice: 200 IDs per page is cheap, keeps the request count
+	 * proportional, and never becomes a single unbounded query.
+	 */
+	const RECONCILIATION_PAGE_SIZE = 200;
+
+	/**
+	 * Absence-based status changes applied per batch after enumeration.
+	 *
+	 * Enumeration and mutation are separate phases; this bounds the mutation
+	 * work per batch without affecting the completeness of the candidate set.
+	 */
+	const RECONCILIATION_BATCH_SIZE = 50;
+
 	/** @var Conexao_Event_Sources */
 	protected $sources;
 
@@ -986,7 +1003,7 @@ class Conexao_Event_Importer_Engine {
 		$resumed_subset = $fetch_complete && ! $reconciliation_safe;
 
 		if ( $fetch_complete && $reconciliation_safe ) {
-			$this->mark_missing_events( $source_id, $raw_events );
+			$this->mark_missing_events( $source_id, $raw_events, $handler );
 		} else {
 			$this->mark_fetch_incomplete_in_result( $result, $source_id );
 
@@ -1467,6 +1484,108 @@ class Conexao_Event_Importer_Engine {
 	}
 
 	/**
+	 * Apply per-field partial-enrichment preservation to an update (Stage 2 / P5).
+	 *
+	 * A handler that enriches from a detail page declares, per field, whether
+	 * the value was retrieved (`populated`), is genuinely empty (`empty`),
+	 * could not be retrieved (`unavailable`) or was never attempted
+	 * (`not_evaluated`). For the last two the stored value WINS: the incoming
+	 * value is replaced by what is already stored, so a failed detail request
+	 * can never erase a good description, venue, address, location, organiser
+	 * or banner image.
+	 *
+	 * Preservation is FIELD-LEVEL: a partial enrichment that failed to fetch
+	 * the description but retrieved the venue preserves the description and
+	 * writes the venue in the same run.
+	 *
+	 * Handlers that declare nothing keep the historical behaviour exactly: an
+	 * absent field is treated as legacy/unspecified and written as before.
+	 * This is why Eventbrite and the listing-only sources are unaffected.
+	 *
+	 * @param array $normalized Normalized event data.
+	 * @param int   $post_id    Existing post ID.
+	 * @return array Normalized data with preserved fields restored.
+	 */
+	protected function apply_enrichment_preservation( $normalized, $post_id ) {
+		if ( empty( $normalized['enrichment'] ) || ! is_array( $normalized['enrichment'] )
+			|| ! class_exists( 'Conexao_Event_Enrichment_State' ) ) {
+			return $normalized;
+		}
+
+		$states = $normalized['enrichment'];
+
+		// normalized field => [ normalized key to write, stored source ].
+		$map = array(
+			'description' => array( 'description', 'content' ),
+			'venue'       => array( 'venue', '_event_venue' ),
+			'address'     => array( 'address', '_event_address' ),
+			'location'    => array( 'event_location', '_event_location' ),
+			'organizer'   => array( 'organizer', '_event_organizer' ),
+			'banner'      => array( 'banner', '_event_banner' ),
+		);
+
+		$preserved = array();
+
+		// `_event_location` is DERIVED from venue/town/county. It is only
+		// preserved when the venue is preserved too; otherwise a corrected
+		// venue would be paired with a stale location label.
+		$venue_preserved = Conexao_Event_Enrichment_State::should_preserve( $states, 'venue' );
+
+		foreach ( $map as $field => $target ) {
+			if ( ! Conexao_Event_Enrichment_State::should_preserve( $states, $field ) ) {
+				continue;
+			}
+
+			if ( 'location' === $field && ! $venue_preserved ) {
+				continue;
+			}
+
+			$stored = 'content' === $target[1]
+				? (string) get_post_field( 'post_content', $post_id )
+				: (string) get_post_meta( $post_id, $target[1], true );
+
+			$normalized[ $target[0] ] = $stored;
+
+			if ( 'location' === $field ) {
+				// _event_location is written from the event_location field.
+				$normalized['event_location'] = $stored;
+			}
+
+			if ( 'address' === $field ) {
+				// A preserved address is not "missing"; keep the audit honest.
+				$normalized['address_status'] = '' !== $stored ? 'found' : 'missing';
+			}
+
+			$preserved[] = $field;
+		}
+
+		if ( empty( $preserved ) ) {
+			return $normalized;
+		}
+
+		$normalized['_preserved_fields'] = $preserved;
+
+		Conexao_Import_Log::add(
+			isset( $normalized['source'] ) ? (string) $normalized['source'] : '',
+			'info',
+			sprintf(
+				/* translators: 1: event title, 2: comma-separated field names */
+				__( 'Partial enrichment for "%1$s": could not retrieve %2$s, so the stored value(s) were preserved.', 'conexao-event-importer' ),
+				isset( $normalized['title'] ) ? (string) $normalized['title'] : '',
+				implode( ', ', $preserved )
+			),
+			array(
+				'run_id'           => $this->current_run_id,
+				'post_id'          => (int) $post_id,
+				'event_title'      => isset( $normalized['title'] ) ? (string) $normalized['title'] : '',
+				'preserved_fields' => $preserved,
+			)
+		);
+
+		return $normalized;
+	}
+
+	/**
 	 * Create or update an event in the database.
 	 *
 	 * @param array $normalized   Normalized event data.
@@ -1515,6 +1634,16 @@ class Conexao_Event_Importer_Engine {
 		if ( $existing_id ) {
 			$post_id = $existing_id;
 
+			/*
+			 * Stage 2 / P5 — field-level partial-enrichment preservation.
+			 *
+			 * Runs BEFORE change detection and BEFORE any write, so a field a
+			 * failed detail fetch could not supply is compared and written
+			 * with its stored value instead of with an empty incoming value.
+			 * For sources that declare no enrichment state this is a no-op.
+			 */
+			$normalized = $this->apply_enrichment_preservation( $normalized, $post_id );
+
 			// Check if the event data has actually changed.
 			// IMPORTANT: read the raw stored post_title (get_post_field)
 			// instead of get_the_title(), which applies the the_title
@@ -1524,13 +1653,31 @@ class Conexao_Event_Importer_Engine {
 			// event whose title contains " - " or "&" classify as
 			// "updated" on every import run (perpetual update churn),
 			// found during the Stage C2 idempotency re-run.
-			$existing_title  = (string) get_post_field( 'post_title', $post_id );
-			$existing_date   = get_post_meta( $post_id, '_event_date', true );
-			$existing_time   = get_post_meta( $post_id, '_event_start_time', true );
-			$existing_url    = get_post_meta( $post_id, '_event_url', true );
-			$existing_venue  = get_post_meta( $post_id, '_event_venue', true );
-			$existing_org    = get_post_meta( $post_id, '_event_organizer', true );
-			$existing_banner = get_post_meta( $post_id, '_event_banner', true );
+			$existing_title   = (string) get_post_field( 'post_title', $post_id );
+			$existing_content = (string) get_post_field( 'post_content', $post_id );
+			$existing_date    = get_post_meta( $post_id, '_event_date', true );
+			$existing_time    = get_post_meta( $post_id, '_event_start_time', true );
+			$existing_url     = get_post_meta( $post_id, '_event_url', true );
+			$existing_venue   = get_post_meta( $post_id, '_event_venue', true );
+			$existing_org     = get_post_meta( $post_id, '_event_organizer', true );
+			$existing_banner  = get_post_meta( $post_id, '_event_banner', true );
+
+			/*
+			 * Stage 2 / P5 — description participation in change detection.
+			 *
+			 * The stored description has never participated in change
+			 * detection, so a corrected or cleared description at the source
+			 * was silently ignored unless another field also changed. That is
+			 * exactly the case P5 must handle: a SUCCESSFUL enrichment that
+			 * corrects (or genuinely clears) the description has to reach the
+			 * record.
+			 *
+			 * It participates only for handlers that DECLARE a description
+			 * enrichment state. Eventbrite and every listing-only source
+			 * declare nothing, so their change detection is untouched.
+			 */
+			$description_declared = isset( $normalized['enrichment']['description'] );
+			$description_matches  = ! $description_declared || $existing_content === (string) $normalized['description'];
 
 			/*
 			 * Recurrence participates in change detection.
@@ -1574,7 +1721,8 @@ class Conexao_Event_Importer_Engine {
 				$existing_org === $normalized['organizer'] &&
 				$existing_banner === $normalized['banner'] &&
 				$existing_address === $resolved_address &&
-				$existing_recurrence === $incoming_recurrence
+				$existing_recurrence === $incoming_recurrence &&
+				$description_matches
 			);
 
 			if ( $is_unchanged ) {
@@ -2327,10 +2475,62 @@ class Conexao_Event_Importer_Engine {
 	/**
 	 * Mark events from a source that are no longer present as "Source Not Found".
 	 *
-	 * @param string $source_id   Source slug.
-	 * @param array  $raw_events  Raw events fetched this run.
+	 * ## Stage 2 / P10 — paginated, gate-first reconciliation
+	 *
+	 * The previous implementation evaluated at most 300 posts per source, so a
+	 * source with more events (Dublin, Cork) was only ever partially
+	 * reconciled: events beyond the first 300 were never checked for absence.
+	 *
+	 * This implementation is deliberately ordered:
+	 *
+	 *  1. The two P4 gates are evaluated FIRST (again — the call site already
+	 *     evaluated them). An incomplete enumeration or a resumed subset
+	 *     therefore performs ZERO candidate queries and ZERO mutations. The
+	 *     second evaluation is defence in depth: it makes "gates before any
+	 *     reconciliation query" a structural property of this method rather
+	 *     than a property of its caller.
+	 *  2. Candidate enumeration is READ-ONLY and keyset-paginated by the unique
+	 *     post ID (`ID > last_id`, `ORDER BY ID ASC`, bounded page size). Every
+	 *     page must succeed; a failed, malformed or non-advancing page aborts
+	 *     the whole pass with no mutation at all.
+	 *  3. Only after the COMPLETE candidate set is in memory are absence-based
+	 *     status changes applied, in bounded batches, with each candidate
+	 *     revalidated as still source-owned and still eligible immediately
+	 *     before its status is written.
+	 *
+	 * The candidate set is a list of integer post IDs only (no post objects),
+	 * so its memory cost is bounded by the number of source-owned events.
+	 *
+	 * Reconciliation is idempotent: an event already `source_not_found` is
+	 * excluded from the candidate query, so re-running in the same state
+	 * produces the same statuses and no new writes.
+	 *
+	 * Identity rules are untouched (P11): an event is still matched to the run
+	 * by `_event_url`, exactly as before.
+	 *
+	 * @param string      $source_id  Source slug.
+	 * @param array       $raw_events Raw events fetched this run.
+	 * @param object|null $handler    Handler that produced the enumeration.
+	 * @return int Number of events marked source_not_found.
 	 */
-	protected function mark_missing_events( $source_id, $raw_events ) {
+	protected function mark_missing_events( $source_id, $raw_events, $handler = null ) {
+		/*
+		 * P4 gate — re-evaluated here so no caller can reach the candidate
+		 * queries (or a mutation) with an incomplete or resumed enumeration.
+		 * `null` means "the caller already evaluated the gates".
+		 */
+		if ( null !== $handler
+			&& ( ! $this->is_handler_fetch_complete( $handler ) || ! $this->is_handler_reconciliation_safe( $handler ) ) ) {
+			Conexao_Import_Log::add(
+				$source_id,
+				'warning',
+				__( 'Absence-based reconciliation refused before any candidate query: the source enumeration is incomplete or resumed from a checkpoint. No event was marked source_not_found.', 'conexao-event-importer' ),
+				array( 'run_id' => $this->current_run_id )
+			);
+
+			return 0;
+		}
+
 		// Canonical source identity — the raw events carry the handler's
 		// declared source key (see run_source); fall back to the config ID.
 		$canonical_source = '';
@@ -2347,43 +2547,216 @@ class Conexao_Event_Importer_Engine {
 		$current_urls = array();
 		foreach ( $raw_events as $raw ) {
 			if ( ! empty( $raw['url'] ) ) {
-				$current_urls[] = $raw['url'];
+				$current_urls[ (string) $raw['url'] ] = true;
 			}
 		}
 
 		if ( empty( $current_urls ) ) {
-			return;
+			return 0;
 		}
 
-		$query = new WP_Query(
-			array(
-				'post_type'              => 'event',
-				'posts_per_page'         => 300,
-				'fields'                 => 'ids',
-				'no_found_rows'          => true,
-				'update_post_meta_cache' => false,
-				'update_post_term_cache' => false,
-				'meta_query'             => array(
-					'relation' => 'AND',
-					array(
-						'key'   => '_event_source',
-						'value' => $canonical_source,
-					),
-					array(
-						'key'     => '_event_status',
-						'compare' => 'NOT IN',
-						'value'   => array( 'rejected', 'source_not_found' ),
-					),
-				),
-			)
-		);
+		// Phase 1 — enumerate the COMPLETE candidate set. Read-only.
+		$candidates = $this->enumerate_source_owned_event_ids( $canonical_source );
 
-		foreach ( $query->posts as $post_id ) {
-			$stored_url = get_post_meta( $post_id, '_event_url', true );
-			if ( $stored_url && ! in_array( $stored_url, $current_urls, true ) ) {
-				// Event disappeared from the source. Hide it, don't delete.
-				Conexao_Event_Status::set_status( $post_id, Conexao_Event_Status::SOURCE_NOT_FOUND );
+		if ( null === $candidates ) {
+			Conexao_Import_Log::add(
+				$source_id,
+				'warning',
+				__( 'Absence-based reconciliation was aborted: the candidate list could not be enumerated completely. No event was marked source_not_found.', 'conexao-event-importer' ),
+				array(
+					'reason'      => 'candidate_enumeration_failed',
+					'reason_code' => 'candidate_enumeration_failed',
+					'run_id'      => $this->current_run_id,
+				)
+			);
+
+			return 0;
+		}
+
+		// Phase 2 — apply absence in bounded batches, revalidating each candidate.
+		$marked = 0;
+
+		foreach ( array_chunk( $candidates, self::RECONCILIATION_BATCH_SIZE ) as $batch ) {
+			foreach ( $batch as $candidate_id ) {
+				$post_id = (int) $candidate_id;
+
+				// Revalidate immediately before the write: still an event, still
+				// owned by this source, still eligible (not rejected, not already
+				// source_not_found). A concurrent change skips the candidate.
+				if ( ! $this->is_reconciliation_candidate_eligible( $post_id, $canonical_source ) ) {
+					continue;
+				}
+
+				$stored_url = (string) get_post_meta( $post_id, '_event_url', true );
+
+				if ( '' !== $stored_url && ! isset( $current_urls[ $stored_url ] ) ) {
+					// Event disappeared from the source. Hide it, don't delete.
+					Conexao_Event_Status::set_status( $post_id, Conexao_Event_Status::SOURCE_NOT_FOUND );
+					++$marked;
+				}
 			}
 		}
+
+		return $marked;
+	}
+
+	/**
+	 * Enumerate every source-owned candidate post ID for one reconciliation pass.
+	 *
+	 * Keyset pagination on the unique post ID: `ID > $last_id`, `ORDER BY ID
+	 * ASC`, bounded `LIMIT`. The cursor advances only from the last ID actually
+	 * returned, so page boundaries cannot skip or duplicate a candidate — even
+	 * when every other column (URL, dates, titles) collides.
+	 *
+	 * The filter set is the same set the previous `WP_Query` used:
+	 *  - `post_type = 'event'`;
+	 *  - the post statuses `WP_Query` defaults to in this request context
+	 *    (`publish`, plus `private` for a reader allowed to read private posts);
+	 *  - `_event_source` equals the canonical source (an INNER meta join, like
+	 *    the old `meta_query` entry);
+	 *  - `_event_status` present and NOT IN (rejected, source_not_found) — an
+	 *    INNER meta join, which is what `NOT IN` produced before, so events
+	 *    without a status meta row stay out of reconciliation exactly as they did.
+	 *
+	 * @param string $canonical_source Canonical `_event_source` value.
+	 * @return int[]|null Candidate IDs in ascending order, or null on failure.
+	 */
+	protected function enumerate_source_owned_event_ids( $canonical_source ) {
+		global $wpdb;
+
+		$excluded_statuses = array(
+			Conexao_Event_Status::REJECTED,
+			Conexao_Event_Status::SOURCE_NOT_FOUND,
+		);
+
+		// WP_Query's default post-status scope for this request context. The
+		// list is always passed as two placeholders; a reader without private
+		// access simply passes `publish` twice.
+		$post_statuses = array( 'publish', 'publish' );
+		if ( is_user_logged_in() && current_user_can( 'read_private_posts' ) ) {
+			$post_statuses[1] = 'private';
+		}
+
+		$page_size = self::RECONCILIATION_PAGE_SIZE;
+		$last_id   = 0;
+		$ids       = array();
+
+		while ( true ) {
+			$sql = $wpdb->prepare(
+				"SELECT p.ID
+				 FROM {$wpdb->posts} p
+				 INNER JOIN {$wpdb->postmeta} src
+				         ON src.post_id = p.ID AND src.meta_key = '_event_source' AND src.meta_value = %s
+				 INNER JOIN {$wpdb->postmeta} st
+				         ON st.post_id = p.ID AND st.meta_key = '_event_status'
+				 WHERE p.post_type = 'event'
+				   AND p.ID > %d
+				   AND p.post_status IN (%s, %s)
+				   AND st.meta_value NOT IN (%s, %s)
+				 ORDER BY p.ID ASC
+				 LIMIT %d",
+				$canonical_source,
+				$last_id,
+				$post_statuses[0],
+				$post_statuses[1],
+				$excluded_statuses[0],
+				$excluded_statuses[1],
+				$page_size
+			);
+
+			if ( ! is_string( $sql ) || '' === $sql ) {
+				return null;
+			}
+
+			$wpdb->last_error = '';
+
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $sql is the output of $wpdb->prepare() on the line above and carries no unescaped input.
+			$rows = $wpdb->get_col( $sql );
+
+			// @phpstan-ignore-next-line notIdentical.alwaysFalse -- wpdb::$last_error is declared as a string but is populated at runtime when a query fails.
+			if ( '' !== (string) $wpdb->last_error || ! is_array( $rows ) ) {
+				return null;
+			}
+
+			if ( empty( $rows ) ) {
+				break;
+			}
+
+			$page = array();
+
+			foreach ( $rows as $row ) {
+				$id = (int) $row;
+
+				// A page must be strictly ascending and must advance the cursor;
+				// anything else is a malformed page, so the pass aborts with zero
+				// mutations rather than reconciling a partial candidate set.
+				if ( $id <= 0 || $id <= $last_id ) {
+					return null;
+				}
+
+				$page[] = $id;
+			}
+
+			foreach ( $page as $id ) {
+				$ids[]   = $id;
+				$last_id = $id;
+			}
+
+			if ( count( $page ) < $page_size ) {
+				break;
+			}
+		}
+
+		return $ids;
+	}
+
+	/**
+	 * Whether a candidate may still receive an absence-based status change.
+	 *
+	 * Re-read immediately before the write so a concurrent edit (source
+	 * changed, event deleted, status changed) cancels the mutation instead of
+	 * being overwritten by a stale candidate list.
+	 *
+	 * @param int    $post_id          Candidate post ID.
+	 * @param string $canonical_source Canonical `_event_source` value.
+	 * @return bool
+	 */
+	protected function is_reconciliation_candidate_eligible( $post_id, $canonical_source ) {
+		if ( $post_id <= 0 || 'event' !== get_post_type( $post_id ) ) {
+			return false;
+		}
+
+		$stored_source = (string) get_post_meta( $post_id, '_event_source', true );
+
+		if ( $stored_source !== (string) $canonical_source ) {
+			return false;
+		}
+
+		$status = Conexao_Event_Status::get_status( $post_id );
+
+		if ( in_array( $status, array( Conexao_Event_Status::REJECTED, Conexao_Event_Status::SOURCE_NOT_FOUND ), true ) ) {
+			return false;
+		}
+
+		/*
+		 * Stage 2 / P5+P10 — never mutate a translated record.
+		 *
+		 * A Polylang translation is a separate post carrying a copy of the
+		 * same identity meta, so it can appear in the candidate set. The
+		 * importer's own language guard already refuses to WRITE to a
+		 * translation; reconciliation applies the same guard before changing a
+		 * STATUS, so an English translation can never be flipped to
+		 * source_not_found by a Portuguese import run.
+		 *
+		 * The guard is a no-op when Polylang is inactive or the record has no
+		 * language, so single-language installs are unaffected.
+		 */
+		if ( class_exists( 'Conexao_Event_Importer_Language_Guard' )
+			&& ! Conexao_Event_Importer_Language_Guard::is_import_target( $post_id ) ) {
+			return false;
+		}
+
+		return true;
 	}
 }
+

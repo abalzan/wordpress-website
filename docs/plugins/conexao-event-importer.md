@@ -1041,6 +1041,95 @@ are explicit: successful empty detail, invalid detail, and transport failure
 cannot be mistaken for one another. Pagination and the existing source/event
 mapping are unchanged.
 
+## Stage 2 — fetch contract, enrichment preservation and reconciliation pagination (P3, P4, P5, P10)
+
+Stage 2 closes four findings from the Event Importer audit. It does not change
+source identity, duplicate handling, retention or Event Runtime visibility.
+
+### P3 — explicit source-handler fetch contract
+
+A handler must **throw `Conexao_Source_Fetch_Exception`** when an upstream
+request fails. It may return an array (including an empty one) only when the
+listing was retrieved and parsed. A payload that was retrieved but cannot be
+parsed is reported as an **incomplete** enumeration, never as a complete empty
+one.
+
+| Outcome | Handler result | `is_fetch_complete()` |
+|---|---|---|
+| Transport error / non-200 | throws | n/a (run recorded `failed`) |
+| Retrieved, parsed, no events | `array()` | `true` |
+| Retrieved, unparsable / empty body / no feed configured | `array()` | `false` |
+
+Handlers fixed in Stage 2: **Mondello Park** (previously returned `[]` on a
+transport error *and* on a non-200), **Laois Tourism**, **IVVCC**, **Motorsport
+Ireland** and **iCalendar** (empty body / missing feed). Eventbrite and
+Heritage Week already conformed and were not changed.
+
+### P4 — completeness and reconciliation-safety gates
+
+`mark_missing_events()` runs only when `is_fetch_complete()` **and**
+`is_reconciliation_safe()` both return true. Both gates are also re-evaluated
+inside `mark_missing_events()` itself, so no caller can reach a candidate query
+or a status mutation with an incomplete or resumed enumeration.
+
+| Handler | Completeness | Reconciliation safety | Fail-open default correct? |
+|---|---|---|---|
+| Eventbrite | implemented (`mark_fetch_incomplete` on truncation, page failure, rate limit, upstream pagination cap) | implemented (`false` when the walk resumed from a checkpoint) | n/a (both implemented) |
+| Heritage Week | implemented (time budget, parse failure, blocked/looped forward link, later-page failure, page limit) | not implemented → fail-open `true` | yes — no checkpoint, no resume, single forward walk |
+| IVVCC | base class (default `true`; empty body now marks incomplete) | not implemented → `true` | yes — one page, no checkpoint |
+| Motorsport Ireland | base class (default `true`; empty body now marks incomplete) | not implemented → `true` | yes — one listing page, no checkpoint |
+| Mondello Park | base class (default `true`; empty/invalid payload marks incomplete) | not implemented → `true` | yes — one REST page, no checkpoint |
+| Laois Tourism | base class (default `true`; empty/unparsable listing marks incomplete) | not implemented → `true` | yes — one page, no checkpoint |
+| iCalendar | base class (default `true`; missing/empty feed marks incomplete) | not implemented → `true` | yes — one feed document, no checkpoint |
+
+No handler returns `true` unconditionally: every handler that can stop early
+marks the walk incomplete before returning, and the only handler that can
+resume (Eventbrite) implements the second gate.
+
+### P5 — partial enrichment state
+
+A detail-fetch handler declares, per field, whether the value was retrieved, is
+genuinely empty, is unavailable or was not evaluated:
+
+| State | Meaning | Write path |
+|---|---|---|
+| `populated` | retrieved with a value | write the incoming value |
+| `empty` | retrieved; the source contract declares the field legitimately empty | write the empty value (a genuine clear) |
+| `unavailable` | retrieval failed / value unknown | **preserve** the stored value |
+| `not_evaluated` | enrichment not attempted | **preserve** the stored value |
+
+State lives in the in-memory normalized payload (`enrichment`) only; no post
+meta key is added. A handler that declares nothing keeps the historical write
+path, which is what leaves Eventbrite unchanged. Fields covered: description,
+venue, address, location, organiser and banner.
+
+Heritage Week's documented emptiness contract is narrow: the description
+container (`div.text-block`) must be **present** for an empty value to count as
+a genuine clear. An absent element, an omitted JSON-LD `location`, an empty
+body, a failed request or an invalid HTML document all mean *unavailable*, so
+the stored value is preserved. The description participates in change detection
+only when a handler declares a description enrichment state.
+
+### P10 — paginated absence reconciliation
+
+`mark_missing_events()` no longer stops at 300 posts per source. It is ordered:
+
+1. the two P4 gates are evaluated first (a refused pass performs zero queries);
+2. candidates are enumerated read-only by **keyset pagination** on the unique
+   post ID (`ID > last_cursor`, `ORDER BY ID ASC`, `LIMIT 200`), so page
+   boundaries cannot skip or duplicate a candidate even when every other column
+   collides;
+3. only after the complete candidate set is in memory are absence-based status
+   changes applied, in batches of 50, revalidating each candidate as still
+   source-owned, still eligible and still in the import language immediately
+   before the write (a Polylang translation is never mutated).
+
+A failed, malformed or interrupted candidate page aborts the pass with zero
+absence-based mutations. Reconciliation is idempotent: an event already
+`source_not_found` is excluded from the candidate query, so a second pass in the
+same state writes nothing. The candidate filter, identity match (`_event_url`)
+and post-status scope are unchanged from the previous implementation.
+
 ## Supported operating model (G12–G14)
 
 This is the final, measured operating model. It replaces guesswork with numbers
