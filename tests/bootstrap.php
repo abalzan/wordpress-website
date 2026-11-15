@@ -34,6 +34,11 @@
 // tests/ -> repository root (or /var/www/html inside the container).
 define( 'CONEXAO_TESTS_ROOT', __DIR__ );
 
+require_once __DIR__ . '/lib/isolated-db.php';
+if ( ! conexao_test_db_preflight() ) {
+	exit( 1 );
+}
+
 /**
  * Print a bootstrap failure and exit non-zero.
  *
@@ -152,6 +157,17 @@ if ( '' === $conexao_tests_wp_root ) {
 
 define( 'CONEXAO_TESTS_WP_ROOT', $conexao_tests_wp_root );
 
+$conexao_tests_wp_config = file_get_contents( CONEXAO_TESTS_WP_ROOT . '/wp-config.php' );
+if (
+	false === $conexao_tests_wp_config
+	|| 1 !== preg_match(
+		'/define\s*\(\s*[\'"]DB_NAME[\'"]\s*,\s*getenv_docker\s*\(\s*[\'"]WORDPRESS_DB_NAME[\'"]/',
+		$conexao_tests_wp_config
+	)
+) {
+	conexao_tests_bootstrap_fail( 'wp-config.php must select DB_NAME from the per-process WORDPRESS_DB_NAME environment.' );
+}
+
 /*
  * The bootstrap environment contract. Every check fails closed with a
  * `conexao-test-bootstrap:` line and a non-zero exit, which the runner reports
@@ -198,11 +214,26 @@ if ( ! isset( $_SERVER['SERVER_NAME'] ) ) {
 // conexao_tests_establish_isolation() for why the order is the contract.
 conexao_tests_establish_isolation();
 
+if ( ! defined( 'WP_HTTP_BLOCK_EXTERNAL' ) ) {
+	define( 'WP_HTTP_BLOCK_EXTERNAL', true );
+}
+
+if ( ! defined( 'WP_ACCESSIBLE_HOSTS' ) ) {
+	define( 'WP_ACCESSIBLE_HOSTS', 'localhost,127.0.0.1,::1' );
+}
+
 require_once CONEXAO_TESTS_WP_ROOT . '/wp-load.php';
 
 if ( ! function_exists( 'add_action' ) || ! isset( $GLOBALS['wp_version'] ) ) {
 	conexao_tests_bootstrap_fail( 'wp-load.php did not produce a usable WordPress environment.' );
 }
+
+$conexao_tests_expected_db = (string) getenv( 'CONEXAO_TEST_DB_NAME' );
+global $wpdb;
+if ( ! isset( $wpdb->dbname ) || $wpdb->dbname !== $conexao_tests_expected_db || DB_NAME !== $conexao_tests_expected_db ) {
+	conexao_tests_bootstrap_fail( 'post-bootstrap database identity does not match CONEXAO_TEST_DB_NAME.' );
+}
+unset( $conexao_tests_expected_db, $conexao_tests_wp_config );
 
 /**
  * Whether a host name is a documented local development host.

@@ -21,7 +21,7 @@ standard wins.
 | Layer | What it proves | Where it lives | How it runs |
 |---|---|---|---|
 | **In-process PHP** | Functions, queries, policies, taxonomies, language logic, metadata and cache logic against a **real** WordPress | `wp-content/<kind>/<component>/tests/test-<area>-<behaviour>.php` | one PHP process per suite |
-| **Script contract** (Stage I) | The `scripts/` estate obeys its contract: shared bootstrap/REST use, no hard-coded production target, no credentials, catalogue completeness, no stale renamed paths | `tests/scripts/verify-*.py` | one Python process per suite; static, no WordPress, no network |
+| **Script contract** (Stage I) | The `scripts/` estate obeys its contract: shared bootstrap/REST use, no hard-coded production target, no credentials, catalogue completeness, no stale renamed paths | `tests/scripts/verify-*.py` | static Python checks by default; PHP-backed checks are an explicit separate mode |
 | **HTTP acceptance** | What a real request returns: status, redirects, canonical, hreflang, sitemap, filters | `tests/acceptance/verify-<area>-http.py` + `tests/acceptance/matrices/*.json` | one Python process per suite |
 
 ### The release suites (Stage J)
@@ -181,22 +181,60 @@ verdict.
 | Command | What it does |
 |---|---|
 | `./scripts/run-tests.sh` | all three layers |
-| `./scripts/run-tests.sh --scripts` | the script-contract gate only (static; needs no stack) |
-| `./scripts/run-tests.sh --acceptance` | HTTP acceptance layer only |
-| `./scripts/run-tests.sh --php` | in-process PHP layer only |
+| `./scripts/run-tests.sh --scripts` | static script-contract checks only; no PHP, Docker, WordPress, HTTP or database client |
+| `./scripts/run-tests.sh --scripts-static` | same as `--scripts` |
+| `./scripts/run-tests.sh --scripts-runtime` | explicitly selected PHP-backed script checks; requires PHP CLI, but does not bootstrap WordPress or connect to a database |
+| `CONEXAO_TEST_DB_NAME=conexao_stage05_test_abc123 ./scripts/run-tests.sh --scripts-wordpress` | WordPress-dependent script checks; requires the isolated test database |
+| `CONEXAO_TEST_DB_NAME=conexao_stage05_test_abc123 ./scripts/run-tests.sh --acceptance` | HTTP acceptance layer only; server DB must match the isolated test DB |
+| `CONEXAO_TEST_DB_NAME=conexao_stage05_test_abc123 ./scripts/run-tests.sh --php` | in-process PHP layer only, against the explicitly selected isolated database |
 | `./scripts/run-tests.sh --only theme` | only the theme's maintained suites |
 | `./scripts/run-tests.sh --only conexao-event-runtime` | only that plugin's suites |
 | `./scripts/run-tests.sh --list` | discovered suites, manual suites, components |
 | `./scripts/run-tests.sh --help` | usage |
 
+### Isolated database for WordPress-dependent tests
+
+The runner never creates, clones, or chooses a test database implicitly.
+Before a WordPress-dependent suite runs, it requires `CONEXAO_TEST_DB_NAME`,
+checks that the configured WordPress process will use that same
+`WORDPRESS_DB_NAME`, and performs a raw `mysqli` identity preflight. Outside
+ephemeral CI, the test database must also be distinct from the shared local
+WordPress database. The shared `tests/bootstrap.php` repeats the preflight
+before `wp-load.php`, verifies the local `wp-config.php` reads
+`WORDPRESS_DB_NAME`, and confirms WordPress connected to the expected database.
+
+For local work, create and verify a dedicated database clone, neutralize only
+inherited importer continuation queue/lock/cron state in that clone before its
+first WordPress bootstrap, then pass its database name explicitly:
+
+```bash
+CONEXAO_TEST_DB_NAME=conexao_stage05_test_abc123 ./scripts/run-tests.sh --php
+```
+
+These safeguards do not make a shared database safe for tests: missing,
+unreachable, or mismatched database identity fails closed. Ephemeral CI may use
+its freshly created `wordpress` database; no developer database is reused.
+
+The HTTP acceptance runner applies the same contract before its first request:
+it compares the configured server container's `WORDPRESS_DB_NAME` with
+`CONEXAO_TEST_DB_NAME` and performs the raw database preflight. A mismatch,
+missing identity or unavailable local Docker environment blocks the layer
+without sending HTTP requests. `--only <component>` also filters acceptance
+suites; a component-only run does not fall through to every HTTP matrix.
+Consequently, a local clone can be used only when the HTTP server itself is
+configured to use that clone. The runner does not restart or reconfigure the
+shared local WordPress service.
+
 ### Script-contract suites build their own artifacts
 
-The script-contract layer is static and needs no WordPress, but two of its
-suites must inspect **built** release artifacts:
+The static script-contract layer needs no PHP or Docker. PHP-backed checks are
+selected separately with `--scripts-runtime`; they do not load WordPress or
+connect to a database. The Stage 14 and release suites inspect **built**
+artifacts:
 
 | Suite | Where it gets them |
 |---|---|
-| `tests/scripts/verify-stage14-secret-scan.py` | runs `scripts/build-plugins-zip.sh` **and** `scripts/build-theme-zip.sh` into a temporary directory it removes, and scans the 9 plugin ZIPs, the theme ZIP and the emitted release record |
+| `tests/scripts/verify-stage14-secret-scan.py` | runs `scripts/build-plugins-zip.sh` **and** `scripts/build-theme-zip.sh` into a temporary directory it removes, and scans the 10 plugin ZIPs, the theme ZIP and the emitted release record; it is in `--scripts-runtime` because the packagers require PHP CLI |
 | `scripts/verify-commissioning-readiness.py` (driven by `verify-stage13-commissioning-readiness.py`) | its own double build; the plugin header versions are compared against the release record **that build emits** |
 
 Both deliberately do **not** read the git-ignored `dist/`. `dist/` is untracked
@@ -465,6 +503,12 @@ key derivation and the `SERIAL` classification of every store-touching suite.
 ## HTTP acceptance layer
 
 Maintained request-visible coverage lives in `tests/acceptance/`.
+
+The runner refuses to issue requests until it has verified that the local
+WordPress service is connected to the explicitly selected isolated test
+database. The CI acceptance job uses its ephemeral WordPress/database stack;
+local acceptance against a clone requires a separately configured server
+pointing at that clone.
 
 ```
 tests/acceptance/

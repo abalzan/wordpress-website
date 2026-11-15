@@ -1,0 +1,51 @@
+Stage 0.5 isolated test database verification
+Captured UTC: 2026-11-14 (before the first WordPress bootstrap against the clone)
+
+Source database: wordpress
+Isolated database: conexao_stage05_test_5bd9ece5c032
+Table prefix: wp_
+
+Provisioning:
+- Initial mysqldump restore was rejected by MySQL with GTID error 3546 before
+  any target tables were created.
+- Retried with GTID restoration disabled (--set-gtid-purged=OFF); this is a
+  local test clone and does not change source database GTID state.
+- The WordPress local DB user was granted access to the isolated database only.
+
+Clone equivalence, read-only raw MySQL checks:
+- Base tables: source 19, clone 19.
+- Event posts: source 3,700, clone 3,700.
+- eventbrite_cork posts: source 620, clone 620.
+- CHECKSUM TABLE: all 19 source/clone table checksums matched.
+- INFORMATION_SCHEMA.COLUMNS: 120 rows on each; equal; SHA-256
+  9701fa61aa0647543f31d2f16da9f0573f72b64608901e8133cd0e633e11fe57.
+- INFORMATION_SCHEMA.STATISTICS (excluding volatile cardinality): 74 rows on
+  each; equal; SHA-256
+  b4a6b66b33edc0dea705014057cfa29b222bf9eccff4a87ef01b4af5f61be635.
+- INFORMATION_SCHEMA table engine/collation: 19 rows on each; equal; SHA-256
+  4f748b08d75e35085a0c18fe14bb3f17e6e1aab0db2d2dc1238440e5e684c635.
+- mysqldump byte output and SHOW CREATE formatting are not byte-identical:
+  the restored DDL makes inherited utf8mb4 column defaults explicit. Column,
+  index and table-option metadata are equivalent, and table checksums match.
+
+Continuation neutralization, performed by the raw mysqli helper without
+loading WordPress:
+- Raw identity preflight: PASS; selected database was the isolated database.
+- Before: 24 importer continuation queue entries, 24 matching cron events,
+  zero continuation lock options.
+- After: zero continuation queue entries, zero matching cron events, zero
+  continuation lock options.
+- The helper compared non-continuation cron records before and after within its
+  transaction; they were unchanged.
+- No WordPress bootstrap or test suite had run against the clone at capture.
+
+Shared-database preservation check at this point (raw SELECT only):
+- Seven operator option hashes/lengths/autoload values match
+  11-shared-preservation-baseline.txt exactly.
+- Continuation lock options: 0.
+- Event wp_posts rows: 3,700; SHA-256
+  34469cb5d6f706b804a7e874669ab6e82d619192da0a17b1e467b87e59190b9f.
+- Event wp_postmeta rows: 72,417; SHA-256
+  adab6dbb4a269880796b76f70b1d8160ea6f5be945cf1e7b8ca47c000c2fd581.
+- Incident-protected rows remain included in the global hashes above; no
+  shared database writes were made during clone creation or neutralization.

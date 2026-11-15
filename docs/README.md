@@ -223,7 +223,8 @@ gate and HTTP acceptance:
 
 ```bash
 ./scripts/run-tests.sh            # all layers
-./scripts/run-tests.sh --scripts   # script-contract gate only
+./scripts/run-tests.sh --scripts   # static script checks (no PHP/Docker/DB)
+./scripts/run-tests.sh --scripts-runtime  # explicit PHP-backed script checks
 ```
 
 The **model** — layers, suite classification, permanent fail-closed gates, the

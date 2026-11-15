@@ -5,15 +5,16 @@
 # Runs the test layers through one command and one aggregate exit code:
 #
 #   1. In-process PHP   — real WordPress bootstrap, one OS process per suite.
-#   2. Script contract  — static checks over scripts/ (Stage I). No WordPress,
-#                         no network, no production.
+#   2. Script contract  — static checks over scripts/ (Stage I), plus explicit
+#                         PHP-backed checks. Static mode uses no PHP or Docker.
 #   3. HTTP acceptance  — real requests against the LOCAL WordPress.
 #
 # Usage:
 #   ./scripts/run-tests.sh                    # all layers
-#   ./scripts/run-tests.sh --scripts          # script-contract gate only
-#   ./scripts/run-tests.sh --scripts-static     # static script-contracts only (CI script-contracts job)
-#   ./scripts/run-tests.sh --scripts-wordpress  # WordPress-dependent script-contracts (CI integration job)
+#   ./scripts/run-tests.sh --scripts          # static script-contract checks only
+#   ./scripts/run-tests.sh --scripts-static   # static script-contract checks only
+#   ./scripts/run-tests.sh --scripts-runtime  # explicitly requested PHP-backed script checks
+#   ./scripts/run-tests.sh --scripts-wordpress # WordPress-dependent script checks; isolated DB required
 #   ./scripts/run-tests.sh --acceptance       # HTTP acceptance only
 #   ./scripts/run-tests.sh --php              # in-process PHP only
 #   ./scripts/run-tests.sh --only theme       # one component
@@ -26,6 +27,8 @@
 #   CONEXAO_TEST_BASE_URL   Acceptance base URL. DEFAULT http://localhost:8080.
 #                           A production host (conexaobr.ie) is REJECTED.
 #   CONEXAO_TEST_WP_ROOT    Directory containing wp-load.php (in-process layer).
+#   CONEXAO_TEST_DB_NAME    Required isolated test DB name for WordPress tests.
+#   CONEXAO_TEST_SHARED_DB_NAME  Local WordPress DB identity; test DB must differ.
 #   CONEXAO_REPO_ROOT       Repository root for the script-contract layer.
 #
 # Safety: this runner never contacts production, never uses production
@@ -80,13 +83,14 @@ usage() {
 MODE="both"        # both | php | acceptance | scripts
 ONLY=""           # component filter
 DO_LIST=0
-SCRIPT_ENV="all"
+SCRIPT_ENV="static"
 
 while [ $# -gt 0 ]; do
 	case "$1" in
 		--acceptance) MODE="acceptance" ;;
-		--scripts)           MODE="scripts"; SCRIPT_ENV="all" ;;
+		--scripts)           MODE="scripts"; SCRIPT_ENV="static" ;;
 		--scripts-static)    MODE="scripts"; SCRIPT_ENV="static" ;;
+		--scripts-runtime)   MODE="scripts"; SCRIPT_ENV="runtime" ;;
 		--scripts-wordpress) MODE="scripts"; SCRIPT_ENV="wordpress" ;;
 		--php)        MODE="php" ;;
 		--only)
@@ -134,9 +138,9 @@ discover_acceptance_suites() {
 	done | LC_ALL=C sort
 }
 
-# Stage I script-contract suites. They are STATIC checks over the repository's
-# scripts/ tree: no WordPress, no HTTP, no production. They run on the host with
-# plain python3, so they work with or without the Docker stack.
+# Script-contract suites are discovered by convention. Static checks run on
+# the host; explicitly selected runtime and WordPress groups have their own
+# prerequisites and fail closed when those prerequisites are unavailable.
 discover_script_suites() {
 	local f
 	for f in tests/scripts/verify-*.py; do
@@ -145,29 +149,33 @@ discover_script_suites() {
 	done | LC_ALL=C sort
 }
 
-# Execution environment required by a script-contract suite. The default is
-# static (only python3; no WordPress, no network). A suite that also needs a
-# running WordPress MUST declare it here, so it can never silently pass or be
-# silently skipped in a job that cannot satisfy it.
+# Execution environment required by a script-contract suite. Static is the
+# default (only Python; no PHP, Docker, WordPress, network or database).
 script_suite_environment() {
-    case "$1" in
-        tests/scripts/verify-stage14-secret-scan.py)
-            printf 'wordpress\n'
-            ;;
-        *)
-            printf 'static\n'
-            ;;
-    esac
+	case "$1" in
+		tests/scripts/verify-cache-key-scoping.py|\
+		tests/scripts/verify-documentation-drift.py|\
+		tests/scripts/verify-release-integrity.py|\
+		tests/scripts/verify-stage2-promotion.py|\
+		tests/scripts/verify-stage13-commissioning-readiness.py|\
+		tests/scripts/verify-stage14-secret-scan.py|\
+		tests/scripts/verify-stage14-secret-scan-php.py)
+			printf 'runtime\n'
+			;;
+		*)
+			printf 'static\n'
+			;;
+	esac
 }
 
 # Emit only the discovered script suites whose declared environment matches
-# the requested filter (all emits every suite).
+# the explicit filter.
 filter_script_env() {
     local want="$1" f env
     while IFS= read -r f; do
         [ -n "$f" ] || continue
         env="$(script_suite_environment "$f")"
-        if [ "$want" = "all" ] || [ "$want" = "$env" ]; then
+        if [ "$want" = "$env" ]; then
             printf '%s\n' "$f"
         fi
     done
@@ -232,14 +240,97 @@ validate_filter() {
 # container (plain `php`) and on CI.
 
 IN_CONTAINER=0
-if [ -f /.dockerenv ] || grep -qs 'docker' /proc/1/cgroup 2>/dev/null; then
-	IN_CONTAINER=1
+HAVE_DOCKER=0
+if [ "$DO_LIST" = "0" ] && { [ "$MODE" = "php" ] || [ "$MODE" = "both" ] || [ "$MODE" = "acceptance" ] || [ "$SCRIPT_ENV" = "wordpress" ]; }; then
+	if [ -f /.dockerenv ] || grep -qs 'docker' /proc/1/cgroup 2>/dev/null; then
+		IN_CONTAINER=1
+	fi
 fi
 
-HAVE_DOCKER=0
-if command -v docker >/dev/null 2>&1 && docker compose version >/dev/null 2>&1; then
-	HAVE_DOCKER=1
+NEEDS_WORDPRESS=0
+if [ "$DO_LIST" = "0" ]; then
+	case "$MODE:$SCRIPT_ENV" in
+		php:*|both:*|acceptance:*|scripts:wordpress) NEEDS_WORDPRESS=1 ;;
+	esac
 fi
+
+if [ "$NEEDS_WORDPRESS" = "1" ]; then
+	if command -v docker >/dev/null 2>&1 && docker compose version >/dev/null 2>&1; then
+		HAVE_DOCKER=1
+	fi
+fi
+
+ISOLATED_DB_NAME="${CONEXAO_TEST_DB_NAME:-}"
+ISOLATED_SHARED_DB_NAME="${CONEXAO_TEST_SHARED_DB_NAME:-}"
+ISOLATED_DB_ENV_READY=0
+
+ensure_isolated_db_environment() {
+	if [ "$ISOLATED_DB_ENV_READY" = "1" ]; then
+		return 0
+	fi
+
+	if [ -z "$ISOLATED_DB_NAME" ]; then
+		blocked "CONEXAO_TEST_DB_NAME is required for WordPress-dependent checks"
+		return 1
+	fi
+
+	if ! [[ "$ISOLATED_DB_NAME" =~ ^[A-Za-z0-9_]+$ ]]; then
+		blocked "CONEXAO_TEST_DB_NAME must be a database identifier"
+		return 1
+	fi
+
+	local compose_shared_db=""
+	if [ "$IN_CONTAINER" = "1" ]; then
+		compose_shared_db="${WORDPRESS_DB_NAME:-}"
+	elif [ "$HAVE_DOCKER" = "1" ]; then
+		compose_shared_db="$(docker compose exec -T wordpress printenv WORDPRESS_DB_NAME 2>/dev/null || true)"
+	fi
+
+	if [ -n "${ISOLATED_SHARED_DB_NAME:-}" ] && [ -n "$compose_shared_db" ] && [ "$ISOLATED_SHARED_DB_NAME" != "$compose_shared_db" ]; then
+		blocked "CONEXAO_TEST_SHARED_DB_NAME does not match the configured local WordPress database"
+		return 1
+	fi
+
+	if [ -z "$ISOLATED_SHARED_DB_NAME" ]; then
+		ISOLATED_SHARED_DB_NAME="$compose_shared_db"
+	fi
+
+	if [ -z "$ISOLATED_SHARED_DB_NAME" ] && [ "${GITHUB_ACTIONS:-}" != "true" ]; then
+		blocked "the shared local WordPress database identity could not be established"
+		return 1
+	fi
+
+	if [ "$ISOLATED_DB_NAME" = "$ISOLATED_SHARED_DB_NAME" ] && [ "${GITHUB_ACTIONS:-}" != "true" ]; then
+		blocked "the requested test database is the shared local WordPress database"
+		return 1
+	fi
+
+	ISOLATED_DB_ENV_READY=1
+}
+
+run_isolated_db_preflight() {
+	if ! ensure_isolated_db_environment; then
+		return 1
+	fi
+
+	if [ "$IN_CONTAINER" = "1" ]; then
+		WORDPRESS_DB_NAME="$ISOLATED_DB_NAME" \
+		CONEXAO_TEST_DB_NAME="$ISOLATED_DB_NAME" \
+		CONEXAO_TEST_SHARED_DB_NAME="$ISOLATED_SHARED_DB_NAME" \
+		GITHUB_ACTIONS="${GITHUB_ACTIONS:-false}" \
+		php tests/lib/isolated-db.php
+	elif [ "$HAVE_DOCKER" = "1" ]; then
+		docker compose exec -T \
+			-e "WORDPRESS_DB_NAME=$ISOLATED_DB_NAME" \
+			-e "CONEXAO_TEST_DB_NAME=$ISOLATED_DB_NAME" \
+			-e "CONEXAO_TEST_SHARED_DB_NAME=$ISOLATED_SHARED_DB_NAME" \
+			-e "GITHUB_ACTIONS=${GITHUB_ACTIONS:-false}" \
+			wordpress php /var/www/html/tests/lib/isolated-db.php
+	else
+		blocked "an isolated local WordPress database requires the running Docker test environment"
+		return 1
+	fi
+}
 
 # --- Suite metadata (PHASE 4 classification) -------------------------------
 #
@@ -565,22 +656,42 @@ report_manual_suites() {
 # Run a PHP file with WordPress available, wherever we are.
 run_php() {
 	local file="$1" arg="${2:-}"
+	if ! run_isolated_db_preflight; then
+		printf '%s\n' 'conexao-test-bootstrap: isolated database preflight blocked this suite' >&2
+		return 1
+	fi
+
 	if [ "$IN_CONTAINER" = "1" ]; then
 		if [ -n "$arg" ]; then
-			timeout "$SUITE_TIMEOUT" php "$file" "$arg"
+			WORDPRESS_DB_NAME="$ISOLATED_DB_NAME" CONEXAO_TEST_DB_NAME="$ISOLATED_DB_NAME" \
+				CONEXAO_TEST_SHARED_DB_NAME="$ISOLATED_SHARED_DB_NAME" \
+				GITHUB_ACTIONS="${GITHUB_ACTIONS:-false}" \
+				timeout "$SUITE_TIMEOUT" php "$file" "$arg"
 		else
-			timeout "$SUITE_TIMEOUT" php "$file"
+			WORDPRESS_DB_NAME="$ISOLATED_DB_NAME" CONEXAO_TEST_DB_NAME="$ISOLATED_DB_NAME" \
+				CONEXAO_TEST_SHARED_DB_NAME="$ISOLATED_SHARED_DB_NAME" \
+				GITHUB_ACTIONS="${GITHUB_ACTIONS:-false}" \
+				timeout "$SUITE_TIMEOUT" php "$file"
 		fi
 	elif [ "$HAVE_DOCKER" = "1" ]; then
 		if [ -n "$arg" ]; then
-			timeout "$SUITE_TIMEOUT" docker compose exec -T wordpress php "/var/www/html/$file" "$arg"
+			timeout "$SUITE_TIMEOUT" docker compose exec -T \
+				-e "WORDPRESS_DB_NAME=$ISOLATED_DB_NAME" \
+				-e "CONEXAO_TEST_DB_NAME=$ISOLATED_DB_NAME" \
+				-e "CONEXAO_TEST_SHARED_DB_NAME=$ISOLATED_SHARED_DB_NAME" \
+				-e "GITHUB_ACTIONS=${GITHUB_ACTIONS:-false}" \
+				wordpress php "/var/www/html/$file" "$arg"
 		else
-			timeout "$SUITE_TIMEOUT" docker compose exec -T wordpress php "/var/www/html/$file"
+			timeout "$SUITE_TIMEOUT" docker compose exec -T \
+				-e "WORDPRESS_DB_NAME=$ISOLATED_DB_NAME" \
+				-e "CONEXAO_TEST_DB_NAME=$ISOLATED_DB_NAME" \
+				-e "CONEXAO_TEST_SHARED_DB_NAME=$ISOLATED_SHARED_DB_NAME" \
+				-e "GITHUB_ACTIONS=${GITHUB_ACTIONS:-false}" \
+				wordpress php "/var/www/html/$file"
 		fi
 	else
-		# Host PHP with WordPress at the repository root.
-		CONEXAO_TEST_WP_ROOT="${CONEXAO_TEST_WP_ROOT:-$REPO_ROOT}" \
-			timeout "$SUITE_TIMEOUT" php "$file" ${arg:+"$arg"}
+		blocked "host PHP execution is unsupported without the isolated Docker environment"
+		return 1
 	fi
 }
 
@@ -603,6 +714,26 @@ reject_production_base_url() {
 			exit 2
 		fi
 	done
+}
+
+acceptance_db_preflight() {
+	if ! ensure_isolated_db_environment; then
+		return 1
+	fi
+
+	local server_db=""
+	if [ "$IN_CONTAINER" = "1" ]; then
+		server_db="${WORDPRESS_DB_NAME:-}"
+	elif [ "$HAVE_DOCKER" = "1" ]; then
+		server_db="$(docker compose exec -T wordpress printenv WORDPRESS_DB_NAME 2>/dev/null || true)"
+	fi
+
+	if [ "$server_db" != "$ISOLATED_DB_NAME" ]; then
+		blocked "HTTP acceptance server database does not match CONEXAO_TEST_DB_NAME; no request was sent"
+		return 1
+	fi
+
+	run_isolated_db_preflight
 }
 
 # --- Listing ---------------------------------------------------------------
@@ -640,8 +771,8 @@ fi
 #
 # One OS process per suite, serial, deterministic order. Process isolation
 # prevents global-variable contamination, function redeclaration and static
-# state leaking between suites. The database stays shared, which is why suites
-# that write must clean up after themselves.
+# state leaking between suites. Every process targets the explicitly selected
+# isolated test database; suites still clean up their own temporary fixtures.
 
 PHP_TOTAL=0; PHP_PASSED=0; PHP_FAILED=0; PHP_BLOCKED=0; PHP_PREREQ=0
 PHP_ASSERT_PASS=0; PHP_ASSERT_FAIL=0
@@ -794,7 +925,7 @@ run_php_layer() {
 			out="$(cat "$out_file")"
 
 			# A WordPress bootstrap failure is a real failure, never a skip.
-			if grep -q 'conexao-test-bootstrap:' <<<"$out"; then
+			if [ "$code" -ne 0 ] && grep -q 'conexao-test-bootstrap:' <<<"$out"; then
 				serial_blocked=$((serial_blocked + 1))
 				printf '%s[BLOCKED]%s %s — WordPress bootstrap failed\n' "$C_BLOCK" "$C_RESET" "$name"
 				printf '%s\n' "$out" | sed 's/^/         /'
@@ -892,7 +1023,7 @@ run_php_layer() {
 			fi
 
 			# A WordPress bootstrap failure is a real failure, never a skip.
-			if grep -q 'conexao-test-bootstrap:' <<<"$out"; then
+			if [ "$code" -ne 0 ] && grep -q 'conexao-test-bootstrap:' <<<"$out"; then
 				parallel_blocked=$((parallel_blocked + 1))
 				printf '%s[BLOCKED]%s %s — WordPress bootstrap failed\n' "$C_BLOCK" "$C_RESET" "$name"
 				printf '%s\n' "$out" | sed 's/^/         /'
@@ -1032,14 +1163,25 @@ acceptance_available() {
 
 run_script_layer() {
 	local suites total=0 passed=0 failed=0
-	suites="$(discover_script_suites | filter_script_env "${SCRIPT_ENV:-all}" | filter_suites)"
+	if [ "$SCRIPT_ENV" = "runtime" ] && ! command -v php >/dev/null 2>&1; then
+		blocked "PHP CLI is required for the explicitly selected PHP-backed script checks"
+		SCRIPT_FAILED=1
+		return 1
+	fi
+
+	if [ "$SCRIPT_ENV" = "wordpress" ] && ! run_isolated_db_preflight; then
+		SCRIPT_FAILED=1
+		return 1
+	fi
+
+	suites="$(discover_script_suites | filter_script_env "$SCRIPT_ENV" | filter_suites)"
 
 	if [ -z "$suites" ]; then
-		log "no script-contract suites discovered under tests/scripts/"
+		log "no $SCRIPT_ENV script-contract suites discovered under tests/scripts/"
 		return 0
 	fi
 
-	head1 "Script-contract suites (environment: ${SCRIPT_ENV:-all})"
+	head1 "Script-contract suites (environment: $SCRIPT_ENV)"
 
 	require_cmd python3
 
@@ -1049,13 +1191,22 @@ run_script_layer() {
 		total=$((total + 1))
 		local out_file out code
 		out_file="$WORK_DIR/$(printf '%s' "$suite" | tr '/' '_').out"
+		code=0
 
 		set +e
 		# The suites are repository-local and must work from any cwd; they
 		# resolve their own repository root.
-		CONEXAO_REPO_ROOT="$REPO_ROOT" \
-			timeout "$SUITE_TIMEOUT" python3 "$suite" >"$out_file" 2>&1
-		code=$?
+		if [ "$SCRIPT_ENV" = "wordpress" ]; then
+			CONEXAO_REPO_ROOT="$REPO_ROOT" \
+			CONEXAO_TEST_DB_NAME="$ISOLATED_DB_NAME" \
+			CONEXAO_TEST_SHARED_DB_NAME="$ISOLATED_SHARED_DB_NAME" \
+				timeout "$SUITE_TIMEOUT" python3 "$suite" >"$out_file" 2>&1
+			code=$?
+		else
+			CONEXAO_REPO_ROOT="$REPO_ROOT" \
+				timeout "$SUITE_TIMEOUT" python3 "$suite" >"$out_file" 2>&1
+			code=$?
+		fi
 		set -e
 
 		out="$(cat "$out_file")"
@@ -1084,10 +1235,14 @@ run_script_layer() {
 
 run_acceptance_layer() {
 	local suites total=0 passed=0 failed=0 blocked=0
-	suites="$(discover_acceptance_suites)"
+	suites="$(discover_acceptance_suites | filter_suites)"
 	reject_production_base_url
 
 	if [ -z "$suites" ]; then
+		if [ -n "$ONLY" ]; then
+			log "no HTTP acceptance suites matched --only $ONLY"
+			return 0
+		fi
 		blocked=1
 		blocked "HTTP acceptance environment unavailable"
 		log "  no acceptance suites discovered under tests/acceptance/"
@@ -1096,6 +1251,11 @@ run_acceptance_layer() {
 	fi
 
 	head1 "HTTP acceptance suites (base: $BASE_URL)"
+
+	if ! acceptance_db_preflight; then
+		ACCEPT_BLOCKED=1
+		return 1
+	fi
 
 	if ! acceptance_available; then
 		blocked=1
@@ -1155,11 +1315,19 @@ run_acceptance_layer() {
 
 log "conexao test harness"
 log "  repository:    $REPO_ROOT"
-log "  php:           $(command -v php >/dev/null 2>&1 && php -r 'echo PHP_VERSION;' || echo 'n/a (container)')"
+if [ "$NEEDS_WORDPRESS" = "1" ]; then
+	log "  php:           $(command -v php >/dev/null 2>&1 && php -r 'echo PHP_VERSION;' || echo 'n/a (container)')"
+elif [ "$SCRIPT_ENV" = "runtime" ]; then
+	log "  php:           $(command -v php >/dev/null 2>&1 && php -r 'echo PHP_VERSION;' || echo 'n/a')"
+else
+	log "  php:           not queried (static script mode)"
+fi
 if [ "$IN_CONTAINER" = "1" ]; then
 	ENV_LABEL='inside container'
 elif [ "$HAVE_DOCKER" = "1" ]; then
 	ENV_LABEL='host (docker compose exec)'
+elif [ "$NEEDS_WORDPRESS" != "1" ]; then
+	ENV_LABEL='host (static/runtime checks; no Docker)'
 else
 	ENV_LABEL='host (local php)'
 fi

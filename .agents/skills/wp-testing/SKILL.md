@@ -51,12 +51,16 @@ for guard review and `wp-frontend-perf` for caching work.
 - Inspect the current stack state first (`docker compose ps`; setup documented
   in `docs/development.md`) and reuse an already-running local environment.
   The in-process and acceptance layers need the local stack; the
-  **script-contract layer needs no stack** and always runs. Do not automatically
-  start, recreate or rebuild containers, reset volumes, seed data or mint an
-  administrator session — make those side effects deliberate. If the needed
-  environment is unavailable, report the exact blocker and fall back to
-  non-mutating checks; ask before any material environment, database or session
-  change.
+  static script-contract checks need no stack and run without PHP, Docker,
+  WordPress, HTTP or a database client. The explicit `--scripts-runtime` group
+  requires PHP CLI but does not bootstrap WordPress or connect to a database.
+  WordPress-dependent modes require an explicitly selected isolated database
+  through `CONEXAO_TEST_DB_NAME`; the runner never creates or clones one.
+  Do not automatically start, recreate or rebuild containers, reset volumes,
+  seed data or mint an administrator session — make those side effects
+  deliberate. If the needed environment is unavailable, report the exact
+  blocker and fall back to non-mutating checks; ask before any material
+  environment, database or session change.
 - `CONEXAO_TEST_BASE_URL` points at the local site. A production host is
   **refused** by the runner; never override it with one.
 - You have the **before** result for whatever you are about to change. A
@@ -70,10 +74,13 @@ for guard review and `wp-frontend-perf` for caching work.
    ./scripts/run-tests.sh
    ```
 
-   Three layers, one aggregate exit code: in-process PHP, script contract, HTTP
-   acceptance. Narrow with `--scripts`, `--acceptance`, `--php`, or
-   `--only <component>`. `--list` shows what was discovered. An unknown `--only`
-   value is an error, never "run everything".
+   Three layers, one aggregate exit code: in-process PHP, static script
+   contract, HTTP acceptance. `--scripts-runtime` explicitly runs PHP-backed
+   script checks; `--scripts-wordpress` is reserved for WordPress-dependent
+   script checks and requires the isolated test database. Narrow with
+   `--scripts`, `--acceptance`, `--php`, or `--only <component>`. `--list` shows
+   what was discovered. An unknown `--only` value is an error, never "run
+   everything".
 2. **Read the verdict, not just the exit code.** `ALL TESTS PASSED` is exit 0;
    `TESTS FAILED` lists the failing suites and is exit 1. A `BLOCKED` line means
    the environment was unavailable — an unavailable environment is **not** a pass.
@@ -145,7 +152,8 @@ for guard review and `wp-frontend-perf` for caching work.
 ```bash
 ./scripts/run-tests.sh --list          # what is discovered
 ./scripts/run-tests.sh                 # the whole contract, one exit code
-./scripts/run-tests.sh --scripts       # script-contract layer only (no stack)
+./scripts/run-tests.sh --scripts       # static script checks (no PHP/Docker/DB)
+./scripts/run-tests.sh --scripts-runtime  # explicit PHP-backed checks
 ./scripts/run-tests.sh --only theme    # one component
 python3 scripts/verify-permanent-gates.py      # the aggregate permanent-gate record
 python3 tests/scripts/verify-agent-governance.py

@@ -1,15 +1,23 @@
 # Report — Stage 0.5: Event Importer test isolation
 
-> **Verdict: `BLOCKED`** for *runtime* verification. The implementation is
-> complete and statically proven (14-check gate, 227 assertions, negative
-> controls N1–N8, lint clean); the runtime suites could not be run because the
-> prescribed verification sequence's **step 2 itself** (`./scripts/run-tests.sh
-> --scripts`, specifically the pre-existing `verify-stage14-secret-scan.py`
-> gate) booted WordPress, and the importer's pre-existing `shutdown` hook ran a
-> due `eventbrite_cork` continuation against the shared local database: **47
-> event rows created, 13 updated, 0 removed**. Per the task's stop rule, the
-> sequence was halted there and nothing was restored or overwritten. See §10
-> and `docs/evidence/2026-11-14-stage-0-5/09-*`.
+> **Current follow-up status: `PASS WITH LIMITATION` for test-database safety;
+> full runtime verification is incomplete.** A verified isolated clone was
+> created, its inherited continuations were neutralized before the first
+> WordPress bootstrap, raw shared-database hashes remained identical through
+> the follow-up test runs, and the runner now refuses HTTP acceptance when its
+> server is still connected to the shared database. The importer component
+> run exposed four suite failures and one runner-classification issue; the
+> focused operator-store acceptance suite passed twice (276/276 each). Static
+> checks finish at 17/18 because of stale translation catalogues; runtime
+> script checks pass 7/7. Full serial/parallel PHP runs and local HTTP
+> acceptance against the clone were not completed. See §14.
+>
+> **Original incident verdict: `BLOCKED`.** The earlier unsafe verification
+> sequence booted WordPress against the shared local database and the
+> importer's pre-existing `shutdown` hook ran a due `eventbrite_cork`
+> continuation: **47 event rows created, 13 updated, 0 removed**. Nothing was
+> restored or overwritten. The incident record and raw evidence in §10 and
+> `docs/evidence/2026-11-14-stage-0-5/09-*` remain historical and unchanged.
 
 | | |
 |---|---|
@@ -279,7 +287,7 @@ Full output: `docs/evidence/2026-11-14-stage-0-5/08-gate-negative-controls.txt`.
 | The gate ignores PHP comments when it looks for code | the repository documents the very names the gate guards; a comment is evidence of intent, not behaviour |
 | `scripts/README.md` was added to the documentation set | the plan named it in §7.2 / §16.6 |
 
-## 13. Conclusion
+## 13. Original conclusion at the incident stop
 
 | Question | Answer |
 |---|---|
@@ -294,14 +302,106 @@ Full output: `docs/evidence/2026-11-14-stage-0-5/08-gate-negative-controls.txt`.
 | Does existing event content stay unchanged? | **no** — 47 created / 13 updated by the incident; recorded, not restored |
 | Does lint pass? | **yes** |
 
-**Stage 0.5: `BLOCKED`.** The implementation, the migration, the gate and its
-negative controls are complete and verified. The runtime verification sequence
-(and therefore the acceptance-suite pass and the serial/parallel runs) could not
-be completed because the shared local database performed a real import during
-step 2 — a pre-existing content-write hazard outside this stage's scope. The next
-attempt needs a quiet database and should restart at step 3 with precondition P6
-checked first.
+**At the original incident stop, Stage 0.5 was `BLOCKED`.** The runtime
+verification sequence (and therefore the acceptance-suite pass and the
+serial/parallel runs) could not be completed because the shared local database
+performed a real import during step 2. Section 14 records the later,
+clone-isolated follow-up; it does not erase or restore the original incident.
 
+## 14. Follow-up — isolated database safety and verification
+
+This follow-up ran on branch `event-import-improvements`, HEAD
+`ed037c298525f9410031d6a06e2aab197cc6b4ae` (short SHA `ed037c2`), with no
+commit. WordPress-dependent tests were directed only at the local clone
+`conexao_stage05_test_5bd9ece5c032`; the shared local database remained
+`wordpress`.
+
+### 14.1 Clone and pre-bootstrap neutralization
+
+- The clone has 19 tables, 3,700 event posts and 620 `eventbrite_cork` posts.
+  All 19 `CHECKSUM TABLE` values matched the source. `INFORMATION_SCHEMA`
+  columns (120 rows), indexes (74 rows) and table engine/collation (19 rows)
+  matched exactly. The restored DDL makes inherited `utf8mb4` column defaults
+  explicit, so dump text/`SHOW CREATE` formatting is not byte-identical.
+- A first restore attempt stopped at MySQL GTID error 3546 before creating any
+  target tables. The successful retry disabled GTID restoration; source
+  database content and GTID state were not changed.
+- Before the clone's first WordPress bootstrap, raw `mysqli` identity
+  preflight passed and the clone-only neutralizer removed 24 continuation
+  queue entries and 24 matching cron events. It found zero lock options and
+  proved non-continuation cron records were unchanged.
+- Clone verification and the raw shared-database baseline are recorded in
+  `docs/evidence/2026-11-14-stage-0-5/12-isolated-clone.txt`; the earlier
+  source baseline remains in `11-shared-preservation-baseline.txt`.
+
+### 14.2 Runner and fail-closed controls
+
+- `--scripts` / `--scripts-static` run static gates without PHP, Docker,
+  WordPress, HTTP or database clients. `--scripts-runtime` is a separate
+  PHP-backed, non-WordPress group; `--scripts-wordpress` requires the raw
+  isolated-database preflight.
+- `tests/bootstrap.php` checks the database using raw `mysqli` before
+  `wp-load.php`, then verifies the configured and connected database after
+  load. The runner passes the explicit test DB to each WordPress suite.
+- HTTP acceptance now verifies that the local server's configured database
+  equals `CONEXAO_TEST_DB_NAME` and performs raw identity preflight before any
+  request. A component-filtered run no longer falls through to all acceptance
+  matrices.
+- Four negative controls exited 1 as required: missing test DB identity,
+  runner targeting the shared DB, raw helper targeting the shared DB, and
+  HTTP acceptance pointed at the existing shared-DB server while the clone
+  was selected. The last control reported “no request was sent.”
+
+### 14.3 Test and quality results
+
+| Check | Result |
+|---|---|
+| Static script-contract gates | 17/18 passed. The sole failure is the existing i18n-freshness gate: four `.pot` catalogues are older than their source files. The governance line-count failure seen in the first rerun was corrected; the final run passes that gate. |
+| PHP-backed script checks | 7/7 passed, including documentation drift, Stage 14 secret scan and release integrity. |
+| WordPress-dependent script checks | Raw preflight passed against the clone; 0 suites are currently classified for this mode, so this is not counted as script-suite coverage. |
+| Importer component PHP run | 38 suites: 33 passed, 4 failed, 1 was misclassified as blocked by the runner. The operator acceptance body itself emitted 276 passed, 0 failed. Totals: 3,872 assertions passed, 2 failed. |
+| Operator-store repeatability | Ran twice directly with clone DB identity set: 276 passed, 0 failed on both runs. Raw shared hashes were identical before and after each run. |
+| Full PHP serial and three-worker runs | Not run. The focused importer run already exposed unrelated/data-dependent failures; no full-suite green result is claimed. |
+| Local HTTP acceptance | Correctly blocked before any HTTP request because the existing local server still points to `wordpress`, not the isolated clone. No container was restarted or reconfigured. |
+| `./scripts/lint.sh` | Passed: PHP syntax clean across 597 files; no new PHPCS baseline violations; PHPStan level 5 reported no errors. |
+| Shell/PHP/Python syntax and diff checks | Passed: `bash -n`, ShellCheck, changed PHP syntax, Python AST parsing, and `git diff --check`. |
+
+The importer component failures were:
+
+- `test-eventbrite-token-retirement.php`: fatal call to undefined
+  `Conexao_Import_Settings::render_page()`.
+- `test-export-language.php`: PHP memory limit exhausted while exporting the
+  populated clone.
+- `test-import-settings-retirement.php`: “manual event IS selected” fallback
+  assertion failed.
+- `test-town-sanitization.php`: global assertion found non-town/Eircode
+  taxonomy terms in the cloned dataset.
+
+The runner initially marked the operator acceptance suite `BLOCKED` because an
+expected child-process bootstrap refusal was present in its successful output.
+The runner now labels a bootstrap failure only when the suite process exits
+non-zero. The focused suite was subsequently run twice directly and passed
+276/276 each time; the complete importer component was not rerun after this
+classification fix.
+
+### 14.4 Shared database preservation
+
+At the pre-test baseline, after the WordPress-dependent script mode, after the
+importer component run, and after each focused operator-suite repeat, the raw
+shared database remained identical:
+
+- the seven recorded operator-option rows retained the same hashes, lengths
+  and autoload flags;
+- continuation lock options remained absent;
+- all 3,700 event `wp_posts` rows retained SHA-256
+  `34469cb5d6f706b804a7e874669ab6e82d619192da0a17b1e467b87e59190b9f`;
+- all 72,417 event `wp_postmeta` rows retained SHA-256
+  `adab6dbb4a269880796b76f70b1d8160ea6f5be945cf1e7b8ca47c000c2fd581`.
+
+The previously recorded 47 incident-created and 13 incident-updated events
+remain in place; no cleanup, restoration, importer run, provider request,
+shared-database write, production action or commit was performed in this
+follow-up.
 
 
 

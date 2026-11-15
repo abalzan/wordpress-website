@@ -226,16 +226,15 @@ jobs:
           retention-days: 30
 
   # ---------------------------------------------------------------------
-  # Stage I — script contracts (static repository checks).
+  # Stage I — script contracts, split by required runtime.
   #
-  # The 21 tests under tests/scripts/verify-*.py are static checks over the
-  # scripts/ estate. They need NO WordPress, NO Docker, NO network and NO
-  # database. They run in their own job so they can execute concurrently with
-  # the Docker/WordPress integration job rather than waiting for it.
+  # The static group under tests/scripts/verify-*.py needs no PHP, Docker,
+  # WordPress, network or database client. PHP-backed static/artifact checks
+  # run in a separate explicit runner mode in this job; they do not bootstrap
+  # WordPress or connect to a database.
   #
   # Uses the canonical command: ./scripts/run-tests.sh --scripts-static
-  # Discovery is convention-based (tests/scripts/verify-*.py); nothing is
-  # hardcoded here.
+  # and ./scripts/run-tests.sh --scripts-runtime. Discovery is convention-based.
   # ---------------------------------------------------------------------
   script-contracts:
     name: Script contracts (Stage I, static checks)
@@ -247,8 +246,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Set up PHP
-        # The script-contract layer inspects PHP source with a real PHP
-        # tokenizer, so PHP must be available on the runner.
+        # PHP-backed script checks run as a separate explicit mode below.
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.5'
@@ -265,6 +263,14 @@ jobs:
           ./scripts/run-tests.sh --scripts-static 2>&1 | tee "$RUNNER_TEMP/ci-evidence/run-tests-scripts.log"
           status="${PIPESTATUS[0]}"
           echo "run-tests.sh --scripts exit status: $status"
+          exit "$status"
+
+      - name: Run PHP-backed script checks
+        run: |
+          set -uo pipefail
+          ./scripts/run-tests.sh --scripts-runtime 2>&1 | tee "$RUNNER_TEMP/ci-evidence/run-tests-scripts-runtime.log"
+          status="${PIPESTATUS[0]}"
+          echo "run-tests.sh --scripts-runtime exit status: $status"
           exit "$status"
 
       - name: Upload script-contract evidence
@@ -609,24 +615,6 @@ jobs:
           set -euo pipefail
           docker compose ps
           curl -s -o /dev/null -w 'front page: %{http_code}\n' http://localhost:8080/
-      # Stage 14 - WordPress-dependent script-contract gate.
-      # verify-stage14-secret-scan.py executes the PHP runtime secret scanner,
-      # so it needs the running WordPress environment. It is discovered by the
-      # canonical runner (--scripts-wordpress) and is NOT part of the static
-      # script-contracts job. A missing prerequisite FAILS, it never skips.
-      - name: Run WordPress-dependent script-contract suites (Stage 14)
-        run: |
-          echo "##[group]Stage 14"
-          START=$(date +%s)
-          set -uo pipefail
-          ./scripts/run-tests.sh --scripts-wordpress 2>&1 | tee "$RUNNER_TEMP/ci-evidence/run-tests-scripts-wordpress.log"
-          status="${PIPESTATUS[0]}"
-          END=$(date +%s)
-          echo "Stage 14 duration: $((END - START))s"
-          echo "##[endgroup]"
-          echo "run-tests.sh --scripts-wordpress exit status: $status"
-          exit "$status"
-
       # PHASE 5: the runner owns discovery. The job never hardcodes suite names.
       #
       # Stage I (script contracts) has moved to the `script-contracts` job
@@ -649,7 +637,7 @@ jobs:
           # configuration — 4 workers regresses due to CPU contention on the
           # serial group (901s -> 1109s), while 3 workers improves on 2
           # (901s -> 835s serial, 259s -> 239s parallel).
-          CONEXAO_TEST_WORKERS=3 ./scripts/run-tests.sh --php 2>&1 | tee "$RUNNER_TEMP/ci-evidence/run-tests-php.log"
+          CONEXAO_TEST_DB_NAME=wordpress CONEXAO_TEST_WORKERS=3 ./scripts/run-tests.sh --php 2>&1 | tee "$RUNNER_TEMP/ci-evidence/run-tests-php.log"
           status="${PIPESTATUS[0]}"
           END=$(date +%s)
           echo "PHP suites duration: $((END - START))s"
