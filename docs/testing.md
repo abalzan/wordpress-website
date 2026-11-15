@@ -648,6 +648,14 @@ old `conexao-import-history` page — is
 `wp-content/plugins/conexao-event-importer/tests/test-import-history-dashboard.php`,
 also in the in-process layer.
 
+The Stage 1 coordination contract is covered by
+`wp-content/plugins/conexao-event-importer/tests/test-stage1-run-coordination.php`.
+It is a serial, browserless suite and must run against the disposable test
+database selected by `CONEXAO_TEST_DB_NAME`; its provider responses are fully
+mocked. It covers the logical Eventbrite breaker, Retry-After parsing and
+invocation-window deferral, parent/child history aggregation and idempotence,
+and the Heritage Week pre-detail eligibility gate.
+
 One operational note: a browser proof and the test suite must not run
 **concurrently**. They share a data foundation, and a suite that drives its own
 probe state while a browser proof reads the admin pages can observe the other

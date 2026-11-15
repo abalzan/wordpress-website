@@ -682,6 +682,7 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 		// cannot extend the walk indefinitely).
 		$started_at   = $pacing->now();
 		$budget       = $client->get_time_budget_seconds();
+		$pacing->set_wait_deadline( $started_at + $budget );
 		$resume_page  = $this->resolve_resume_page( $page_count );
 		$stop_failure = '';
 
@@ -709,6 +710,23 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 
 			// G5A: every inter-request wait is decided by the pacing policy.
 			$pacing->pace_page_request();
+			if ( $pacing->was_wait_deferred() ) {
+				$this->mark_fetch_incomplete();
+				$incomplete_reason = sprintf( 'rate-limit/page pacing wait did not fit the %ds invocation window after page %d/%d', (int) $budget, $page - 1, $page_count );
+				$stop_failure      = 'rate_limited_deferred';
+				$this->persist_checkpoint( $this->confirmed_page, $page_count, false, $stop_failure );
+				Conexao_Import_Log::add(
+					$this->get_id(),
+					'warning',
+					__( 'Eventbrite deferred the next request because its pacing wait did not fit the invocation window; the source remains resumable and was not budget-exhausted.', 'conexao-event-importer' ),
+					array(
+						'reason'      => 'rate_limited_deferred',
+						'reason_code' => 'rate_limited_deferred',
+						'run_id'      => $this->get_current_run_id(),
+					)
+				);
+				break;
+			}
 
 			$html = $client->fetch_page( $base_url, $page );
 			if ( empty( $html ) ) {

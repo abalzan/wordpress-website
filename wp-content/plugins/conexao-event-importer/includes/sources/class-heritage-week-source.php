@@ -46,6 +46,13 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 	protected $forward_link_blocked = false;
 
 	/**
+	 * Outcome of the most recent detail-page request.
+	 *
+	 * @var string
+	 */
+	protected $last_detail_fetch_status = 'not_requested';
+
+	/**
 	 * Get the source ID.
 	 *
 	 * Returns the configured source ID so each county source has an independent
@@ -218,6 +225,19 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 						try {
 							$event = $this->extract_listing_event( $card, $xpath, $page_url, $year );
 							if ( empty( $event['title'] ) || empty( $event['url'] ) ) {
+								continue;
+							}
+							if ( $this->listing_event_is_definitely_past( $event ) ) {
+								Conexao_Import_Log::add(
+									$this->get_id(),
+									'info',
+									sprintf( 'Heritage Week listing event skipped before detail fetch: %s.', $event['title'] ),
+									array(
+										'reason'      => 'listing_date_definitely_past',
+										'reason_code' => 'listing_date_definitely_past',
+										'run_id'      => $this->get_current_run_id(),
+									)
+								);
 								continue;
 							}
 							$event    = $this->enrich_event( $event );
@@ -531,6 +551,86 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 	}
 
 	/**
+	 * Decide whether a listing event is definitely over before enrichment.
+	 *
+	 * A start date alone is never enough. Missing, malformed, ambiguous, and
+	 * conflicting ranges remain eligible for detail enrichment so the detail page
+	 * can repair the listing's incomplete date contract.
+	 *
+	 * @param array $event Listing event.
+	 * @return bool True only for a reliable end instant before now.
+	 */
+	protected function listing_event_is_definitely_past( $event ) {
+		$timezone = function_exists( 'wp_timezone' ) ? wp_timezone() : new DateTimeZone( 'Europe/Dublin' );
+		$now      = function_exists( 'current_datetime' ) ? current_datetime() : new DateTimeImmutable( 'now', $timezone );
+		$end_date = $this->parse_listing_date( isset( $event['end_date'] ) ? $event['end_date'] : '', $timezone );
+
+		if ( ! $end_date ) {
+			return false;
+		}
+
+		$start_date = $this->parse_listing_date( isset( $event['start_date'] ) ? $event['start_date'] : '', $timezone );
+		if ( isset( $event['start_date'] ) && '' !== trim( (string) $event['start_date'] ) && ! $start_date ) {
+			return false;
+		}
+		if ( $start_date && $end_date < $start_date ) {
+			return false;
+		}
+
+		$end = $end_date->setTime( 23, 59, 59 );
+		if ( ! empty( $event['end_time'] ) ) {
+			$time = $this->parse_listing_time( $event['end_time'], $timezone );
+			if ( ! $time ) {
+				return false;
+			}
+			$end = $end_date->setTime( (int) $time->format( 'H' ), (int) $time->format( 'i' ), 0 );
+		}
+
+		return $end < $now;
+	}
+
+	/**
+	 * Parse a listing date using strict site-local formats.
+	 *
+	 * @param string       $value    Date text.
+	 * @param DateTimeZone $timezone Site timezone.
+	 * @return DateTimeImmutable|null
+	 */
+	protected function parse_listing_date( $value, DateTimeZone $timezone ) {
+		$value = trim( (string) $value );
+		if ( '' === $value ) {
+			return null;
+		}
+		foreach ( array( '!j F Y', '!Y-m-d', '!d/m/Y' ) as $format ) {
+			$date = DateTimeImmutable::createFromFormat( $format, $value, $timezone );
+			$errors = DateTimeImmutable::getLastErrors();
+			if ( false !== $date && ( false === $errors || ( 0 === $errors['warning_count'] && 0 === $errors['error_count'] ) ) ) {
+				return $date;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Parse an optional listing end time.
+	 *
+	 * @param string       $value    Time text.
+	 * @param DateTimeZone $timezone Site timezone.
+	 * @return DateTimeImmutable|null
+	 */
+	protected function parse_listing_time( $value, DateTimeZone $timezone ) {
+		$value = trim( (string) $value );
+		foreach ( array( '!g:i a', '!g a', '!H:i', '!H' ) as $format ) {
+			$time = DateTimeImmutable::createFromFormat( $format, $value, $timezone );
+			$errors = DateTimeImmutable::getLastErrors();
+			if ( false !== $time && ( false === $errors || ( 0 === $errors['warning_count'] && 0 === $errors['error_count'] ) ) ) {
+				return $time;
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * Find the forward "Next" pagination URL, if any.
 	 *
 	 * The Heritage Week navigation renders "Previous" BEFORE "Next" from
@@ -763,16 +863,19 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 	 */
 	protected function enrich_event( $event ) {
 		if ( empty( $event['url'] ) ) {
+			$event['detail_fetch_status'] = 'not_requested';
 			return $event;
 		}
 
 		$html = $this->fetch_detail_html( $event['url'] );
+		$event['detail_fetch_status'] = $this->last_detail_fetch_status;
 		if ( empty( $html ) ) {
 			return $event;
 		}
 
 		$dom = $this->parse_html( $html );
 		if ( ! $dom ) {
+			$event['detail_fetch_status'] = 'invalid_html';
 			return $event;
 		}
 
@@ -886,6 +989,7 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 	 * @return string HTML body or empty string on failure.
 	 */
 	protected function fetch_detail_html( $url ) {
+		$this->last_detail_fetch_status = 'failed';
 		$response = $this->request_get(
 			$url,
 			array(
@@ -903,7 +1007,9 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 			return '';
 		}
 
-		return wp_remote_retrieve_body( $response );
+		$body = wp_remote_retrieve_body( $response );
+		$this->last_detail_fetch_status = '' === trim( (string) $body ) ? 'empty' : 'success';
+		return $body;
 	}
 
 	/**

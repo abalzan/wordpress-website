@@ -52,8 +52,14 @@ class Conexao_Import_Result {
 	 */
 	protected $incomplete_enumeration = false;
 
-	/** @var string Overall run status: success|warning|partial|failed */
+	/** @var string Overall run status: success|warning|partial|rate_limited|failed */
 	protected $status = 'success';
+
+	/** @var bool Whether this source was skipped without an outbound request. */
+	protected $source_skipped = false;
+
+	/** @var string Why the source was skipped or deferred. */
+	protected $source_skip_reason = '';
 
 	/** @var int Unique run ID (microtime). */
 	protected $run_id;
@@ -298,6 +304,24 @@ class Conexao_Import_Result {
 	}
 
 	/**
+	 * Record a rate-limited or deferred source without misclassifying it as a
+	 * completed empty source or a request-budget failure.
+	 *
+	 * @param string $message Human-readable reason.
+	 * @param bool   $skipped Whether no request was sent for this source.
+	 * @return void
+	 */
+	public function mark_rate_limited( $message = '', $skipped = false ) {
+		$this->status         = 'rate_limited';
+		$this->incomplete_enumeration = true;
+		$this->source_skipped = (bool) $skipped;
+		$this->source_skip_reason = (string) $message;
+		if ( '' !== trim( (string) $message ) ) {
+			$this->incomplete_enumeration_note = (string) $message;
+		}
+	}
+
+	/**
 	 * Check whether the run had a fatal/global error.
 	 *
 	 * @return bool
@@ -385,7 +409,9 @@ class Conexao_Import_Result {
 				// Truthfulness flag: false means the returned event list is a
 				// SUBSET of the real source listing, not the whole thing.
 				'complete'      => $this->incomplete_enumeration ? false : true,
-				'event_results' => $this->events,
+				'event_results'   => $this->events,
+				'source_skipped'  => $this->source_skipped,
+				'source_skip_reason' => $this->source_skip_reason,
 			)
 		);
 	}

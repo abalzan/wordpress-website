@@ -995,6 +995,52 @@ the sources and the measurement still did **not** support a daily rate (see
 cadence remains **UNRESOLVED** and imports stay manual and on demand. Scheduling
 by intuition was refused rather than shipped, and it still is.
 
+## Stage 1 run coordination (P1, P2, P6)
+
+The importer now distinguishes one logical `Run All` from its per-source
+attempts. The parent has a stable `parent_run_group_id`; every attempted source
+has a unique `source_run_id`, and continuations carry the parent ID forward.
+Import History stores the parent and child rows together, with aggregate event
+counts, source-skipped and event-skipped counts, the full failed-source list,
+and an operator-facing summary. Repeated parent finalisation replaces the
+previous parent row for that group, so aggregation is idempotent.
+
+Parent lifecycle statuses are `queued`, `running`, `completed`,
+`completed_with_errors`, `partial`, `rate_limited`, and `failed`. The terminal
+precedence is failed, rate-limited, partial, completed-with-errors, completed.
+The historical `success` and `warning` child statuses remain valid for
+backwards compatibility; parent history uses the explicit lifecycle names and
+maps warning-only completion to `completed_with_errors` when a warning/error is
+present.
+
+### Eventbrite breaker and bounded waits
+
+The Eventbrite breaker is shared only inside one logical parent run. It is
+reset for a new manual or unrelated run, applies across Eventbrite source
+boundaries, and never blocks non-Eventbrite sources. Its in-memory structured
+state records the first source, rate-limit timestamp, retry timestamp, parsed
+`Retry-After` kind, unsupported-date classification, and skipped sources. An
+active breaker causes later Eventbrite sources to be recorded as
+`rate_limited`/skipped without another provider request.
+
+Delta-seconds and supported HTTP-date forms are parsed deterministically.
+Malformed or absent values use the bounded fallback ladder; a plausible but
+unsupported HTTP-date fails closed for the remainder of the logical run rather
+than guessing an earlier retry. The retry wait is separate from the outbound
+request budget. If it cannot fit the source invocation deadline, the source is
+marked incomplete and rate-limited/deferred, its checkpoint remains resumable,
+and no sleep is attempted beyond the invocation window.
+
+### Heritage Week listing eligibility
+
+Heritage Week listing cards are evaluated before detail enrichment. A card is
+skipped only when a reliable site-timezone end instant is definitely before
+now. Date-only today remains eligible; missing, invalid, ambiguous, and
+end-before-start ranges remain eligible for detail parsing. Detail outcomes
+are explicit: successful empty detail, invalid detail, and transport failure
+cannot be mistaken for one another. Pagination and the existing source/event
+mapping are unchanged.
+
 ## Supported operating model (G12–G14)
 
 This is the final, measured operating model. It replaces guesswork with numbers
@@ -1979,4 +2025,4 @@ meta group deleted, so a withdrawn series can never leave an orphan rule.
 - `includes/class-event-export.php` / `includes/class-event-import.php` — the local→production transfer (UUIDs + embedded images)
 - `includes/class-event-sources.php` — source CRUD + dashboard
 
-_Last verified: 2026-11-09 by the plugin documentation audit_
+_Last verified: 2026-11-15 by Stage 1 run coordination, rate limiting and Heritage eligibility_

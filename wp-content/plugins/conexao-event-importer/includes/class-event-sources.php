@@ -776,7 +776,10 @@ class Conexao_Event_Sources {
 		if ( 'failed' === $status ) {
 			$notice_type = 'error';
 			$title       = __( 'Import could not be completed', 'conexao-event-importer' );
-		} elseif ( 'partial' === $status ) {
+		} elseif ( 'rate_limited' === $status ) {
+			$notice_type = 'warning';
+			$title       = __( 'Import deferred by rate limiting', 'conexao-event-importer' );
+		} elseif ( in_array( $status, array( 'partial', 'completed_with_errors' ), true ) ) {
 			$notice_type = 'warning';
 			$title       = __( 'Import completed with errors', 'conexao-event-importer' );
 		} elseif ( 'warning' === $status ) {
@@ -825,6 +828,14 @@ class Conexao_Event_Sources {
 		if ( $failed > 0 ) {
 			$summary_parts[] = sprintf( /* translators: %d: count */ __( '%d failed', 'conexao-event-importer' ), $failed );
 		}
+		$source_skipped = isset( $result['source_skipped_count'] ) ? (int) $result['source_skipped_count'] : ( ! empty( $result['source_skipped'] ) ? 1 : 0 );
+		if ( $source_skipped > 0 ) {
+			$summary_parts[] = sprintf( /* translators: %d: source count */ __( '%d source(s) skipped/deferred', 'conexao-event-importer' ), $source_skipped );
+		}
+		$failed_source_count = isset( $result['total_failed_source_count'] ) ? (int) $result['total_failed_source_count'] : 0;
+		if ( $failed_source_count > 0 ) {
+			$summary_parts[] = sprintf( /* translators: %d: source count */ __( '%d source(s) failed', 'conexao-event-importer' ), $failed_source_count );
+		}
 		if ( empty( $summary_parts ) ) {
 			$summary_parts[] = __( 'No events found', 'conexao-event-importer' );
 		}
@@ -849,7 +860,7 @@ class Conexao_Event_Sources {
 			</p>
 			<p><?php echo esc_html( implode( ', ', $summary_parts ) ); ?></p>
 
-			<?php if ( 'failed' === $status && ! empty( $fatal_errors ) ) : ?>
+			<?php if ( in_array( $status, array( 'failed', 'rate_limited' ), true ) && ! empty( $fatal_errors ) ) : ?>
 				<p>
 					<?php foreach ( $fatal_errors as $fe ) : ?>
 						<strong><?php echo esc_html( $fe['message'] ); ?></strong>
@@ -1733,7 +1744,7 @@ class Conexao_Event_Sources {
 							<th><?php esc_html_e( 'Updated', 'conexao-event-importer' ); ?></th>
 							<th><?php esc_html_e( 'Unchanged', 'conexao-event-importer' ); ?></th>
 							<th><?php esc_html_e( 'Duplicates', 'conexao-event-importer' ); ?></th>
-							<th><?php esc_html_e( 'Skipped', 'conexao-event-importer' ); ?></th>
+								<th><?php esc_html_e( 'Skipped', 'conexao-event-importer' ); ?></th>
 							<th><?php esc_html_e( 'Errors', 'conexao-event-importer' ); ?></th>
 							<th><?php esc_html_e( 'Status', 'conexao-event-importer' ); ?></th>
 							<th><?php esc_html_e( 'Listing', 'conexao-event-importer' ); ?></th>
@@ -1752,7 +1763,12 @@ class Conexao_Event_Sources {
 								<td><?php echo esc_html( $entry['updated'] ); ?></td>
 								<td><?php echo esc_html( isset( $entry['unchanged'] ) ? $entry['unchanged'] : 0 ); ?></td>
 								<td><?php echo esc_html( $entry['duplicates'] ); ?></td>
-								<td><?php echo esc_html( isset( $entry['skipped'] ) ? $entry['skipped'] : 0 ); ?></td>
+								<td>
+									<?php echo esc_html( isset( $entry['skipped'] ) ? $entry['skipped'] : 0 ); ?>
+									<?php if ( isset( $entry['source_skipped_count'] ) && (int) $entry['source_skipped_count'] > 0 ) : ?>
+										<br><small><?php echo esc_html( sprintf( __( '%d source(s) skipped/deferred', 'conexao-event-importer' ), (int) $entry['source_skipped_count'] ) ); ?></small>
+									<?php endif; ?>
+								</td>
 								<td><?php echo esc_html( $entry['errors'] ); ?></td>
 								<td>
 									<span class="conexao-status-badge conexao-status-badge--<?php echo esc_attr( $entry['status'] ); ?>">

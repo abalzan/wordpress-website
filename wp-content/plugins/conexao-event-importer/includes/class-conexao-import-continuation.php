@@ -247,6 +247,7 @@ class Conexao_Import_Continuation {
 			'page_count'     => 0,
 			'reason'         => '',
 			'run_id'         => '',
+			'parent_run_group_id' => '',
 			'message'        => '',
 		);
 	}
@@ -450,7 +451,12 @@ class Conexao_Import_Continuation {
 			return;
 		}
 
-		$plugin->importer->run_source( $source_id );
+		$record  = self::get( $source_id );
+		$context = array();
+		if ( ! empty( $record['parent_run_group_id'] ) ) {
+			$context['parent_run_group_id'] = (string) $record['parent_run_group_id'];
+		}
+		$plugin->importer->run_source( $source_id, false, $context );
 	}
 
 	/**
@@ -616,6 +622,7 @@ class Conexao_Import_Continuation {
 				'reason'       => (string) $existing['reason'],
 				'last_run_at'  => (int) $existing['last_run_at'],
 				'run_id'       => (string) $existing['run_id'],
+				'parent_run_group_id' => (string) $existing['parent_run_group_id'],
 			)
 		);
 
@@ -733,8 +740,6 @@ class Conexao_Import_Continuation {
 	 *                     the stall is terminal, false when nothing is owed.
 	 */
 	public static function reconcile( $source_id, array $stats = array() ) {
-		unset( $stats );
-
 		$record  = self::get( $source_id );
 		$knows   = class_exists( 'Conexao_Source_Enumeration_Checkpoint' );
 		$check   = $knows ? Conexao_Source_Enumeration_Checkpoint::get( $source_id ) : array();
@@ -780,6 +785,9 @@ class Conexao_Import_Continuation {
 				'last_page'  => $page,
 				'page_count' => $page_count,
 				'reason'     => isset( $check['last_failure'] ) ? (string) $check['last_failure'] : '',
+				'parent_run_group_id' => ! empty( $stats['parent_run_group_id'] )
+					? (string) $stats['parent_run_group_id']
+					: (string) $record['parent_run_group_id'],
 			)
 		);
 

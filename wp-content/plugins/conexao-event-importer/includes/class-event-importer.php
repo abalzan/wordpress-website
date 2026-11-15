@@ -33,8 +33,11 @@ class Conexao_Event_Importer_Engine {
 	/** @var Conexao_Event_Image_Handler */
 	protected $image_handler;
 
-	/** @var string Current import run ID (set per run_source call). */
+	/** @var string Stable parent run-group ID for the logical operation. */
 	protected $current_run_id = '';
+
+	/** @var string Unique child ID for the currently executing source attempt. */
+	protected $current_source_run_id = '';
 
 	/**
 	 * Constructor.
@@ -57,6 +60,7 @@ class Conexao_Event_Importer_Engine {
 
 		// Expose the current import run ID for structured log correlation.
 		add_filter( 'conexao_event_importer_current_run_id', array( $this, 'get_current_run_id' ) );
+		add_filter( 'conexao_event_importer_current_source_run_id', array( $this, 'get_current_source_run_id' ) );
 	}
 
 	/**
@@ -66,6 +70,15 @@ class Conexao_Event_Importer_Engine {
 	 */
 	public function get_current_run_id() {
 		return $this->current_run_id;
+	}
+
+	/**
+	 * Get the unique child source-run ID for structured history.
+	 *
+	 * @return string
+	 */
+	public function get_current_source_run_id() {
+		return $this->current_source_run_id;
 	}
 
 	/**
@@ -79,11 +92,15 @@ class Conexao_Event_Importer_Engine {
 	 * - `Conexao_Request_Budget::begin_run()` zeroes the outbound request
 	 *   counter and re-arms the ceiling.
 	 *
-	 * Called at the start of every `run_source()` and `run_all()`.
+	 * Called once for a logical run, and again for each child only for the
+	 * request budget/reuse scope. Eventbrite pacing is intentionally reset only
+	 * at the logical parent boundary.
+	 *
+	 * @param bool $new_logical_run Whether to reset the shared Eventbrite state.
 	 *
 	 * @return void
 	 */
-	protected function begin_run_scope() {
+	protected function begin_run_scope( $new_logical_run = true ) {
 		Conexao_Request_Reuse::begin_run();
 		Conexao_Request_Budget::begin_run();
 
@@ -91,7 +108,9 @@ class Conexao_Event_Importer_Engine {
 		// request budget and the reuse store. A new run therefore always starts
 		// able to try Eventbrite again, while sources later in THIS run honour
 		// the cooldown already paid for by an earlier one.
-		Conexao_Eventbrite_Pacing::begin_run();
+		if ( $new_logical_run ) {
+			Conexao_Eventbrite_Pacing::begin_run();
+		}
 	}
 
 	/**
@@ -171,7 +190,9 @@ class Conexao_Event_Importer_Engine {
 		$dry_run = ! empty( $args['dry_run'] );
 
 		// Start a fresh run ID for the combined run.
-		$this->current_run_id = 'all-' . (string) microtime( true );
+		$this->current_run_id        = 'all-' . (string) microtime( true );
+		$this->current_source_run_id = '';
+		$this->begin_run_scope( true );
 
 		$combined = array(
 			'found'                => 0,
@@ -190,6 +211,12 @@ class Conexao_Event_Importer_Engine {
 			'status'               => 'success',
 			'sources'              => array(),
 			'dry_run'              => $dry_run,
+			'parent_run_group_id'  => $this->current_run_id,
+			'failed_sources'       => array(),
+			'total_failed_source_count' => 0,
+			'event_skipped_count'  => 0,
+			'source_skipped_count' => 0,
+			'aggregate_error_count' => 0,
 		);
 
 		$active_sources = $this->sources->get_active();
@@ -215,21 +242,41 @@ class Conexao_Event_Importer_Engine {
 			return $combined;
 		}
 
+		Conexao_Import_History::record_parent(
+			$this->current_run_id,
+			$combined,
+			'running',
+			__( 'Run All is running.', 'conexao-event-importer' ),
+			array( 'planned_source_count' => count( $active_sources ) )
+		);
+
 		foreach ( $active_sources as $source ) {
-			$result = $this->run_source( $source['id'], $dry_run );
+			$result = $this->run_source(
+				$source['id'],
+				$dry_run,
+				array( 'parent_run_group_id' => $this->current_run_id )
+			);
 
 			// Aggregate counters.
-			$combined['found']                += isset( $result['found'] ) ? (int) $result['found'] : 0;
-			$combined['created']              += isset( $result['created'] ) ? (int) $result['created'] : 0;
-			$combined['new']                  += isset( $result['new'] ) ? (int) $result['new'] : 0;
-			$combined['updated']              += isset( $result['updated'] ) ? (int) $result['updated'] : 0;
-			$combined['unchanged']            += isset( $result['unchanged'] ) ? (int) $result['unchanged'] : 0;
-			$combined['duplicates']           += isset( $result['duplicates'] ) ? (int) $result['duplicates'] : 0;
-			$combined['skipped']              += isset( $result['skipped'] ) ? (int) $result['skipped'] : 0;
-			$combined['skipped_past']         += isset( $result['skipped_past'] ) ? (int) $result['skipped_past'] : 0;
-			$combined['skipped_invalid_date'] += isset( $result['skipped_invalid_date'] ) ? (int) $result['skipped_invalid_date'] : 0;
-			$combined['failed']               += isset( $result['failed'] ) ? (int) $result['failed'] : 0;
-			$combined['errors']               += isset( $result['errors'] ) ? (int) $result['errors'] : 0;
+			$combined['found']                 += isset( $result['found'] ) ? (int) $result['found'] : 0;
+			$combined['created']               += isset( $result['created'] ) ? (int) $result['created'] : 0;
+			$combined['new']                   += isset( $result['new'] ) ? (int) $result['new'] : 0;
+			$combined['updated']               += isset( $result['updated'] ) ? (int) $result['updated'] : 0;
+			$combined['unchanged']             += isset( $result['unchanged'] ) ? (int) $result['unchanged'] : 0;
+			$combined['duplicates']            += isset( $result['duplicates'] ) ? (int) $result['duplicates'] : 0;
+			$combined['skipped']               += isset( $result['skipped'] ) ? (int) $result['skipped'] : 0;
+			$combined['skipped_past']           += isset( $result['skipped_past'] ) ? (int) $result['skipped_past'] : 0;
+			$combined['skipped_invalid_date']  += isset( $result['skipped_invalid_date'] ) ? (int) $result['skipped_invalid_date'] : 0;
+			$combined['failed']                += isset( $result['failed'] ) ? (int) $result['failed'] : 0;
+			$combined['errors']                += isset( $result['errors'] ) ? (int) $result['errors'] : 0;
+			$combined['aggregate_error_count'] += isset( $result['errors'] ) ? (int) $result['errors'] : 0;
+			$combined['event_skipped_count']   += isset( $result['skipped'] ) ? (int) $result['skipped'] : 0;
+			if ( ! empty( $result['source_skipped'] ) ) {
+				++$combined['source_skipped_count'];
+			}
+			if ( 'failed' === (string) ( isset( $result['status'] ) ? $result['status'] : '' ) ) {
+				$combined['failed_sources'][] = (string) $source['id'];
+			}
 
 			// Merge fatal errors.
 			if ( ! empty( $result['fatal_errors'] ) && is_array( $result['fatal_errors'] ) ) {
@@ -253,42 +300,96 @@ class Conexao_Event_Importer_Engine {
 					$combined['address_audit'][ $audit_key ] = ( isset( $combined['address_audit'][ $audit_key ] ) ? $combined['address_audit'][ $audit_key ] : 0 ) + (int) $audit_count;
 				}
 			}
-
-			// Derive combined status.
-			if ( 'failed' === $result['status'] ) {
-				if ( 'failed' !== $combined['status'] ) {
-					$combined['status'] = 'failed';
-				}
-			} elseif ( 'partial' === $result['status'] ) {
-				if ( 'success' === $combined['status'] ) {
-					$combined['status'] = 'partial';
-				}
-			} elseif ( 'warning' === $result['status'] ) {
-				if ( 'success' === $combined['status'] ) {
-					$combined['status'] = 'warning';
-				}
-			}
 		}
 
-		// Mark past events as expired.
-		Conexao_Event_Status::mark_expired_events();
+		$combined['total_failed_source_count'] = count( $combined['failed_sources'] );
+		$combined['status']                   = $this->aggregate_parent_status( $combined['sources'] );
 
-		// Record a combined history entry when more than one source ran.
-		if ( count( $combined['sources'] ) > 1 ) {
-			Conexao_Import_History::record(
-				'all',
-				$combined,
-				$combined['status'],
-				'',
-				array(
-					'run_id'        => $this->current_run_id,
-					'fatal_errors'  => $combined['fatal_errors'],
-					'failed_events' => self::extract_failed_events( $combined['event_results'] ),
-				)
-			);
+		// Mark past events as expired only for a real import.
+		if ( ! $dry_run ) {
+			Conexao_Event_Status::mark_expired_events();
 		}
+
+		Conexao_Import_History::record_parent(
+			$this->current_run_id,
+			$combined,
+			$combined['status'],
+			$this->build_parent_summary_message( $combined ),
+			array(
+				'planned_source_count' => count( $active_sources ),
+				'child_run_ids'        => array_map(
+					function ( $child ) {
+						return isset( $child['source_run_id'] ) ? $child['source_run_id'] : '';
+					},
+					$combined['sources']
+				),
+				'fatal_errors'         => $combined['fatal_errors'],
+				'failed_events'        => self::extract_failed_events( $combined['event_results'] ),
+				'failed_sources'       => $combined['failed_sources'],
+				'source_skipped_count' => $combined['source_skipped_count'],
+				'event_skipped_count'  => $combined['event_skipped_count'],
+				'aggregate_error_count' => $combined['aggregate_error_count'],
+			)
+		);
 
 		return $combined;
+	}
+
+	/**
+	 * Resolve the parent status using the documented terminal precedence.
+	 *
+	 * @param array $children Child source results keyed by source ID.
+	 * @return string
+	 */
+	protected function aggregate_parent_status( $children ) {
+		$has_failed  = false;
+		$has_rate    = false;
+		$has_partial = false;
+		$has_warning = false;
+
+		foreach ( (array) $children as $child ) {
+			$status      = isset( $child['status'] ) ? (string) $child['status'] : '';
+			$has_failed  = $has_failed || 'failed' === $status;
+			$has_rate    = $has_rate || 'rate_limited' === $status;
+			$has_partial = $has_partial || 'partial' === $status;
+			$has_warning = $has_warning || ( in_array( $status, array( 'warning', 'success' ), true ) && ( 'warning' === $status || ! empty( $child['fatal_errors'] ) ) );
+		}
+
+		if ( $has_failed ) {
+			return 'failed';
+		}
+		if ( $has_rate || Conexao_Eventbrite_Pacing::is_rate_limited() ) {
+			return 'rate_limited';
+		}
+		if ( $has_partial ) {
+			return 'partial';
+		}
+		if ( $has_warning ) {
+			return 'completed_with_errors';
+		}
+
+		return 'completed';
+	}
+
+	/**
+	 * Build the compact parent message shown in admin history.
+	 *
+	 * @param array $combined Combined result.
+	 * @return string
+	 */
+	protected function build_parent_summary_message( $combined ) {
+		return sprintf(
+			/* translators: 1: source count, 2: created, 3: updated, 4: unchanged, 5: event skipped, 6: failed events, 7: failed sources, 8: source skipped */
+			__( 'Run All: %1$d source(s), %2$d created, %3$d updated, %4$d unchanged, %5$d event(s) skipped, %6$d event error(s), %7$d failed source(s), %8$d source(s) skipped/deferred.', 'conexao-event-importer' ),
+			count( $combined['sources'] ),
+			(int) $combined['created'],
+			(int) $combined['updated'],
+			(int) $combined['unchanged'],
+			(int) $combined['event_skipped_count'],
+			(int) $combined['aggregate_error_count'],
+			(int) $combined['total_failed_source_count'],
+			(int) $combined['source_skipped_count']
+		);
 	}
 
 	/**
@@ -310,22 +411,36 @@ class Conexao_Event_Importer_Engine {
 	 * @param string $source_id Source slug.
 	 * @param bool   $dry_run   When true, fetch/normalize/classify without
 	 *                          writing anything to the database.
+	 * @param array  $context   Internal parent/continuation correlation context.
 	 * @return array Stats for this source.
 	 */
-	public function run_source( $source_id, $dry_run = false ) {
+	public function run_source( $source_id, $dry_run = false, $context = array() ) {
 		Conexao_Import_Log::begin_run();
+		$is_child = ! empty( $context['parent_run_group_id'] );
+		if ( ! $is_child ) {
+			$this->current_run_id = ! empty( $context['parent_run_group_id'] )
+				? (string) $context['parent_run_group_id']
+				: 'source-' . wp_generate_uuid4();
+		} else {
+			$this->current_run_id = (string) $context['parent_run_group_id'];
+		}
+		$this->current_source_run_id = 'source-' . wp_generate_uuid4();
 
-		// Each source enumeration is one run scope: a fresh response-reuse
+		// Each source enumeration gets a fresh response-reuse
 		// store and a fresh outbound request budget. run_all() delegates to
 		// this method per source, so a combined run gives every source its own
 		// bounded budget rather than letting one source consume the whole run's
 		// capacity.
-		$this->begin_run_scope();
+		$this->begin_run_scope( ! $is_child );
 
 		$stats = null;
 
 		try {
 			$stats = $this->run_source_unbuffered( $source_id, $dry_run );
+			$stats['run_id']               = $this->current_run_id;
+			$stats['parent_run_group_id'] = $this->current_run_id;
+			$stats['source_run_id']       = $this->current_source_run_id;
+			$stats['rate_limit_state']    = Conexao_Eventbrite_Pacing::get_run_state();
 
 			return $stats;
 		} finally {
@@ -348,6 +463,9 @@ class Conexao_Event_Importer_Engine {
 			if ( ! $dry_run ) {
 				Conexao_Import_Continuation::reconcile( $source_id, is_array( $stats ) ? $stats : array() );
 			}
+			if ( $is_child && ! $dry_run ) {
+				Conexao_Import_History::refresh_parent( $this->current_run_id );
+			}
 
 			$this->log_request_scope_summary( $source_id );
 			Conexao_Import_Log::end_run();
@@ -362,9 +480,6 @@ class Conexao_Event_Importer_Engine {
 	 * @return array Stats for this source.
 	 */
 	protected function run_source_unbuffered( $source_id, $dry_run = false ) {
-		// Start a fresh run ID for log correlation.
-		$this->current_run_id = (string) microtime( true );
-
 		$source = $this->sources->get( $source_id );
 		if ( ! $source ) {
 			return array(
@@ -508,7 +623,7 @@ class Conexao_Event_Importer_Engine {
 					// A source that failed before enumeration is by definition
 					// NOT a complete listing; never record it as one.
 					'complete'      => $result->is_enumeration_incomplete() ? false : true,
-					'checkpoint'    => self::checkpoint_state_for( $source_id ),
+				'checkpoint'    => self::checkpoint_state_for( $source_id ),
 				)
 			);
 			return $result->get_stats();
@@ -534,8 +649,15 @@ class Conexao_Event_Importer_Engine {
 					'http_status' => $e->get_http_status(),
 				)
 			);
-			$result->add_fatal_error( $message, $e->getMessage() );
-			$result->add_incomplete_enumeration( $message );
+			$is_rate_limited   = 429 === (int) $e->get_http_status()
+				|| ( 'eventbrite' === (string) ( isset( $source['type'] ) ? $source['type'] : '' ) && Conexao_Eventbrite_Pacing::is_rate_limited() );
+			$is_source_skipped = $is_rate_limited && 0 === strpos( (string) $e->getMessage(), 'Not attempted:' );
+			if ( $is_rate_limited ) {
+				$result->mark_rate_limited( $message, $is_source_skipped );
+			} else {
+				$result->add_fatal_error( $message, $e->getMessage() );
+				$result->add_incomplete_enumeration( $message );
+			}
 			// G9: a throttled or unreachable upstream earns a bounded, source-level
 			// cooldown so the next run does not immediately re-send doomed requests.
 			$this->record_throttle_cooldown( $source_id, $e->get_http_status() );
