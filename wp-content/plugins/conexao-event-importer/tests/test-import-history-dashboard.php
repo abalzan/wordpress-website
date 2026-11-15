@@ -656,8 +656,8 @@ assert_true(
 );
 
 assert_true(
-	2000 === Conexao_Import_Log::MAX_ENTRIES,
-	'Test F: the log retention cap is unchanged'
+	8000 === Conexao_Import_Log::MAX_ENTRIES,
+	'Test F: the log retention cap is the documented Stage 3 bound (8,000 entries)'
 );
 
 assert_true(
@@ -837,8 +837,13 @@ assert_true(
 );
 
 assert_true(
-	100 === Conexao_Import_History::MAX_ENTRIES,
-	'Test H: the retention cap is unchanged at 100 entries'
+	1200 === Conexao_Import_History::MAX_ENTRIES,
+	'Test H: the retention cap is the documented Stage 3 bound (1,200 rows)'
+);
+
+assert_true(
+	50 === Conexao_Import_History::MAX_GROUPS,
+	'Test H: the completed-run bound is the documented Stage 3 value (50 runs)'
 );
 
 assert_true(
@@ -870,15 +875,37 @@ assert_true(
 );
 
 // The recorder still prepends and still caps at MAX_ENTRIES.
+//
+// Stage 3: the bound is 1,200 rows, so recording MAX_ENTRIES + 1 times would
+// mean 1,201 full option rewrites. The SAME property is proven with one seeded
+// write plus one recorded entry — the cap, the prepend and the drop-oldest rule
+// are all still exercised.
 test_options_write_test_store( 'import_history', array() );
 
-for ( $iah_i = 1; $iah_i <= Conexao_Import_History::MAX_ENTRIES + 1; $iah_i++ ) {
-	Conexao_Import_History::record(
-		sprintf( 'iah_cap_%03d', $iah_i ),
-		array( 'found' => 1 ),
-		'success'
+$iah_seed_rows = array();
+// Seed NEWEST FIRST, which is the store's order: row 1200 is the newest seed and
+// row 1 is the oldest, so prepending one more entry drops row 1 from the tail.
+for ( $iah_i = Conexao_Import_History::MAX_ENTRIES; $iah_i >= 1; $iah_i-- ) {
+	$iah_seed_rows[] = array(
+		'time'                 => '2026-11-01 00:00:00',
+		'source'               => sprintf( 'iah_cap_%04d', $iah_i ),
+		'found'                => 1,
+		'new'                  => 0,
+		'updated'              => 0,
+		'unchanged'            => 0,
+		'duplicates'           => 0,
+		'skipped'              => 0,
+		'skipped_past'         => 0,
+		'skipped_invalid_date' => 0,
+		'errors'               => 0,
+		'status'               => 'success',
+		'message'              => '',
 	);
 }
+
+test_options_write_test_store( 'import_history', $iah_seed_rows );
+
+Conexao_Import_History::record( 'iah_cap_newest', array( 'found' => 1 ), 'success' );
 
 $iah_capped = Conexao_Import_History::get_all();
 
@@ -889,18 +916,18 @@ assert_equals(
 );
 
 assert_true(
-	'iah_cap_101' === $iah_capped[0]['source'],
+	'iah_cap_newest' === $iah_capped[0]['source'],
 	'Test H: the recorder still stores the newest entry first (got ' . $iah_capped[0]['source'] . ')'
 );
 
 assert_true(
-	'iah_cap_001' !== $iah_capped[ count( $iah_capped ) - 1 ]['source'],
+	'iah_cap_0001' !== $iah_capped[ count( $iah_capped ) - 1 ]['source'],
 	'Test H: the oldest entry beyond the cap is still dropped'
 );
 
 assert_true(
-	'iah_cap_002' === $iah_capped[ count( $iah_capped ) - 1 ]['source'],
-	'Test H: the oldest retained entry is the 2nd recorded run (100-entry window)'
+	'iah_cap_0002' === $iah_capped[ count( $iah_capped ) - 1 ]['source'],
+	'Test H: the oldest retained entry is the 2nd seeded run (MAX_ENTRIES window)'
 );
 
 // And the capped history still renders in full on the dashboard.

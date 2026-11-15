@@ -78,6 +78,8 @@ git ls-files docs/evidence | wc -l
 | 2026-11-06 | `christmas-homepage-popup-fix` · `christmas-homepage-welcome` · `christmas-landing-page-active-dispatch-fix` · `christmas-signature-experience` · `commemorative-events` · `commemorative-local-remediation` · `commemorative-precedence` · `evidence-directory-audit` |
 | 2026-11-07 | `agent-skill-doc-audit` · `christmas-welcome-top-popup` |
 | 2026-11-08 | `christmas-micro-animations` · `commemorative-event-skill` |
+| 2026-11-14 | `event-import-dashboard` · `import-history-consolidation` · `stage-0-5` · `stage-0-event-importer-probe-deactivation` |
+| 2026-11-15 | `stage-1` · `stage-1-preservation-reconciliation` · `stage-2` · `stage-2-verification` · `stage-3` |
 | undated | `lazer-wikimedia-image-seed` · `stage-4-1-rest-matrix` |
 
 Two dated pairs are easy to confuse and are **different records**:

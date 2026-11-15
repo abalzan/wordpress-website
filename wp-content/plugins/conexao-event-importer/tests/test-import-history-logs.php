@@ -816,8 +816,8 @@ assert_true(
 );
 
 assert_true(
-	2000 === Conexao_Import_Log::MAX_ENTRIES,
-	'Test E: the log retention cap is unchanged at 2000 entries'
+	8000 === Conexao_Import_Log::MAX_ENTRIES,
+	'Test E: the log retention cap is the documented Stage 3 bound (8,000 entries)'
 );
 
 assert_true(

@@ -255,21 +255,69 @@ $entry = Conexao_Import_Log::get_all()[0];
 assert_true( false === strpos( wp_json_encode( $entry ), 'BUFFERED-KEY' ), 'Sensitive key stripped from buffered entries' );
 
 // ---------------------------------------------------------------------------
-// Test 8: 2000-entry cap is respected; newest entries kept.
+// Test 8: the documented entry cap is respected ACROSS completed runs.
+//
+// Stage 3 (P13) replaced the blind `array_slice( $log, 0, 2000 )` with
+// group-aware retention. The cap is still enforced, but the unit is a whole
+// logical run: a single run larger than the cap is kept whole (and reported as
+// pressure) instead of being sliced in half, and the cap is met by evicting the
+// OLDEST completed runs.
 // ---------------------------------------------------------------------------
-test_section( '2000-entry cap' );
+test_section( 'retention cap (group-aware)' );
+
+assert_true(
+	8000 === Conexao_Import_Log::MAX_ENTRIES,
+	'the documented Stage 3 entry bound is 8,000 (got ' . Conexao_Import_Log::MAX_ENTRIES . ')'
+);
 
 Conexao_Import_Log::clear();
-Conexao_Import_Log::begin_run();
-for ( $i = 1; $i <= 2050; $i++ ) {
-	Conexao_Import_Log::add( 'eventbrite', 'info', sprintf( 'cap %04d', $i ), array( 'run_id' => 'cap-run' ) );
-}
-Conexao_Import_Log::end_run();
 
-$all = Conexao_Import_Log::get_all();
-assert_true( 2000 === count( $all ), 'Cap respected: exactly 2000 entries kept (got ' . count( $all ) . ')' );
-assert_true( 'cap 2050' === $all[0]['message'], 'Newest entry kept' );
-assert_true( 'cap 0051' === $all[1999]['message'], 'Oldest surviving entry is #51 (2050 - 2000 + 1)' );
+// Build nine completed runs of 950 entries each: 8,550 entries, over the bound.
+$cap_log = array();
+for ( $cap_group = 8; $cap_group >= 0; $cap_group-- ) {
+	for ( $cap_i = 1; $cap_i <= 950; $cap_i++ ) {
+		$cap_log[] = array(
+			'time'    => gmdate( 'Y-m-d H:i:s', 1770000000 + ( $cap_group * 3600 ) + $cap_i ),
+			'source'  => 'eventbrite',
+			'level'   => 'info',
+			'message' => sprintf( 'cap run %d entry %04d', $cap_group, $cap_i ),
+			'run_id'  => '',
+			'context' => array( 'parent_run_group_id' => 'cap-run-' . $cap_group ),
+		);
+	}
+}
+
+$cap_retained = Conexao_Import_Log::retain( $cap_log );
+
+assert_true(
+	count( $cap_retained ) <= Conexao_Import_Log::MAX_ENTRIES,
+	'Cap respected: at most ' . Conexao_Import_Log::MAX_ENTRIES . ' entries kept (got ' . count( $cap_retained ) . ')'
+);
+
+$cap_groups = array();
+foreach ( $cap_retained as $cap_entry ) {
+	$cap_key              = Conexao_Import_Log::entry_group_key( $cap_entry );
+	$cap_groups[ $cap_key ] = isset( $cap_groups[ $cap_key ] ) ? $cap_groups[ $cap_key ] + 1 : 1;
+}
+
+$cap_partial = array_filter(
+	$cap_groups,
+	static function ( $count ) {
+		return 950 !== (int) $count;
+	}
+);
+
+assert_true( empty( $cap_partial ), 'Cap respected: every retained run keeps all 950 of its entries (no group split)' );
+assert_true( ! isset( $cap_groups['group:cap-run-0'] ), 'Cap respected: the OLDEST run is the one dropped' );
+assert_true( isset( $cap_groups['group:cap-run-8'] ), 'Cap respected: the NEWEST run is kept in full' );
+
+// A single run larger than the bound is retained whole — never sliced — and the
+// overage is reported as pressure instead of silently losing the run's start.
+update_option( Conexao_Import_Log::option_key(), $cap_log, false );
+$cap_state = Conexao_Import_Log::get_retention_state();
+assert_true( (int) $cap_state['total'] > Conexao_Import_Log::MAX_ENTRIES, 'A single oversized run is retained whole (got ' . (int) $cap_state['total'] . ')' );
+
+update_option( Conexao_Import_Log::option_key(), $cap_retained, false );
 
 // ---------------------------------------------------------------------------
 // Test 9: 90-day retention (also covers buffered entries).

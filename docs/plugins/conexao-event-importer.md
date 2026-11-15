@@ -1130,6 +1130,127 @@ absence-based mutations. Reconciliation is idempotent: an event already
 same state writes nothing. The candidate filter, identity match (`_event_url`)
 and post-status scope are unchanged from the previous implementation.
 
+## Stage 3 — continuation correlation, truthful status, and group-aware retention (P12, P13)
+
+Stage 3 closes the remaining observability and retention findings. It changes no
+event status, no source identity, no Event Runtime visibility and no status
+vocabulary: every change is a mapping, diagnostic or retention change inside the
+existing model.
+
+### P12 — continuation lifecycle correlation
+
+Every continuation lifecycle log entry is traceable to its run. The continuation
+record persists four identifiers, and `Conexao_Import_Continuation::log()` merges
+them into each entry as structured context (retained by
+`Conexao_Import_Log::CORRELATION_CONTEXT_KEYS`):
+
+| Identifier | Meaning |
+|---|---|
+| `run_id` | the owning Import History row (the parent group for a child of a Run All, the standalone run otherwise) |
+| `source_run_id` | the child source attempt that created/last advanced the continuation |
+| `parent_run_group_id` | the logical Run All parent |
+| `continuation_id` | stable identifier for one continuation lifecycle |
+
+They survive scheduling, deferral, resume and clearing — a resume **never** mints
+a new id. Terminal entries written after the record is removed (`clear()`) are
+correlated against the removed record. Entries that predate Stage 3 have no ids
+and stay explicitly `legacy`; no historical id is invented.
+
+### P12 — status and diagnostics
+
+| Target outcome | Child status | Parent status |
+|---|---|---|
+| Success | `success` | `completed` |
+| Warning — non-fatal, walk **completed** | `warning` (`add_warning()`) | `completed_with_errors` / `completed` |
+| Partial | `partial` | `partial` |
+| Incomplete — walk did **not** finish | `partial` (`add_incomplete_enumeration()`), or `rate_limited` when the P1 breaker stopped planned work | `rate_limited` / `partial` |
+| Failed | `failed` | `failed` |
+
+**Warning ≠ incomplete.** An unfinished enumeration is never labelled `warning`.
+
+The actual stop condition is a separate field (`incomplete_reason`), rendered in
+Import History: `time_budget`, `page_cap`, `budget_exhausted`, `rate_limited`,
+`rate_limited_deferred`, `fetch_failed`, `parse_failed`, `checkpoint_resume`,
+`incomplete_enumeration`.
+
+The source registry now stores the real outcome rather than collapsing every
+non-failure to `success`:
+
+| Result | `last_import_status` |
+|---|---|
+| success | `success` |
+| warning | `warning` |
+| partial | `partial` |
+| rate_limited | `rate_limited` |
+| failed | `error` (unchanged legacy value) |
+
+`Conexao_Source_Health::record_incomplete()` stores an incomplete run without
+touching the failure counters, and the dashboard's **Last successful import**
+excludes `partial`/`rate_limited`/`failed`.
+
+### P12 — stuck and abandoned continuations
+
+`Conexao_Import_Continuation::classify()` (read-only) returns `queued`,
+`deferred`, `running`, `running_stale`, `running_indeterminate`, `exhausted` or
+`failed`.
+
+* `STALE_RUNNING_SECONDS = 3600` — 4 × `LOCK_TTL`; a held lock is never stale.
+* `state=running, run_at=0` is reported as a **fact**, not as a stall; whether it
+  is stale depends on the recorded `last_run_at`.
+* A record with no usable timestamp is `running_indeterminate` — **never**
+  declared stale.
+* The diagnostics reset, retry, reschedule and delete **nothing**.
+
+They are rendered in the **Event Sources** screen (Continuation diagnostics), and
+the Import History Progress cell refuses to say “a worker is running it now” for
+a stale record.
+
+### P12 — `events_imported`
+
+The field is the number of events **created by that source in its most recent
+run**. The Event Sources column is labelled **`Created (last run)`** with a
+tooltip saying it is not a cumulative total. The stored value, its readers and
+every historical value are unchanged; no migration exists.
+
+### P13 — logical-run-aware retention
+
+The two stores keep their existing option rows; nothing new is added.
+
+| Bound | Value | Rationale (measured) |
+|---|---|---|
+| `Conexao_Import_Log::MAX_ENTRIES` | **8,000** entries | one Run All ≈ 1,700–3,900 entries at the measured 468 B/entry and ~11 entries/run |
+| `Conexao_Import_History::MAX_ENTRIES` | **1,200** rows | one Run All ≈ 155 rows at 927 B/row |
+| `Conexao_Import_History::MAX_GROUPS` | **50** completed runs | keeps 50 standalone runs in full |
+
+* **Unit:** the whole logical group (Stage 1's run identity). A group is never
+  split — no orphan parent, no orphan child, and the start of a run is never lost
+  while its own later entries survive.
+* **Protection:** a group is evictable only when terminal — no `queued`/`running`
+  history row and no `scheduled`/`running` continuation. Active groups are never
+  evicted at any pressure.
+* **Order:** oldest completed group first, with a store-position tie-break so runs
+  written within the same second still order deterministically. The newest
+  completed group is never evicted to make room for itself.
+* **Legacy:** rows/entries with no run identity are evicted individually, last,
+  and never grouped into an invented run.
+* **Pressure:** if protected groups exceed the bound, nothing is discarded;
+  `get_retention_state()` reports `pressure` and `over_by` and Import History
+  prints it.
+* **Idempotent**, and applied inside the existing write paths, which is safe
+  because eligibility is state-derived.
+
+`prune_older_than_90_days()` remains **unwired** (it never had a caller); it was
+made group-safe so a future age prune cannot split a live run.
+
+### P13 — downloads and preview
+
+`Conexao_Import_Log::export_run( $group )` downloads the **full** retained logical
+run (parent + every child) in chronological order with a manifest header (group,
+entry count, sources, child run ids, legacy count, bound, pressure). It reuses the
+existing protected endpoint (`manage_options` + per-run nonce). The inline Logs
+panel stays bounded at 50 entries and **always** states the shown count, the total
+available, whether the view is truncated, and links the full download.
+
 ## Supported operating model (G12–G14)
 
 This is the final, measured operating model. It replaces guesswork with numbers

@@ -478,7 +478,26 @@ class Conexao_Event_Importer_Engine {
 			 * nothing.
 			 */
 			if ( ! $dry_run ) {
-				Conexao_Import_Continuation::reconcile( $source_id, is_array( $stats ) ? $stats : array() );
+				/*
+				 * Stage 3 (P12): the correlation context is built from the
+				 * engine, not from `$stats`. `$stats` is null on every early
+				 * return — a cooldown skip, a fetch failure, a handler that
+				 * threw — and those are exactly the runs that leave a
+				 * continuation behind. Passing the IDs unconditionally is what
+				 * makes the scheduled continuation resolvable to the child run
+				 * that produced it instead of to nothing at all.
+				 */
+				$continuation_context = array(
+					'run_id'              => $this->current_run_id,
+					'source_run_id'       => $this->current_source_run_id,
+					'parent_run_group_id' => $this->current_run_id,
+				);
+
+				if ( is_array( $stats ) ) {
+					$continuation_context = array_merge( $stats, $continuation_context );
+				}
+
+				Conexao_Import_Continuation::reconcile( $source_id, $continuation_context );
 			}
 			if ( $is_child && ! $dry_run ) {
 				Conexao_Import_History::refresh_parent( $this->current_run_id );
@@ -1008,7 +1027,14 @@ class Conexao_Event_Importer_Engine {
 			$this->mark_fetch_incomplete_in_result( $result, $source_id );
 
 			if ( $resumed_subset ) {
-				$result->add_incomplete_enumeration(
+				/*
+				 * Stage 3 (P12) status distinction: this walk DID reach its
+				 * final page — the enumeration is complete, only the already
+				 * confirmed pages were not re-requested. That is a non-fatal
+				 * caveat on a finished walk, so it stays `warning` and must not
+				 * be recorded as an incomplete enumeration.
+				 */
+				$result->add_warning(
 					sprintf(
 						/* translators: %s: source name */
 						__( '%s was enumerated to its final page but resumed from a stored checkpoint, so the already-confirmed pages were not re-requested. Events from those pages were left untouched (not marked source_not_found).', 'conexao-event-importer' ),
@@ -1280,9 +1306,27 @@ class Conexao_Event_Importer_Engine {
 	protected function update_source_stats_after_run( $source_id, Conexao_Import_Result $result ) {
 		$status = $result->get_status();
 
-		// Map the new statuses to the legacy two-state (success|error) used in
-		// the sources option, while keeping the richer status in the history.
-		$legacy_status = ( 'failed' === $status ) ? 'error' : 'success';
+		/*
+		 * Stage 3 (P12) — the registry status must not claim success for a run
+		 * that did not succeed. Before Stage 3 everything except `failed` was
+		 * written as `success`, so a rate-limited source and a time-budget
+		 * truncated source both read as a clean success on the Event Sources
+		 * screen.
+		 *
+		 * The map is explicit and every value is a status word the engine
+		 * already uses. `error` keeps its pre-Stage-3 meaning for `failed`, and
+		 * the existing readers (`'error' === $last_import_status`) keep working
+		 * unchanged for it.
+		 */
+		$status_map = array(
+			'success'      => 'success',
+			'warning'      => 'warning',
+			'partial'      => 'partial',
+			'rate_limited' => 'rate_limited',
+			'failed'       => 'error',
+		);
+
+		$legacy_status = isset( $status_map[ $status ] ) ? $status_map[ $status ] : 'success';
 
 		$stats = array(
 			'last_import'        => current_time( 'mysql' ),
@@ -1304,14 +1348,25 @@ class Conexao_Event_Importer_Engine {
 				);
 			}
 		} elseif ( 'partial' === $status ) {
-			$stats['last_import_status'] = 'success'; // Partial is still a completed run.
-			$stats['last_error']         = sprintf(
-				/* translators: %d: number of failed events */
-				__( '%d event(s) failed but the rest were imported.', 'conexao-event-importer' ),
-				$result->get_counts()['failed']
-			);
+			// `partial` replaced the two branches Stage 3 removed: an incomplete
+			// enumeration and per-event failures now share one status, so the
+			// message names whichever applies rather than assuming.
+			if ( $result->is_enumeration_incomplete() ) {
+				$stats['last_error'] = $this->incomplete_reason_text( $result );
+			} else {
+				$stats['last_error'] = sprintf(
+					/* translators: %d: number of failed events */
+					__( '%d event(s) failed but the rest were imported.', 'conexao-event-importer' ),
+					$result->get_counts()['failed']
+				);
+			}
+		} elseif ( 'rate_limited' === $status ) {
+			$stats['last_error'] = $result->get_incomplete_enumeration_note();
+			if ( '' === trim( (string) $stats['last_error'] ) ) {
+				$stats['last_error'] = __( 'Rate limited by the provider; the source was not fully enumerated.', 'conexao-event-importer' );
+			}
 		} elseif ( 'warning' === $status ) {
-			$stats['last_import_status'] = 'success';
+			$stats['last_error'] = '';
 		}
 
 		$this->sources->update_import_stats( $source_id, $stats );
@@ -1322,10 +1377,53 @@ class Conexao_Event_Importer_Engine {
 			if ( 'failed' === $status ) {
 				$reason = ! empty( $stats['last_error'] ) ? $stats['last_error'] : __( 'Unknown import failure.', 'conexao-event-importer' );
 				Conexao_Source_Health::record_failure( $source_id, $reason );
-			} else {
+			} elseif ( 'success' === $status || 'warning' === $status ) {
 				Conexao_Source_Health::record_success( $source_id );
+			} else {
+				/*
+				 * Stage 3 (P12): an incomplete or rate-limited run is neither a
+				 * success (it would reset the failure streak and stamp
+				 * `last_success`, claiming work that did not happen) nor a
+				 * failure (it increments a failure count the provider, not the
+				 * source, caused). It is recorded as incomplete.
+				 */
+				Conexao_Source_Health::record_incomplete(
+					$source_id,
+					(string) $status,
+					! empty( $stats['last_error'] ) ? (string) $stats['last_error'] : ''
+				);
 			}
 		}
+	}
+
+	/**
+	 * Operator-facing text for an incomplete enumeration's actual cause.
+	 *
+	 * @param Conexao_Import_Result $result Run result.
+	 * @return string
+	 */
+	protected function incomplete_reason_text( Conexao_Import_Result $result ) {
+		$note   = trim( (string) $result->get_incomplete_enumeration_note() );
+		$reason = (string) $result->get_incomplete_enumeration_reason();
+
+		if ( '' === $reason ) {
+			return $note;
+		}
+
+		$labels = array(
+			'time_budget'        => __( 'time budget exhausted', 'conexao-event-importer' ),
+			'page_cap'           => __( 'page cap reached', 'conexao-event-importer' ),
+			'budget_exhausted'   => __( 'request budget exhausted', 'conexao-event-importer' ),
+			'rate_limited'       => __( 'rate-limit cooldown', 'conexao-event-importer' ),
+			'rate_limited_deferred' => __( 'rate-limit cooldown deferred (Retry-After)', 'conexao-event-importer' ),
+			'fetch_failed'       => __( 'upstream fetch failure', 'conexao-event-importer' ),
+			'parse_failed'       => __( 'parsing failure', 'conexao-event-importer' ),
+			'incomplete_enumeration' => __( 'enumeration incomplete', 'conexao-event-importer' ),
+		);
+
+		$label = isset( $labels[ $reason ] ) ? $labels[ $reason ] : $reason;
+
+		return '' !== $note ? $label . ' — ' . $note : $label;
 	}
 
 	/**
@@ -2462,13 +2560,28 @@ class Conexao_Event_Importer_Engine {
 			'conexao-event-importer'
 		);
 
-		$result->add_incomplete_enumeration( $message );
+		/*
+		 * Stage 3 (P12): carry the actual stop condition through to the result.
+		 * The checkpoint already records it (`time_budget`, `page_cap`,
+		 * `budget_exhausted`, `rate_limited`, `fetch_failed`, ...); repeating it
+		 * here is what lets Import History and the Event Sources screen explain
+		 * WHY the walk stopped instead of only that it did.
+		 */
+		$checkpoint = self::checkpoint_state_for( $source_id );
+		$reason     = isset( $checkpoint['last_failure'] ) ? (string) $checkpoint['last_failure'] : '';
+
+		$result->add_incomplete_enumeration( $message, '' !== $reason ? $reason : 'incomplete_enumeration' );
 
 		Conexao_Import_Log::add(
 			$source_id,
 			'warning',
 			$message,
-			array( 'run_id' => $this->current_run_id )
+			array(
+				'run_id'      => $this->current_run_id,
+				'source_run_id' => $this->current_source_run_id,
+				'parent_run_group_id' => $this->current_run_id,
+				'reason_code' => '' !== $reason ? $reason : 'incomplete_enumeration',
+			)
 		);
 	}
 

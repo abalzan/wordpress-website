@@ -124,6 +124,25 @@
 	border: 1px solid #d5d5d5;
 }
 
+/*
+ * Stage 3 (P12): the inline help affordance beside a column header that needs a
+ * definition (e.g. "Created (last run)" — a per-run count, not a cumulative
+ * total). The explanation itself is the element's `title`.
+ */
+.conexao-event-sources .conexao-help {
+	display: inline-block;
+	width: 14px;
+	height: 14px;
+	line-height: 14px;
+	text-align: center;
+	border-radius: 50%;
+	background: #f0f0f1;
+	color: #50575e;
+	font-size: 10px;
+	font-weight: 600;
+	cursor: help;
+}
+
 .conexao-status-badge--source_not_found,
 .conexao-status-badge--failed,
 .conexao-status-badge--error {
