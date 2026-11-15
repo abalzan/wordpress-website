@@ -1,0 +1,23 @@
+capture_ts_utc	hook	timestamp_epoch	timestamp_utc	source_arg	schedule	interval	in_1355_1415_window	state_at_capture
+2026-11-15T19:22:20Z	conexao_event_import_continuation	1794677572	2026-11-14 17:32:52 UTC	eventbrite_wicklow_events_tomorrow	one-off (no recurrence)	n/a	no	overdue at capture (unconsumed)
+2026-11-15T19:22:20Z	conexao_event_import_continuation	1794679369	2026-11-14 18:02:49 UTC	eventbrite_carlow	one-off (no recurrence)	n/a	no	overdue at capture (unconsumed)
+2026-11-15T19:22:20Z	conexao_event_import_continuation	1794680000	2026-11-14 18:13:20 UTC	eventbrite_cavan_events_today	one-off (no recurrence)	n/a	no	overdue at capture (unconsumed)
+2026-11-15T19:22:20Z	conexao_event_import_continuation	1794681977	2026-11-14 18:46:17 UTC	eventbrite_galway	one-off (no recurrence)	n/a	no	overdue at capture (unconsumed)
+2026-11-15T19:22:20Z	conexao_event_import_continuation	1794683339	2026-11-14 19:08:59 UTC	eventbrite_kerry_events_tomorrow	one-off (no recurrence)	n/a	no	overdue at capture (unconsumed)
+2026-11-15T19:22:20Z	conexao_event_import_continuation	1794685279	2026-11-14 19:41:19 UTC	eventbrite_dublin	one-off (no recurrence)	n/a	no	overdue at capture (unconsumed)
+2026-11-15T19:22:20Z	conexao_event_import_continuation	1794690831	2026-11-14 21:13:51 UTC	eventbrite_kilkenny	one-off (no recurrence)	n/a	no	overdue at capture (unconsumed)
+2026-11-15T19:22:20Z	conexao_event_import_continuation	1794692515	2026-11-14 21:41:55 UTC	eventbrite_carlow_events_tomorrow	one-off (no recurrence)	n/a	no	overdue at capture (unconsumed)
+2026-11-15T19:22:20Z	conexao_event_import_continuation	1794693429	2026-11-14 21:57:09 UTC	eventbrite_cavan	one-off (no recurrence)	n/a	no	overdue at capture (unconsumed)
+2026-11-15T19:22:20Z	conexao_event_import_continuation	1794693750	2026-11-14 22:02:30 UTC	eventbrite_donegal	one-off (no recurrence)	n/a	no	overdue at capture (unconsumed)
+2026-11-15T19:22:20Z	conexao_event_import_continuation	1794693868	2026-11-14 22:04:28 UTC	eventbrite_longford	one-off (no recurrence)	n/a	no	overdue at capture (unconsumed)
+2026-11-15T19:22:20Z	conexao_event_import_continuation	1794694161	2026-11-14 22:09:21 UTC	eventbrite_wexford	one-off (no recurrence)	n/a	no	overdue at capture (unconsumed)
+2026-11-15T19:22:20Z	conexao_event_import_continuation	1794699510	2026-11-14 23:38:30 UTC	eventbrite_sligo	one-off (no recurrence)	n/a	no	overdue at capture (unconsumed)
+2026-11-15T19:22:20Z	conexao_event_import_continuation	1794700254	2026-11-14 23:50:54 UTC	eventbrite_kildare	one-off (no recurrence)	n/a	no	overdue at capture (unconsumed)
+2026-11-15T19:22:20Z	conexao_event_import_continuation	1794730530	2026-11-15 08:15:30 UTC	eventbrite_limerick	one-off (no recurrence)	n/a	no	overdue at capture (unconsumed)
+2026-11-15T19:22:20Z	conexao_event_import_continuation	1794754881	2026-11-15 15:01:21 UTC	eventbrite_cork	one-off (no recurrence)	n/a	no	future at capture
+2026-11-15T19:22:20Z	conexao_event_import_continuation	1794769745	2026-11-15 19:09:05 UTC	eventbrite_louth	one-off (no recurrence)	n/a	no	future at capture
+2026-11-15T19:22:20Z	conexao_event_import_continuation	1794769793	2026-11-15 19:09:53 UTC	eventbrite_monaghan	one-off (no recurrence)	n/a	no	future at capture
+2026-11-15T19:22:20Z	conexao_event_import_continuation	1794769845	2026-11-15 19:10:45 UTC	eventbrite_roscommon	one-off (no recurrence)	n/a	no	future at capture
+2026-11-15T19:22:20Z	conexao_event_import_continuation	1794771671	2026-11-15 19:41:11 UTC	eventbrite_dublin_events_this_week	one-off (no recurrence)	n/a	no	future at capture
+2026-11-15T19:22:20Z	conexao_event_import_continuation	1794771672	2026-11-15 19:41:12 UTC	eventbrite_longford_events_this_week	one-off (no recurrence)	n/a	no	future at capture
+2026-11-15T19:22:20Z	conexao_event_import_continuation	1794775270	2026-11-15 20:41:10 UTC	eventbrite_waterford	one-off (no recurrence)	n/a	no	future at capture

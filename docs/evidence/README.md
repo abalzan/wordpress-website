@@ -79,7 +79,7 @@ git ls-files docs/evidence | wc -l
 | 2026-11-07 | `agent-skill-doc-audit` · `christmas-welcome-top-popup` |
 | 2026-11-08 | `christmas-micro-animations` · `commemorative-event-skill` |
 | 2026-11-14 | `event-import-dashboard` · `import-history-consolidation` · `stage-0-5` · `stage-0-event-importer-probe-deactivation` |
-| 2026-11-15 | `stage-1` · `stage-1-preservation-reconciliation` · `stage-2` · `stage-2-verification` · `stage-3` |
+| 2026-11-15 | `stage-1` · `stage-1-preservation-reconciliation` · `stage-2` · `stage-2-verification` · `stage-3` · `stage-3-5` |
 | undated | `lazer-wikimedia-image-seed` · `stage-4-1-rest-matrix` |
 
 Two dated pairs are easy to confuse and are **different records**:
@@ -555,3 +555,6 @@ _Last verified: 2026-10-01 by Stage 14 — secret-scan hardening and production 
 _Last verified: 2026-11-06 by the evidence-directory audit and cleanup (complete index of all folders, retention policy, commit prohibitions, add-evidence procedure; one byte-identical `.bak` removed, 8 empty directories removed)_
 
 _Last verified: 2026-11-07 by the agent, skills and documentation audit (the three missing Christmas folders and the audit's own folder indexed; counts re-measured)_
+
+_Last verified: 2026-11-15 by Stage 3.5 — Event Importer post-Stage-3 investigation and restoration plan (the 2026-11-14 and 2026-11-15 rows re-checked against disk and completed: every folder dated on or after 2026-11-08 is listed, including the new `2026-11-15-stage-3-5`; the folder-count figures above are the 2026-11-07 measurement and were not re-derived)_
+

@@ -353,3 +353,80 @@ files, one admin stylesheet, four test files and three documentation indexes.
 Untracked: the new suite, the new report and `docs/evidence/2026-11-15-stage-3/`.
 The exact list is in `docs/evidence/2026-11-15-stage-3/09-files-changed.md`. No file was deleted; no stash was
 touched; no pre-existing work was discarded.
+
+---
+
+## 13. Post-Stage-3 investigation and restoration plan (Stage 3.5, appended)
+
+**Appended 2026-11-15 by Stage 3.5.** This section is **additive**. Nothing above
+it was rewritten, and the Stage 3 verdict, its findings and its limitation list
+stand exactly as recorded. Where Stage 3.5 reaches a different conclusion about
+*attribution*, that is recorded here as a subsequent finding, not as an edit to
+Stage 3's.
+
+**Evidence:** [`docs/evidence/2026-11-15-stage-3-5/`](../evidence/2026-11-15-stage-3-5/00-scope-and-baseline.md)
+— scope/baseline, attribution capture (5 TSVs), the 80-row cohort inventory,
+connected-failure analysis, datetime-contract analysis, the restoration plan,
+read-only proof and preservation confirmation. Read-only; no event, postmeta,
+status, source entry, continuation, log or history record was modified.
+
+### 13.1 Headline results
+
+| Item | Stage 3.5 result |
+|---|---|
+| The 80-event current/future cohort | **All 80 accounted for, one row each, zero baseline drift** — still `source_not_found` with a current/future date at 19:22Z |
+| Attribution of the 14:01–14:10 executions | **`CONSISTENT WITH SHUTDOWN-TRIGGERED EXECUTION; SPECIFIC TRIGGER UNVERIFIED`** — WordPress cron is ruled out mechanically; no direct shutdown indicator exists and the historical cron option was never observed |
+| Connected-failure hypothesis | **REFUTED as stated.** Links 1–3 hold; link 4 ("incomplete run marked events") is contradicted by the code's own gates *and* by the retained log; and 76 of the 80 events sit in sources that did not run in the window at all |
+| Datetime contract violation | **A class of 20**, all synthetic CI fixtures written by `scripts/bootstrap-ci-fixtures.php:996-1001`; the importer's `normalize_date()` cannot produce the shape. Post `115352` is a fixture (`Evento sintético removido na fonte`), not a real event |
+| Restoration | **Planned, not executed.** 76 Priority 1 (upstream verification required) + 4 Priority 2 (conditional, `eventbrite_cork`) + 0 lower tiers. **No restoration is recommended as safe on Stage 3.5's evidence** |
+| Stranded continuations | **16**, not 15 — `eventbrite_cork` stranded at 18:35Z during this session. Surfaced as a separate item needing its own authorisation |
+
+### 13.2 The one Stage 3 statement that Stage 3.5 does not support
+
+Stage 3 §8.1 reads the 14:00–14:10 continuation chain as the explanation for the
+suppressed events of the nine affected sources. Stage 3.5 finds that **only one of
+the nine window sources (`eventbrite_cork`) is an affected source**, and that the
+other eight affected sources' `last_import` values are **2026-11-14 14:02–14:31** —
+a day earlier. Two different sets of nine were conflated. The suppression of those
+76 events therefore remains **unexplained by the retained record**: their runs fall
+before the oldest retained log entry (`2026-11-14 14:43:00`) and history row
+(`2026-11-14 19:29:49`), so the evidence was evicted, not merely overlooked.
+
+### 13.3 Git and deployment reconciliation (correction note)
+
+Stage 3 §12 recorded: *"HEAD unchanged at `2704169`; nothing staged, committed,
+pushed, merged, deployed or activated… Untracked: the new suite, the new report and
+`docs/evidence/2026-11-15-stage-3/`."*
+
+**That statement was accurate at the time of writing; the state changed
+afterwards.** It is not a case of "the report was wrong when written".
+
+| Event | Timestamp (UTC) |
+|---|---|
+| Stage 3 baseline HEAD `2704169` | 2026-11-15 17:42:29 |
+| Last Stage 3 file written (`08-quality-gates.txt`) | 2026-11-15 **18:26:54** |
+| Stage 3 report last modified | 2026-11-15 **18:25:38** |
+| **Commit `77f09a3` authored and committed** | 2026-11-15 **18:28:35** |
+| Stage 3.5 start (clean worktree at `77f09a3`) | 2026-11-15 19:21 |
+
+The commit lands **1 min 41 s after the last Stage 3 file was written** and
+contains exactly Stage 3's artefacts (12 evidence files, this report, the plugin
+code, four test files, the docs indexes). Between that session and Stage 3.5's
+execution the work was committed and pushed to `event-import-improvements`. This
+note records the current state without modifying the original observation. **The
+Stage 3 findings and verdict are unaffected.**
+
+**Pushed is not deployed.** The two are recorded separately:
+
+| | State |
+|---|---|
+| Branch code | `77f09a3e4ad84e0ea191123b287f76fbd7bd554c`, clean worktree, plugin version `1.10.0` |
+| Local shared stack (`wordpress` DB) | **Runs `77f09a3`'s code** — verified by SHA-256 of three plugin files inside the running container, identical to the repository, and the plugin is in `active_plugins`. That is file-hash evidence, not inference from the push |
+| **WordPress.com production** | **DEPLOYMENT VERSION UNVERIFIED.** No CLI, SSH, filesystem or database access exists from this repository, so no claim is made that Stage 3's P12/P13 code is live on production |
+| Observed runtime retention | log **2,104** entries (bound at HEAD 8,000), history **56** rows (bound 1,200 / 50 groups). Both are below every candidate bound, so the *deployed* cap cannot be proven from counts; the only arithmetic fact is that a 2,000-entry store cannot hold 2,104 entries, so Stage 3's 2,000-entry bound was not binding at 19:22 |
+
+### 13.4 No commit from Stage 3.5
+
+Stage 3.5 performed **no** commit, push, merge, deploy, activation or release. Its
+evidence and documentation remain as working-tree changes for review.
+
