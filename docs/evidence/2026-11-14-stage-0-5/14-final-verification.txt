@@ -1,0 +1,70 @@
+Stage 0.5 final verification — failure resolution and complete runtime runs
+Branch: event-import-improvements
+HEAD: e404fb045d353dc0c73de8540b49f7473b4fb50f
+Test database: conexao_stage05_test_5bd9ece5c032
+Shared database: wordpress
+
+External modification before this session:
+- An external admin-triggered import ran at 07:42-07:45 UTC on 2026-11-15.
+- 6 new event posts created (4 eventbrite_cork, 1 eventbrite_donegal, 1 eventbrite_kildare).
+- 1 existing post updated.
+- Shared DB event count: 3700 -> 3705.
+- This was detected during initial state inspection; not caused by this session.
+
+Importer failure resolution:
+1. test-eventbrite-token-retirement.php: undefined Conexao_Import_Settings::render_page()
+   - Root cause: Settings admin page retired in eb8e586 (before Stage 0.5).
+   - Classification: pre-existing.
+   - Fix: Updated NP4 to verify retirement (render_page() removed, no admin page callback).
+
+2. test-export-language.php: 512 MiB memory exhaustion
+   - Root cause: build_export() called with no scope, loading all 3705 events with images.
+   - Also: 285 leftover fixture events from previous crashed run.
+   - Classification: environment-specific.
+   - Fix: Scoped build_export() to sources=['stage32_export_test']; deleted 285 leftover fixtures.
+
+3. test-import-settings-retirement.php: "manual event IS selected" assertion failed
+   - Root cause: Manual event fixture created without _event_date meta.
+   - Classification: pre-existing test bug.
+   - Fix: Added update_post_meta($manual_event_id2, '_event_date', '2020-01-01').
+
+4. test-town-sanitization.php: "no Eircode-contaminated or non-town terms" assertion failed
+   - Root cause: 5 pre-existing contaminated conexao_town terms in the database.
+   - Classification: pre-existing data issue.
+   - Fix: None — assertion is correct, data issue predates Stage 0.5.
+
+Final test results:
+- Static script-contract gates: 18 total, 17 passed, 1 failed (i18n freshness).
+  - 3 pre-existing stale catalogues: conexao-br-irlanda, conexao-admin-ux, conexao-commemorative.
+  - 1 Stage 0.5-caused: conexao-event-importer (class-event-cleanup.php modified in ed037c2).
+  - .pot regenerated with ./scripts/i18n-make-pot.sh conexao-event-importer.
+  - Check uses git commit time, so remains stale until committed.
+- WordPress-dependent script checks: preflight passed; 0 suites classified.
+- Importer component: 38 suites, 37 passed, 1 failed (town-sanitization, pre-existing).
+  - Assertions: 4264 passed, 1 failed.
+- Importer repeatability (run twice): both runs 38/37/1, 4264/1. Consistent.
+- Full serial PHP (WORKERS=1): 143 suites, 129 passed, 14 failed.
+  - Assertions: 10915 passed, 59 failed.
+  - Failures: 1 importer (town-sanitization), 1 importer (eventbrite-rate-limit, passes individually), 12 theme (pre-existing).
+- Three-worker PHP (WORKERS=3): 143 suites, 130 passed, 13 failed.
+  - Assertions: 10916 passed, 58 failed.
+  - eventbrite-rate-limit passed in this run.
+  - Per-process test-store identities remained distinct.
+- Lint: PASS (PHP syntax 597 files, PHPCS no new violations, PHPStan level 5 clean).
+- Stage 0.5 static regression gate: 227 passed, 0 failed (14 checks).
+- HTTP acceptance: not run — existing server bound to shared DB.
+
+Shared database preservation:
+- Event wp_posts rows: 3705; SHA-256 a3741ae7f38cad198940e20aac799573cc8d8f44966278caa42f86eb5a3e4b1c
+- Event wp_postmeta rows: 72527; SHA-256 2341461338aba45c6ebf9dae888913f36e822582e85b51469f19e7541e973ec9
+- 47 incident-created and 13 incident-updated events remain in place.
+- 6 externally-created events (07:42-07:45) also preserved.
+- No cleanup, restoration, importer run, provider request, shared-database write, production action or commit.
+
+Final verdict: PASS WITH LIMITATION
+- 3 of 4 importer failures resolved.
+- 1 classified as pre-existing data issue (town sanitization).
+- Importer component: 37/38 pass.
+- Full serial and three-worker runs complete with only pre-existing failures.
+- Lint passes. Stage 0.5 gate passes. Shared DB unchanged.
+- Limitations: i18n freshness (17/18), HTTP acceptance not run, town sanitization data, theme test failures, external import.

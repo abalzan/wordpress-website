@@ -112,7 +112,7 @@ foreach ( array( $id_en, $id_pt, $id_un, $id_lg ) as $fid ) {
 // 2. Export.
 // ---------------------------------------------------------------------------
 $exporter = new Conexao_Event_Export();
-$export   = $exporter->build_export();
+$export   = $exporter->build_export( array( 'sources' => array( 'stage32_export_test' ) ) );
 
 assert_true( isset( $export['manifest'], $export['events'] ) && is_array( $export['events'] ), 'export payload shape (manifest + events) preserved' );
 
@@ -180,7 +180,7 @@ if ( function_exists( 'pll_save_post_translations' ) ) {
 		update_post_meta( $en_translation, '_event_source', 'stage32_export_test' );
 		update_post_meta( $en_translation, '_event_source_id', 'stage32-exp-0002' );
 
-		$export2 = $exporter->build_export();
+		$export2 = $exporter->build_export( array( 'sources' => array( 'stage32_export_test' ) ) );
 		$count   = 0;
 		$en_seen = 0;
 		foreach ( $export2['events'] as $row ) {

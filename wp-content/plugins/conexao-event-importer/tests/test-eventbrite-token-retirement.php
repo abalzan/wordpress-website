@@ -449,39 +449,42 @@ test_section( 'NP4 — no configuration or documentation demands a token' );
 delete_option( Conexao_Import_Settings::OPTION_KEY );
 g7_reset_settings_cache();
 
-$settings_page = new Conexao_Import_Settings();
+// The Settings admin page was retired (eb8e586): there is no render_page()
+// method and no registered admin page. The retirement itself is the proof
+// that no configuration screen can demand a token — there is no screen.
+assert_true(
+	! method_exists( 'Conexao_Import_Settings', 'render_page' ),
+	'NP4 the settings screen no longer exists (render_page() removed)'
+);
 
-// render_page() returns early without manage_options; grant it so the real
-// markup is measured rather than an empty string.
-$admin = get_users(
-	array(
-		'role'   => 'administrator',
-		'number' => 1,
-		'fields' => 'ID',
+// No admin page callback is registered for the retired settings slug.
+$retired_hooks = array_values(
+	array_filter(
+		array_keys( (array) $GLOBALS['_registered_pages'] ),
+		static function ( $hook ) {
+			return false !== strpos( (string) $hook, 'conexao-import-settings' );
+		}
 	)
 );
-
-$rendered = '';
-if ( ! empty( $admin ) ) {
-	wp_set_current_user( (int) $admin[0] );
-	ob_start();
-	$settings_page->render_page();
-	$rendered = (string) ob_get_clean();
-	wp_set_current_user( 0 );
-}
-
-assert_true( '' !== $rendered, 'NP4 the settings screen renders real markup', 'rendered ' . strlen( $rendered ) . ' bytes' );
 assert_true(
-	false === stripos( $rendered, 'eventbrite_api_token' ),
-	'NP4 the settings screen exposes no token field'
+	empty( $retired_hooks ),
+	'NP4 no admin page callback is registered for the retired settings slug',
+	implode( ', ', $retired_hooks )
+);
+
+// The settings storage class itself remains available (cleanup_scope still
+// reads from it), but it exposes no token field and no save action.
+assert_true(
+	'conexao_event_importer_settings' === Conexao_Import_Settings::OPTION_KEY,
+	'NP4 the settings option key is unchanged'
 );
 assert_true(
-	false === stripos( $rendered, 'developers.eventbrite.com' ),
-	'NP4 the settings screen does not send a maintainer to create a token'
+	is_array( Conexao_Import_Settings::get_defaults() ),
+	'NP4 get_defaults() returns an array (no token default)'
 );
 assert_true(
-	false === stripos( $rendered, 'name="conexao_settings_action"' ),
-	'NP4 the settings screen has no save action (nothing to save)'
+	empty( Conexao_Import_Settings::get_defaults() ),
+	'NP4 get_defaults() is empty (no token setting)'
 );
 
 // The maintained importer DOCUMENTATION is checked by the repository-level

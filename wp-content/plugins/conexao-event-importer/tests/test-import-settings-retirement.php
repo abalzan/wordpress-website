@@ -278,6 +278,7 @@ $manual_event_id2 = wp_insert_post(
 		'post_date'   => '2020-01-01 00:00:00',
 	)
 );
+update_post_meta( $manual_event_id2, '_event_date', '2020-01-01' );
 
 $imported_event_id2 = wp_insert_post(
 	array(
