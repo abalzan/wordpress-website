@@ -166,4 +166,23 @@ separating the two:
 The first of these is what forces the `UNRESOLVED` verdict. It is a gap in the
 historical evidence, not evidence of a preservation failure.
 
+## Correction — 2026-11-15 (two-gap narrative and post 170981 follow-up)
+
+**Reconciliation A — reclassified.** The effective classification of Reconciliation A is now `UNRESOLVED` (superseding the inline `RECONCILED — CAPTURE MISMATCH` recorded above; see `01-all-event-post-digest.md` §10 for the dated correction). The after-state digest is reproducible; the before-state digest is not, and its exact serialization and ordering cannot be established from the retained evidence. An unknown before-state method does not demonstrate a capture mismatch.
+
+**Reconciliation B — unchanged.** `UNRESOLVED — INSUFFICIENT IDENTITY EVIDENCE`: the historical 285-record ID list is absent, so membership and overlap between the 275 shared cohort and the 285 clone leftovers cannot be established.
+
+**Revised summary of unresolved questions.** The final reconciliation verdict reflects **two** unresolved questions, not one:
+
+1. **Reconciliation A:** the before-digest method is unknown and the before-state cannot be independently digest-verified.
+2. **Reconciliation B:** the historical 285-record ID list is absent, so membership and overlap cannot be established.
+
+**Post 170981 — cohort-completeness finding (separate, documented separately).** Post 170981 (`eventbrite_louth`, `lgbt-young-adults-group`, `post_modified` 2026-11-14 21:34:29) is a row inside the incident-window recount that is not part of the baseline's enumerated 60-row cohort and is absent from both Stage 0.5 TSV inventories. Its creation timing is classified `EXISTENCE TIMING UNRESOLVED` (see `03-protected-cohort-status.md` §6). It is recorded as a cohort-completeness finding only.
+
+**What is not established.** Post 170981 is not described as a confirmed preservation violation: the available evidence establishes neither that it was created during the incident, nor that it was modified during it, nor any Stage 1 involvement. Unresolved evidence is not, by itself, proof of data loss or Stage 1 modification. Stage 1 ran on 2026-11-15, after the incident window of 2026-11-14, and performed no content writes.
+
+**Scope of corroborating evidence.** The existing corroborating fingerprints (event postmeta, the 275-row cohort, event options, counts) continue to support preservation only within the specific fields, records and environments they cover; they do not close Reconciliation A or B.
+
+**Verdicts unchanged.** Final reconciliation verdict: `UNRESOLVED`. Stage 1 verdict: `PASS WITH LIMITATION`. Protected records: none modified.
+
 _Last verified: 2026-11-15 by the Stage 1 preservation reconciliation_

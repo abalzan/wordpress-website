@@ -179,4 +179,22 @@ plus the documented external import — not on a direct row-level diff of the tw
 captures. A direct row-level diff would require a before-edit row inventory that
 was never captured.
 
+## 10. Correction — 2026-11-15 (Reconciliation A reclassification)
+
+**Previous classification:** `RECONCILED — CAPTURE MISMATCH` (§8).
+**Corrected classification:** `UNRESOLVED`.
+
+**Reason for the correction.** Reconciliation A compared two digests taken from the same database, table, scope and column list: the before-edit digest (`86a39a84…`) and the after-edit digest (`4ec41dc2…`). The after-edit digest was reproduced exactly using tab-separated output ordered by `ID` with six columns (`ID, post_status, post_date, post_modified, post_name, post_title`), so the after-state capture method is established. The before-edit digest was not reproduced under any tested variant: its exact columns, scope, ordering, serialization and/or hash inputs remain undocumented, and its snapshot inputs are no longer available.
+
+An unknown or unreproducible before-state method is not a demonstrably different capture method, so the evidence does not support `RECONCILED — CAPTURE MISMATCH`. The earlier classification was incorrect because it attributed the digest difference to a specific capture difference (snapshot timing plus serialization) that the retained evidence cannot demonstrate.
+
+**What the retained evidence still shows:**
+- The after-digest remains exactly reproducible and is confirmed correct (`4ec41dc2…`).
+- Matching corroborating fingerprints exist for event postmeta (72,527 rows), the 275-row `stage32_export_test` cohort and the four event options (`conexao_event_sources`, `conexao_event_import_history`, `conexao_event_import_continuations`, `cron`), plus equal event post counts (3,705) and equal postmeta counts (72,527).
+- Those corroborating fingerprints support preservation **only within their specific scope** (the fields, records and environments they cover). They do not convert the all-event-post digest into a completed reconciliation, because no before-edit row inventory exists for a direct row-level diff.
+
+**What would close this issue.** The original before-digest method (exact columns, scope, ordering, serialization and hash inputs) or a documented before-state snapshot sufficient for recomputation. Neither exists in the retained evidence.
+
+The original digest values and historical investigation results recorded in §1–§9 are retained unchanged; this section corrects only the effective classification of Reconciliation A.
+
 _Last verified: 2026-11-15 by the Stage 1 preservation reconciliation_

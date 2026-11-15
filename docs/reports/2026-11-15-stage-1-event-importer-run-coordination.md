@@ -202,7 +202,7 @@ Both were investigated read-only. No database was written, no WordPress
 bootstrap, importer, continuation, cron or scheduler operation was triggered, no
 protected record was changed, and no application code or test was modified.
 
-### Reconciliation A — all-event-post digest: `RECONCILED — CAPTURE MISMATCH`
+### Reconciliation A — all-event-post digest: `UNRESOLVED` (corrected 2026-11-15; previously `RECONCILED — CAPTURE MISMATCH`)
 
 The two captures are from the **same** `wordpress` database, table, scope, six
 columns and 3,705-row count. Neither documented its serialization.
@@ -229,6 +229,8 @@ postmeta (72,527 rows), the 275-row cohort, and all four option digests.
 
 **The mismatch is a capture-timing and serialization artifact, not evidence of
 data loss.**
+
+**Correction note (2026-11-15).** The original `RECONCILED — CAPTURE MISMATCH` classification above is superseded: an unknown or unreproducible before-state method does not demonstrate a specific capture difference. The before-edit digest's exact columns, scope, ordering, serialization and hash inputs are undocumented and its snapshot inputs are no longer available, so Reconciliation A cannot be established as reconciled; its effective classification is now `UNRESOLVED`. See `docs/evidence/2026-11-15-stage-1-preservation-reconciliation/01-all-event-post-digest.md` §10 for the dated correction. Original digest values and investigation results are retained unchanged.
 
 ### Reconciliation B — 275 versus 285 cohorts: `UNRESOLVED — INSUFFICIENT IDENTITY EVIDENCE`
 
@@ -262,6 +264,14 @@ confirms the 275 cohort definition is correct.
 
 No cohort shows evidence of a preservation violation.
 
+### Post 170981 follow-up (2026-11-15)
+
+Post 170981 (`eventbrite_louth`, slug `lgbt-young-adults-group`, `post_modified` 2026-11-14 21:34:29) appeared as a 61st row in the incident `post_modified` window check. It is not part of the baseline's enumerated 60-row cohort (13 updated + 47 created `eventbrite_cork` rows) and is absent from both Stage 0.5 TSV inventories. Its `post_date`, `post_date_gmt`, `post_modified_gmt`, `_event_source_id` and `_event_imported` are not recorded in any evidence file, and no database query was performed for this follow-up (no safe read-only access was available; no account, grant or privilege was changed).
+
+The importer sets `_event_imported = '1'` (a flag, not a timestamp) and `_event_import_date = current_time('mysql')`; `wp_insert_post` defaults `post_date`/`post_modified` to site-local time at insertion, but none of these fields is a verified creation-time record for this row without reading it. The incident window (`2026-11-14 21:28:00`–`21:35:00`) and the baseline capture (`2026-11-14T22:25:02Z`) share one timeline; the site timezone is `Europe/Dublin` (UTC offset 0 in November 2026).
+
+Classification: `EXISTENCE TIMING UNRESOLVED`. The `post_modified` falls inside the window, but insertion time is not established by available evidence. This is not evidence that Stage 1 created or modified the record (Stage 1 ran on 2026-11-15, after the incident, and performed no content writes). See `docs/evidence/2026-11-15-stage-1-preservation-reconciliation/03-protected-cohort-status.md` §6 for the full follow-up, including cohort implications for the 47-created and 13-updated cohorts.
+
 ### Effect on the Stage 1 verdict
 
 **The Stage 1 verdict of `PASS WITH LIMITATION` is unchanged.**
@@ -273,9 +283,7 @@ an *explanation* for the mismatch, not a removal of the limitation.
 
 The final reconciliation verdict is **`UNRESOLVED`**, derived per the task's
 rule that an unresolved reconciliation forces an unresolved final verdict. That
-verdict reflects one specific gap — the 275-versus-285 relationship — and not a
-general failure of the preservation evidence. Every fingerprint that can be
-compared matches exactly, and no protected record was identified as changed.
+verdict reflects two unresolved questions — Reconciliation A (the before-digest method is unknown and the before-state cannot be independently digest-verified) and Reconciliation B (the historical 285-record ID list is absent, so membership and overlap cannot be established) — and not a general failure of the preservation evidence. Every fingerprint that can be compared matches exactly, and no protected record was identified as changed.
 
 ### Newly established facts
 
@@ -296,6 +304,7 @@ compared matches exactly, and no protected record was identified as changed.
 2. The before-edit all-event digest cannot be recomputed, so no direct
    row-level diff of the two captures is possible.
 3. The 14 probe-associated events have no enumerated ID list or fingerprint pair.
+4. Post 170981 creation timing is `EXISTENCE TIMING UNRESOLVED`; its relationship to the incident window is not established from available evidence.
 
 ### Evidence
 
@@ -307,6 +316,7 @@ Full detail is in
 - [`02-stage32-fixture-cohorts.md`](../evidence/2026-11-15-stage-1-preservation-reconciliation/02-stage32-fixture-cohorts.md) — cohort identities, current-state verification and classification.
 - [`03-protected-cohort-status.md`](../evidence/2026-11-15-stage-1-preservation-reconciliation/03-protected-cohort-status.md) — status of every protected cohort.
 - [`04-final-reconciliation.md`](../evidence/2026-11-15-stage-1-preservation-reconciliation/04-final-reconciliation.md) — executive summary and final verdict.
+- [`05-correction-2026-11-15.md`](../evidence/2026-11-15-stage-1-preservation-reconciliation/05-correction-2026-11-15.md) — correction log for this reconciliation (2026-11-15).
 
 ### Read-only access
 
