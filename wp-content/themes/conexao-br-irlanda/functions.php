@@ -23,10 +23,12 @@ define( 'CONEXAO_THEME_URI', get_template_directory_uri() );
  * This is a UI EXPOSURE flag only. It controls whether the PT/EN language
  * switcher is rendered; it does not control English itself.
  *
- * The language switcher is intentionally disabled during EN validation.
- * Re-enable by changing CONEXAO_LANGUAGE_SWITCHER_ENABLED from false to true.
+ * The language switcher is enabled by default. Disable it by changing
+ * CONEXAO_LANGUAGE_SWITCHER_ENABLED from true to false (or by defining the
+ * constant earlier, e.g. in wp-config.php — this definition is guarded by
+ * ! defined()).
  *
- * Re-enabling requires THIS ONE VALUE and nothing else — no template, Polylang,
+ * Changing requires THIS ONE VALUE and nothing else — no template, Polylang,
  * routing, redirect, content or database change. While the flag is false:
  *
  *   - the switcher is not emitted into the HTML at all (no container, no
@@ -41,7 +43,7 @@ define( 'CONEXAO_THEME_URI', get_template_directory_uri() );
  * @var bool
  */
 if ( ! defined( 'CONEXAO_LANGUAGE_SWITCHER_ENABLED' ) ) {
-	define( 'CONEXAO_LANGUAGE_SWITCHER_ENABLED', false );
+	define( 'CONEXAO_LANGUAGE_SWITCHER_ENABLED', true );
 }
 
 // ---------------------------------------------------------------------------
