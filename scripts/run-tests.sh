@@ -60,6 +60,38 @@ CONEXAO_TEST_WORKERS="${CONEXAO_TEST_WORKERS:-1}"
 WORK_DIR="$(mktemp -d)"
 trap 'rm -rf "$WORK_DIR"' EXIT
 
+# --- Test DB credentials (.conexao-test.env) -------------------------------
+#
+# The WordPress/DB-dependent suites connect with a schema-restricted account
+# (CONEXAO_TEST_DB_USER / CONEXAO_TEST_DB_PASSWORD) that can only reach the
+# disposable test schema. The credentials live in the git-ignored
+# `.conexao-test.env` (mode 0600) and are NEVER sourced on the host. Instead,
+# the file is copied into the WordPress container at a protected path and
+# sourced there by `scripts/conexao-test-exec.sh`, which exports the
+# `WORDPRESS_DB_*` variables into the one-off PHP test process before
+# `wp-config.php` runs. This keeps the password out of host argv, Docker `-e`
+# arguments, `ps` output, shell history and logs.
+#
+# The host only needs the non-secret test DB name to validate the environment;
+# the user/password are read inside the container.
+TEST_DB_ENV_FILE="$REPO_ROOT/.conexao-test.env"
+# Container-side protected path for the copied secret file. The scripts/ tree
+# is bind-mounted into the container, so this path is writable and readable
+# only by the container's www-data/root.
+TEST_DB_ENV_FILE_CONTAINER="/var/www/html/scripts/.conexao-test.env"
+
+# The non-secret `.env` provides the disposable test DB name (CONEXAO_TEST_DB_NAME)
+# and the shared WordPress DB identity. It no longer contains any test
+# credential. Sourcing it on the host is safe: the only DB password it holds is
+# the shared `wordpress` runtime password, which is never forwarded to a test
+# process (the wrapper exports the restricted `conexao_test` credentials).
+if [ -f "$REPO_ROOT/.env" ]; then
+	set -a
+	# shellcheck disable=SC1091
+	. "$REPO_ROOT/.env"
+	set +a
+fi
+
 # --- Output helpers --------------------------------------------------------
 
 if [ -t 1 ]; then
@@ -308,24 +340,87 @@ ensure_isolated_db_environment() {
 	ISOLATED_DB_ENV_READY=1
 }
 
+# --- Protected test-secret file transfer -----------------------------------
+#
+# The host holds `.conexao-test.env` (mode 0600). It is copied into the
+# WordPress container at a protected path so the container-side wrapper can
+# source it. The copy is removed on exit. The host-side `docker compose cp`
+# command line contains only the file path — never the secret value.
+
+TEST_DB_ENV_COPIED=0
+
+copy_test_secret_into_container() {
+	if [ "$TEST_DB_ENV_COPIED" = "1" ]; then
+		return 0
+	fi
+
+	if [ ! -f "$TEST_DB_ENV_FILE" ]; then
+		blocked "test secret file not found: $TEST_DB_ENV_FILE (create it with mode 0600)"
+		return 1
+	fi
+
+	if [ ! -r "$TEST_DB_ENV_FILE" ]; then
+		blocked "test secret file is not readable: $TEST_DB_ENV_FILE"
+		return 1
+	fi
+
+	# Copy into the container. `docker compose cp` carries file contents, not a
+	# command-line secret value. The destination is inside the bind-mounted
+	# scripts/ tree so no extra mount is required.
+	if ! docker compose cp "$TEST_DB_ENV_FILE" "wordpress:$TEST_DB_ENV_FILE_CONTAINER"; then
+		blocked "could not copy the test secret file into the WordPress container"
+		return 1
+	fi
+
+	# Restrict the container-side copy to the file owner only.
+	if ! docker compose exec -T wordpress chmod 600 "$TEST_DB_ENV_FILE_CONTAINER"; then
+		blocked "could not restrict permissions on the container-side test secret file"
+		return 1
+	fi
+
+	TEST_DB_ENV_COPIED=1
+}
+
+remove_test_secret_from_container() {
+	if [ "$TEST_DB_ENV_COPIED" != "1" ]; then
+		return 0
+	fi
+	# Best-effort removal; never fail the run on cleanup.
+	docker compose exec -T wordpress rm -f "$TEST_DB_ENV_FILE_CONTAINER" >/dev/null 2>&1 || true
+	TEST_DB_ENV_COPIED=0
+}
+
+# Ensure the container-side secret is removed when the runner exits.
+trap 'remove_test_secret_from_container' EXIT
+
 run_isolated_db_preflight() {
 	if ! ensure_isolated_db_environment; then
 		return 1
 	fi
 
 	if [ "$IN_CONTAINER" = "1" ]; then
-		WORDPRESS_DB_NAME="$ISOLATED_DB_NAME" \
+		# Running inside the container: the secret file is expected at the
+		# container path (placed there by an operator or a prior copy step).
+		CONEXAO_TEST_DB_ENV_FILE="$TEST_DB_ENV_FILE_CONTAINER" \
 		CONEXAO_TEST_DB_NAME="$ISOLATED_DB_NAME" \
+		CONEXAO_TEST_DB_USER="conexao_test" \
 		CONEXAO_TEST_SHARED_DB_NAME="$ISOLATED_SHARED_DB_NAME" \
+		WORDPRESS_DB_HOST="${WORDPRESS_DB_HOST:-}" \
 		GITHUB_ACTIONS="${GITHUB_ACTIONS:-false}" \
-		php tests/lib/isolated-db.php
+		bash /var/www/html/scripts/conexao-test-exec.sh \
+			php /var/www/html/tests/lib/isolated-db.php
 	elif [ "$HAVE_DOCKER" = "1" ]; then
+		if ! copy_test_secret_into_container; then
+			return 1
+		fi
 		docker compose exec -T \
-			-e "WORDPRESS_DB_NAME=$ISOLATED_DB_NAME" \
+			-e "CONEXAO_TEST_DB_ENV_FILE=$TEST_DB_ENV_FILE_CONTAINER" \
 			-e "CONEXAO_TEST_DB_NAME=$ISOLATED_DB_NAME" \
+			-e "CONEXAO_TEST_DB_USER=conexao_test" \
 			-e "CONEXAO_TEST_SHARED_DB_NAME=$ISOLATED_SHARED_DB_NAME" \
 			-e "GITHUB_ACTIONS=${GITHUB_ACTIONS:-false}" \
-			wordpress php /var/www/html/tests/lib/isolated-db.php
+			wordpress bash /var/www/html/scripts/conexao-test-exec.sh \
+				php /var/www/html/tests/lib/isolated-db.php
 	else
 		blocked "an isolated local WordPress database requires the running Docker test environment"
 		return 1
@@ -662,32 +757,51 @@ run_php() {
 	fi
 
 	if [ "$IN_CONTAINER" = "1" ]; then
+		# Inside the container: the wrapper sources the secret file and exports
+		# WORDPRESS_DB_* before PHP starts. No secret value is on this command
+		# line; only the wrapper path, the secret-file path and the suite path.
 		if [ -n "$arg" ]; then
-			WORDPRESS_DB_NAME="$ISOLATED_DB_NAME" CONEXAO_TEST_DB_NAME="$ISOLATED_DB_NAME" \
-				CONEXAO_TEST_SHARED_DB_NAME="$ISOLATED_SHARED_DB_NAME" \
-				GITHUB_ACTIONS="${GITHUB_ACTIONS:-false}" \
-				timeout "$SUITE_TIMEOUT" php "$file" "$arg"
+			CONEXAO_TEST_DB_ENV_FILE="$TEST_DB_ENV_FILE_CONTAINER" \
+			CONEXAO_TEST_DB_NAME="$ISOLATED_DB_NAME" \
+			CONEXAO_TEST_DB_USER="conexao_test" \
+			CONEXAO_TEST_SHARED_DB_NAME="$ISOLATED_SHARED_DB_NAME" \
+			WORDPRESS_DB_HOST="${WORDPRESS_DB_HOST:-}" \
+			GITHUB_ACTIONS="${GITHUB_ACTIONS:-false}" \
+			timeout "$SUITE_TIMEOUT" bash /var/www/html/scripts/conexao-test-exec.sh \
+				php "$file" "$arg"
 		else
-			WORDPRESS_DB_NAME="$ISOLATED_DB_NAME" CONEXAO_TEST_DB_NAME="$ISOLATED_DB_NAME" \
-				CONEXAO_TEST_SHARED_DB_NAME="$ISOLATED_SHARED_DB_NAME" \
-				GITHUB_ACTIONS="${GITHUB_ACTIONS:-false}" \
-				timeout "$SUITE_TIMEOUT" php "$file"
+			CONEXAO_TEST_DB_ENV_FILE="$TEST_DB_ENV_FILE_CONTAINER" \
+			CONEXAO_TEST_DB_NAME="$ISOLATED_DB_NAME" \
+			CONEXAO_TEST_DB_USER="conexao_test" \
+			CONEXAO_TEST_SHARED_DB_NAME="$ISOLATED_SHARED_DB_NAME" \
+			WORDPRESS_DB_HOST="${WORDPRESS_DB_HOST:-}" \
+			GITHUB_ACTIONS="${GITHUB_ACTIONS:-false}" \
+			timeout "$SUITE_TIMEOUT" bash /var/www/html/scripts/conexao-test-exec.sh \
+				php "$file"
 		fi
 	elif [ "$HAVE_DOCKER" = "1" ]; then
+		if ! copy_test_secret_into_container; then
+			printf '%s\n' 'conexao-test-bootstrap: could not stage the test secret file' >&2
+			return 1
+		fi
 		if [ -n "$arg" ]; then
 			timeout "$SUITE_TIMEOUT" docker compose exec -T \
-				-e "WORDPRESS_DB_NAME=$ISOLATED_DB_NAME" \
+				-e "CONEXAO_TEST_DB_ENV_FILE=$TEST_DB_ENV_FILE_CONTAINER" \
 				-e "CONEXAO_TEST_DB_NAME=$ISOLATED_DB_NAME" \
+				-e "CONEXAO_TEST_DB_USER=conexao_test" \
 				-e "CONEXAO_TEST_SHARED_DB_NAME=$ISOLATED_SHARED_DB_NAME" \
 				-e "GITHUB_ACTIONS=${GITHUB_ACTIONS:-false}" \
-				wordpress php "/var/www/html/$file" "$arg"
+				wordpress bash /var/www/html/scripts/conexao-test-exec.sh \
+					php "/var/www/html/$file" "$arg"
 		else
 			timeout "$SUITE_TIMEOUT" docker compose exec -T \
-				-e "WORDPRESS_DB_NAME=$ISOLATED_DB_NAME" \
+				-e "CONEXAO_TEST_DB_ENV_FILE=$TEST_DB_ENV_FILE_CONTAINER" \
 				-e "CONEXAO_TEST_DB_NAME=$ISOLATED_DB_NAME" \
+				-e "CONEXAO_TEST_DB_USER=conexao_test" \
 				-e "CONEXAO_TEST_SHARED_DB_NAME=$ISOLATED_SHARED_DB_NAME" \
 				-e "GITHUB_ACTIONS=${GITHUB_ACTIONS:-false}" \
-				wordpress php "/var/www/html/$file"
+				wordpress bash /var/www/html/scripts/conexao-test-exec.sh \
+					php "/var/www/html/$file"
 		fi
 	else
 		blocked "host PHP execution is unsupported without the isolated Docker environment"

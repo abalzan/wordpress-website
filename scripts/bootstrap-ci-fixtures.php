@@ -993,12 +993,22 @@ bootstrap_step_start();
 				// ones must actually be upcoming, whenever the suite runs.
 				$offset = (int) $pair['offset'];
 
-				// A FULL datetime. A bare `Y-m-d` here made WordPress store
-				// `00:00:00` and then report the record differently on read, so the
-				// upsert comparison never matched and these events were "repaired" on
-				// every single run.
+				// `_event_date` is contractually a date-only `Y-m-d` value: the
+				// event runtime's recurrence evaluator validates exactly that
+				// shape, and the importer's write boundary rejects a
+				// datetime-shaped value. The publication date (`post_date`) below
+				// keeps its full `Y-m-d H:i:s` datetime — that is WordPress's own
+				// format and is unrelated to the `_event_date` contract — so the
+				// deterministic upsert property is preserved without ever
+				// persisting a datetime into `_event_date`.
+				//
+				// A bare `Y-m-d` for `post_date` made WordPress store `00:00:00`
+				// and then report the record differently on read, so the upsert
+				// comparison never matched and these events were "repaired" on
+				// every single run. `$date` therefore stays a FULL datetime for
+				// `post_date`, while `_event_date` takes its date-only prefix.
 				$date                       = gmdate( 'Y-m-d H:i:s', strtotime( current_time( 'Y-m-d' ) . ' ' . ( $offset >= 0 ? '+' : '' ) . $offset . ' days' ) );
-				$pt_meta['_event_date']     = $date;
+				$pt_meta['_event_date']     = gmdate( 'Y-m-d', strtotime( $date ) );
 				$pt_meta['_event_time']     = '19:00';
 				$pt_meta['_event_location'] = (string) $pair['town'] . ', ' . (string) $pair['county'];
 				$pt_meta['_event_status']   = 'published';

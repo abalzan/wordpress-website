@@ -129,12 +129,31 @@ function stage1_eventbrite_listing() {
  * @return string
  */
 function stage1_heritage_listing() {
+	// Compute fixture dates relative to the current site-local date so the
+	// P2 date-gate assertions do not drift when the suite runs on a different
+	// calendar day. A single cached base date ensures a run crossing local
+	// midnight cannot split its "today"/"tomorrow" calculations.
+	$stage1_fixture_today = new DateTimeImmutable( 'today', wp_timezone() );
+
+	$stage1_fixture_date = static function ( int $offset_days ) use ( $stage1_fixture_today ): string {
+		$modifier = ( $offset_days >= 0 ? '+' : '' ) . $offset_days . ' days';
+		// Heritage Week listings use "DD Month YYYY" (e.g. "15 November 2026"),
+		// which is the format the source's parse_dates_times() regex expects.
+		return $stage1_fixture_today->modify( $modifier )->format( 'j F Y' );
+	};
+
+	$past_date    = $stage1_fixture_date( -1 );
+	$today_date   = $stage1_fixture_date( 0 );
+	$future_date  = $stage1_fixture_date( 1 );
+	$conflict_end = $stage1_fixture_date( 4 );
+	$conflict_beg = $stage1_fixture_date( 2 );
+
 	$cards = array(
-		array( 'past', 'Past event', '14 November 2026', '14 November 2026', 'https://example.invalid/hw/past' ),
-		array( 'today', 'Today event', '15 November 2026', '15 November 2026', 'https://example.invalid/hw/today' ),
-		array( 'future', 'Future event', '16 November 2026', '16 November 2026', 'https://example.invalid/hw/future' ),
+		array( 'past', 'Past event', $past_date, $past_date, 'https://example.invalid/hw/past' ),
+		array( 'today', 'Today event', $today_date, $today_date, 'https://example.invalid/hw/today' ),
+		array( 'future', 'Future event', $future_date, $future_date, 'https://example.invalid/hw/future' ),
 		array( 'missing', 'Missing date event', '', '', 'https://example.invalid/hw/missing' ),
-		array( 'conflict', 'Conflicting range event', '20 November 2026', '18 November 2026', 'https://example.invalid/hw/conflict' ),
+		array( 'conflict', 'Conflicting range event', $conflict_end, $conflict_beg, 'https://example.invalid/hw/conflict' ),
 	);
 	$html = '<html><head><title>2026 Events</title></head><body>';
 	foreach ( $cards as $card ) {

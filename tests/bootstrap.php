@@ -233,7 +233,77 @@ global $wpdb;
 if ( ! isset( $wpdb->dbname ) || $wpdb->dbname !== $conexao_tests_expected_db || DB_NAME !== $conexao_tests_expected_db ) {
 	conexao_tests_bootstrap_fail( 'post-bootstrap database identity does not match CONEXAO_TEST_DB_NAME.' );
 }
-unset( $conexao_tests_expected_db, $conexao_tests_wp_config );
+
+/*
+ * Fail-closed actual-$wpdb identity guard (Stage 4 isolation remediation).
+ *
+ * A separately-created mysqli/PDO connection is NOT proof that WordPress's own
+ * $wpdb connection is restricted. This query runs through the exact $wpdb
+ * instance the test suite will use, AFTER WordPress has connected, and BEFORE
+ * any suite assertion or test-side write. It establishes:
+ *
+ *   - CURRENT_USER() resolves to the restricted `conexao_test` account;
+ *   - DATABASE() is the disposable test schema;
+ *   - the query ran through the same $wpdb object the suite uses.
+ *
+ * If the identity is not the restricted account on the disposable schema, the
+ * suite terminates immediately. No reconnect, no silent substitution.
+ */
+$conexao_tests_identity = $wpdb->get_row(
+	'SELECT USER() AS login_user, CURRENT_USER() AS matched_account, DATABASE() AS selected_database',
+	ARRAY_A
+);
+
+if ( ! is_array( $conexao_tests_identity ) ) {
+	conexao_tests_bootstrap_fail( 'could not read the actual $wpdb connection identity.' );
+}
+
+$conexao_tests_expected_user = (string) getenv( 'CONEXAO_TEST_DB_USER' );
+$conexao_tests_matched       = isset( $conexao_tests_identity['matched_account'] ) ? (string) $conexao_tests_identity['matched_account'] : '';
+$conexao_tests_selected      = isset( $conexao_tests_identity['selected_database'] ) ? (string) $conexao_tests_identity['selected_database'] : '';
+
+if ( '' === $conexao_tests_expected_user ) {
+	conexao_tests_bootstrap_fail( 'CONEXAO_TEST_DB_USER is required for the actual $wpdb identity guard.' );
+}
+
+/*
+ * CURRENT_USER() returns the account as MySQL matched it, including the host
+ * pattern (e.g. "conexao_test@172.18.%"). The expected user is the bare
+ * account name. Accept the bare name or the name@host form, but require the
+ * account portion to be exactly the restricted user.
+ */
+$conexao_tests_matched_user = $conexao_tests_matched;
+$conexao_tests_at_at        = strpos( $conexao_tests_matched, '@' );
+if ( false !== $conexao_tests_at_at ) {
+	$conexao_tests_matched_user = substr( $conexao_tests_matched, 0, $conexao_tests_at_at );
+}
+
+if ( $conexao_tests_expected_user !== $conexao_tests_matched_user ) {
+	conexao_tests_bootstrap_fail(
+		'actual $wpdb connection identity mismatch: expected CURRENT_USER() to resolve to "'
+		. $conexao_tests_expected_user . '", got "' . $conexao_tests_matched . '". '
+		. 'The test process is NOT isolated to the restricted account.'
+	);
+}
+
+if ( $conexao_tests_expected_db !== $conexao_tests_selected ) {
+	conexao_tests_bootstrap_fail(
+		'actual $wpdb selected database mismatch: expected "' . $conexao_tests_expected_db
+		. '", got "' . $conexao_tests_selected . '".'
+	);
+}
+
+// Record only the non-secret identity values for the evidence log.
+printf(
+	"WPDB_IDENTITY=PASS login_user=%s matched_account=%s selected_database=%s\n",
+	isset( $conexao_tests_identity['login_user'] ) ? (string) $conexao_tests_identity['login_user'] : '',
+	$conexao_tests_matched,
+	$conexao_tests_selected
+);
+
+unset( $conexao_tests_expected_db, $conexao_tests_wp_config, $conexao_tests_identity );
+unset( $conexao_tests_expected_user, $conexao_tests_matched, $conexao_tests_selected );
+unset( $conexao_tests_matched_user, $conexao_tests_at_at );
 
 /**
  * Whether a host name is a documented local development host.

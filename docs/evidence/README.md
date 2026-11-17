@@ -80,6 +80,7 @@ git ls-files docs/evidence | wc -l
 | 2026-11-08 | `christmas-micro-animations` · `commemorative-event-skill` |
 | 2026-11-14 | `event-import-dashboard` · `import-history-consolidation` · `stage-0-5` · `stage-0-event-importer-probe-deactivation` |
 | 2026-11-15 | `stage-1` · `stage-1-preservation-reconciliation` · `stage-2` · `stage-2-verification` · `stage-3` · `stage-3-5` |
+| 2026-11-16 | `stage-4` |
 | undated | `lazer-wikimedia-image-seed` · `stage-4-1-rest-matrix` |
 
 Two dated pairs are easy to confuse and are **different records**:

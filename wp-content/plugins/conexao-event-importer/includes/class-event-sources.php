@@ -468,6 +468,17 @@ class Conexao_Event_Sources {
 			'conexao-event-sources',
 			array( $this, 'render_sources_page' )
 		);
+
+		// Stage 4 — read-only "Needs review" queue (a sub-view of the Event
+		// Sources area, NOT the main Event Import dashboard).
+		add_submenu_page(
+			'conexao-event-import',
+			__( 'Needs Review', 'conexao-event-importer' ),
+			__( 'Needs Review', 'conexao-event-importer' ),
+			'manage_options',
+			'conexao-event-needs-review',
+			array( $this, 'render_needs_review_page' )
+		);
 	}
 
 	/**
@@ -607,6 +618,214 @@ class Conexao_Event_Sources {
 			?>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Render the read-only "Needs review" page (Stage 4).
+	 *
+	 * A read-only view over published event posts missing defined critical
+	 * fields. It never modifies a post, postmeta, taxonomy assignment, status
+	 * or source configuration. Capability-gated (`manage_options`), nonce-
+	 * protected where a nonce applies (this view is read-only GET, so no
+	 * nonce is required for the read itself; any future action would add
+	 * one), and all output is escaped.
+	 */
+	public function render_needs_review_page() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		if ( ! class_exists( 'Conexao_Event_Review_Queue' ) ) {
+			echo '<div class="notice notice-error"><p>' . esc_html__( 'The review queue is unavailable.', 'conexao-event-importer' ) . '</p></div>';
+			return;
+		}
+
+		// Bounded pagination: `paged` is a read-only GET parameter.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only GET, no state change.
+		$paged = isset( $_GET['paged'] ) ? max( 1, (int) $_GET['paged'] ) : 1;
+		$field = isset( $_GET['field'] ) ? sanitize_key( wp_unslash( $_GET['field'] ) ) : '';
+
+		$fields = Conexao_Event_Review_Queue::fields();
+		if ( '' !== $field && ! isset( $fields[ $field ] ) ) {
+			$field = '';
+		}
+
+		$counts = Conexao_Event_Review_Queue::field_counts();
+		?>
+		<div class="wrap conexao-event-needs-review">
+			<h1><?php esc_html_e( 'Needs Review', 'conexao-event-importer' ); ?></h1>
+			<p class="description">
+				<?php esc_html_e( 'Read-only view of published events missing defined critical fields. This view changes nothing: it never edits a post, its meta, its taxonomy terms, its status or any source configuration.', 'conexao-event-importer' ); ?>
+			</p>
+			<p class="description">
+				<?php esc_html_e( 'Counts may include CI fixture events: no reliable fixture marker is available, so fixtures are not excluded. Per-field counts can overlap and are not additive (an event may be missing more than one field).', 'conexao-event-importer' ); ?>
+			</p>
+			<p class="description">
+				<?php esc_html_e( 'Category review is unavailable — an approved category vocabulary has not been supplied. The category field is therefore omitted from this queue.', 'conexao-event-importer' ); ?>
+			</p>
+
+			<table class="widefat striped conexao-needs-review-summary">
+				<thead>
+					<tr>
+						<th><?php esc_html_e( 'Field', 'conexao-event-importer' ); ?></th>
+						<th><?php esc_html_e( 'Events missing', 'conexao-event-importer' ); ?></th>
+						<th><?php esc_html_e( 'Review', 'conexao-event-importer' ); ?></th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php foreach ( $fields as $key => $info ) : ?>
+						<tr>
+							<td><?php echo esc_html( $info['label'] ); ?></td>
+							<td><?php echo esc_html( number_format_i18n( isset( $counts[ $key ] ) ? $counts[ $key ] : 0 ) ); ?></td>
+							<td>
+								<a href="<?php echo esc_url( admin_url( 'admin.php?page=conexao-event-needs-review&field=' . rawurlencode( $key ) ) ); ?>">
+									<?php esc_html_e( 'View events', 'conexao-event-importer' ); ?>
+								</a>
+							</td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+
+			<?php
+			if ( '' !== $field ) {
+				$this->render_needs_review_drilldown( $field, $fields[ $field ]['label'], $paged );
+			}
+			?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Render the per-field drill-in list for the needs-review queue.
+	 *
+	 * The drill-in applies the SAME population query as the aggregate count
+	 * (published event posts, paginated), then filters to the posts missing
+	 * the selected field, so the drill-in population and the count can never
+	 * diverge. Bounded pagination keeps the admin page out of memory.
+	 *
+	 * @param string $field Field key.
+	 * @param string $label Field label.
+	 * @param int    $paged 1-based page number.
+	 */
+	protected function render_needs_review_drilldown( $field, $label, $paged ) {
+		$per_page = Conexao_Event_Review_Queue::PER_PAGE;
+
+		// First pass: find the page of the population that contains the
+		// requested slice of missing-field post IDs. Because the drill-in
+		// filters in PHP over the same ordered population, we walk the
+		// population pages until we have collected `paged * per_page` missing
+		// IDs, then slice.
+		$wanted_offset = ( max( 1, (int) $paged ) - 1 ) * $per_page;
+		$collected     = array();
+		$page          = 1;
+		$max_pages     = 400;
+		$total_missing = 0;
+
+		do {
+			$result = Conexao_Event_Review_Queue::query_population( $page, $per_page );
+			if ( empty( $result['ids'] ) ) {
+				break;
+			}
+			$missing = Conexao_Event_Review_Queue::filter_missing( $result['ids'], $field );
+			$total_missing += count( $missing );
+			if ( count( $collected ) < $wanted_offset + $per_page ) {
+				$collected = array_merge( $collected, $missing );
+			}
+			$page++;
+			$page_count = count( $result['ids'] );
+		} while ( $page <= $max_pages && $page_count === $per_page );
+
+		$page_ids  = array_slice( $collected, $wanted_offset, $per_page );
+		$total_pages = ( $total_missing > 0 ) ? (int) ceil( $total_missing / $per_page ) : 1;
+		?>
+		<h2>
+			<?php
+			echo esc_html(
+				sprintf(
+					/* translators: %s: field label. */
+					__( 'Events missing: %s', 'conexao-event-importer' ),
+					$label
+				)
+			);
+			?>
+		</h2>
+		<p class="description">
+			<?php
+			echo esc_html(
+				sprintf(
+					/* translators: 1: current page, 2: total pages, 3: total missing. */
+					__( 'Page %1$d of %2$d · %3$d events missing this field.', 'conexao-event-importer' ),
+					(int) $paged,
+					(int) $total_pages,
+					(int) $total_missing
+				)
+			);
+			?>
+		</p>
+		<table class="widefat striped conexao-needs-review-list">
+			<thead>
+				<tr>
+					<th><?php esc_html_e( 'ID', 'conexao-event-importer' ); ?></th>
+					<th><?php esc_html_e( 'Title', 'conexao-event-importer' ); ?></th>
+					<th><?php esc_html_e( 'Source', 'conexao-event-importer' ); ?></th>
+					<th><?php esc_html_e( 'Missing', 'conexao-event-importer' ); ?></th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php if ( empty( $page_ids ) ) : ?>
+					<tr><td colspan="4"><?php esc_html_e( 'No events on this page.', 'conexao-event-importer' ); ?></td></tr>
+				<?php else : ?>
+					<?php foreach ( $page_ids as $post_id ) : ?>
+						<?php
+						$post = get_post( (int) $post_id );
+						if ( ! $post instanceof WP_Post ) {
+							continue;
+						}
+						$source = (string) get_post_meta( (int) $post_id, '_event_source', true );
+						if ( '' === $source ) {
+							$source = __( '(none)', 'conexao-event-importer' );
+						}
+						$missing_here = array();
+						foreach ( Conexao_Event_Review_Queue::fields() as $fkey => $finfo ) {
+							if ( Conexao_Event_Review_Queue::is_missing( (int) $post_id, $fkey ) ) {
+								$missing_here[] = $finfo['label'];
+							}
+						}
+						?>
+						<tr>
+							<td><?php echo esc_html( (string) $post_id ); ?></td>
+							<td><?php echo esc_html( $post->post_title ); ?></td>
+							<td><?php echo esc_html( $source ); ?></td>
+							<td><?php echo esc_html( implode( ', ', $missing_here ) ); ?></td>
+						</tr>
+					<?php endforeach; ?>
+				<?php endif; ?>
+			</tbody>
+		</table>
+		<?php
+		// Bounded pagination controls.
+		$base = admin_url( 'admin.php?page=conexao-event-needs-review&field=' . rawurlencode( $field ) );
+		if ( $total_pages > 1 ) {
+			echo '<p class="conexao-needs-review-pagination">';
+			if ( $paged > 1 ) {
+				$prev = add_query_arg( 'paged', $paged - 1, $base );
+				echo '<a href="' . esc_url( $prev ) . '">&laquo; ' . esc_html__( 'Previous', 'conexao-event-importer' ) . '</a> ';
+			}
+			echo esc_html(
+				sprintf(
+					/* translators: 1: current page, 2: total pages. */
+					__( 'Page %1$d of %2$d', 'conexao-event-importer' ),
+					(int) $paged,
+					(int) $total_pages
+				)
+			);
+			if ( $paged < $total_pages ) {
+				$next = add_query_arg( 'paged', $paged + 1, $base );
+				echo ' <a href="' . esc_url( $next ) . '">' . esc_html__( 'Next', 'conexao-event-importer' ) . ' &raquo;</a>';
+			}
+			echo '</p>';
+		}
 	}
 
 	/**

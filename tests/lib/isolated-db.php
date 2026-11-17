@@ -31,10 +31,18 @@ function conexao_test_db_preflight() {
 	}
 
 	$host     = getenv( 'WORDPRESS_DB_HOST' );
-	$user     = getenv( 'WORDPRESS_DB_USER' );
-	$password = getenv( 'WORDPRESS_DB_PASSWORD' );
+	$user     = getenv( 'CONEXAO_TEST_DB_USER' );
+	$password = getenv( 'CONEXAO_TEST_DB_PASSWORD' );
 
-	if ( ! is_string( $host ) || ! is_string( $user ) || ! is_string( $password ) ) {
+	if ( ! is_string( $user ) || '' === $user ) {
+		return conexao_test_db_fail( 'CONEXAO_TEST_DB_USER is required for the isolated test connection.' );
+	}
+
+	if ( ! is_string( $password ) || '' === $password ) {
+		return conexao_test_db_fail( 'CONEXAO_TEST_DB_PASSWORD is required for the isolated test connection.' );
+	}
+
+	if ( ! is_string( $host ) ) {
 		return conexao_test_db_fail( 'local WordPress database connection settings are unavailable.' );
 	}
 

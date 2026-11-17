@@ -2284,6 +2284,22 @@ class Conexao_Event_Importer_Engine {
 			'_event_last_checked' => current_time( 'mysql' ),
 		);
 
+		/*
+		 * Stage 4 — date-only write contract.
+		 *
+		 * `_event_date` and `_event_end_date` are contractually date-only
+		 * `Y-m-d`. The normalizer can only emit that shape, so this guard is a
+		 * no-op for every engine write; it exists so a future writer or a
+		 * hand-built payload can never silently persist a datetime-shaped
+		 * value. A datetime-shaped value is deterministically reduced to its
+		 * leading `Y-m-d` segment; a malformed value is left for the
+		 * normalizer's own validation to reject upstream (never persisted as a
+		 * datetime). This is a write-path guard, not a read-time migration.
+		 */
+		foreach ( array( '_event_date', '_event_end_date' ) as $date_key ) {
+			$meta[ $date_key ] = Conexao_Event_Date_Contract::date_only( $meta[ $date_key ] );
+		}
+
 		foreach ( $meta as $key => $value ) {
 			update_post_meta( $post_id, $key, $value );
 		}

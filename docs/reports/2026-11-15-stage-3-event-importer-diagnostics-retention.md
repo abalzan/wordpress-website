@@ -430,3 +430,270 @@ Stage 3 findings and verdict are unaffected.**
 Stage 3.5 performed **no** commit, push, merge, deploy, activation or release. Its
 evidence and documentation remain as working-tree changes for review.
 
+
+---
+
+## Stage 4 — Event quality: metadata, review queue and datetime contract cleanup (2026-11-16)
+
+Stage 4 is a forward-looking quality change. It does not resolve Stage 3.6's
+Eventbrite WAF block, does not restore any of the 76 HIGH + 4 CONDITIONAL
+suppressed events, and does not touch the 16 stranded continuations. Its
+findings and verdicts are recorded in
+[`docs/evidence/2026-11-16-stage-4/`](../evidence/2026-11-16-stage-4/).
+
+### What Stage 4 did
+
+1. **Read-only fetch-path assessment.** All eight Stage 3.6 Eventbrite target
+   sources (`offaly`, `meath`, `laois`, `mayo`, `kerry`, `westmeath`,
+   `clare`, `leitrim`) are `ASSESSED — NOT VERIFIED`: their last-import
+   timestamps (2026-11-14) predate the Stage 3.6 WAF refusal cutoff
+   (`2026-11-15T20:34:29Z`), and no retained importer-side record shows a
+   post-cutoff listing fetch or a post-cutoff WAF refusal for any of the
+   eight. The post-cutoff HTTP 405 failures on four non-target Eventbrite
+   sources (`waterford`, `louth`, `monaghan`, `roscommon`) are consistent
+   with the Stage 3.6 WAF block but do not constitute importer-side WAF
+   failure evidence for any of the eight target sources. No live request was
+   made.
+
+2. **Datetime contract cleanup.** `scripts/bootstrap-ci-fixtures.php` now
+   writes a date-only `Y-m-d` into `_event_date` (the `post_date` keeps its
+   full datetime for the deterministic upsert property). A defensive
+   write-path gate (`Conexao_Event_Date_Contract`) reduces any
+   datetime-shaped value to its leading `Y-m-d` at the engine write boundary,
+   so a future writer can never silently persist a datetime. The 20 existing
+   fixture violations (all synthetic CI fixtures) are reported and remain
+   unmodified. Verified: 18 passed, 0 failed.
+
+3. **P9 provider-specific metadata.** Motorsport Ireland gains per-event
+   image extraction from the listing card's thumbnail column (site chrome
+   rejected by marker). IVVCC has no retained HTML (`NOT VERIFIED — NO
+   RETAINED SOURCE HTML`). Mondello Park's retained fixture is REST JSON, not
+   detail HTML (`ASSESSED — NO EXTRACTABLE FIELDS IN RETAINED EVIDENCE` for
+   the detail-page fields; REST-level fields already correct). Verified: 93
+   passed, 0 failed.
+
+4. **Read-only review queue.** A "Needs Review" submenu under Event Sources
+   surfaces published events missing a featured image, venue or county. It is
+   read-only, capability-gated, nonce-protected (read-only GET), escaped, and
+   bounded by pagination. The category field is omitted while P8 is deferred.
+   Verified: 34 passed, 0 failed.
+
+5. **P8 category mapping.** `DEFERRED — VOCABULARY NOT SUPPLIED`. No approved
+   vocabulary was supplied; no mapper, taxonomy term or event assignment was
+   changed.
+
+### What Stage 4 did not change
+
+- No event post, postmeta, `_event_status`, source registry entry, log/history
+  row, continuation record, cron entry or preservation-cohort record was
+  modified.
+- No Stage 1/2/3 engine path, Eventbrite path, P1/P12/P13 code or Stage
+  3/3.5/3.6 evidence was modified.
+- No provider HTTP request was made.
+- No commit, push, merge, deploy, activation or release was performed.
+
+### Verdict
+
+**Prior claim (superseded):** `PASS WITH LIMITATION — P8 DEFERRED`
+
+**Corrected verdict:** `BLOCKED — TEST SAFETY GATE NOT SATISFIED`
+
+The mandatory test/safety gate is `NOT PASSED — SAFE ISOLATED ENVIRONMENT
+UNAVAILABLE`. Per the Stage 4 correction task §11, an unavailable isolated
+test environment is a **BLOCKED** condition, not a limitation that can
+support `PASS WITH LIMITATION`. The overall verdict must be `BLOCKED — TEST
+SAFETY GATE NOT SATISFIED`, even if the code changes appear complete and
+prior tests passed under non-qualifying credentials.
+
+Individual workstreams may still be `IMPLEMENTED — VERIFICATION INCOMPLETE`
+at the workstream level (implementation exists, verification blocked), but
+the overall verdict cannot be `PASS` or `PASS WITH LIMITATION` while the
+mandatory test-safety gate is unsatisfied.
+
+### Post-isolation-fix reassessment (2026-11-16)
+
+**Prior claim (superseded):** `BLOCKED — TEST SAFETY GATE NOT SATISFIED`
+
+**Updated verdict:** `BLOCKED — VERIFICATION INCOMPLETE`
+
+A schema-restricted test account `conexao_test`@`172.18.%` was created with
+explicit privileges on `conexao_stage05_test_5bd9ece5c032` only. The five
+empirical isolation checks prove the account can use the test schema but
+cannot read or write the shared `wordpress` schema (both denied with MySQL
+error 1142). The actual PHP test connection is `conexao_test@172.18.%` on the
+test schema. The credential-isolation gate is now satisfied.
+
+However, the required test rerun is `FAILED`: two suites show failures that
+differ from the prior baseline.
+
+1. `test-event-review-queue.php`: 2 new D2 failures (multi-page drill-in
+   consistency). The prior Stage 4 run reported 34/0; the new run reports
+   36/2.
+2. `test-stage1-run-coordination.php`: 3 P2 failures (Heritage date gate).
+   The Stage 1/3 baseline was 47/0; the new run reports 44/3. The failures
+   are caused by a date-dependent fixture ("Today event" = 15 November 2026)
+   that is now in the past relative to the current date (16 November 2026).
+
+The operator-log isolation gate ran under the restricted credential and
+passed (366/0). Operator-log integrity for this test run is verified.
+
+The CI integration job does not currently provision
+`CONEXAO_TEST_DB_USER` / `CONEXAO_TEST_DB_PASSWORD`; CI test runs will fail
+until the CI environment is updated. CI update is out of scope for this task
+and should be tracked as a follow-up.
+
+This infrastructure verification does not resolve the outstanding Stage 4
+findings (Needs Review menu placement, Motorsport Ireland P9 six-field
+assessment, per-source datetime semantics, IVVCC/Mondello retained detail
+HTML, P8 vocabulary). Those remain outstanding.
+
+See `docs/evidence/2026-11-16-stage-4/06-tests-and-gates.md` §9,
+`docs/evidence/2026-11-16-stage-4/08-known-limitations.md` §9, and
+`docs/evidence/2026-11-16-stage-4/09-test-isolation-infrastructure.md`.
+
+### Carry-forwards unchanged
+
+- Stage 3.6 WAF block: `BLOCKED — CANARY MECHANISM FAILED` (unchanged).
+- 76 HIGH + 4 CONDITIONAL suppressed events: `VERIFICATION-INCOMPLETE`
+  (unchanged).
+- 16 stranded continuations: unresolved (unchanged).
+- 285-post clone-cleanup population: `UNRESOLVED — INSUFFICIENT IDENTITY
+  EVIDENCE` (unchanged).
+- 20 existing datetime fixture rows: reported, not modified (unchanged).
+
+### Post-isolation-remediation closeout (2026-11-16)
+
+**Prior claim (superseded):** `BLOCKED — VERIFICATION INCOMPLETE`
+
+**Updated verdict:** `PASS WITH LIMITATION`
+
+The test-isolation remediation is complete and proven:
+
+- **Grant compliance:** The excess privileges (EXECUTE, CREATE VIEW, SHOW
+  VIEW, CREATE ROUTINE, ALTER ROUTINE, TRIGGER) were revoked from
+  `conexao_test`@`172.18.%`. The effective grants are now exactly the eleven
+  authorised privileges plus implicit `USAGE`.
+- **Password handling:** The `conexao_test` password was rotated via
+  `ALTER USER` using a protected temporary SQL file. The new credentials are
+  stored in `.conexao-test.env` (mode 0600, git-ignored). No password appears
+  in any command argument, Docker `-e` value, log, or report.
+- **`wp-config.php` environment-overridability:** CONFIRMED —
+  `DB_NAME`/`DB_USER`/`DB_PASSWORD`/`DB_HOST` are resolved from
+  `WORDPRESS_DB_*` environment variables via `getenv_docker()`.
+- **Pre-WordPress environment setup:** The runner copies `.conexao-test.env`
+  into the container and invokes `scripts/conexao-test-exec.sh`, which
+  sources the secret file, exports `WORDPRESS_DB_*`, and `exec`s PHP before
+  `wp-config.php` runs. No secret value appears in the host-side command line.
+- **Actual `$wpdb` isolation:** A fail-closed identity guard in
+  `tests/bootstrap.php` queries `USER()`, `CURRENT_USER()` and `DATABASE()`
+  through the actual `$wpdb` instance. Every required suite ran with
+  `WPDB_IDENTITY=PASS login_user=conexao_test@172.18.0.3
+  matched_account=conexao_test@172.18.%
+  selected_database=conexao_stage05_test_5bd9ece5c032`.
+- **Isolation proof:** Positive read on the disposable schema succeeds;
+  negative read and write on `wordpress.wp_posts` are denied; DDL/DML probe
+  table create/insert/update/delete/drop succeeds and is cleaned up.
+- **Operator-log isolation:** PASSED (376/0). The gate only inspects the test
+  schema (Case B), compatible with the restricted credential.
+
+All twelve required suites ran sequentially under the verified `$wpdb`
+isolation:
+
+| Suite | Result |
+|---|---|
+| test-event-review-queue.php | 38 passed, 0 failed |
+| test-partial-enrichment-preservation.php | 42 passed, 0 failed |
+| test-import-history-dashboard.php | 157 passed, 0 failed |
+| test-past-event-filter.php | 29 passed, 0 failed |
+| test-event-cleanup-purge.php | 749 passed, 0 failed |
+| test-import-continuation.php | 262 passed, 22 failed (baseline) |
+| test-town-sanitization.php | 82 passed, 1 failed (baseline) |
+| test-source-fetch-failure.php | 136 passed, 0 failed |
+| test-eventbrite-rate-limit.php | 87 passed, 0 failed |
+| test-stage1-run-coordination.php | 47 passed, 0 failed |
+| test-eventbrite-checkpoint.php | 91 passed, 0 failed |
+| test-operator-log-isolation.php | 376 passed, 0 failed |
+
+**D2 diagnosis and fix:** The `field_counts()` method used direct SQL over all
+published events, while `query_population()` used `WP_Query` which applies the
+event runtime's `_event_status` filter and Polylang's language filter. This
+caused the count and list to diverge. Fixed by resolving the population
+through a single `WP_Query` with `posts_per_page => -1` in `field_counts()`.
+The D2 test was also corrected to recompute `field_counts()` after creating
+its multipage fixtures. Suite passes 38/0.
+
+**Stage 1 fixture hardening:** The P2 fixture dates were changed from
+hard-coded calendar dates to dates relative to the current site-local date
+(`wp_timezone()`), formatted as "DD Month YYYY" to match the Heritage Week
+source's date parser. Suite passes 47/0.
+
+**Menu placement:** `AMBIGUOUS — OWNER DECISION REQUIRED`. There is no
+distinct "Event Sources" top-level menu to use as the Needs Review parent.
+Needs Review is a sibling of Event Sources under the Event Import dashboard.
+Owner decision required.
+
+**CI isolation limitation:** The CI workflow still runs WordPress/DB tests
+with the over-privileged `wordpress` credential. Fixing CI provisioning is
+out of scope for this task. CI test runs do not qualify as isolation-compliant
+until the CI follow-up lands.
+
+**Remaining Stage 4 findings:** Motorsport Ireland P9 six-field assessment,
+per-source datetime conventions, IVVCC/Mondello retained detail HTML, and P8
+vocabulary remain unresolved or deferred. These are scope-external or
+owner-deferred.
+
+See `docs/evidence/2026-11-16-stage-4/06-tests-and-gates.md`,
+`docs/evidence/2026-11-16-stage-4/08-known-limitations.md`,
+`docs/evidence/2026-11-16-stage-4/09-test-isolation-infrastructure.md`, and
+`docs/evidence/2026-11-16-stage-4/10-d2-diagnosis.md`.
+
+### Final Stage 4 closeout finalisation (2026-11-16)
+
+The previous `PASS WITH LIMITATION` and `D2 resolved` statements in this
+report are superseded by the controlled closeout evidence. The repository was
+re-checked on `event-import-improvements` at HEAD `7f6850f`; Stage 3.6 evidence
+remained unchanged and prior worktree changes were preserved.
+
+- Isolation: **PASSED**. Fresh grants matched the authorised eleven privileges
+  plus implicit `USAGE`; the actual `$wpdb` identity was
+  `conexao_test@172.18.%` on the disposable schema; the existing 9-probe proof
+  passed; and the absent-secret wrapper path failed closed with exit 1.
+  Exposure of the active rotated credential is **not established**; the
+  credential candidate in prior history is recorded separately and no rotation
+  was performed here.
+- D2: the current class has no lingering `suppress_filters` argument or
+  explicit `_event_status` filter residue, so no cleanup was made. The fresh
+  review-queue suite passed `38/0` in 522 seconds, but the historical
+  count/list mismatch, contradictory experiment outcomes and later timeout
+  leave the design diagnosis **INCONCLUSIVE — UNRESOLVED**. No D2 repair was
+  attempted.
+- Menu: the exact tree remains Event Import → sibling Event Sources and Needs
+  Review, with Needs Review registered under Event Import. Disposition:
+  **AMBIGUOUS — OWNER DECISION REQUIRED**. No menu change was made.
+- Stage 1: the existing site-local relative-date helper was verified as
+  parser-compatible (`j F Y`) and unchanged; the focused suite passed `47/0`.
+- Twelve-suite rerun: all twelve completed under the guard. Ten passed; the
+  two documented baseline suites remained `262/22` and `82/1` with the same
+  assertion signatures. Aggregate: `2,096 passed, 23 failed`; gate:
+  **BASELINE-CONSISTENT**. Pre/post read-only counts were unchanged at 3,510
+  published events and 457 venue-missing events; the venue-missing count shows
+  material drift versus the prior same-definition 511 observation.
+
+### Superseding Stage 4 disposition
+
+**Final Stage 4 programme verdict: BLOCKED — D2 UNRESOLVED AND MENU PLACEMENT
+AMBIGUOUS.** The full Stage 4 programme is not closed. P8 vocabulary, MI
+six-field assessment, per-source datetime conventions, IVVCC/Mondello retained
+detail evidence, CI isolation provisioning, the Stage 3.6 WAF block and 16
+stranded continuations remain carried forward or deferred as documented; no
+owner acceptance is inferred.
+
+The closeout task itself is **COMPLETE WITH LIMITATIONS** because the authorised
+reconciliation and fresh runs are complete, while the programme blockers and
+the documented baseline failures remain unresolved.
+
+Updated evidence: `docs/evidence/2026-11-16-stage-4/04-review-queue.md`,
+`06-tests-and-gates.md`, `08-known-limitations.md`,
+`09-test-isolation-infrastructure.md` and `10-d2-diagnosis.md`.
+
+_Last verified: 2026-11-16 by Codex — Stage 4 closeout finalisation_

@@ -134,6 +134,8 @@ production and a per-process test row when the shared test harness is loaded
 |------|-------|---------|
 | `conexao-event-importer.php` | `Conexao_Event_Importer` | Main plugin, boot all components (local tooling only) |
 | `includes/class-event-sources.php` | `Conexao_Event_Sources` | Source CRUD, admin pages, manual import trigger |
+| `includes/class-conexao-event-date-contract.php` | `Conexao_Event_Date_Contract` | Date-only write contract for `_event_date` / `_event_end_date` (Stage 4) |
+| `includes/class-conexao-event-review-queue.php` | `Conexao_Event_Review_Queue` | Read-only "Needs review" queue over published events (Stage 4) |
 | `includes/class-event-normalizer.php` | `Conexao_Event_Normalizer` | Normalize raw event data |
 | `includes/class-event-date-filter.php` | `Conexao_Event_Date_Filter` | Past-event filter: compare normalized dates against site-timezone now |
 | `includes/class-event-location.php` | `Conexao_Event_Location` | Location normalization (county, town, venue) |
@@ -1880,6 +1882,10 @@ Submenus:
   Logs**. It shows no source overview: source configuration and status live on
   the Event Sources screen below.
 - Event Sources — CRUD sources (incl. county, category), toggle, run single import
+- Needs Review — read-only queue of published events missing a featured image,
+  venue or county (Stage 4). Capability-gated (`manage_options`), read-only,
+  and paginated. The category field is omitted while P8 is deferred (no
+  approved vocabulary).
 - Export Events — JSON download (with embedded images)
 - Import Events — JSON upload/import (creates attachments from embedded data)
 - Image Sync — bulk sideload of remaining external banner images
