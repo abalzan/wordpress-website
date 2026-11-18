@@ -378,3 +378,26 @@ contract and ambiguous menu placement.
 Deferred and separate operational items do not block the programme by
 themselves, but no owner acceptance is inferred. D2 and menu placement remain
 programme blockers regardless of the fresh suite pass.
+
+---
+
+## RETIRED — 2026-11-17 (owner decision)
+
+The Needs Review feature has been retired by owner decision. The following
+limitations are superseded:
+
+- **Review queue:** `RETIRED — FEATURE REMOVED BY OWNER DECISION`. The queue
+  class, menu entry, page renderer and test suite have been removed. The
+  historical `IMPLEMENTED — VERIFICATION INCOMPLETE` and `IMPLEMENTED AND
+  VERIFIED` statuses are preserved above for audit.
+- **D2:** `RETIRED — FEATURE REMOVED BY OWNER DECISION`. The count/list and
+  pagination defect is no longer an active requirement. The historical
+  `INCONCLUSIVE — UNRESOLVED` and `IMPLEMENTATION DEFECT — FIXED` statuses
+  are preserved above for audit.
+- **Menu placement:** `RESOLVED BY FEATURE RETIREMENT — NEEDS REVIEW MENU NO
+  LONGER REQUIRED`. No new top-level Event Sources menu was created.
+- **Regression coverage:** `test-needs-review-retirement.php` (10 passed,
+  0 failed) replaces `test-event-review-queue.php`.
+
+See `docs/evidence/2026-11-17-needs-review-retirement/` for the full retirement
+evidence.

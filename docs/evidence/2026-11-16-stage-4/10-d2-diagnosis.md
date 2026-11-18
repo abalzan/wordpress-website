@@ -258,3 +258,17 @@ These are options, not approved recommendations:
 
 A follow-up must decide the intended contract first, then choose the
 implementation and test changes.
+
+---
+
+## RETIRED — 2026-11-17 (owner decision)
+
+**Status:** `RETIRED — FEATURE REMOVED BY OWNER DECISION`
+
+The Needs Review feature has been retired. The D2 count/list and pagination
+defect is no longer an active requirement because the queue is removed. The
+historical diagnosis above is preserved for audit; the underlying defect was
+not repaired.
+
+See `docs/evidence/2026-11-17-needs-review-retirement/` for the full retirement
+evidence.

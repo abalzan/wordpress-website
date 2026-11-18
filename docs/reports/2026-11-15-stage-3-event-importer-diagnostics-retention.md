@@ -697,3 +697,34 @@ Updated evidence: `docs/evidence/2026-11-16-stage-4/04-review-queue.md`,
 `09-test-isolation-infrastructure.md` and `10-d2-diagnosis.md`.
 
 _Last verified: 2026-11-16 by Codex — Stage 4 closeout finalisation_
+
+### Needs Review retirement (2026-11-17)
+
+The owner has explicitly decided to retire the Needs Review feature. This
+supersedes the prior `AMBIGUOUS — OWNER DECISION REQUIRED` disposition for
+menu placement and the `INCONCLUSIVE — UNRESOLVED` D2 disposition.
+
+- **D2:** `RETIRED — FEATURE REMOVED BY OWNER DECISION`. The count/list and
+  pagination defect is no longer an active requirement because the queue is
+  removed. The historical diagnosis is preserved above; the defect was not
+  repaired.
+- **Menu placement:** `RESOLVED BY FEATURE RETIREMENT — NEEDS REVIEW MENU NO
+  LONGER REQUIRED`. No new top-level Event Sources menu was created.
+- **Removed:** `class-conexao-event-review-queue.php`, its `require_once`,
+  `add_submenu_page` registration, `render_needs_review_page()`,
+  `render_needs_review_drilldown()`, and `test-event-review-queue.php`.
+- **Preserved:** Event Import menu, Event Sources page, importer, source
+  registry, location queries, county/image extraction, import history,
+  operator logs, continuation coordination.
+- **Regression test:** `test-needs-review-retirement.php` (10 passed, 0 failed).
+- **Local cleanup:** 396 local development events with neither a usable county
+  nor a usable event image were permanently deleted after backup and
+  verification. See `docs/evidence/2026-11-17-needs-review-retirement/`.
+
+The Stage 4 programme verdict is unchanged: other Stage 4 items (P8 vocabulary,
+MI six-field assessment, per-source datetime conventions, IVVCC/Mondello
+retained detail, CI isolation provisioning, Stage 3.6 WAF block, stranded
+continuations) remain carried forward or deferred. This retirement does not
+close the full Stage 4 programme.
+
+_Last verified: 2026-11-18 — Needs Review retirement and local event cleanup_

@@ -36,8 +36,6 @@ require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-conexao-event-enrichme
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-normalizer.php';
 // Stage 4 — date-only write contract for `_event_date` / `_event_end_date`.
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-conexao-event-date-contract.php';
-// Stage 4 — read-only needs-review queue for the Event Sources area.
-require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-conexao-event-review-queue.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-date-filter.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-conexao-ics-recurrence.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-conexao-laois-tourism-series.php';

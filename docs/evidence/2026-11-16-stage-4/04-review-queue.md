@@ -251,3 +251,28 @@ The original population mismatch is understood, but the conflicting outcomes
 do not conclusively resolve the intended count/list contract. **D2:
 INCONCLUSIVE — UNRESOLVED.** See `10-d2-diagnosis.md` for the chronology and
 follow-up design options. No D2 repair is authorised here.
+
+---
+
+## RETIRED — 2026-11-17 (owner decision)
+
+**Status:** `RETIRED — FEATURE REMOVED BY OWNER DECISION`
+
+The owner has explicitly decided to retire the Needs Review feature. The queue
+class (`Conexao_Event_Review_Queue`), its loader `require_once`, the
+`add_submenu_page` registration, the `render_needs_review_page()` and
+`render_needs_review_drilldown()` methods, and the `test-event-review-queue.php`
+test suite have been removed.
+
+- **D2:** `RETIRED — FEATURE REMOVED BY OWNER DECISION`. The old count/list and
+  pagination defect is no longer an active queue requirement because the queue
+  is removed. The historical diagnosis and test outcomes above are preserved
+  for audit; the underlying defect was not repaired.
+- **Menu placement:** `RESOLVED BY FEATURE RETIREMENT — NEEDS REVIEW MENU NO
+  LONGER REQUIRED`. No new top-level Event Sources menu was created.
+- **Event Sources and normal importing:** preserved and functional.
+- **Regression coverage:** `test-needs-review-retirement.php` (10 assertions,
+  all pass) verifies the queue is no longer registered, loaded or reachable.
+
+See `docs/evidence/2026-11-17-needs-review-retirement/` for the full retirement
+evidence.
