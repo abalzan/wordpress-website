@@ -464,12 +464,13 @@ a.language-switcher-item:hover {
    .header-cta above is hidden.
 
    Space-tested against the real header row: a full-text pill measures ~141px,
-   which cannot coexist with hamburger + logo + theme toggle + search at phone
-   widths — the logo is the flexible child (flex: 1 1 0%), so inserting the
-   text pill would collapse it to a sliver (≈0px at 320px, ≈19px at 360px). The
-   label is therefore rendered only where it genuinely fits (>=480px, where the
-   logo still measures its natural 107×40) and the control is a 48px icon pill
-   below that, which keeps the logo at full size down to ~355px.
+   which cannot coexist with hamburger + logo + language switcher at phone
+   widths — the logo keeps its natural size (flex: 0 0 auto), so inserting the
+   text pill would push the right-hand controls off the row. The label is
+   therefore rendered only where it genuinely fits (>=560px, where the row is
+   wide enough for hamburger + logo + PT | EN + the full pill) and the control
+   is a 48px icon pill below that, which keeps the logo at full size down to
+   320px.
 
    The accessible name is ALWAYS "Anuncie Aqui" (aria-label), independent of
    width, so hiding the visual label never affects assistive tech; the visible
@@ -982,23 +983,18 @@ a.language-switcher-item:hover {
     display: none;
   }
 
-  /* Main header mobile layout — single-row CSS Grid:
-     [ hamburger | centred logo | language + CTA ]. The side tracks are
-     minmax(min-content, 1fr): each is at least as wide as its content (the
-     48px hamburger on the left, the ~132px language + CTA cluster on the
-     right) and they share the remaining space equally. The auto centre column
-     (the logo) is geometrically centred whenever the side tracks end up equal
-     (>=430px); below that the right cluster is wider than the hamburger, so
-     the logo sits slightly left of centre — the standard space-between
-     behaviour, and the only non-clipping option that keeps the logo legible
-     at 320px (a symmetric 1fr 1fr would shrink the logo to ~16px). */
+  /* Main header mobile layout — single-row flex:
+     [ hamburger | logo | language + CTA ]. The logo sits directly beside the
+     hamburger (left-aligned, no longer centred); .header-actions uses
+     margin-left: auto so the language switcher and CTA stay pinned right and
+     the free space expands between the logo and the right-hand controls. */
   .main-header {
     padding: 8px 0;
   }
 
   .main-header .site-container {
-    display: grid;
-    grid-template-columns: minmax(min-content, 1fr) auto minmax(min-content, 1fr);
+    display: flex;
+    justify-content: flex-start;
     align-items: center;
     column-gap: 8px;
   }
@@ -1007,7 +1003,7 @@ a.language-switcher-item:hover {
     order: initial;
     min-width: 0;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
   }
 
   .logo img {
@@ -1017,6 +1013,7 @@ a.language-switcher-item:hover {
   .header-actions {
     order: initial;
     gap: 8px;
+    margin-left: auto;
   }
 
   .site-name {
@@ -1035,51 +1032,43 @@ a.language-switcher-item:hover {
 
 /* ===== Responsive: Mobile (below 768px) ===== */
 @media (max-width: 768px) {
-  /* Main header mobile layout — single-row CSS Grid:
-     [ hamburger | centred logo | language + CTA ]. The side tracks are
-     minmax(min-content, 1fr): each is at least as wide as its content (the
-     48px hamburger on the left, the ~132px language + CTA cluster on the
-     right) and they share the remaining space equally. The auto centre column
-     (the logo) is geometrically centred whenever the side tracks end up equal
-     (>=430px); below that the right cluster is wider than the hamburger, so
-     the logo sits slightly left of centre — the standard space-between
-     behaviour, and the only non-clipping option that keeps the logo legible
-     at 320px (a symmetric 1fr 1fr would shrink the logo to ~16px). */
+  /* Main header mobile layout — single-row flex:
+     [ hamburger | logo | language + CTA ]. The logo sits directly beside the
+     hamburger (left-aligned, no longer centred); .header-actions uses
+     margin-left: auto so the language switcher and CTA stay pinned right and
+     the free space expands between the logo and the right-hand controls. */
   .main-header {
     padding: 8px 0;
   }
 
   .main-header .site-container {
-    display: grid;
-    grid-template-columns: minmax(min-content, 1fr) auto minmax(min-content, 1fr);
+    display: flex;
+    justify-content: flex-start;
     align-items: center;
     column-gap: 8px;
   }
 
-  /* Logo center — the grid's auto centre column. It is geometrically centred
-     whenever the side tracks are equal (>=430px); below that the right cluster
-     (language + CTA) is wider than the hamburger, so the logo sits slightly
-     left of centre. The image keeps its natural size, capped by max-height to
-     sit slightly below the control height so it never touches the top/bottom
-     of the header. object-fit: contain from the shared-box rule above keeps
-     the artwork proportional and centered. Light/dark switching stays
-     shift-free: both variants still share ONE rendered box. On mobile that
-     shared box is re-proportioned to the real dark-asset ratio (1600×600 =
-     8/3) instead of the desktop 3/2 letterbox — at this small scale a 3/2 box
-     would render the wide logo artworks at barely half the capped height
-     ("floating small" again). With 8/3 both variants render at the full
-     capped height (the slightly less-wide light asset just letterboxes a
-     little horizontally, still centered). Scoped to .site-header so the
-     footer logo is unaffected. */
+  /* Logo — directly after the hamburger, left-aligned. The image keeps its
+     natural size, capped by max-height to sit slightly below the control
+     height so it never touches the top/bottom of the header. object-fit:
+     contain from the shared-box rule above keeps the artwork proportional.
+     Light/dark switching stays shift-free: both variants still share ONE
+     rendered box. On mobile that shared box is re-proportioned to the real
+     dark-asset ratio (1600×600 = 8/3) instead of the desktop 3/2 letterbox —
+     at this small scale a 3/2 box would render the wide logo artworks at
+     barely half the capped height ("floating small" again). With 8/3 both
+     variants render at the full capped height (the slightly less-wide light
+     asset just letterboxes a little horizontally). Scoped to .site-header so
+     the footer logo is unaffected. */
   .logo {
     order: initial;
     min-width: 0;
-    justify-content: center;
+    justify-content: flex-start;
     display: flex;
   }
 
   .logo .site-logo-link {
-    justify-content: center;
+    justify-content: flex-start;
   }
 
   .logo img {
@@ -1091,9 +1080,9 @@ a.language-switcher-item:hover {
   }
 
   /* Mobile-only shared-box proportions for the header logos (see above).
-     40px tall × 8/3 ≈ 107px wide — the auto centre column sizes to the
-     image, and max-width: 100% degrades the box gracefully (ratio preserved)
-     on narrower viewports. */
+     40px tall × 8/3 ≈ 107px wide — the logo keeps this natural size as a
+     flex child, and max-width: 100% degrades the box gracefully (ratio
+     preserved) on narrower viewports. */
   .site-header .site-logo-img {
     aspect-ratio: 8 / 3;
   }
@@ -1108,10 +1097,13 @@ a.language-switcher-item:hover {
     order: initial;
   }
 
-  /* Actions right */
+  /* Actions right — margin-left: auto pushes the language switcher and CTA
+     to the far right and lets the free space expand between the logo and the
+     right-hand controls (no fixed-width spacer, no absolute positioning). */
   .header-actions {
     order: initial;
     gap: 8px;
+    margin-left: auto;
   }
 
   /* The separate mobile search toggle/overlay is gone: search lives inside the
@@ -1158,12 +1150,13 @@ a.language-switcher-item:hover {
 }
 
 /* ===== Ultra-narrow phones (<=359px) =====
-   At 320px the grid columns are minmax(0,1fr) auto minmax(0,1fr) with 8px
-   gaps; the right cluster (PT | EN + icon CTA) is ~132px, so each 1fr track
-   is ~(296-107-16)/2 ≈ 86px and the right cluster fits. Tightening only the
-   gaps on these very small screens buys back a little room for the logo with
-   no container overflow, no horizontal scrolling and the 44px+ targets
-   untouched. Scoped to <=359px so every wider layout is unaffected. */
+   At 320px the flex row is [ hamburger | logo | language + CTA ] with 8px
+   gaps; the right cluster (PT | EN + icon CTA) is ~132px, so the logo keeps
+   its natural size and the free space collapses to zero before anything
+   overflows. Tightening only the gaps on these very small screens buys back a
+   little room for the logo with no container overflow, no horizontal
+   scrolling and the 44px+ targets untouched. Scoped to <=359px so every wider
+   layout is unaffected. */
 @media (max-width: 359px) {
   .main-header .site-container {
     column-gap: 4px;
