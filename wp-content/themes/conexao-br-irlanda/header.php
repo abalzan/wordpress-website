@@ -147,6 +147,20 @@
 					 * separate condition. The drawer keeps its own larger
 					 * instance for in-menu use.
 					 */
+					?>
+					<!-- Theme toggle: rendered once in the main header, at every
+					breakpoint, immediately ahead of the mobile PT | EN switcher.
+					main.js no longer relocates it between the header and the drawer;
+					there is exactly one .theme-toggle in the DOM at any width. -->
+					<button type="button" class="theme-toggle" aria-label="<?php esc_attr_e( 'Alternar tema claro/escuro', 'conexao-br-irlanda' ); ?>" aria-pressed="false">
+						<span class="theme-toggle-icon theme-toggle-icon--moon" aria-hidden="true">
+							<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+						</span>
+						<span class="theme-toggle-icon theme-toggle-icon--sun" aria-hidden="true">
+							<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+						</span>
+					</button>
+					<?php
 					conexao_language_switcher( array( 'context' => 'mobile' ) );
 					?>
 					<div class="header-search">
@@ -203,26 +217,6 @@
 						<line x1="18" y1="6" x2="6" y2="18"></line>
 						<line x1="6" y1="6" x2="18" y2="18"></line>
 					</svg>
-				</button>
-			</div>
-			<!--
-				Theme toggle (mobile drawer instance). The SAME button element
-				is relocated between the desktop header actions and this drawer
-				by main.js (initThemeToggleRelocation) at the 1024px breakpoint,
-				so there is exactly one .theme-toggle in the DOM at any time —
-				no clone, no second theme-switching mechanism, and its click
-				handler (initThemeToggle) survives the move. It sits in a clearly
-				identifiable utility row above the search field, before the main
-				navigation.
-			-->
-			<div class="mobile-menu-theme">
-				<button type="button" class="theme-toggle" aria-label="<?php esc_attr_e( 'Alternar tema claro/escuro', 'conexao-br-irlanda' ); ?>" aria-pressed="false">
-					<span class="theme-toggle-icon theme-toggle-icon--moon" aria-hidden="true">
-						<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-					</span>
-					<span class="theme-toggle-icon theme-toggle-icon--sun" aria-hidden="true">
-						<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-					</span>
 				</button>
 			</div>
 			<div class="mobile-menu-search">

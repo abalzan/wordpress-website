@@ -267,6 +267,18 @@ body.admin-bar .site-header {
   min-width: 0;
 }
 
+/* Theme toggle ordering
+   The toggle is rendered once in .header-actions, in source order ahead of
+   the mobile PT | EN switcher — the order the <=1024px header row needs
+   (theme toggle → PT | EN → Anuncie Aqui). On desktop it stays at the END
+   of the actions row, the position main.js used to move it to, so the
+   desktop header is visually unchanged. The mobile block resets `order`.
+   Location-independent 44x44 styling and sun/moon visibility live in
+   dark-mode.css. */
+.header-actions .theme-toggle {
+  order: 1;
+}
+
 /* ===== Language switcher (Stage 2) =====
    PT / EN toggle rendered by template-parts/language-switcher.php. Text-only
    (no flags): a pill that matches the header control rhythm, built from the
@@ -313,22 +325,9 @@ a.language-switcher-item:hover {
   cursor: default;
 }
 
-/* ===== Mobile drawer theme-toggle row =====
-   Utility row above the search field. The
-   .theme-toggle button itself is RELOCATED here from the desktop header
-   actions by main.js at <=1024px (see initThemeToggleRelocation), so this is
-   only the row that hosts it — the button keeps its dark-mode.css styling
-   (44x44, border, radius) unchanged. */
-.mobile-menu-theme {
-  display: flex;
-  align-items: center;
-  padding: var(--space-3) var(--space-5) 0;
-  flex-shrink: 0;
-}
-
 /* Below 1024px the desktop switcher is hidden; the compact header instance
    (.header-actions .language-switcher--mobile) is the PT / EN control in the
-   mobile header row, alongside hamburger + logo + search + theme + CTA. */
+   mobile header row, alongside hamburger + logo + theme toggle + CTA. */
 @media (max-width: 1024px) {
   .language-switcher--desktop {
     display: none;
@@ -945,10 +944,11 @@ a.language-switcher-item:hover {
    widths, so we intentionally switch to the side-drawer mobile menu instead of
    forcing an overflowing single-line nav. */
 @media (max-width: 1024px) and (min-width: 769px) {
-  /* Show the mobile menu toggle */
+  /* Show the mobile menu toggle, far left (source order: hamburger →
+     logo → right-hand group), matching the phone layout. */
   .mobile-menu-toggle {
     display: flex;
-    order: 1;
+    order: initial;
   }
 
   /* The separate mobile search toggle/overlay is gone: search lives inside the
@@ -1001,6 +1001,12 @@ a.language-switcher-item:hover {
     order: initial;
     gap: 8px;
     margin-left: auto;
+  }
+
+  /* Theme toggle first in the right-hand group (source order).
+     Reset the desktop `order: 1` used to keep it at the row end. */
+  .header-actions .theme-toggle {
+    order: initial;
   }
 
   .site-name {
@@ -1093,6 +1099,12 @@ a.language-switcher-item:hover {
     margin-left: auto;
   }
 
+  /* Theme toggle first in the right-hand group, then PT | EN, then the CTA.
+     Source order already expresses this; reset the desktop `order: 1`. */
+  .header-actions .theme-toggle {
+    order: initial;
+  }
+
   /* The separate mobile search toggle/overlay is gone: search lives inside the
      drawer (.mobile-menu-search). Hide any leftover toggle. */
   .mobile-search-toggle {
@@ -1136,21 +1148,40 @@ a.language-switcher-item:hover {
   }
 }
 
+/* ===== Narrow phones (<=389px) =====
+   The five-control row is hamburger + logo + theme toggle + PT | EN +
+   compact CTA. At 360-389px the natural ~106px logo no longer fits beside
+   the right-hand group, so the logo yields first (per the responsive
+   budget: shrink the logo before any control target) while the theme
+   toggle keeps its 44x44 and the CTA its 48x48. The <=359px block below
+   caps it further. */
+@media (max-width: 389px) {
+  .logo a {
+    gap: 0;
+  }
+
+  .logo img {
+    max-width: 72px;
+  }
+}
+
 /* ===== Ultra-narrow phones (<=359px) =====
-   At 320px the flex row is [ hamburger | logo | language + CTA ] with 8px
-   gaps; the right cluster (PT | EN + icon CTA) is ~132px, so the logo keeps
-   its natural size and the free space collapses to zero before anything
-   overflows. Tightening only the gaps on these very small screens buys back a
-   little room for the logo with no container overflow, no horizontal
-   scrolling and the 44px+ targets untouched. Scoped to <=359px so every wider
-   layout is unaffected. */
+   At 320px the row is [ hamburger | logo | theme toggle | PT | EN | CTA ].
+   Gaps tighten to 2px and the logo is capped at 56px so all five controls
+   fit one line with no horizontal overflow; every interactive control keeps
+   its 44px+ target (theme toggle 44x44, CTA 48x48). Scoped to <=359px so
+   every wider layout is unaffected. */
 @media (max-width: 359px) {
   .main-header .site-container {
-    column-gap: 4px;
+    column-gap: 2px;
   }
 
   .header-actions {
-    gap: 4px;
+    gap: 2px;
+  }
+
+  .logo img {
+    max-width: 56px;
   }
 }
 

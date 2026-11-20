@@ -20,7 +20,6 @@
 	// ===== DOM Ready =====
 	document.addEventListener('DOMContentLoaded', function() {
 		initThemeToggle();
-		initThemeToggleRelocation();
 		initMobileMenu();
 		initCopyButtons();
 		initLeisureFilters();
@@ -58,64 +57,6 @@
 
 			syncToggleState();
 		});
-	}
-
-	// ===== Theme Toggle Relocation (desktop header <-> mobile drawer) =====
-	// There is exactly ONE .theme-toggle element in the DOM at any time. On
-	// desktop (>1024px) it lives in the header actions row; on mobile/tablet
-	// (<=1024px) it is moved into the drawer's utility row (.mobile-menu-theme,
-	// between the language switcher and the search field). Moving the SAME node
-	// preserves its click handler (initThemeToggle) and its aria-pressed state —
-	// no clone, no second theme-switching mechanism. The placeholder keeps the
-	// desktop layout intact while the button is in the drawer, and the original
-	// desktop position is restored when the viewport grows back past 1024px.
-	function initThemeToggleRelocation() {
-		// The toggle is rendered by PHP inside .mobile-menu-theme (the drawer).
-		// On desktop we relocate it into .header-actions; on mobile it stays.
-		const toggle = document.querySelector('.theme-toggle');
-		const drawerSlot = document.querySelector('.mobile-menu-theme');
-		const headerActions = document.querySelector('.header-actions');
-		if (!toggle || !drawerSlot || !headerActions) return;
-
-		// The toggle's original (PHP-rendered) home is the drawer slot.
-		const originalParent = drawerSlot;
-		const placeholder = document.createComment('theme-toggle relocated to desktop header');
-		const mobileQuery = window.matchMedia('(max-width: 1024px)');
-
-		function placeInHeader() {
-			if (toggle.parentNode === headerActions) return;
-			// Insert the placeholder where the button currently sits so the
-			// drawer position can be restored exactly.
-			toggle.parentNode.insertBefore(placeholder, toggle);
-			headerActions.appendChild(toggle);
-		}
-
-		function placeInDrawer() {
-			if (toggle.parentNode === originalParent) return;
-			// Restore the button to its original drawer position.
-			if (placeholder.parentNode === originalParent) {
-				originalParent.insertBefore(toggle, placeholder);
-				originalParent.removeChild(placeholder);
-			} else {
-				originalParent.appendChild(toggle);
-			}
-		}
-
-		function apply() {
-			if (mobileQuery.matches) {
-				placeInDrawer();
-			} else {
-				placeInHeader();
-			}
-		}
-
-		apply();
-
-		if (typeof mobileQuery.addEventListener === 'function') {
-			mobileQuery.addEventListener('change', apply);
-		} else if (typeof mobileQuery.addListener === 'function') {
-			mobileQuery.addListener(apply);
-		}
 	}
 
 	// ===== Mobile Menu Toggle (Full-Screen) =====
