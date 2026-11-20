@@ -205,23 +205,6 @@
 					</svg>
 				</button>
 			</div>
-			<div class="mobile-menu-language">
-				<?php
-				/*
-				 * Mobile language switcher (Stage 2). Lives inside the existing
-				 * drawer, above the search form, so it is always reachable
-				 * without scrolling (the drawer body scrolls; this row does
-				 * not).
-				 *
-				 * Same shared renderer and same single
-				 * CONEXAO_LANGUAGE_SWITCHER_ENABLED flag as the desktop
-				 * context above — there is deliberately no separate mobile
-				 * flag. While the flag is false nothing is emitted here, not
-				 * even an empty wrapper.
-				 */
-				conexao_language_switcher( array( 'context' => 'mobile' ) );
-				?>
-			</div>
 			<!--
 				Theme toggle (mobile drawer instance). The SAME button element
 				is relocated between the desktop header actions and this drawer
@@ -229,8 +212,8 @@
 				so there is exactly one .theme-toggle in the DOM at any time —
 				no clone, no second theme-switching mechanism, and its click
 				handler (initThemeToggle) survives the move. It sits in a clearly
-				identifiable utility row between the language switcher and the
-				search field, before the main navigation.
+				identifiable utility row above the search field, before the main
+				navigation.
 			-->
 			<div class="mobile-menu-theme">
 				<button type="button" class="theme-toggle" aria-label="<?php esc_attr_e( 'Alternar tema claro/escuro', 'conexao-br-irlanda' ); ?>" aria-pressed="false">

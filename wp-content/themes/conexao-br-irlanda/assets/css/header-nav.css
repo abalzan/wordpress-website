@@ -313,22 +313,8 @@ a.language-switcher-item:hover {
   cursor: default;
 }
 
-/* Mobile drawer instance: same control, larger touch targets (the drawer is
-   the only navigation surface below 1024px, so the switcher must be
-   comfortably tappable there). */
-.mobile-menu-language {
-  padding: var(--space-4) var(--space-5) 0;
-  flex-shrink: 0;
-}
-
-.language-switcher--mobile .language-switcher-item {
-  min-width: 48px;
-  min-height: 40px;
-  font-size: var(--text-sm);
-}
-
 /* ===== Mobile drawer theme-toggle row =====
-   Utility row between the language switcher and the search field. The
+   Utility row above the search field. The
    .theme-toggle button itself is RELOCATED here from the desktop header
    actions by main.js at <=1024px (see initThemeToggleRelocation), so this is
    only the row that hosts it — the button keeps its dark-mode.css styling
@@ -340,8 +326,9 @@ a.language-switcher-item:hover {
   flex-shrink: 0;
 }
 
-/* Below 1024px the desktop instance is replaced by the drawer instance —
-   the header row only has room for hamburger + logo + search + theme + CTA. */
+/* Below 1024px the desktop switcher is hidden; the compact header instance
+   (.header-actions .language-switcher--mobile) is the PT / EN control in the
+   mobile header row, alongside hamburger + logo + search + theme + CTA. */
 @media (max-width: 1024px) {
   .language-switcher--desktop {
     display: none;
@@ -352,7 +339,7 @@ a.language-switcher-item:hover {
    Below 1024px the desktop switcher is hidden, so the SAME shared renderer
    is rendered again with context "mobile" inside .header-actions. It is the
    compact PT | EN control that stays visible in the mobile header at every
-   width (the drawer keeps its own larger instance for in-menu use).
+   width.
 
    Hidden by default (desktop); the <=1024px block below reveals it. This is
    essential: without it the mobile instance would also render on desktop,
