@@ -1,0 +1,400 @@
+{
+  "note": "Redacted representative log entries. Sensitive values (if any) removed. Source names and messages preserved as logged.",
+  "error_samples": {
+    "429 rate-limit": [
+      {
+        "time": "2026-11-20 14:10:31",
+        "source": "eventbrite_wicklow_events_this_week",
+        "level": "error",
+        "message": "Failed to fetch events from Eventbrite — Wicklow (This week). HTTP status: 429.",
+        "http_status": 429,
+        "run_id": "all-17951833163967"
+      },
+      {
+        "time": "2026-11-20 14:10:30",
+        "source": "eventbrite_wicklow_events_tomorrow",
+        "level": "error",
+        "message": "Failed to fetch events from Eventbrite — Wicklow (Tomorrow). HTTP status: 429.",
+        "http_status": 429,
+        "run_id": "all-17951833163967"
+      },
+      {
+        "time": "2026-11-20 14:10:30",
+        "source": "eventbrite_wicklow_events_today",
+        "level": "error",
+        "message": "Failed to fetch events from Eventbrite — Wicklow (Today). HTTP status: 429.",
+        "http_status": 429,
+        "run_id": "all-17951833163967"
+      }
+    ],
+    "Continuation stalled": [
+      {
+        "time": "2026-11-20 14:07:38",
+        "source": "eventbrite_sligo",
+        "level": "error",
+        "message": "Automatic continuation for eventbrite_sligo STOPPED at page 4 of 49 after 5 attempt(s) (stalled). The source is still INCOMPLETE and no further attempt is scheduled: press Run to resume it once the cause is addressed.",
+        "http_status": 0,
+        "context": {
+          "reason": "continuation_exhausted",
+          "reason_code": "continuation_exhausted",
+          "lifecycle": "exhausted",
+          "state": "exhausted",
+          "cause": "stalled",
+          "attempts": "5",
+          "stalled": "4",
+          "last_page": "4",
+          "page_count": "49"
+        }
+      },
+      {
+        "time": "2026-11-20 14:07:35",
+        "source": "eventbrite_kildare",
+        "level": "error",
+        "message": "Automatic continuation for eventbrite_kildare STOPPED at page 11 of 49 after 5 attempt(s) (stalled). The source is still INCOMPLETE and no further attempt is scheduled: press Run to resume it once the cause is addressed.",
+        "http_status": 0,
+        "context": {
+          "reason": "continuation_exhausted",
+          "reason_code": "continuation_exhausted",
+          "lifecycle": "exhausted",
+          "state": "exhausted",
+          "cause": "stalled",
+          "attempts": "5",
+          "stalled": "4",
+          "last_page": "11",
+          "page_count": "49"
+        }
+      },
+      {
+        "time": "2026-11-15 20:41:18",
+        "source": "eventbrite_waterford",
+        "level": "error",
+        "message": "Automatic continuation for eventbrite_waterford STOPPED at page 14 of 49 after 8 attempt(s) (stalled). The source is still INCOMPLETE and no further attempt is scheduled: press Run to resume it once the cause is addressed.",
+        "http_status": 0,
+        "run_id": "source-fe775fff-bc69-486f-83f9",
+        "context": {
+          "reason": "continuation_exhausted",
+          "reason_code": "continuation_exhausted",
+          "lifecycle": "exhausted",
+          "state": "exhausted",
+          "cause": "stalled",
+          "attempts": "8",
+          "stalled": "4",
+          "last_page": "14",
+          "page_count": "49"
+        }
+      }
+    ],
+    "Mondello SSL": [
+      {
+        "time": "2026-11-20 14:04:32",
+        "source": "mondello_park",
+        "level": "error",
+        "message": "Failed to fetch events from Mondello Park — Ireland's National Motorsports Campus. HTTP status: 0.",
+        "http_status": 0,
+        "run_id": "all-17951833163967"
+      },
+      {
+        "time": "2026-11-20 14:04:32",
+        "source": "mondellopark",
+        "level": "error",
+        "message": "Falha ao buscar REST da Mondello Park: cURL error 56: OpenSSL SSL_read: OpenSSL/3.5.6: error:0A000126:SSL routines::unexpected eof while reading, errno 0",
+        "http_status": 0
+      }
+    ],
+    "Laois 520": [
+      {
+        "time": "2026-11-20 14:01:56",
+        "source": "laois_tourism",
+        "level": "error",
+        "message": "Failed to fetch events from Laois Tourism. HTTP status: 520.",
+        "http_status": 520,
+        "run_id": "all-17951833163967"
+      },
+      {
+        "time": "2026-11-20 14:01:56",
+        "source": "laois_tourism",
+        "level": "error",
+        "message": "Resposta HTTP 520 ao buscar URL.",
+        "http_status": 520,
+        "run_id": "all-17951833163967"
+      }
+    ],
+    "405 WAF": [
+      {
+        "time": "2026-11-16 08:19:35",
+        "source": "eventbrite_roscommon",
+        "level": "error",
+        "message": "Failed to fetch events from Eventbrite — Roscommon. HTTP status: 405.",
+        "http_status": 405,
+        "run_id": "source-6781cf7d-5dc1-4afc-9eb9"
+      },
+      {
+        "time": "2026-11-16 08:19:35",
+        "source": "eventbrite_roscommon",
+        "level": "error",
+        "message": "Failed to fetch Eventbrite discovery page: https://www.eventbrite.ie/d/ireland--roscommon/all-events/",
+        "http_status": 405,
+        "run_id": "source-6781cf7d-5dc1-4afc-9eb9"
+      },
+      {
+        "time": "2026-11-16 08:19:35",
+        "source": "eventbrite_roscommon",
+        "level": "error",
+        "message": "Eventbrite returned an unexpected HTTP 405 response.",
+        "http_status": 405,
+        "run_id": "source-6781cf7d-5dc1-4afc-9eb9",
+        "context": {
+          "reason": "http_error"
+        }
+      }
+    ],
+    "Discovery other": [
+      {
+        "time": "2026-11-14 19:27:17",
+        "source": "eventbrite_louth",
+        "level": "error",
+        "message": "Eventbrite could not be reached after 3 attempts. The discovery page may be temporarily unavailable.",
+        "http_status": 0,
+        "run_id": "17946843047363",
+        "context": {
+          "reason": "transport_error",
+          "reason_code": "upstream_unavailable"
+        }
+      }
+    ],
+    "DNS/cURL": [
+      {
+        "time": "2026-11-14 19:27:09",
+        "source": "eventbrite_louth",
+        "level": "error",
+        "message": "Eventbrite request failed: cURL error 6: Could not resolve host: www.eventbrite.ie",
+        "http_status": 0,
+        "run_id": "17946843047363",
+        "context": {
+          "reason": "transport_error",
+          "attempt": "3"
+        }
+      },
+      {
+        "time": "2026-11-14 19:27:05",
+        "source": "eventbrite_louth",
+        "level": "error",
+        "message": "Eventbrite request failed: cURL error 6: Could not resolve host: www.eventbrite.ie",
+        "http_status": 0,
+        "run_id": "17946843047363",
+        "context": {
+          "reason": "transport_error",
+          "attempt": "2"
+        }
+      },
+      {
+        "time": "2026-11-14 19:20:06",
+        "source": "eventbrite_kilkenny",
+        "level": "error",
+        "message": "Eventbrite request failed: cURL error 6: Could not resolve host: www.eventbrite.ie",
+        "http_status": 0,
+        "run_id": "17946840043908",
+        "context": {
+          "reason": "transport_error",
+          "attempt": "2"
+        }
+      }
+    ],
+    "G1 probe 429": [
+      {
+        "time": "2026-11-14 17:25:00",
+        "source": "g1_probe_eventbrite_217b99b8",
+        "level": "error",
+        "message": "Failed to fetch events from G1 probe eventbrite. HTTP status: 429.",
+        "http_status": 429,
+        "run_id": "17946769799046"
+      },
+      {
+        "time": "2026-11-14 17:25:00",
+        "source": "g1_probe_eventbrite_217b99b8",
+        "level": "error",
+        "message": "Failed to fetch Eventbrite discovery page: https://www.eventbrite.ie/d/ireland--laois/all-events/",
+        "http_status": 429,
+        "run_id": "17946769799046"
+      },
+      {
+        "time": "2026-11-14 17:25:00",
+        "source": "g1_probe_eventbrite_217b99b8",
+        "level": "error",
+        "message": "Eventbrite rate-limited page 1: still HTTP 429 after 3 attempts. This source stops here; retry it later instead of immediately.",
+        "http_status": 0,
+        "run_id": "17946769799046",
+        "context": {
+          "reason": "rate_limited",
+          "reason_code": "rate_limited",
+          "cooldown_seconds": "120",
+          "rate_limit_streak": "3",
+          "page": "1"
+        }
+      }
+    ]
+  },
+  "warning_samples": {
+    "not_attempted": [
+      {
+        "time": "2026-11-20 14:10:31",
+        "source": "eventbrite_wicklow_events_this_week",
+        "level": "warning",
+        "message": "Not attempted: Eventbrite already rate-limited source eventbrite_donegal earlier in this run, so this source was skipped without sending any request. Retry it individually later, after at least 1 minutes.",
+        "http_status": 0,
+        "run_id": "all-17951833163967",
+        "context": {
+          "reason": "rate_limited",
+          "reason_code": "rate_limited"
+        }
+      },
+      {
+        "time": "2026-11-20 14:10:30",
+        "source": "eventbrite_wicklow_events_tomorrow",
+        "level": "warning",
+        "message": "Not attempted: Eventbrite already rate-limited source eventbrite_donegal earlier in this run, so this source was skipped without sending any request. Retry it individually later, after at least 1 minutes.",
+        "http_status": 0,
+        "run_id": "all-17951833163967",
+        "context": {
+          "reason": "rate_limited",
+          "reason_code": "rate_limited"
+        }
+      }
+    ],
+    "cooldown": [
+      {
+        "time": "2026-11-20 14:07:34",
+        "source": "eventbrite_donegal",
+        "level": "warning",
+        "message": "Eventbrite rate limit (HTTP 429) on page 1, attempt 1. Cooling down 0s before the next attempt.",
+        "http_status": 429,
+        "run_id": "all-17951833163967",
+        "context": {
+          "reason": "rate_limited",
+          "cooldown_seconds": "0",
+          "rate_limit_streak": "1",
+          "attempt": "1",
+          "page": "1"
+        }
+      },
+      {
+        "time": "2026-11-15 20:02:32",
+        "source": "eventbrite_louth",
+        "level": "warning",
+        "message": "Eventbrite rate limit (HTTP 429) on page 1, attempt 3. Cooling down 60s before the next attempt.",
+        "http_status": 429,
+        "run_id": "source-c83908d9-dff4-4af6-a3ea",
+        "context": {
+          "reason": "rate_limited",
+          "cooldown_seconds": "60",
+          "rate_limit_streak": "3",
+          "attempt": "3",
+          "page": "1"
+        }
+      }
+    ],
+    "partial_enumeration": [
+      {
+        "time": "2026-11-20 14:07:34",
+        "source": "eventbrite_cork",
+        "level": "warning",
+        "message": "The source listing was only partially enumerated. Events absent from this walk were left untouched (not marked source_not_found); the next run will pick up the remainder.",
+        "http_status": 0,
+        "run_id": "all-17951833163967",
+        "context": {
+          "reason_code": "rate_limited_deferred"
+        }
+      },
+      {
+        "time": "2026-11-20 14:06:41",
+        "source": "eventbrite_clare",
+        "level": "warning",
+        "message": "The source listing was only partially enumerated. Events absent from this walk were left untouched (not marked source_not_found); the next run will pick up the remainder.",
+        "http_status": 0,
+        "run_id": "all-17951833163967",
+        "context": {
+          "reason_code": "incomplete_enumeration"
+        }
+      }
+    ],
+    "incomplete_enumeration": [
+      {
+        "time": "2026-11-20 14:07:26",
+        "source": "eventbrite_cork",
+        "level": "warning",
+        "message": "Eventbrite enumeration is INCOMPLETE (rate-limit/page pacing wait did not fit the 45s invocation window after page 46/49). Events absent from this walk will not be marked source_not_found.",
+        "http_status": 0,
+        "run_id": "all-17951833163967",
+        "context": {
+          "reason": "incomplete_enumeration",
+          "reason_code": "incomplete_enumeration"
+        }
+      },
+      {
+        "time": "2026-11-20 14:06:43",
+        "source": "eventbrite_cork",
+        "level": "warning",
+        "message": "Eventbrite enumeration is INCOMPLETE: this listing declares 1264 objects but its own pagination exposes only 49 pages of 20, so the remaining events are not reachable through this listing. They were left untouched (not marked source_not_found).",
+        "http_status": 0,
+        "run_id": "all-17951833163967",
+        "context": {
+          "reason": "incomplete_enumeration",
+          "reason_code": "upstream_truncated",
+          "page_count": "49"
+        }
+      }
+    ],
+    "other": [
+      {
+        "time": "2026-11-20 14:07:26",
+        "source": "eventbrite_cork",
+        "level": "warning",
+        "message": "Eventbrite deferred the next request because its pacing wait did not fit the invocation window; the source remains resumable and was not budget-exhausted.",
+        "http_status": 0,
+        "run_id": "all-17951833163967",
+        "context": {
+          "reason": "rate_limited_deferred",
+          "reason_code": "rate_limited_deferred"
+        }
+      },
+      {
+        "time": "2026-11-20 14:06:11",
+        "source": "eventbrite_cavan",
+        "level": "warning",
+        "message": "Eventbrite deferred the next request because its pacing wait did not fit the invocation window; the source remains resumable and was not budget-exhausted.",
+        "http_status": 0,
+        "run_id": "all-17951833163967",
+        "context": {
+          "reason": "rate_limited_deferred",
+          "reason_code": "rate_limited_deferred"
+        }
+      }
+    ],
+    "resumed": [
+      {
+        "time": "2026-11-20 14:06:41",
+        "source": "eventbrite_clare",
+        "level": "warning",
+        "message": "Eventbrite — Clare resumed from its enumeration checkpoint. Absence-based reconciliation was skipped because the events already imported from the confirmed pages are not in this run's result set.",
+        "http_status": 0,
+        "run_id": "all-17951833163967",
+        "context": {
+          "reason": "checkpoint_resume",
+          "reason_code": "checkpoint_resume"
+        }
+      },
+      {
+        "time": "2026-11-15 14:10:57",
+        "source": "eventbrite_wicklow_events_today",
+        "level": "warning",
+        "message": "Eventbrite — Wicklow (Today) resumed from its enumeration checkpoint. Absence-based reconciliation was skipped because the events already imported from the confirmed pages are not in this run's result set.",
+        "http_status": 0,
+        "run_id": "source-ce1a8ed6-fd98-4fe3-b45e",
+        "context": {
+          "reason": "checkpoint_resume",
+          "reason_code": "checkpoint_resume"
+        }
+      }
+    ]
+  }
+}

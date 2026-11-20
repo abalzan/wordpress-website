@@ -1,0 +1,238 @@
+{
+  "review_metadata": {
+    "review_date": "2026-11-20",
+    "review_time_utc": "2026-11-20T14:13:22+00:00",
+    "site_url": "http://localhost:8080",
+    "site_timezone": "Europe/Dublin",
+    "log_option": "conexao_event_import_log",
+    "history_option": "conexao_event_import_history",
+    "log_retention_state": {
+      "max_entries": 8000,
+      "total": 5512,
+      "groups": 167,
+      "active_groups": 1,
+      "active_entries": 18,
+      "legacy_entries": 170,
+      "pressure": false,
+      "over_by": 0
+    }
+  },
+  "log_summary": {
+    "total_entries": 5512,
+    "levels": {
+      "error": 645,
+      "warning": 661,
+      "info": 4206
+    },
+    "date_range": {
+      "oldest": "2026-11-14 14:43:00",
+      "newest": "2026-11-20 14:10:31"
+    },
+    "distinct_sources": 156,
+    "distinct_run_ids": 166
+  },
+  "history_summary": {
+    "total_entries": 216,
+    "statuses": {
+      "failed": 34,
+      "rate_limited": 110,
+      "success": 29,
+      "partial": 21,
+      "warning": 22
+    },
+    "record_types": {
+      "parent": 1,
+      "child": 175,
+      "": 40
+    },
+    "date_range": {
+      "oldest": "2026-11-14 19:31:50",
+      "newest": "2026-11-20 14:10:34"
+    }
+  },
+  "error_taxonomy": [
+    {
+      "category": "Eventbrite 429 rate-limit",
+      "occurrences": 463,
+      "distinct_runs": 128,
+      "distinct_sources": 102,
+      "first_seen": "2026-11-14 14:45:39",
+      "last_seen": "2026-11-20 14:10:31"
+    },
+    {
+      "category": "G1 probe 429 (test sources, deactivated)",
+      "occurrences": 30,
+      "distinct_runs": 10,
+      "distinct_sources": 10,
+      "first_seen": "2026-11-14 17:06:53",
+      "last_seen": "2026-11-14 17:25:00"
+    },
+    {
+      "category": "Eventbrite 405 WAF captcha",
+      "occurrences": 15,
+      "distinct_runs": 4,
+      "distinct_sources": 4,
+      "first_seen": "2026-11-15 20:30:43",
+      "last_seen": "2026-11-16 08:19:35"
+    },
+    {
+      "category": "DNS/cURL transport (Eventbrite)",
+      "occurrences": 5,
+      "distinct_runs": 3,
+      "distinct_sources": 3,
+      "first_seen": "2026-11-14 17:01:44",
+      "last_seen": "2026-11-14 19:27:09"
+    },
+    {
+      "category": "Continuation stalled",
+      "occurrences": 3,
+      "distinct_runs": 1,
+      "distinct_sources": 3,
+      "first_seen": "2026-11-15 20:41:18",
+      "last_seen": "2026-11-20 14:07:38"
+    },
+    {
+      "category": "Mondello Park SSL/transport",
+      "occurrences": 2,
+      "distinct_runs": 1,
+      "distinct_sources": 2,
+      "first_seen": "2026-11-20 14:04:32",
+      "last_seen": "2026-11-20 14:04:32"
+    },
+    {
+      "category": "Laois Tourism HTTP 520",
+      "occurrences": 2,
+      "distinct_runs": 1,
+      "distinct_sources": 1,
+      "first_seen": "2026-11-20 14:01:56",
+      "last_seen": "2026-11-20 14:01:56"
+    },
+    {
+      "category": "Eventbrite discovery-page fetch (other)",
+      "occurrences": 1,
+      "distinct_runs": 1,
+      "distinct_sources": 1,
+      "first_seen": "2026-11-14 19:27:17",
+      "last_seen": "2026-11-14 19:27:17"
+    }
+  ],
+  "warning_taxonomy": [
+    {
+      "category": "Rate-limit cooldown (backoff working)",
+      "occurrences": 410,
+      "distinct_sources": 95,
+      "first_seen": "2026-11-14 14:43:58",
+      "last_seen": "2026-11-20 14:07:34"
+    },
+    {
+      "category": "Shared breaker: source skipped (no request sent)",
+      "occurrences": 101,
+      "distinct_sources": 99,
+      "first_seen": "2026-11-15 18:41:11",
+      "last_seen": "2026-11-20 14:10:31"
+    },
+    {
+      "category": "Other warning",
+      "occurrences": 54,
+      "distinct_sources": 12,
+      "first_seen": "2026-11-14 17:25:16",
+      "last_seen": "2026-11-20 14:07:26"
+    },
+    {
+      "category": "Partial enumeration (safety: no source_not_found)",
+      "occurrences": 46,
+      "distinct_sources": 20,
+      "first_seen": "2026-11-14 14:45:39",
+      "last_seen": "2026-11-20 14:07:34"
+    },
+    {
+      "category": "Enumeration incomplete (rate-limited)",
+      "occurrences": 26,
+      "distinct_sources": 16,
+      "first_seen": "2026-11-14 14:45:39",
+      "last_seen": "2026-11-20 14:07:26"
+    },
+    {
+      "category": "Enumeration incomplete (time budget)",
+      "occurrences": 12,
+      "distinct_sources": 5,
+      "first_seen": "2026-11-14 19:07:06",
+      "last_seen": "2026-11-20 14:05:21"
+    },
+    {
+      "category": "Resumed from checkpoint",
+      "occurrences": 5,
+      "distinct_sources": 5,
+      "first_seen": "2026-11-14 20:17:22",
+      "last_seen": "2026-11-20 14:06:41"
+    },
+    {
+      "category": "Enumeration incomplete (upstream pagination truncation)",
+      "occurrences": 3,
+      "distinct_sources": 3,
+      "first_seen": "2026-11-16 20:00:56",
+      "last_seen": "2026-11-16 20:34:06"
+    },
+    {
+      "category": "Event skipped (incomplete location)",
+      "occurrences": 2,
+      "distinct_sources": 1,
+      "first_seen": "2026-11-20 14:03:46",
+      "last_seen": "2026-11-20 14:03:47"
+    },
+    {
+      "category": "Fallback end dropped (no end invented)",
+      "occurrences": 1,
+      "distinct_sources": 1,
+      "first_seen": "2026-11-20 14:03:46",
+      "last_seen": "2026-11-20 14:03:46"
+    },
+    {
+      "category": "Checkpoint discarded (page count changed)",
+      "occurrences": 1,
+      "distinct_sources": 1,
+      "first_seen": "2026-11-20 14:02:05",
+      "last_seen": "2026-11-20 14:02:05"
+    }
+  ],
+  "http_status_distribution": {
+    "429": 770,
+    "520": 2,
+    "405": 15
+  },
+  "daily_log_distribution": {
+    "2026-11-20": 3129,
+    "2026-11-16": 229,
+    "2026-11-15": 462,
+    "2026-11-14": 1692
+  },
+  "daily_error_distribution": {
+    "2026-11-20": 107,
+    "2026-11-16": 9,
+    "2026-11-15": 30,
+    "2026-11-14": 375
+  },
+  "daily_history_status": {
+    "2026-11-20": {
+      "failed": 3,
+      "rate_limited": 100,
+      "success": 29,
+      "partial": 4,
+      "warning": 1
+    },
+    "2026-11-16": {
+      "partial": 10,
+      "failed": 3
+    },
+    "2026-11-15": {
+      "failed": 7,
+      "rate_limited": 10,
+      "partial": 7,
+      "warning": 10
+    },
+    "2026-11-14": {
+      "failed": 21,
+      "warning": 11
+    }
+  }
+}

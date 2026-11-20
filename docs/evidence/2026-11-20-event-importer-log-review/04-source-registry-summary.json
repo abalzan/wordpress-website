@@ -1,0 +1,127 @@
+{
+  "note": "Source registry summary (read-only). 154 sources total.",
+  "total_sources": 154,
+  "by_category": {
+    "other (laois_tourism)": 1,
+    "other (heritage_week)": 1,
+    "other (eventbrite)": 1,
+    "other (ivvcc)": 1,
+    "other (motorsport_ireland)": 1,
+    "other (mondello_park)": 1,
+    "eventbrite (county/time-window)": 104,
+    "heritage_week (county)": 26,
+    "g1_probe (inactive test sources)": 18
+  },
+  "active_by_category": {
+    "other (laois_tourism)": 1,
+    "other (heritage_week)": 1,
+    "other (eventbrite)": 1,
+    "other (ivvcc)": 1,
+    "other (motorsport_ireland)": 1,
+    "other (mondello_park)": 1,
+    "eventbrite (county/time-window)": 104,
+    "heritage_week (county)": 26
+  },
+  "by_status": {
+    "active": 136,
+    "inactive": 18
+  },
+  "by_type": {
+    "icalendar": 1,
+    "website": 4,
+    "eventbrite": 115,
+    "heritage_week": 34
+  },
+  "inactive_sources": [
+    {
+      "id": "g1_probe_eventbrite_12a0be98",
+      "name": "G1 probe eventbrite",
+      "type": "eventbrite"
+    },
+    {
+      "id": "g1_probe_eventbrite_255d8e5d",
+      "name": "G1 probe eventbrite",
+      "type": "eventbrite"
+    },
+    {
+      "id": "g1_probe_eventbrite_a7200d61",
+      "name": "G1 probe eventbrite",
+      "type": "eventbrite"
+    },
+    {
+      "id": "g1_probe_eventbrite_63e32fa4",
+      "name": "G1 probe eventbrite",
+      "type": "eventbrite"
+    },
+    {
+      "id": "g1_probe_eventbrite_26089591",
+      "name": "G1 probe eventbrite",
+      "type": "eventbrite"
+    },
+    {
+      "id": "g1_probe_eventbrite_f513d699",
+      "name": "G1 probe eventbrite",
+      "type": "eventbrite"
+    },
+    {
+      "id": "g1_probe_eventbrite_9695905a",
+      "name": "G1 probe eventbrite",
+      "type": "eventbrite"
+    },
+    {
+      "id": "g1_probe_eventbrite_337a55a7",
+      "name": "G1 probe eventbrite",
+      "type": "eventbrite"
+    },
+    {
+      "id": "g1_probe_eventbrite_1d540378",
+      "name": "G1 probe eventbrite",
+      "type": "eventbrite"
+    },
+    {
+      "id": "g1_probe_eventbrite_217b99b8",
+      "name": "G1 probe eventbrite",
+      "type": "eventbrite"
+    },
+    {
+      "id": "g1_probe_heritage_week_502e0f5d",
+      "name": "G1 probe heritage_week",
+      "type": "heritage_week"
+    },
+    {
+      "id": "g1_probe_heritage_week_9f3deb1a",
+      "name": "G1 probe heritage_week",
+      "type": "heritage_week"
+    },
+    {
+      "id": "g1_probe_heritage_week_3959e340",
+      "name": "G1 probe heritage_week",
+      "type": "heritage_week"
+    },
+    {
+      "id": "g1_probe_heritage_week_1a8e51f2",
+      "name": "G1 probe heritage_week",
+      "type": "heritage_week"
+    },
+    {
+      "id": "g1_probe_heritage_week_5b8fe650",
+      "name": "G1 probe heritage_week",
+      "type": "heritage_week"
+    },
+    {
+      "id": "g1_probe_heritage_week_e38a7b47",
+      "name": "G1 probe heritage_week",
+      "type": "heritage_week"
+    },
+    {
+      "id": "g1_probe_heritage_week_0b81b474",
+      "name": "G1 probe heritage_week",
+      "type": "heritage_week"
+    },
+    {
+      "id": "g1_probe_heritage_week_79452265",
+      "name": "G1 probe heritage_week",
+      "type": "heritage_week"
+    }
+  ]
+}

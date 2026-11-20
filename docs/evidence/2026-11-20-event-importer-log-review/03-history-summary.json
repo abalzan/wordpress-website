@@ -1,0 +1,92 @@
+{
+  "note": "Redacted history summary. The history table retains up to 1200 rows / 50 completed groups.",
+  "overall": {
+    "total_entries": 216,
+    "statuses": {
+      "failed": 34,
+      "rate_limited": 110,
+      "success": 29,
+      "partial": 21,
+      "warning": 22
+    },
+    "record_types": {
+      "parent": 1,
+      "child": 175,
+      "": 40
+    },
+    "date_range": {
+      "oldest": "2026-11-14 19:31:50",
+      "newest": "2026-11-20 14:10:34"
+    }
+  },
+  "daily_summary": {
+    "2026-11-14": {
+      "total_entries": 32,
+      "statuses": {
+        "failed": 21,
+        "warning": 11
+      },
+      "sources": 20
+    },
+    "2026-11-15": {
+      "total_entries": 34,
+      "statuses": {
+        "failed": 7,
+        "rate_limited": 10,
+        "partial": 7,
+        "warning": 10
+      },
+      "sources": 13
+    },
+    "2026-11-16": {
+      "total_entries": 13,
+      "statuses": {
+        "partial": 10,
+        "failed": 3
+      },
+      "sources": 3
+    },
+    "2026-11-20": {
+      "total_entries": 137,
+      "statuses": {
+        "failed": 3,
+        "rate_limited": 100,
+        "success": 29,
+        "partial": 4,
+        "warning": 1
+      },
+      "sources": 137
+    }
+  },
+  "nov20_run_all_parent": [
+    {
+      "time": "2026-11-20 14:10:34",
+      "source": "all",
+      "status": "failed",
+      "found": 123,
+      "new": 40,
+      "updated": 3,
+      "unchanged": 78,
+      "errors": 0,
+      "message": "Run All: 136 source(s), 40 created, 3 updated, 78 unchanged, 2 event(s) skipped, 0 event error(s), 2 failed source(s), 99 source(s) skipped/deferred.",
+      "record_type": "parent",
+      "rate_limit_state": {
+        "active": true,
+        "rate_limited": true,
+        "first_source": "eventbrite_donegal",
+        "retry_after_kind": "fallback",
+        "skipped_sources_count": 99
+      }
+    }
+  ],
+  "nov20_eventbrite_outcomes": {
+    "total_eventbrite_sources": 136,
+    "by_status": {
+      "rate_limited": 100,
+      "success": 29,
+      "partial": 4,
+      "failed": 2,
+      "warning": 1
+    }
+  }
+}
