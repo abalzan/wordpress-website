@@ -290,16 +290,29 @@ class Conexao_Eventbrite_Client {
 				// traffic without ever changing the outcome.
 				$this->last_failure_reason = 'http_error';
 
+				$context = array(
+					'url'         => $page_url,
+					'http_status' => (int) $code,
+					'reason'      => $this->last_failure_reason,
+					'run_id'      => apply_filters( 'conexao_event_importer_current_run_id', '' ),
+				);
+
+				// A 405 is this provider's WAF refusal code. Retain ONLY the
+				// bounded, allowlisted WAF action so the classification is
+				// provable from the log; never a cookie, token or body.
+				if ( 405 === (int) $code ) {
+					$waf_action = $this->get_waf_action( $response );
+
+					if ( '' !== $waf_action ) {
+						$context['waf_action'] = $waf_action;
+					}
+				}
+
 				Conexao_Import_Log::add(
 					$this->source_id,
 					'error',
 					$this->get_non_retryable_message( (int) $code, $page_url ),
-					array(
-						'url'         => $page_url,
-						'http_status' => (int) $code,
-						'reason'      => $this->last_failure_reason,
-						'run_id'      => apply_filters( 'conexao_event_importer_current_run_id', '' ),
-					)
+					$context
 				);
 				return '';
 			}
@@ -548,6 +561,40 @@ class Conexao_Eventbrite_Client {
 	}
 
 	/**
+	 * Read and bound the `x-amzn-waf-action` response header for a 405.
+	 *
+	 * Returns a short, allowlisted token (e.g. 'captcha') or an empty string
+	 * when the header is absent or unrecognised. The value is sanitised and
+	 * length-limited; it is NEVER a cookie, token, session identifier or body.
+	 * This is the only response header the importer retains, and only on a 405.
+	 *
+	 * @param array|WP_Error $response HTTP response (as returned by wp_remote_get).
+	 * @return string Allowlisted action, or '' when absent/unrecognised.
+	 */
+	protected function get_waf_action( $response ) {
+		if ( ! is_array( $response ) ) {
+			return '';
+		}
+
+		$raw = (string) wp_remote_retrieve_header( $response, 'x-amzn-waf-action' );
+		$raw = sanitize_text_field( trim( $raw ) );
+
+		if ( '' === $raw ) {
+			return '';
+		}
+
+		$raw = substr( $raw, 0, self::WAF_ACTION_MAX_LENGTH );
+
+		foreach ( self::WAF_ACTION_ALLOWLIST as $allowed ) {
+			if ( 0 === strcasecmp( $raw, $allowed ) ) {
+				return $allowed;
+			}
+		}
+
+		return 'unknown';
+	}
+
+	/**
 	 * Build a page URL with the ?page=N parameter.
 	 *
 	 * @param string $base_url Base discovery URL.
@@ -588,6 +635,30 @@ class Conexao_Eventbrite_Client {
 	 * @var int[]
 	 */
 	const RETRYABLE_STATUSES = array( 429, 500, 502, 503, 504 );
+
+	/**
+	 * Strict allowlist of recognised `x-amzn-waf-action` values.
+	 *
+	 * A 405 is this provider's WAF refusal code (G1–G5). The WAF action header
+	 * is retained ONLY so the classification is provable from the log rather
+	 * than inferred from the code path. The value is matched case-insensitively
+	 * against this fixed allowlist; anything else is stored as 'unknown'. No
+	 * other header, no cookie, no token, no body is ever read or stored.
+	 *
+	 * @var string[]
+	 */
+	const WAF_ACTION_ALLOWLIST = array( 'captcha', 'challenge', 'block', 'allow' );
+
+	/**
+	 * Maximum length of a stored WAF action value.
+	 *
+	 * The allowlist values are all short; this is a defence-in-depth ceiling so
+	 * a hand-edited or unexpected header can never write a long string to the
+	 * log.
+	 *
+	 * @var int
+	 */
+	const WAF_ACTION_MAX_LENGTH = 32;
 
 	/**
 	 * Sleep abstraction, so tests observe the delay without waiting for it.

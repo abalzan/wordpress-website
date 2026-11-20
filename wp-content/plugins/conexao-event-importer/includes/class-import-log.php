@@ -255,6 +255,11 @@ class Conexao_Import_Log {
 				'rate_limit_hits',
 				'rate_limit_streak',
 				'skipped',
+				// A 405 WAF refusal retains ONLY this bounded, allowlisted
+				// action token (captcha|challenge|block|allow|unknown) so the
+				// WAF classification is provable from the log. It is never a
+				// cookie, token, session identifier or body.
+				'waf_action',
 			),
 			// Stage 3 (P12): run/continuation correlation and the diagnostic
 			// state a continuation lifecycle entry exists to explain.
