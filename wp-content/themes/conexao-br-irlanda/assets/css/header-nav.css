@@ -327,11 +327,57 @@ a.language-switcher-item:hover {
   font-size: var(--text-sm);
 }
 
+/* ===== Mobile drawer theme-toggle row =====
+   Utility row between the language switcher and the search field. The
+   .theme-toggle button itself is RELOCATED here from the desktop header
+   actions by main.js at <=1024px (see initThemeToggleRelocation), so this is
+   only the row that hosts it — the button keeps its dark-mode.css styling
+   (44x44, border, radius) unchanged. */
+.mobile-menu-theme {
+  display: flex;
+  align-items: center;
+  padding: var(--space-3) var(--space-5) 0;
+  flex-shrink: 0;
+}
+
 /* Below 1024px the desktop instance is replaced by the drawer instance —
    the header row only has room for hamburger + logo + search + theme + CTA. */
 @media (max-width: 1024px) {
   .language-switcher--desktop {
     display: none;
+  }
+}
+
+/* ===== Mobile header language switcher (PT / EN) =====
+   Below 1024px the desktop switcher is hidden, so the SAME shared renderer
+   is rendered again with context "mobile" inside .header-actions. It is the
+   compact PT | EN control that stays visible in the mobile header at every
+   width (the drawer keeps its own larger instance for in-menu use).
+
+   Hidden by default (desktop); the <=1024px block below reveals it. This is
+   essential: without it the mobile instance would also render on desktop,
+   producing two visible language switchers. */
+.header-actions .language-switcher--mobile {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .header-actions .language-switcher--mobile {
+    display: inline-flex;
+    padding: 2px;
+  }
+
+  .header-actions .language-switcher--mobile .language-switcher-item {
+    min-width: 36px;
+    min-height: 36px;
+    padding-inline: 7px;
+    font-size: 12px;
+    color: var(--color-text-secondary);
+  }
+
+  .header-actions .language-switcher--mobile .language-switcher-item.is-current {
+    background-color: var(--color-primary);
+    color: var(--conexao-white);
   }
 }
 
@@ -450,8 +496,11 @@ a.language-switcher-item:hover {
   }
 }
 
-/* Label variant — only where the row has room for it. */
-@media (min-width: 480px) and (max-width: 1024px) {
+/* Label variant — only where the row has room for it. Measured: the full-text
+   pill is ~141px; together with the 80px PT | EN switcher and the logo it
+   needs the row to be wide enough that the logo keeps a legible size, which
+   happens at >=560px (see the mobile-header budget notes). */
+@media (min-width: 560px) and (max-width: 1024px) {
   .header-cta-compact {
     width: auto;
     gap: var(--space-1);
@@ -836,131 +885,12 @@ a.language-switcher-item:hover {
   color: var(--conexao-white);
 }
 
-/* ===== Mobile Search Overlay ===== */
-.mobile-search-toggle {
-  display: none;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: var(--space-2);
-  width: 48px;
-  height: 48px;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-sm);
-  color: var(--color-text);
-  transition: all var(--transition);
-  flex-shrink: 0;
-}
-
-.mobile-search-toggle:hover {
-  background: var(--color-surface-muted);
-  color: var(--color-primary);
-}
-
-.mobile-search-overlay {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(7, 59, 47, 0.45);
-  z-index: 9999;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity var(--transition), visibility var(--transition);
-}
-
-.mobile-search-overlay.active {
-  display: block;
-  opacity: 1;
-  visibility: visible;
-}
-
-.mobile-search-overlay-content {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  width: auto;
-  max-width: 100%;
-  box-sizing: border-box;
-  background: var(--color-surface);
-  padding: var(--space-5) var(--space-5);
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-100%);
-  transition: transform var(--transition-slow);
-}
-
-.mobile-search-overlay.active .mobile-search-overlay-content {
-  transform: translateY(0);
-}
-
-.mobile-search-form {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.mobile-search-field {
-  flex: 1 1 auto;
-  min-width: 0;
-  width: auto;
-  min-height: 48px;
-  padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  font-size: var(--text-sm);
-  font-family: var(--font-body);
-}
-
-.mobile-search-field:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 4px rgba(14, 107, 58, 0.1);
-}
-
-.mobile-search-submit {
-  flex-shrink: 0;
-  background: var(--color-primary);
-  color: var(--conexao-white);
-  border: none;
-  padding: var(--space-3) var(--space-5);
-  border-radius: var(--radius-sm);
-  font-weight: 600;
-  font-size: var(--text-sm);
-  cursor: pointer;
-  transition: all var(--transition);
-  white-space: nowrap;
-}
-
-.mobile-search-submit:hover {
-  background: var(--color-primary-dark);
-}
-
-.mobile-search-close {
-  background: none;
-  border: none;
-  cursor: pointer;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: var(--text-2xl);
-  color: var(--color-text-secondary);
-  border-radius: var(--radius-sm);
-  flex-shrink: 0;
-}
-
-.mobile-search-close:hover {
-  background: var(--color-surface-muted);
-  color: var(--color-text);
-}
+/* ===== Mobile Search =====
+   The separate mobile search toggle + full-screen overlay were removed:
+   mobile/tablet search now lives ONLY inside the hamburger drawer
+   (.mobile-menu-search / .mobile-menu-search-form in this file), so there is
+   exactly one mobile search entry point and one mobile search form. The
+   desktop inline search (.header-search) is unchanged. */
 
 /* ===== Skip Link ===== */
 .skip-link {
@@ -994,21 +924,18 @@ a.language-switcher-item:hover {
 .header-cta-compact:focus-visible,
 .mobile-menu-toggle:focus-visible,
 .mobile-menu-close:focus-visible,
-.mobile-search-toggle:focus-visible,
 .mobile-menu-search-field:focus-visible,
-.mobile-menu-search-submit:focus-visible,
-.mobile-search-field:focus-visible,
-.mobile-search-submit:focus-visible,
-.mobile-search-close:focus-visible {
+.mobile-menu-search-submit:focus-visible {
   outline: var(--focus-ring);
   outline-offset: var(--focus-offset);
 }
 
 /* ===== Responsive: Small desktop (1025px - 1280px) =====
    The 9-item nav is tight, so reduce spacing. The inline search box is
-   replaced by the mobile search toggle (which opens the same overlay) so
-   logo + nav + CTA keep fitting inside the 1200px container at 100% zoom,
-   keeping the nav usable and "Anuncie Aqui" visible down to 1024px. */
+   hidden at this width so logo + nav + CTA keep fitting inside the 1200px
+   container at 100% zoom, keeping the nav usable and "Anuncie Aqui" visible
+   down to 1024px. (The separate mobile search toggle/overlay was removed —
+   search is desktop-only inline here, and drawer-only below 1024px.) */
 @media (max-width: 1280px) and (min-width: 1025px) {
   .primary-navigation ul {
     gap: 10px;
@@ -1019,13 +946,9 @@ a.language-switcher-item:hover {
     padding: 10px 2px;
   }
 
-  /* Swap the inline search for the mobile search toggle at this width */
+  /* Hide the inline search at this width */
   .header-search {
     display: none;
-  }
-
-  .mobile-search-toggle {
-    display: flex;
   }
 }
 
@@ -1034,14 +957,16 @@ a.language-switcher-item:hover {
    widths, so we intentionally switch to the side-drawer mobile menu instead of
    forcing an overflowing single-line nav. */
 @media (max-width: 1024px) and (min-width: 769px) {
-  /* Show the mobile menu toggle and search toggle */
+  /* Show the mobile menu toggle */
   .mobile-menu-toggle {
     display: flex;
     order: 1;
   }
 
+  /* The separate mobile search toggle/overlay is gone: search lives inside the
+     drawer (.mobile-menu-search). Hide any leftover toggle. */
   .mobile-search-toggle {
-    display: flex;
+    display: none;
   }
 
   /* Hide the desktop nav, search and CTA on tablet */
@@ -1057,22 +982,30 @@ a.language-switcher-item:hover {
     display: none;
   }
 
-  /* Main header mobile layout — compact 60–70px bar */
+  /* Main header mobile layout — single-row CSS Grid:
+     [ hamburger | centred logo | language + CTA ]. The side tracks are
+     minmax(min-content, 1fr): each is at least as wide as its content (the
+     48px hamburger on the left, the ~132px language + CTA cluster on the
+     right) and they share the remaining space equally. The auto centre column
+     (the logo) is geometrically centred whenever the side tracks end up equal
+     (>=430px); below that the right cluster is wider than the hamburger, so
+     the logo sits slightly left of centre — the standard space-between
+     behaviour, and the only non-clipping option that keeps the logo legible
+     at 320px (a symmetric 1fr 1fr would shrink the logo to ~16px). */
   .main-header {
     padding: 8px 0;
   }
 
   .main-header .site-container {
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(min-content, 1fr) auto minmax(min-content, 1fr);
     align-items: center;
-    justify-content: space-between;
-    gap: 8px;
+    column-gap: 8px;
   }
 
-  /* Logo left, actions right, toggle left */
   .logo {
-    order: 2;
-    flex: 1;
+    order: initial;
+    min-width: 0;
     display: flex;
     justify-content: center;
   }
@@ -1082,8 +1015,8 @@ a.language-switcher-item:hover {
   }
 
   .header-actions {
-    order: 3;
-    gap: 4px;
+    order: initial;
+    gap: 8px;
   }
 
   .site-name {
@@ -1102,37 +1035,44 @@ a.language-switcher-item:hover {
 
 /* ===== Responsive: Mobile (below 768px) ===== */
 @media (max-width: 768px) {
-  /* Main header mobile layout — compact 60–70px bar */
+  /* Main header mobile layout — single-row CSS Grid:
+     [ hamburger | centred logo | language + CTA ]. The side tracks are
+     minmax(min-content, 1fr): each is at least as wide as its content (the
+     48px hamburger on the left, the ~132px language + CTA cluster on the
+     right) and they share the remaining space equally. The auto centre column
+     (the logo) is geometrically centred whenever the side tracks end up equal
+     (>=430px); below that the right cluster is wider than the hamburger, so
+     the logo sits slightly left of centre — the standard space-between
+     behaviour, and the only non-clipping option that keeps the logo legible
+     at 320px (a symmetric 1fr 1fr would shrink the logo to ~16px). */
   .main-header {
     padding: 8px 0;
   }
 
   .main-header .site-container {
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(min-content, 1fr) auto minmax(min-content, 1fr);
     align-items: center;
-    justify-content: space-between;
-    gap: 8px;
+    column-gap: 8px;
   }
 
-  /* Logo center — a flex child of the header row, not a box-filling layer.
-     The row height is established by the 48px touch targets
-     (.mobile-menu-toggle / .mobile-search-toggle); .logo simply joins that
-     row and is vertically centered by the container's align-items: center.
-     No stretch, no percentage fill: the image keeps its natural size,
-     capped by max-height to sit slightly below the control height so it
-     never touches the top/bottom of the header. object-fit: contain from
-     the shared-box rule above keeps the artwork proportional and centered.
-     Light/dark switching stays shift-free: both variants still share ONE
-     rendered box. On mobile that shared box is re-proportioned to the real
-     dark-asset ratio (1600×600 = 8/3) instead of the desktop 3/2
-     letterbox — at this small scale a 3/2 box would render the wide logo
-     artworks at barely half the capped height ("floating small" again).
-     With 8/3 both variants render at the full capped height (the slightly
-     less-wide light asset just letterboxes a little horizontally, still
-     centered). Scoped to .site-header so the footer logo is unaffected. */
+  /* Logo center — the grid's auto centre column. It is geometrically centred
+     whenever the side tracks are equal (>=430px); below that the right cluster
+     (language + CTA) is wider than the hamburger, so the logo sits slightly
+     left of centre. The image keeps its natural size, capped by max-height to
+     sit slightly below the control height so it never touches the top/bottom
+     of the header. object-fit: contain from the shared-box rule above keeps
+     the artwork proportional and centered. Light/dark switching stays
+     shift-free: both variants still share ONE rendered box. On mobile that
+     shared box is re-proportioned to the real dark-asset ratio (1600×600 =
+     8/3) instead of the desktop 3/2 letterbox — at this small scale a 3/2 box
+     would render the wide logo artworks at barely half the capped height
+     ("floating small" again). With 8/3 both variants render at the full
+     capped height (the slightly less-wide light asset just letterboxes a
+     little horizontally, still centered). Scoped to .site-header so the
+     footer logo is unaffected. */
   .logo {
-    order: 2;
-    flex: 1;
+    order: initial;
     min-width: 0;
     justify-content: center;
     display: flex;
@@ -1151,9 +1091,9 @@ a.language-switcher-item:hover {
   }
 
   /* Mobile-only shared-box proportions for the header logos (see above).
-     40px tall × 8/3 ≈ 107px wide — comfortably inside the ~128px of row
-     space the logo gets on a 320px screen; max-width: 100% degrades the
-     box gracefully (ratio preserved) on narrower viewports. */
+     40px tall × 8/3 ≈ 107px wide — the auto centre column sizes to the
+     image, and max-width: 100% degrades the box gracefully (ratio preserved)
+     on narrower viewports. */
   .site-header .site-logo-img {
     aspect-ratio: 8 / 3;
   }
@@ -1165,18 +1105,19 @@ a.language-switcher-item:hover {
   /* Hamburger left */
   .mobile-menu-toggle {
     display: flex;
-    order: 1;
+    order: initial;
   }
 
   /* Actions right */
   .header-actions {
-    order: 3;
-    gap: 4px;
+    order: initial;
+    gap: 8px;
   }
 
-  /* Show mobile search toggle */
+  /* The separate mobile search toggle/overlay is gone: search lives inside the
+     drawer (.mobile-menu-search). Hide any leftover toggle. */
   .mobile-search-toggle {
-    display: flex;
+    display: none;
   }
 
   /* Hide desktop search on mobile */
@@ -1217,19 +1158,19 @@ a.language-switcher-item:hover {
 }
 
 /* ===== Ultra-narrow phones (<=359px) =====
-   At 320px the row is hamburger + logo + theme + search + the compact top-bar
-   CTA, and the logo is the flexible child, so it absorbs the new control
-   (measured: 96x36 -> 66x25 with the default 8px/4px gaps). Tightening only the
-   gaps on these very small screens buys back 12px for the logo (measured:
-   78x29, i.e. +18%) with no container overflow, no horizontal scrolling and the
-   48x48 target untouched. Scoped to <=359px so every wider layout is unaffected. */
+   At 320px the grid columns are minmax(0,1fr) auto minmax(0,1fr) with 8px
+   gaps; the right cluster (PT | EN + icon CTA) is ~132px, so each 1fr track
+   is ~(296-107-16)/2 ≈ 86px and the right cluster fits. Tightening only the
+   gaps on these very small screens buys back a little room for the logo with
+   no container overflow, no horizontal scrolling and the 44px+ targets
+   untouched. Scoped to <=359px so every wider layout is unaffected. */
 @media (max-width: 359px) {
   .main-header .site-container {
-    gap: 4px;
+    column-gap: 4px;
   }
 
   .header-actions {
-    gap: 2px;
+    gap: 4px;
   }
 }
 

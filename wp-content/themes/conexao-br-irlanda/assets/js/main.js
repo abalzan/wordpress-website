@@ -20,8 +20,8 @@
 	// ===== DOM Ready =====
 	document.addEventListener('DOMContentLoaded', function() {
 		initThemeToggle();
+		initThemeToggleRelocation();
 		initMobileMenu();
-		initMobileSearch();
 		initCopyButtons();
 		initLeisureFilters();
 		initAgencyFilters();
@@ -58,6 +58,64 @@
 
 			syncToggleState();
 		});
+	}
+
+	// ===== Theme Toggle Relocation (desktop header <-> mobile drawer) =====
+	// There is exactly ONE .theme-toggle element in the DOM at any time. On
+	// desktop (>1024px) it lives in the header actions row; on mobile/tablet
+	// (<=1024px) it is moved into the drawer's utility row (.mobile-menu-theme,
+	// between the language switcher and the search field). Moving the SAME node
+	// preserves its click handler (initThemeToggle) and its aria-pressed state —
+	// no clone, no second theme-switching mechanism. The placeholder keeps the
+	// desktop layout intact while the button is in the drawer, and the original
+	// desktop position is restored when the viewport grows back past 1024px.
+	function initThemeToggleRelocation() {
+		// The toggle is rendered by PHP inside .mobile-menu-theme (the drawer).
+		// On desktop we relocate it into .header-actions; on mobile it stays.
+		const toggle = document.querySelector('.theme-toggle');
+		const drawerSlot = document.querySelector('.mobile-menu-theme');
+		const headerActions = document.querySelector('.header-actions');
+		if (!toggle || !drawerSlot || !headerActions) return;
+
+		// The toggle's original (PHP-rendered) home is the drawer slot.
+		const originalParent = drawerSlot;
+		const placeholder = document.createComment('theme-toggle relocated to desktop header');
+		const mobileQuery = window.matchMedia('(max-width: 1024px)');
+
+		function placeInHeader() {
+			if (toggle.parentNode === headerActions) return;
+			// Insert the placeholder where the button currently sits so the
+			// drawer position can be restored exactly.
+			toggle.parentNode.insertBefore(placeholder, toggle);
+			headerActions.appendChild(toggle);
+		}
+
+		function placeInDrawer() {
+			if (toggle.parentNode === originalParent) return;
+			// Restore the button to its original drawer position.
+			if (placeholder.parentNode === originalParent) {
+				originalParent.insertBefore(toggle, placeholder);
+				originalParent.removeChild(placeholder);
+			} else {
+				originalParent.appendChild(toggle);
+			}
+		}
+
+		function apply() {
+			if (mobileQuery.matches) {
+				placeInDrawer();
+			} else {
+				placeInHeader();
+			}
+		}
+
+		apply();
+
+		if (typeof mobileQuery.addEventListener === 'function') {
+			mobileQuery.addEventListener('change', apply);
+		} else if (typeof mobileQuery.addListener === 'function') {
+			mobileQuery.addListener(apply);
+		}
 	}
 
 	// ===== Mobile Menu Toggle (Full-Screen) =====
@@ -160,33 +218,6 @@
 				dropdown.insertBefore(toggle, submenu);
 			}
 		});
-	}
-
-	function initMobileSearch() {
-		const toggle = document.querySelector('.mobile-search-toggle');
-		const overlay = document.querySelector('.mobile-search-overlay');
-		const close = document.querySelector('.mobile-search-close');
-		const field = document.querySelector('.mobile-search-field');
-		if (!toggle || !overlay) return;
-
-		function closeSearch() {
-			overlay.classList.remove('active');
-			overlay.setAttribute('aria-hidden', 'true');
-			toggle.setAttribute('aria-expanded', 'false');
-			document.body.style.overflow = '';
-			toggle.focus();
-		}
-
-		toggle.addEventListener('click', function() {
-			overlay.classList.add('active');
-			overlay.setAttribute('aria-hidden', 'false');
-			toggle.setAttribute('aria-expanded', 'true');
-			document.body.style.overflow = 'hidden';
-			setTimeout(function() { if (field) field.focus(); }, 100);
-		});
-		if (close) close.addEventListener('click', closeSearch);
-		overlay.addEventListener('click', function(e) { if (e.target === overlay) closeSearch(); });
-		document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && overlay.classList.contains('active')) closeSearch(); });
 	}
 
 	// ===== Copy Link Buttons =====

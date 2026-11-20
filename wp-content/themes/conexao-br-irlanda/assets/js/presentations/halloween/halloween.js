@@ -175,8 +175,8 @@ function initHalloweenNavEffects() {
 	var EFFECTS = ['bat', 'pumpkin', 'ghost', 'witch'];
 
 	var EXCLUDED_SELECTORS = '.mobile-menu-toggle, .mobile-menu-close, ' +
-		'.theme-toggle, .mobile-search-toggle, .mobile-search-close, ' +
-		'.seasonal-halloween-close, [aria-controls="mobile-search"], ' +
+		'.theme-toggle, ' +
+		'.seasonal-halloween-close, ' +
 		'[aria-controls="mobile-menu"]';
 
 	function getClock() {
@@ -234,7 +234,7 @@ function initHalloweenNavEffects() {
 			!prefersReducedMotion() &&
 			'visible' === document.visibilityState &&
 			!presentation &&
-			!document.querySelector('.mobile-menu-overlay.active, .mobile-search-overlay.active')
+			!document.querySelector('.mobile-menu-overlay.active')
 		);
 	}
 
@@ -473,8 +473,7 @@ function initHalloweenNavEffects() {
 		if (!event.target || typeof event.target.closest !== 'function') return;
 
 		var target = event.target.closest(
-			'.seasonal-halloween-close, .mobile-menu-toggle, .mobile-menu-close, ' +
-			'.mobile-search-toggle, .mobile-search-close'
+			'.seasonal-halloween-close, .mobile-menu-toggle, .mobile-menu-close'
 		);
 		if (!target) return;
 
