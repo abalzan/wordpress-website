@@ -120,6 +120,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 		public function cleanup( $args, $assoc_args ) {
 			$plugin  = Conexao_Event_Importer::instance();
 			$cleanup = $plugin->cleanup;
+			$runner  = $plugin->cleanup_runner;
 
 			if ( ! empty( $assoc_args['dry-run'] ) ) {
 				$reflection = new ReflectionMethod( $cleanup, 'find_past_events' );
@@ -136,21 +137,35 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 				return;
 			}
 
-			$result = $cleanup->run_cleanup();
+			// Loop batches until terminal.
+			$batches = 0;
+			do {
+				$result = $runner->start();
+				$batches++;
+
+				if ( ! $result['ok'] ) {
+					WP_CLI::error( sprintf( 'Cleanup failed to start: %s', $result['reason'] ) );
+				}
+
+				$status = $result['status'];
+				WP_CLI::log( sprintf( 'Batch %d: status=%s, reason=%s', $batches, $status, $result['reason'] ) );
+
+				if ( isset( $result['batch_result']['events_deleted'] ) ) {
+					WP_CLI::log( sprintf( '  Events deleted this batch: %d', $result['batch_result']['events_deleted'] ) );
+				}
+			} while ( 'running' === $status );
+
+			$run_state = $runner->read_run_state();
 
 			WP_CLI::log( sprintf(
-				'Cleanup: %d found, %d deleted, %d images deleted, %d preserved, %d errors.',
-				(int) $result['events_found'],
-				(int) $result['events_deleted'],
-				(int) $result['images_deleted'],
-				(int) $result['images_preserved'],
-				count( $result['errors'] )
+				'Cleanup finished: %d events deleted, %d images preserved, %d failed events.',
+				(int) $run_state['events_deleted'],
+				(int) $run_state['images_preserved'],
+				count( $run_state['failed_events_final'] )
 			) );
 
-			if ( ! empty( $result['errors'] ) ) {
-				foreach ( array_slice( $result['errors'], 0, 10 ) as $error ) {
-					WP_CLI::warning( $error );
-				}
+			if ( ! empty( $run_state['failed_events_final'] ) ) {
+				WP_CLI::warning( sprintf( '%d event(s) exhausted retries and were moved to failed_events_final.', count( $run_state['failed_events_final'] ) ) );
 			}
 
 			WP_CLI::success( 'Cleanup finished.' );

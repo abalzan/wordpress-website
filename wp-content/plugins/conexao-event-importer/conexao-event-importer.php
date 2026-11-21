@@ -68,6 +68,9 @@ require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-transfer-admin.p
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-multi-import.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-image-sync-admin.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-cleanup.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-cleanup-lock.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-cleanup-attachment-review.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-cleanup-run.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-cleanup-admin.php';
 
 // Stage 2: language guard for imported events (Polylang-aware, no-op without
@@ -140,6 +143,9 @@ final class Conexao_Event_Importer {
 	/** @var Conexao_Event_Cleanup */
 	public $cleanup;
 
+	/** @var Conexao_Event_Cleanup_Run */
+	public $cleanup_runner;
+
 	/** @var Conexao_Event_Cleanup_Admin */
 	public $cleanup_admin;
 
@@ -167,7 +173,8 @@ final class Conexao_Event_Importer {
 		$this->transfer  = new Conexao_Event_Transfer_Admin();
 		$this->image_sync = new Conexao_Event_Image_Sync_Admin();
 		$this->cleanup   = new Conexao_Event_Cleanup();
-		$this->cleanup_admin = new Conexao_Event_Cleanup_Admin( $this->cleanup );
+		$this->cleanup_runner = new Conexao_Event_Cleanup_Run( $this->cleanup );
+		$this->cleanup_admin = new Conexao_Event_Cleanup_Admin( $this->cleanup, $this->cleanup_runner );
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_assets' ) );
 
