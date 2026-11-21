@@ -214,6 +214,15 @@ final class Conexao_Event_Cleanup_Attachment_Review {
 	public static function enqueue_in_transaction( array $attachment_ids, int $event_id, array $sources, int $now ): array {
 		global $wpdb;
 
+		// If no attachments to enqueue, return success without CAS.
+		if ( empty( $attachment_ids ) ) {
+			return array(
+				'ok'            => true,
+				'reason'        => 'no_attachments',
+				'pending_count' => 0,
+			);
+		}
+
 		$option = self::option_name();
 
 		$current = self::read();

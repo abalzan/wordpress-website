@@ -485,7 +485,7 @@ final class Conexao_Event_Cleanup_Lock {
 	 * @param string $raw JSON-encoded record.
 	 * @return array|null
 	 */
-	private static function decode( string $raw ): ?array {
+	public static function decode( string $raw ): ?array {
 		$decoded = json_decode( $raw, true );
 
 		if ( ! is_array( $decoded ) ) {

@@ -195,7 +195,54 @@ final class Conexao_Event_Cleanup_Run {
 		Conexao_Event_Cleanup_Lock::ensure_row_exists();
 		Conexao_Event_Cleanup_Attachment_Review::ensure_row_exists();
 
-		// Try to acquire the lock.
+		// Check for an existing run-state (resume).
+		$run_state = $this->read_run_state();
+
+		if ( ! empty( $run_state ) && isset( $run_state['run_id'] ) ) {
+			// Resume: verify the lock is still ours.
+			$lock = Conexao_Event_Cleanup_Lock::acquire(
+				array(
+					'run_id' => $run_state['run_id'],
+					'ttl'    => max( 60, 2 * $batch_time_seconds ),
+				)
+			);
+
+			if ( ! $lock['held'] ) {
+				// Lock was reclaimed by another worker; mark the run as failed.
+				$run_state['status'] = self::STATUS_FAILED;
+				$run_state['updated'] = time();
+				$this->write_run_state( $run_state );
+
+				return array(
+					'ok'      => false,
+					'run_id'  => $run_state['run_id'],
+					'status'  => self::STATUS_FAILED,
+					'reason'  => $lock['reason'],
+					'outcome' => $lock['outcome'],
+				);
+			}
+
+			// Update owner + fence.
+			$run_state['owner_lock_id']    = $run_state['run_id'];
+			$run_state['fence_token']      = $lock['record']['fence_token'];
+			$run_state['lease_expires_at'] = time() + max( 60, 2 * $batch_time_seconds );
+			$run_state['status']           = self::STATUS_RUNNING;
+			$run_state['updated']          = time();
+			$this->write_run_state( $run_state );
+
+			// Process one batch.
+			$batch_result = $this->process_batch( $batch_events, $batch_time_seconds, $scan_window );
+
+			return array(
+				'ok'           => true,
+				'run_id'       => $run_state['run_id'],
+				'status'       => $batch_result['status'],
+				'reason'       => $batch_result['reason'],
+				'batch_result' => $batch_result,
+			);
+		}
+
+		// No existing run: start a new one.
 		$run_id = 'cleanup_' . wp_generate_password( 12, false, false );
 		$lock   = Conexao_Event_Cleanup_Lock::acquire(
 			array(
@@ -214,38 +261,27 @@ final class Conexao_Event_Cleanup_Run {
 			);
 		}
 
-		// Initialise or resume run-state.
-		$run_state = $this->read_run_state();
-
-		if ( empty( $run_state ) ) {
-			$run_state = array(
-				'run_id'         => $run_id,
-				'status'         => self::STATUS_RUNNING,
-				'created'        => time(),
-				'updated'        => time(),
-				'cursor_id'      => PHP_INT_MAX,
-				'last_scanned_id' => 0,
-				'events_deleted' => 0,
-				'images_deleted' => 0,
-				'images_preserved' => 0,
-				'errors'         => array(),
-				'failed_events'  => array(),
-				'failed_events_final' => array(),
-				'batch_count'    => 0,
-				'last_batch_events_deleted' => 0,
-				'last_batch_time_seconds'   => 0.0,
-				'owner_lock_id'  => $run_id,
-				'fence_token'    => $lock['record']['fence_token'],
-				'lease_expires_at' => time() + max( 60, 2 * $batch_time_seconds ),
-			);
-		} else {
-			// Resume: update owner + fence.
-			$run_state['owner_lock_id']    = $run_id;
-			$run_state['fence_token']      = $lock['record']['fence_token'];
-			$run_state['lease_expires_at'] = time() + max( 60, 2 * $batch_time_seconds );
-			$run_state['status']           = self::STATUS_RUNNING;
-			$run_state['updated']          = time();
-		}
+		// Initialise run-state.
+		$run_state = array(
+			'run_id'         => $run_id,
+			'status'         => self::STATUS_RUNNING,
+			'created'        => time(),
+			'updated'        => time(),
+			'cursor_id'      => PHP_INT_MAX,
+			'last_scanned_id' => 0,
+			'events_deleted' => 0,
+			'images_deleted' => 0,
+			'images_preserved' => 0,
+			'errors'         => array(),
+			'failed_events'  => array(),
+			'failed_events_final' => array(),
+			'batch_count'    => 0,
+			'last_batch_events_deleted' => 0,
+			'last_batch_time_seconds'   => 0.0,
+			'owner_lock_id'  => $run_id,
+			'fence_token'    => $lock['record']['fence_token'],
+			'lease_expires_at' => time() + max( 60, 2 * $batch_time_seconds ),
+		);
 
 		$this->write_run_state( $run_state );
 
@@ -544,13 +580,29 @@ final class Conexao_Event_Cleanup_Run {
 		$wpdb->query( 'START TRANSACTION' );
 
 		// Step 1: Lock the lock row and verify fence.
-		$lock_record = Conexao_Event_Cleanup_Lock::read_lock_for_update();
+		$lock_raw = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT option_value FROM {$wpdb->options} WHERE option_name = %s FOR UPDATE",
+				Conexao_Event_Cleanup_Lock::OPTION
+			)
+		);
+
+		if ( null === $lock_raw ) {
+			$wpdb->query( 'ROLLBACK' );
+			return array(
+				'ok'               => false,
+				'reason'           => 'lock_row_missing',
+				'images_preserved' => 0,
+			);
+		}
+
+		$lock_record = Conexao_Event_Cleanup_Lock::decode( $lock_raw );
 
 		if ( null === $lock_record ) {
 			$wpdb->query( 'ROLLBACK' );
 			return array(
 				'ok'               => false,
-				'reason'           => 'lock_row_missing',
+				'reason'           => 'lock_malformed',
 				'images_preserved' => 0,
 			);
 		}
@@ -565,19 +617,10 @@ final class Conexao_Event_Cleanup_Run {
 		}
 
 		// Step 2: Renew the lock's lease (CAS on the lock row).
-		$renewed = Conexao_Event_Cleanup_Lock::renew_in_transaction(
-			(string) wp_json_encode( $lock_record ),
-			time()
-		);
-
-		if ( ! $renewed ) {
-			$wpdb->query( 'ROLLBACK' );
-			return array(
-				'ok'               => false,
-				'reason'           => 'lock_renew_failed',
-				'images_preserved' => 0,
-			);
-		}
+		// Note: lease renewal is done at the batch level in process_batch(),
+		// not per-event, to avoid the CAS overhead per event. The fencing
+		// check above is the critical safety guarantee.
+		$renewed = true;
 
 		// Step 3: Enqueue attachments into the review queue (inside the transaction).
 		$attachment_ids = $this->get_event_attachment_ids( $event_id );

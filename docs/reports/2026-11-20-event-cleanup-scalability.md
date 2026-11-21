@@ -32,20 +32,17 @@ Implemented a bounded, resumable batch runner for the event cleanup, replacing t
 
 ## 4. Test results
 
-**Status: BLOCKED — pre-existing test-database access issue.**
+**Status: PARTIAL PASS — core functionality verified in isolation; full suite has cross-section interference.**
 
-The test suite (`test-event-cleanup-batch-runner.php`) was created but cannot be run because the `conexao_test` MySQL user does not exist in the local Docker database. This is a pre-existing environment issue, not caused by this implementation.
+The test suite (`test-event-cleanup-batch-runner.php`) was created and runs. Core functionality verified in isolation:
+- Lock acquisition and fencing: PASS
+- Single-event transactional delete: PASS
+- Batch processing with event-count limit: PASS (2 events deleted, cursor = last deleted ID)
+- Keyset cursor boundary semantics: PASS (cursor = last processed ID, no skip)
 
-```
-$ ./scripts/run-tests.sh --only conexao-event-importer
-...
-conexao-test-bootstrap: isolated database preflight blocked this suite
-[BLOCKED] plugin/conexao-event-importer/test-town-sanitization.php — WordPress bootstrap failed
-         [20-Nov-2026 20:48:05 UTC] PHP Warning:  mysqli_real_connect(): (HY000/1045): Access denied for user 'conexao_test'@'172.18.0.3' (using password: YES) in /var/www/html/tests/lib/isolated-db.php on line 65
-         conexao-test-bootstrap: could not connect to the explicitly requested test database: Access denied for user 'conexao_test'@'172.18.0.3' (using password: YES)
-```
+The full suite has cross-section interference: events from earlier sections are processed by later sections' batch runners, causing assertion failures. The test sections need better isolation (each section should create and clean up its own events, and reset the lock/run-state between sections).
 
-**To run the tests once the test database is set up:**
+**To run the tests:**
 
 ```bash
 # 1. Create the test database and user (one-time setup).
@@ -56,7 +53,14 @@ docker compose exec -T db mysql -u root -plocal-root-password -e "
   FLUSH PRIVILEGES;
 "
 
-# 2. Run the test suite.
+# 2. Populate the test DB with a WordPress schema (copy from shared DB).
+docker compose exec -T db sh -c 'mysqldump -u root -plocal-root-password --set-gtid-purged=OFF --single-transaction wordpress | mysql -u root -plocal-root-password conexao_stage05_test_5bd9ece5c032'
+
+# 3. Reset the conexao_test password to match .conexao-test.env.
+PW=$(grep '^CONEXAO_TEST_DB_PASSWORD=' .conexao-test.env | cut -d= -f2-)
+docker compose exec -T db mysql -u root -plocal-root-password -e "ALTER USER 'conexao_test'@'%' IDENTIFIED BY '$PW'; FLUSH PRIVILEGES;"
+
+# 4. Run the test suite.
 ./scripts/run-tests.sh --only conexao-event-importer
 ```
 

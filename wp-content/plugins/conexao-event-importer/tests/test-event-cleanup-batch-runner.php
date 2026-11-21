@@ -74,6 +74,16 @@ function cleanup_test_day_offset( $days ) {
 $cleanup = new Conexao_Event_Cleanup();
 $runner  = new Conexao_Event_Cleanup_Run( $cleanup );
 
+/**
+ * Release any held lock and reset run-state between test sections.
+ */
+function cleanup_reset_state() {
+	global $wpdb;
+	$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name IN ('conexao_event_cleanup_lock', 'conexao_event_cleanup_run', 'conexao_event_cleanup_attachment_review')" );
+	$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE 'conexao_event_cleanup_%__test__%'" );
+	wp_cache_flush();
+}
+
 echo 'Site: ' . home_url() . ' — timezone: ' . wp_timezone()->getName() . ' — today: ' . cleanup_test_day_offset( 0 ) . "\n";
 echo 'Polylang active: ' . ( function_exists( 'pll_languages_list' ) ? 'yes (' . implode( ',', pll_languages_list() ) . ')' : 'no' ) . "\n";
 
@@ -189,6 +199,8 @@ assert_true(
 // ---------------------------------------------------------------------------
 test_section( 'Batch limits — event count and time budget' );
 
+cleanup_reset_state();
+
 // Create 30 past events.
 $batch_fixtures = array();
 for ( $i = 0; $i < 30; $i++ ) {
@@ -216,7 +228,7 @@ assert_equals( 'running', $result['status'], 'run is still running after first b
 
 $run_state = $runner->read_run_state();
 assert_equals( 5, (int) $run_state['events_deleted'], 'first batch deleted exactly 5 events' );
-assert_equals( 5, (int) $run_state['batch_count'], 'batch count is 1' );
+assert_equals( 1, (int) $run_state['batch_count'], 'batch count is 1' );
 
 // Continue until complete.
 $continue_count = 1;
@@ -232,12 +244,14 @@ do {
 } while ( 'running' === $result['status'] );
 
 assert_equals( 'completed', $result['status'], 'run completed after all batches' );
-assert_equals( 30, (int) $result['batch_result']['events_deleted'] + ( $continue_count - 1 ) * 5, 'all 30 events deleted' );
+assert_equals( 30, (int) $run_state['events_deleted'], 'all 30 events deleted' );
 
 // ---------------------------------------------------------------------------
 // 4. Keyset cursor: no skip at event-count boundary.
 // ---------------------------------------------------------------------------
 test_section( 'Keyset cursor — no skip at event-count boundary' );
+
+cleanup_reset_state();
 
 // Create 10 adjacent eligible events.
 $adjacent_fixtures = array();
@@ -285,6 +299,8 @@ assert_equals( 6, (int) $run_state['events_deleted'], '6 events deleted after 2 
 // ---------------------------------------------------------------------------
 test_section( 'Keyset cursor — no skip at time boundary' );
 
+cleanup_reset_state();
+
 // Create 10 adjacent eligible events.
 $time_fixtures = array();
 for ( $i = 0; $i < 10; $i++ ) {
@@ -318,6 +334,8 @@ assert_equals( $last_committed, $cursor_after_time, 'cursor is the last committe
 // 6. Resume after interruption.
 // ---------------------------------------------------------------------------
 test_section( 'Resume after interruption' );
+
+cleanup_reset_state();
 
 // Create 10 adjacent eligible events.
 $resume_fixtures = array();
@@ -363,6 +381,8 @@ assert_equals( $deleted_before_resume + 3, (int) $run_state['events_deleted'], '
 // ---------------------------------------------------------------------------
 test_section( 'Idempotent retry' );
 
+cleanup_reset_state();
+
 // Create a past event.
 $idempotent_fixture = cleanup_test_event(
 	'idempotent',
@@ -399,6 +419,8 @@ assert_equals( 1, (int) $run_state['events_deleted'], 'idempotent: event not dou
 // ---------------------------------------------------------------------------
 test_section( 'Concurrency — two workers' );
 
+cleanup_reset_state();
+
 // Create a past event.
 $concurrency_fixture = cleanup_test_event(
 	'concurrency',
@@ -434,6 +456,8 @@ assert_equals( 'locked', $result_b['outcome'], 'outcome is locked' );
 // 9. Stale lock reclaim.
 // ---------------------------------------------------------------------------
 test_section( 'Stale lock reclaim' );
+
+cleanup_reset_state();
 
 // Create a past event.
 $stale_fixture = cleanup_test_event(
@@ -480,6 +504,8 @@ assert_true( $result['ok'], 'stale lock reclaimed' );
 // ---------------------------------------------------------------------------
 test_section( 'Failed-record handling' );
 
+cleanup_reset_state();
+
 // Create a past event that will fail to delete (e.g., by making it non-deletable).
 $failed_fixture = cleanup_test_event(
 	'failed',
@@ -523,6 +549,8 @@ remove_action( 'delete_post', 'my_delete_post' );
 // 11. Capacity pause.
 // ---------------------------------------------------------------------------
 test_section( 'Capacity pause' );
+
+cleanup_reset_state();
 
 // Create 501 past events (to exceed the 500 failed_events capacity).
 $capacity_fixtures = array();
@@ -568,6 +596,8 @@ remove_action( 'delete_post', 'my_delete_post' );
 // 12. Queue atomicity.
 // ---------------------------------------------------------------------------
 test_section( 'Queue atomicity' );
+
+cleanup_reset_state();
 
 // Create a past event with an attachment.
 $queue_fixture = cleanup_test_event(
@@ -641,17 +671,22 @@ if ( isset( $wp_filter['deleted_post'] ) ) {
 	}
 }
 
-// The only active hooks should be the theme's cache invalidators.
+// The only active hooks should be idempotent cache invalidators or core WordPress hooks.
+// Core hooks (e.g. _wp_delete_post_menu_item) are idempotent and safe.
 $allowed_hooks = array(
 	'conexao_homepage_cache_invalidate',
 	'conexao_empregos_flush_jobs_cache',
+	'_wp_delete_post_menu_item',
+	'_wp_delete_customize_changeset_dependent_auto_drafts',
+	'delete_get_calendar_cache',
+	'block_core_calendar_update_has_published_post_on_delete',
 );
 
 foreach ( $delete_post_hooks as $hook ) {
 	$hook_name = is_array( $hook ) ? ( is_object( $hook[0] ) ? get_class( $hook[0] ) . '::' . $hook[1] : $hook[0] . '::' . $hook[1] ) : $hook;
 	assert_true(
 		in_array( $hook_name, $allowed_hooks, true ) || 0 === strpos( $hook_name, 'conexao_' ),
-		'delete_post hook ' . $hook_name . ' is allowed (idempotent cache invalidator)'
+		'delete_post hook ' . $hook_name . ' is allowed (idempotent cache invalidator or core hook)'
 	);
 }
 
@@ -659,7 +694,7 @@ foreach ( $deleted_post_hooks as $hook ) {
 	$hook_name = is_array( $hook ) ? ( is_object( $hook[0] ) ? get_class( $hook[0] ) . '::' . $hook[1] : $hook[0] . '::' . $hook[1] ) : $hook;
 	assert_true(
 		in_array( $hook_name, $allowed_hooks, true ) || 0 === strpos( $hook_name, 'conexao_' ),
-		'deleted_post hook ' . $hook_name . ' is allowed (idempotent cache invalidator)'
+		'deleted_post hook ' . $hook_name . ' is allowed (idempotent cache invalidator or core hook)'
 	);
 }
 
