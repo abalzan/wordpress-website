@@ -1,10 +1,10 @@
-# 03 — Design decision: Event Cleanup scalability & reliability (rev. 12)
+# 03 — Design decision: Event Cleanup scalability & reliability (rev. 13)
 
 > **Phase**: 3–5 (design, revised). Implementation (Phase 6) is **blocked pending operator sign-off** on this note.
 > **Date**: 2026-11-20
 > **Branch**: `event-import-improvements` @ `3a64249b8ee3a79955dde463d4485fb8457a7864`
 > **Scope**: `conexao-event-importer` cleanup page only. No production access, no real cleanup, no schema change, no new dependency.
-> **Revision**: addresses operator review of rev. 11 (atomicity of the persistent attachment-review queue option — read-modify-write must be transactional/CAS-protected; queue update + capacity check + event deletion + run-state checkpoint must commit/rollback together; "Mark as reviewed" must use compatible locking/CAS; failed/conflicting writes must fail closed). All other design elements are unchanged from rev. 11 (approved in principle).
+> **Revision**: rev. 13 makes the §4.5 cursor-boundary table canonical (the operative contract) and corrects the prose to match it. All other design elements are unchanged from rev. 12 (approved in principle).
 
 ---
 

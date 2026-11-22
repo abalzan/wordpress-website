@@ -15,6 +15,8 @@
  * - Queue atomicity
  * - Attachment preservation (real attachment discovery + preservation)
  * - Hook-safety regression guard
+ * - Deletion-failure integration (pre_delete_post interception)
+ * - Attachment preservation edge cases (multi-event, content, meta, missing, unclassifiable)
  *
  * ## Test isolation contract
  *
@@ -1190,6 +1192,10 @@ if ( ! $event_5_gone ) {
 	$event_5_gone = ( null === get_post( $event_5 ) );
 }
 assert_true( $event_5_gone, 'event with missing attachment is deleted' );
+
+// Complete the run through the application lifecycle and reset the run-state
+// so the next sub-case starts with a fresh cursor (no raw option DELETE).
+cleanup_finish_run_for_next_subcase();
 
 // (e) Attachment that cannot be confidently classified.
 //
