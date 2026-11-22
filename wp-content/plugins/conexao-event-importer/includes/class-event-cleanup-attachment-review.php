@@ -343,9 +343,19 @@ final class Conexao_Event_Cleanup_Attachment_Review {
 		// Start a transaction to hold the row lock.
 		$wpdb->query( 'START TRANSACTION' );
 
-		$current = self::read();
+		// Read the queue row under FOR UPDATE so a concurrent worker enqueue
+		// (which holds the same row lock for its transaction) blocks until we
+		// commit, and we read the committed value (design §4.6.5). We read the
+		// raw bytes directly (not via read_for_update(), which discards them)
+		// because the CAS below compares against the exact stored bytes.
+		$raw = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT option_value FROM {$wpdb->options} WHERE option_name = %s FOR UPDATE",
+				$option
+			)
+		);
 
-		if ( null === $current['raw'] ) {
+		if ( null === $raw ) {
 			$wpdb->query( 'ROLLBACK' );
 			return array(
 				'ok'     => false,
@@ -353,7 +363,17 @@ final class Conexao_Event_Cleanup_Attachment_Review {
 			);
 		}
 
-		$data = $current['data'];
+		$decoded = json_decode( (string) $raw, true );
+
+		if ( ! is_array( $decoded ) || ! isset( $decoded['entries'] ) || ! is_array( $decoded['entries'] ) ) {
+			$wpdb->query( 'ROLLBACK' );
+			return array(
+				'ok'     => false,
+				'reason' => 'queue row malformed',
+			);
+		}
+
+		$data = $decoded;
 
 		if ( ! isset( $data['entries'][ $attachment_id ] ) ) {
 			$wpdb->query( 'ROLLBACK' );
@@ -398,7 +418,7 @@ final class Conexao_Event_Cleanup_Attachment_Review {
 				"UPDATE {$wpdb->options} SET option_value = %s WHERE option_name = %s AND option_value = %s",
 				$new_raw,
 				$option,
-				$current['raw']
+				$raw
 			)
 		);
 

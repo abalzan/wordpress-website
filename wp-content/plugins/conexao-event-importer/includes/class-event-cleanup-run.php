@@ -395,6 +395,15 @@ final class Conexao_Event_Cleanup_Run {
 				$last_committed_id   = $candidate_id;
 				$run_state['events_deleted']++;
 				$run_state['images_preserved'] += $delete_result['images_preserved'];
+			} elseif ( 'queue_capacity' === $delete_result['reason'] ) {
+				// The attachment-review queue is full. The event was NOT
+				// deleted (the transaction rolled back). Pause the run so
+				// the operator can resolve pending reviews; the cursor
+				// does NOT advance past this event, so it is retried on
+				// resume. No failure is recorded — this is a capacity
+				// pause, not an event failure.
+				$stop_reason = 'capacity_review';
+				break;
 			} else {
 				// Failed: record, increment attempts, cursor advances.
 				$this->record_failure( $run_state, $candidate_id, $delete_result['reason'] );
@@ -414,6 +423,12 @@ final class Conexao_Event_Cleanup_Run {
 		} elseif ( 'time_budget' === $stop_reason ) {
 			$run_state['cursor_id'] = $last_committed_id;
 		} elseif ( 'failed_capacity' === $stop_reason ) {
+			$run_state['cursor_id'] = $last_committed_id;
+		} elseif ( 'capacity_review' === $stop_reason ) {
+			// The queue-full event was NOT deleted and its transaction
+			// rolled back. The cursor must stay ABOVE it so the next
+			// query re-fetches it. last_committed_id is the last
+			// successfully committed event (not the current one).
 			$run_state['cursor_id'] = $last_committed_id;
 		} else {
 			// Whole window dispositioned.
@@ -561,6 +576,14 @@ final class Conexao_Event_Cleanup_Run {
 			}
 		}
 
+		// Ownership scope: when cleanup_scope = imported_only, a manual event
+		// (no _event_imported = 1) is NOT eligible (design §2.1 rule 5).
+		if ( class_exists( 'Conexao_Import_Settings' )
+			&& 'imported_only' === Conexao_Import_Settings::get( 'cleanup_scope', 'all' )
+			&& '1' !== (string) get_post_meta( $event_id, '_event_imported', true ) ) {
+			return false;
+		}
+
 		return $end_timestamp < $now_ts;
 	}
 
@@ -616,11 +639,22 @@ final class Conexao_Event_Cleanup_Run {
 			);
 		}
 
-		// Step 2: Renew the lock's lease (CAS on the lock row).
-		// Note: lease renewal is done at the batch level in process_batch(),
-		// not per-event, to avoid the CAS overhead per event. The fencing
-		// check above is the critical safety guarantee.
-		$renewed = true;
+		// Step 2: Renew the lock's lease (CAS on the lock row, design §4.3
+		// Step 3). The UPDATE is scoped to the exact bytes read under
+		// FOR UPDATE above, so a concurrent reclaim that changed the row
+		// makes this affect 0 rows and we fail closed. On success the lease
+		// is extended to now + ttl with the SAME fence token, so this worker
+		// still owns the lock at COMMIT.
+		$renewed = Conexao_Event_Cleanup_Lock::renew_in_transaction( $lock_raw, time() );
+
+		if ( ! $renewed ) {
+			$wpdb->query( 'ROLLBACK' );
+			return array(
+				'ok'               => false,
+				'reason'           => 'lock_renew_failed',
+				'images_preserved' => 0,
+			);
+		}
 
 		// Step 3: Enqueue attachments into the review queue (inside the transaction).
 		$attachment_ids = $this->get_event_attachment_ids( $event_id );
@@ -718,6 +752,18 @@ final class Conexao_Event_Cleanup_Run {
 		$run_state['failed_events'][ $event_id ]['last_attempt_at'] = time();
 
 		if ( $run_state['failed_events'][ $event_id ]['attempts'] >= self::MAX_ATTEMPTS ) {
+			// Fail-closed capacity: never silently discard a final failure
+			// record. If the final history is full, the event stays in
+			// failed_events (still actionable) and the run pauses at the
+			// failed_events capacity gate on the next iteration. The
+			// operator must resolve/export or raise the cap (approval
+			// required) — the record is never dropped.
+			if ( count( $run_state['failed_events_final'] ) >= self::MAX_FINAL_TRACKED ) {
+				$run_state['failed_events'][ $event_id ]['last_reason'] =
+					$reason . ' (final history full; event retained in failed_events for operator resolution)';
+				return;
+			}
+
 			$run_state['failed_events_final'][ $event_id ] = $run_state['failed_events'][ $event_id ];
 			unset( $run_state['failed_events'][ $event_id ] );
 		}

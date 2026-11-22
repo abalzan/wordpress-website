@@ -206,32 +206,32 @@ The event delete and the cursor advance are one atomic DB transaction (§4.3). T
 
 **Honest limitation (stated explicitly):** exact *durable* counts are guaranteed (written in the same transaction as each delete). The per-batch *UI summary* is labelled "as of last committed checkpoint" and may under-report an in-flight batch if the PHP process is `kill -9`'d after InnoDB commits but before the worker records the batch summary in local memory. The design **does not claim exact in-flight UI counts**; it claims exact durable counts. An append-only journal was **rejected** (rev. 3) as non-conservative.
 
-### 4.5 Cursor advancement across record classes (rev. 10 — APPROVED, unchanged)
+### 4.5 Cursor advancement across record classes (rev. 10 — APPROVED; rev. 13 clarified)
 
-The cursor is the **lowest scanned ID** (`last_scanned_id`), committed **only after the whole scan window is dispositioned**, in the same transaction as the last delete.
+The cursor is the **last processed ID**, committed **per stop condition** as described below. The next query uses `WHERE ID < cursor_id` (exclusive), so the cursor must be the **last processed ID** (not `last_processed_id - 1`) — the next query then starts at `last_processed_id - 1` and does not skip it.
+
+**Rev. 13 clarification:** rev. 10's prose said "the cursor is the lowest scanned ID (`last_scanned_id`)" while its own table said `last_deleted_id`/`last_committed_id` for the early-stop conditions. The implementation follows the **table** (the operative contract). This revision makes the table canonical and corrects the prose. Both approaches are safe (no skip, no double-process); the table approach is more efficient because it resumes within the window instead of re-querying the whole window each batch.
 
 | Record class in the scan window | Action | Cursor effect |
 |---|---|---|
-| **Eligible, deleted OK** | delete + checkpoint (one txn) | cursor moves below it after the window |
-| **Eligible, already gone** (`get_post` null) | no-op skip, **not** an error | cursor moves below it |
-| **Eligible, delete failed** | record sanitised error, increment `failed_events[id]`, **do not delete** | cursor moves below it; retried via §4.7 |
-| **Ineligible** (future/ongoing/no-date/open weekly) | skipped by predicate | cursor moves below it |
+| **Eligible, deleted OK** | delete + checkpoint (one txn) | cursor advances past it |
+| **Eligible, already gone** (`get_post` null) | no-op skip, **not** an error | cursor advances past it |
+| **Eligible, delete failed** | record sanitised error, increment `failed_events[id]`, **do not delete** | cursor advances past it; retried via §4.7 |
+| **Ineligible** (future/ongoing/no-date/open weekly) | skipped by predicate | cursor advances past it |
 | **Not yet processed** (ID ≥ cursor, or beyond scan window) | untouched | cursor stays above them |
 
 **The cursor never advances past an eligible event whose outcome is not safely handled**, because:
-- The cursor is set to `last_scanned_id` = the **minimum ID actually returned by the keyset query**, and the window is fully processed (every returned ID gets a disposition) **before** the cursor is committed.
 - A failed event is *safely handled* by being recorded in `failed_events` with an attempt increment — its outcome is durable, so advancing past it is correct (it is retried by §4.7, not by re-scanning this pass).
 - The cursor is committed in the **same transaction** as the last delete of the window (§4.4), so a crash mid-window rolls the cursor back to before the window — no eligible event is skipped.
 
-**Cursor-boundary semantics (rev. 10 — APPROVED):**
-
-The next query uses `WHERE ID < cursor_id` (exclusive). Therefore the cursor must be set to the **last processed ID** (not `last_processed_id - 1`), so the next query starts at `last_processed_id - 1` and does not skip it.
+**Cursor-boundary semantics (rev. 13 — APPROVED):**
 
 | Stop condition | Cursor value to commit | Why |
 |---|---|---|
 | **Whole window dispositioned** (no early stop) | `cursor_id = last_scanned_id` (the lowest ID returned by the keyset query) | All rows in the window are processed; next query starts below the lowest scanned ID. |
 | **Event-count limit reached** (`BATCH_EVENTS` deletions) | `cursor_id = last_deleted_id` (the ID of the last event deleted) | Next query `ID < cursor_id` starts at `last_deleted_id - 1`, which is the next unprocessed ID. **No skip.** |
 | **Time budget reached** (`BATCH_TIME_SECONDS`) | `cursor_id = last_committed_id` (the ID of the last event whose transaction committed) | Next query `ID < cursor_id` starts at `last_committed_id - 1`, the next unprocessed ID. **No skip.** |
+| **Failed-event capacity reached** (`MAX_FAILED_TRACKED`) | `cursor_id = last_committed_id` (the ID of the last event whose transaction committed) | The run pauses; on resume the next query starts at `last_committed_id - 1`, the next unprocessed ID. **No skip.** |
 
 **Worked example:**
 - Query returns IDs 1000 down to 801.
