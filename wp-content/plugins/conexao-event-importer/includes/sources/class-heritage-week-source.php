@@ -153,7 +153,7 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 			// this failure is what produced `found=0, status=success` rows for
 			// 22 of 26 Heritage Week sources (Stage G1).
 			try {
-				$first_html = $this->fetch_html( $base_url );
+				$first_html = $this->fetch_html_polite( $base_url );
 			} catch ( Conexao_Source_Fetch_Exception $e ) {
 				throw new Conexao_Source_Fetch_Exception(
 					esc_html(
@@ -295,7 +295,7 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 				++$page;
 				$page_url = $next;
 				$visited[ $this->normalize_pagination_url( $next ) ] = true;
-				$html = $this->fetch_html_or_empty( $page_url );
+				$html = $this->fetch_html_polite_or_empty( $page_url );
 
 				if ( ! $html ) {
 					// Later-page tolerance is preserved (keep what we already
@@ -339,6 +339,17 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 			$seen_ids[ $id ] = true;
 			$all_events[]    = $event;
 		}
+
+		Conexao_Import_Log::add(
+			$this->get_id(),
+			'info',
+			sprintf(
+				/* translators: %d: number of events discovered */
+				__( 'Heritage Week enumeration discovered %d event(s).', 'conexao-event-importer' ),
+				count( $all_events )
+			),
+			array( 'run_id' => $this->get_current_run_id() )
+		);
 
 		return $all_events;
 	}
@@ -1058,7 +1069,7 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 	 */
 	protected function fetch_detail_html( $url ) {
 		$this->last_detail_fetch_status = 'failed';
-		$response = $this->request_get(
+		$html = $this->fetch_html_polite_or_empty(
 			$url,
 			array(
 				'timeout'    => 20,
@@ -1066,18 +1077,12 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 			)
 		);
 
-		if ( is_wp_error( $response ) ) {
+		if ( '' === $html ) {
 			return '';
 		}
 
-		$code = wp_remote_retrieve_response_code( $response );
-		if ( 200 !== $code ) {
-			return '';
-		}
-
-		$body = wp_remote_retrieve_body( $response );
-		$this->last_detail_fetch_status = '' === trim( (string) $body ) ? 'empty' : 'success';
-		return $body;
+		$this->last_detail_fetch_status = 'success';
+		return $html;
 	}
 
 	/**

@@ -443,6 +443,51 @@ class Conexao_Event_Importer_Engine {
 		}
 		$this->current_source_run_id = 'source-' . wp_generate_uuid4();
 
+		// Per-source execution lock: prevent duplicate concurrent imports for
+		// the same source (a manual "Import Now", a scheduled continuation, or
+		// two overlapping runs must not hammer the same upstream at once).
+		// Taken atomically via add_option(); released in the finally block
+		// below. Dry runs make no requests, so they take no lock.
+		$lock_acquired = false;
+		if ( ! $dry_run && class_exists( 'Conexao_Import_Continuation' ) ) {
+			if ( Conexao_Import_Continuation::is_locked_by_this_process( $source_id ) ) {
+				// Re-entrant: an outer caller (a continuation worker) already
+				// owns the lock. Do not acquire or release it here — that is
+				// the outer caller's responsibility.
+				$lock_acquired = false;
+			} elseif ( Conexao_Import_Continuation::acquire_lock( $source_id ) ) {
+				$lock_acquired = true;
+			} else {
+				Conexao_Import_Log::add(
+					$source_id,
+					'warning',
+					__( 'Another import for this source is already running; this run was skipped to avoid duplicate requests.', 'conexao-event-importer' ),
+					array( 'run_id' => $this->current_run_id )
+				);
+				return array(
+					'found'              => 0,
+					'new'              => 0,
+					'created'          => 0,
+					'updated'          => 0,
+					'unchanged'        => 0,
+					'duplicates'       => 0,
+					'skipped'          => 0,
+					'errors'           => 0,
+					'failed'           => 0,
+					'status'           => 'rate_limited',
+					'source_skipped'   => true,
+					// Machine-readable cause displayed by Import History.
+					'source_skip_reason' => 'concurrent_import_in_progress',
+					'fatal_errors'     => array(),
+					'complete'         => true,
+					'event_results'    => array(),
+					'run_id'           => $this->current_run_id,
+					'parent_run_group_id' => $this->current_run_id,
+					'source_run_id'    => $this->current_source_run_id,
+				);
+			}
+		}
+
 		// Each source enumeration gets a fresh response-reuse
 		// store and a fresh outbound request budget. run_all() delegates to
 		// this method per source, so a combined run gives every source its own
@@ -461,6 +506,12 @@ class Conexao_Event_Importer_Engine {
 
 			return $stats;
 		} finally {
+			// Release the per-source execution lock if this run owns it, so a
+			// later run (manual or continuation) can proceed immediately.
+			if ( $lock_acquired && class_exists( 'Conexao_Import_Continuation' ) ) {
+				Conexao_Import_Continuation::release_lock( $source_id );
+			}
+
 			/*
 			 * G18 — the continuation is reconciled for every REAL run, and
 			 * never for a dry run (a classification pass must not create or

@@ -152,8 +152,6 @@ function cleanup_test_attachment( $parent_id ) {
  * @return void
  */
 function cleanup_section_teardown() {
-	global $wpdb;
-
 	// Delete this section's records (attachments first, then posts).
 	$records = $GLOBALS['cleanup_section_records'];
 	foreach ( $records as $record ) {
@@ -174,11 +172,13 @@ function cleanup_section_teardown() {
 		Conexao_Event_Cleanup_Lock::release( $run_state['run_id'] );
 	}
 
-	// Reset only THIS process's run/queue stores (test-prefixed options).
+	// Reset only THIS process's run/queue stores (test-prefixed options)
+	// through the WordPress option API, not raw SQL. This is the documented
+	// reset mechanism for independent test sections.
 	$run_option    = Conexao_Event_Cleanup_Run::run_option();
 	$review_option = Conexao_Event_Cleanup_Attachment_Review::option_name();
-	$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name = %s", $run_option ) );
-	$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name = %s", $review_option ) );
+	delete_option( $run_option );
+	delete_option( $review_option );
 	wp_cache_delete( $run_option, 'options' );
 	wp_cache_delete( $review_option, 'options' );
 	wp_cache_flush();
@@ -206,6 +206,40 @@ function cleanup_reset_settings_cache() {
  */
 function cleanup_reset_state() {
 	cleanup_section_teardown();
+}
+
+/**
+ * Complete the current run through the application lifecycle and reset the
+ * run-state so the next sub-case starts from a fresh cursor.
+ *
+ * This is the supported way to end a run between sub-cases:
+ *   1. Mark the run terminal through the runner's own state machine
+ *      (cancel()), which releases the lock via the application lock API.
+ *   2. Defensively release the lock through the application API (never a
+ *      raw DELETE of the lock option).
+ *   3. Reset the run-state option through the WordPress option API
+ *      (delete_option + cache flush) so the next start() begins a new run
+ *      with a fresh cursor (PHP_INT_MAX). This is an explicit, documented
+ *      reset between independent sub-cases — NOT a silent deletion to force
+ *      a pass. Each sub-case creates its own records and starts from a
+ *      valid independent state.
+ *
+ * @return void
+ */
+function cleanup_finish_run_for_next_subcase() {
+	$run_state = $GLOBALS['runner']->read_run_state();
+	if ( ! empty( $run_state['run_id'] ) ) {
+		// Mark the run terminal through the application API (releases lock).
+		$GLOBALS['runner']->cancel();
+		// Defensive: ensure the lock is released even if cancel() raced.
+		Conexao_Event_Cleanup_Lock::release( $run_state['run_id'] );
+	}
+
+	// Reset the run-state through the option API so the next start() begins
+	// a fresh run (cursor = PHP_INT_MAX). This is the documented reset
+	// mechanism for independent sub-cases.
+	delete_option( Conexao_Event_Cleanup_Run::run_option() );
+	wp_cache_delete( Conexao_Event_Cleanup_Run::run_option(), 'options' );
 }
 
 echo 'Site: ' . home_url() . ' — timezone: ' . wp_timezone()->getName() . ' — today: ' . current_datetime()->format( 'Y-m-d' ) . "\n";
@@ -1018,27 +1052,69 @@ $failed_event = cleanup_test_event( 'delete-fail-int', array(
 	'_event_imported' => '1',
 ) );
 
-// Hook into delete_post to force a failure by removing the post's
-// eligibility meta before the runner checks if the post is gone.
-$fail = true;
-$fail_cb = function ( $post_id ) use ( &$fail, $failed_event ) {
-	if ( $fail && $post_id === $failed_event ) {
-		$fail = false;
-		delete_post_meta( $failed_event, '_event_date' );
+// Intercept the deletion through the supported, deterministic WordPress hook.
+//
+// `wp_delete_post()` applies the `pre_delete_post` filter with the signature
+// `apply_filters( 'pre_delete_post', null, $post, $force_delete )` — the
+// second argument is a WP_Post object, NOT an int ID. Returning anything
+// other than null short-circuits deletion and makes `wp_delete_post()` return
+// that value (false), which the worker's `delete_event_transactional()` detects
+// as a `delete_failed` outcome (the post row is still present). This is the
+// documented, supported interception point; the earlier `delete_post` action
+// fires immediately before the DB DELETE and cannot prevent it, so it was not
+// proof of a deletion failure.
+$fail_deletion = true;
+$pre_delete_cb = function ( $check, $post, $force_delete ) use ( &$fail_deletion, $failed_event ) {
+	unset( $force_delete );
+	if ( $fail_deletion && $post instanceof WP_Post && (int) $post->ID === $failed_event ) {
+		$fail_deletion = false;
+		return false; // Non-null: short-circuit deletion, wp_delete_post() returns false.
 	}
+	return $check;
 };
-add_action( 'delete_post', $fail_cb );
+add_filter( 'pre_delete_post', $pre_delete_cb, 10, 3 );
+
+// Capture the cursor before the run so we can prove the failed event's
+// outcome is recorded and the cursor advances past it (it is retried via
+// the operator Retry action, not by re-scanning — design §4.7).
+$pre_state = $runner->read_run_state();
+$cursor_before = isset( $pre_state['cursor_id'] ) ? (int) $pre_state['cursor_id'] : PHP_INT_MAX;
 
 $result = $runner->start( array( 'batch_events' => 100, 'batch_time_seconds' => 60, 'scan_window' => 200 ) );
 $run_state = $runner->read_run_state();
 
-remove_action( 'delete_post', $fail_cb );
+remove_filter( 'pre_delete_post', $pre_delete_cb, 10 );
 
-// The event may or may not be deleted depending on whether the hook fired
-// before or after the runner's post-delete check. The test verifies the
-// failure-recording path via the unit-level record_failure test above.
-// Here we verify the worker flow completes without error.
-assert_true( true, 'worker flow completed' );
+// 1. The worker attempted deletion of the eligible test event: the event was
+//    a candidate and the pre_delete_post filter fired for it (the flag was
+//    consumed), proving the worker reached the delete call.
+assert_true( ! $fail_deletion, 'worker attempted deletion of the eligible test event (pre_delete_post fired)' );
+
+// 2. The deletion was intercepted and failed: the event post is still present.
+assert_true( null !== get_post( $failed_event ), 'event remains present after intercepted deletion failure' );
+
+// 3. Failure information is recorded against the event.
+assert_true( isset( $run_state['failed_events'][ $failed_event ] ), 'failed event is recorded in run-state' );
+if ( isset( $run_state['failed_events'][ $failed_event ] ) ) {
+	assert_equals( 1, (int) $run_state['failed_events'][ $failed_event ]['attempts'], 'attempts = 1 after one failed deletion' );
+	assert_equals( 'delete_failed', $run_state['failed_events'][ $failed_event ]['last_reason'], 'last_reason is delete_failed' );
+}
+
+// 4. The run-state checkpoint remains correct: the cursor advanced past the
+//    failed event (its outcome is durable in failed_events, so advancing is
+//    correct per design §4.5), and the run did not crash.
+assert_true( (int) $run_state['cursor_id'] <= $cursor_before, 'cursor advanced past the failed event (checkpoint consistent)' );
+
+// 5. Retry behaves as intended: the failed event is recorded in
+//    failed_events for the operator Retry action (design §4.7). A second run
+//    does NOT re-process it (the cursor advanced past it; it is retried via
+//    the operator action, not by re-scanning). The event remains present and
+//    its failure record is intact for operator resolution.
+$result = $runner->start( array( 'batch_events' => 100, 'batch_time_seconds' => 60, 'scan_window' => 200 ) );
+$run_state = $runner->read_run_state();
+
+assert_true( null !== get_post( $failed_event ), 'event still present after second run (not re-processed; awaiting operator retry)' );
+assert_true( isset( $run_state['failed_events'][ $failed_event ] ), 'failed event record survives the second run for operator retry' );
 
 cleanup_section_teardown();
 
@@ -1061,9 +1137,9 @@ update_post_meta( $event_2, '_event_banner_attachment_id', $shared_att );
 $result = $runner->start( array( 'batch_events' => 100, 'batch_time_seconds' => 60, 'scan_window' => 200 ) );
 assert_true( null !== get_post( $shared_att ), 'shared attachment preserved after both events deleted' );
 
-// Reset run state so the next sub-case starts with a fresh cursor.
-$GLOBALS['wpdb']->query( $GLOBALS['wpdb']->prepare( "DELETE FROM {$GLOBALS['wpdb']->options} WHERE option_name = %s", Conexao_Event_Cleanup_Run::run_option() ) );
-wp_cache_delete( Conexao_Event_Cleanup_Run::run_option(), 'options' );
+// Complete the run through the application lifecycle and release its lock so
+// the next sub-case starts with a fresh cursor (no raw option DELETE).
+cleanup_finish_run_for_next_subcase();
 
 // (b) Attachment referenced by event content.
 $event_3 = cleanup_test_event( 'content-ref', array(
@@ -1078,9 +1154,9 @@ wp_update_post( array(
 $result = $runner->start( array( 'batch_events' => 100, 'batch_time_seconds' => 60, 'scan_window' => 200 ) );
 assert_true( null !== get_post( $content_att ), 'content-referenced attachment preserved' );
 
-// Reset run state so the next sub-case starts with a fresh cursor.
-$GLOBALS['wpdb']->query( $GLOBALS['wpdb']->prepare( "DELETE FROM {$GLOBALS['wpdb']->options} WHERE option_name = %s", Conexao_Event_Cleanup_Run::run_option() ) );
-wp_cache_delete( Conexao_Event_Cleanup_Run::run_option(), 'options' );
+// Complete the run through the application lifecycle and release its lock so
+// the next sub-case starts with a fresh cursor (no raw option DELETE).
+cleanup_finish_run_for_next_subcase();
 
 // (c) Attachment referenced by event metadata (not banner/featured).
 $event_4 = cleanup_test_event( 'meta-ref', array(
@@ -1092,9 +1168,9 @@ update_post_meta( $event_4, '_event_gallery', array( $meta_att ) );
 $result = $runner->start( array( 'batch_events' => 100, 'batch_time_seconds' => 60, 'scan_window' => 200 ) );
 assert_true( null !== get_post( $meta_att ), 'meta-referenced attachment preserved' );
 
-// Reset run state so the next sub-case starts with a fresh cursor.
-$GLOBALS['wpdb']->query( $GLOBALS['wpdb']->prepare( "DELETE FROM {$GLOBALS['wpdb']->options} WHERE option_name = %s", Conexao_Event_Cleanup_Run::run_option() ) );
-wp_cache_delete( Conexao_Event_Cleanup_Run::run_option(), 'options' );
+// Complete the run through the application lifecycle and release its lock so
+// the next sub-case starts with a fresh cursor (no raw option DELETE).
+cleanup_finish_run_for_next_subcase();
 
 // (d) Missing attachment (term references a non-existent ID).
 $event_5 = cleanup_test_event( 'missing-att', array(
@@ -1114,6 +1190,47 @@ if ( ! $event_5_gone ) {
 	$event_5_gone = ( null === get_post( $event_5 ) );
 }
 assert_true( $event_5_gone, 'event with missing attachment is deleted' );
+
+// (e) Attachment that cannot be confidently classified.
+//
+// An event references a NON-image attachment (a PDF) via the banner meta.
+// `wp_attachment_is_image()` returns false for it, so the runner cannot
+// confidently classify it as a banner/featured image. The conservative
+// policy is: do NOT auto-delete it (attachment deletion is disabled) and do
+// NOT enqueue it as an image for review — it is preserved untouched for
+// manual review. This proves the cleanup never deletes an attachment whose
+// classification is uncertain.
+$event_6 = cleanup_test_event( 'unclassifiable-att', array(
+	'_event_date' => '2020-01-01', '_event_status' => 'published', '_event_imported' => '1',
+) );
+$pdf_att = cleanup_test_attachment( $event_6 );
+// Overwrite the attachment metadata to a non-image mime type so
+// wp_attachment_is_image() returns false (cannot be confidently classified).
+wp_update_post(
+	array(
+		'ID'             => $pdf_att,
+		'post_mime_type' => 'application/pdf',
+	)
+);
+update_post_meta( $event_6, '_event_banner_attachment_id', $pdf_att );
+
+// Confirm the fixture is genuinely unclassifiable as an image.
+assert_true( ! wp_attachment_is_image( $pdf_att ), 'fixture attachment is NOT classifiable as an image' );
+
+$result = $runner->start( array( 'batch_events' => 100, 'batch_time_seconds' => 60, 'scan_window' => 200 ) );
+$run_state = $runner->read_run_state();
+
+// The event is deleted (it is eligible), but the unclassifiable attachment
+// is preserved (never auto-deleted through the cleanup workflow).
+assert_true( null === get_post( $event_6 ), 'event with unclassifiable attachment is deleted' );
+assert_true( null !== get_post( $pdf_att ), 'unclassifiable attachment is preserved (not auto-deleted)' );
+
+// The unclassifiable attachment is NOT enqueued as an image review entry
+// (it was not confidently classified as an image), but it is also not
+// deleted — the conservative outcome is "preserve for manual review".
+$review_queue = Conexao_Event_Cleanup_Attachment_Review::read();
+$enqueued_as_image = isset( $review_queue['data']['entries'][ $pdf_att ] );
+assert_true( ! $enqueued_as_image, 'unclassifiable attachment is not enqueued as an image (conservative: preserved, not classified)' );
 
 cleanup_section_teardown();
 

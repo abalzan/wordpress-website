@@ -255,6 +255,9 @@ class Conexao_Import_Log {
 				'rate_limit_hits',
 				'rate_limit_streak',
 				'skipped',
+				'duration',
+				'content_type',
+				'body_preview',
 				// A 405 WAF refusal retains ONLY this bounded, allowlisted
 				// action token (captcha|challenge|block|allow|unknown) so the
 				// WAF classification is provable from the log. It is never a
@@ -985,10 +988,15 @@ class Conexao_Import_Log {
 		// Append a small amount of safe context (URL, attempt, post_id).
 		$context = isset( $entry['context'] ) && is_array( $entry['context'] ) ? $entry['context'] : array();
 		$context_labels = array(
-			'url'        => 'URL',
-			'attempt'    => 'Attempt',
-			'post_id'    => 'Post ID',
-			'source_url' => 'Source URL',
+			'url'              => 'URL',
+			'attempt'          => 'Attempt',
+			'post_id'          => 'Post ID',
+			'source_url'       => 'Source URL',
+			'duration'         => 'Duration',
+			'content_type'     => 'Content-Type',
+			'body_preview'     => 'Body',
+			'retry_after'      => 'Retry-After',
+			'rate_limit_hits'  => 'RateLimitHits',
 		);
 		foreach ( $context_labels as $ctx_key => $ctx_label ) {
 			if ( isset( $context[ $ctx_key ] ) && '' !== (string) $context[ $ctx_key ] ) {

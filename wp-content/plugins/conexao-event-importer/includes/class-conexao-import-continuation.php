@@ -229,6 +229,21 @@ class Conexao_Import_Continuation {
 	protected static $runner = null;
 
 	/**
+	 * Source IDs whose execution lock THIS process currently holds.
+	 *
+	 * The persisted lock (`add_option`) is the cross-process guard, but it is
+	 * not re-entrant: a continuation acquires the lock and then calls
+	 * `run_source()`, which itself wants the same lock. This in-memory set
+	 * makes `acquire_lock()` re-entrant within one process, so a continuation
+	 * (or any outer owner) never deadlocks against the import engine's own
+	 * guard, while a genuinely concurrent process still loses the atomic
+	 * `add_option` race and is refused.
+	 *
+	 * @var array<string,bool>
+	 */
+	protected static $process_locks = array();
+
+	/**
 	 * The stored record shape with defaults applied.
 	 *
 	 * @return array
@@ -1132,10 +1147,18 @@ class Conexao_Import_Continuation {
 	 * @return bool True when this caller now owns the lock.
 	 */
 	public static function acquire_lock( $source_id ) {
+		// Re-entrant within one process: an outer owner (a continuation) that
+		// already holds the lock may let run_source() proceed without having to
+		// win the persisted lock a second time.
+		if ( isset( self::$process_locks[ $source_id ] ) ) {
+			return true;
+		}
+
 		$key = self::lock_key( $source_id );
 		$now = self::now();
 
 		if ( add_option( $key, (string) $now, '', false ) ) {
+			self::$process_locks[ $source_id ] = true;
 			return true;
 		}
 
@@ -1145,11 +1168,26 @@ class Conexao_Import_Continuation {
 		// source forever, so a lock older than LOCK_TTL is taken over.
 		if ( $held > 0 && ( $now - $held ) > self::LOCK_TTL ) {
 			update_option( $key, (string) $now, false );
+			self::$process_locks[ $source_id ] = true;
 
 			return true;
 		}
 
 		return false;
+	}
+
+	/**
+	 * Whether THIS process currently holds a source's execution lock.
+	 *
+	 * Used by the import engine's own guard so a continuation that already owns
+	 * the lock does not try to acquire it twice. It says nothing about another
+	 * process's lock (that is `is_locked()`).
+	 *
+	 * @param string $source_id Source slug.
+	 * @return bool
+	 */
+	public static function is_locked_by_this_process( $source_id ) {
+		return isset( self::$process_locks[ $source_id ] );
 	}
 
 	/**
@@ -1159,6 +1197,7 @@ class Conexao_Import_Continuation {
 	 * @return void
 	 */
 	public static function release_lock( $source_id ) {
+		unset( self::$process_locks[ $source_id ] );
 		delete_option( self::lock_key( $source_id ) );
 	}
 
