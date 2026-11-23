@@ -38,8 +38,10 @@
  *     returned to the "Filtrar" trigger on close.
  *
  * DATA MODEL / URL CONTRACT (unchanged from Stage A):
- *   - Localização: conexao_county terms used by published events, via
- *     ?county= (same convention as /lazer/).
+ *   - Localização: the 26 approved counties from the ONE master list
+ *     (Conexao_Data_Model_Counties), via ?county= (same convention as
+ *     /lazer/). The list is code-owned: it is never derived from the terms in
+ *     the database, so a stray/duplicated/imported term cannot appear here.
  *   - Cidade: conexao_town terms (event-only taxonomy) via ?cidade=.
  *     When a county is selected the towns are scoped to that county
  *     (County -> City cascade); the cascade is expressed server-side, so
@@ -65,23 +67,17 @@ $current_county   = isset( $_GET['county'] ) ? sanitize_title( wp_unslash( $_GET
 $current_town     = isset( $_GET['cidade'] ) ? sanitize_title( wp_unslash( $_GET['cidade'] ) ) : '';
 $current_category = isset( $_GET['categoria'] ) ? sanitize_title( wp_unslash( $_GET['categoria'] ) ) : '';
 
-$county_terms = conexao_get_terms_for_post_type( 'conexao_county', 'event' );
+// LAYER 3 — the county dropdown is rendered from the ONE master list of 26
+// approved counties (Conexao_Data_Model_Counties), never from the terms found
+// in the database. That is what makes duplicates (`carlow` + `ev-carlow`),
+// junk values (`Co Clare Ireland`) and numeric leaks (`6724`) impossible here,
+// while `?county=<canonical slug>` keeps filtering exactly as before.
+$county_terms = function_exists( 'conexao_get_county_filter_terms' )
+	? conexao_get_county_filter_terms()
+	: array();
 if ( is_wp_error( $county_terms ) ) {
 	$county_terms = array();
 }
-
-// Placeholder county slugs must never be offered to a visitor. They are
-// filtered ONCE here so the desktop dropdown and the mobile sheet render the
-// SAME set: the sheet used to iterate the unfiltered list, so a placeholder
-// the dropdown had already dropped could still reach a phone visitor.
-$county_terms = array_values(
-	array_filter(
-		$county_terms,
-		static function ( $term ) {
-			return 'ev-uncounty' !== $term->slug;
-		}
-	)
-);
 
 // Towns used by published events, scoped to the selected county when one
 // is active (County -> City cascade — same helper the query layer relies on).
@@ -222,11 +218,10 @@ $event_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int) $
 							<?php foreach ( $county_terms as $term ) : ?>
 								<?php
 								// Selecting a county clears a town that belongs to another
-								      // county (towns are scoped server-side), so invalid
-								      // County + City combinations can never be built from the UI.
-								// Skip invalid/placeholder county slug that should not be displayed to visitors.
-								// (Those slugs are already filtered out of `$county_terms`.)
-	$county_link_state = array( 'county' => ( $term->slug === $current_county ) ? '' : $term->slug );
+								// county (towns are scoped server-side), so invalid County + City
+								// combinations can never be built from the UI. The option set itself
+								// comes from the approved-county master list only.
+								$county_link_state = array( 'county' => ( $term->slug === $current_county ) ? '' : $term->slug );
 								if ( $term->slug !== $current_county ) {
 									$county_link_state['cidade'] = '';
 								}

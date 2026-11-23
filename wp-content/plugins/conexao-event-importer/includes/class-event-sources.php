@@ -652,8 +652,10 @@ class Conexao_Event_Sources {
 			'url'    => $url,
 			'type'   => $source_type,
 			'status' => isset( $_POST['source_status'] ) ? 'active' : 'inactive',
-			// Taxonomy hints.
-			'county'           => isset( $_POST['source_county'] ) ? sanitize_text_field( wp_unslash( $_POST['source_county'] ) ) : '',
+			// Taxonomy hints. The county is validated against the ONE approved
+			// county list (LAYER 2): a free-text or numeric value can never be
+			// stored as a source county, so it can never be stamped onto events.
+			'county'           => self::sanitize_source_county( isset( $_POST['source_county'] ) ? wp_unslash( $_POST['source_county'] ) : '' ),
 			'category'         => isset( $_POST['source_category'] ) ? sanitize_text_field( wp_unslash( $_POST['source_category'] ) ) : '',
 		);
 
@@ -1530,6 +1532,31 @@ class Conexao_Event_Sources {
 		}
 		return $url;
 	}
+
+	/**
+	 * Validate a source county hint against the approved county master list.
+	 *
+	 * Returns the canonical county NAME (what the importer stamps on events) or
+	 * '' when the value is empty or not one of the 26 approved counties. A
+	 * numeric id, "Belfast", "Antrim" or any free text is therefore never
+	 * persisted as a source county.
+	 *
+	 * @param mixed $value Raw submitted value.
+	 * @return string Canonical county name, or ''.
+	 */
+	protected static function sanitize_source_county( $value ) {
+		if ( ! class_exists( 'Conexao_Data_Model_Counties' ) ) {
+			return '';
+		}
+
+		$value = is_scalar( $value ) ? sanitize_text_field( (string) $value ) : '';
+		if ( '' === $value ) {
+			return '';
+		}
+
+		return Conexao_Data_Model_Counties::canonical_name( $value );
+	}
+
 
 	/**
 	 * Truncate a URL for display.

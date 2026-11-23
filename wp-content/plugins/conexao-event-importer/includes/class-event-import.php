@@ -675,7 +675,10 @@ class Conexao_Event_Import {
 	 * Save taxonomies for an event from the export payload.
 	 *
 	 * Terms are matched by name (not ID) so they map correctly across
-	 * installations. Missing terms are created automatically.
+	 * installations. Missing terms are created automatically — EXCEPT for the
+	 * county taxonomy, whose vocabulary is fixed: an exported county value is
+	 * resolved against the master list and an unapproved value is dropped
+	 * (never created). See LAYER 2 in Conexao_Data_Model_Counties.
 	 *
 	 * @param int   $post_id Event post ID.
 	 * @param array $event   Event data from the export file.
@@ -697,6 +700,25 @@ class Conexao_Event_Import {
 			}
 
 			$names = array_filter( array_map( 'sanitize_text_field', $names ) );
+
+			// County vocabulary is fixed: resolve by canonical county, never
+			// by re-creating whatever the export contained.
+			if ( 'conexao_county' === $taxonomy && class_exists( 'Conexao_Data_Model_Counties' ) ) {
+				$county_ids = array();
+				foreach ( $names as $name ) {
+					$slug = Conexao_Data_Model_Counties::normalize( $name );
+					if ( '' === $slug ) {
+						continue; // Rejected: not an approved county.
+					}
+					$term_id = Conexao_Data_Model_Counties::ensure_term( $slug );
+					if ( $term_id > 0 ) {
+						$county_ids[] = $term_id;
+					}
+				}
+
+				wp_set_object_terms( $post_id, array_values( array_unique( $county_ids ) ), 'conexao_county' );
+				continue;
+			}
 
 			if ( empty( $names ) ) {
 				wp_set_object_terms( $post_id, array(), $taxonomy );

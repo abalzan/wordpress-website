@@ -116,8 +116,11 @@ $leisure_toggle_slug = function( array $slugs, $slug ) {
 	return array_merge( $slugs, array( $slug ) );
 };
 
-// Collect counties and categories actually used by leisure locations.
-$county_terms   = conexao_get_terms_for_post_type( 'conexao_county', 'leisure' );
+// Counties come from the ONE master list of 26 approved counties (LAYER 3),
+// never from the terms found in the database — a duplicated, imported or
+// numeric term can therefore never reach this filter. Categories and
+// attributes keep their "used by published items" behaviour.
+$county_terms   = function_exists( 'conexao_get_county_filter_terms' ) ? conexao_get_county_filter_terms() : array();
 $category_terms   = conexao_get_terms_for_post_type( 'conexao_category', 'leisure' );
 	$attribute_terms  = conexao_get_terms_for_post_type( 'conexao_leisure_attribute', 'leisure' );
 

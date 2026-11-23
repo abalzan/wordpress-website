@@ -68,39 +68,18 @@ final class Conexao_Admin_Ux_Config {
 	}
 
 	/**
-	 * List of Irish counties for the location dropdowns.
+	 * List of approved counties for the location dropdowns.
+	 *
+	 * Delegates to the ONE county master list in `conexao-data-model`
+	 * (`Conexao_Data_Model_Counties`): 26 fixed Republic of Ireland counties,
+	 * alphabetical. Never re-declare the list here.
 	 *
 	 * @return string[]
 	 */
 	public static function counties() {
-		return array(
-			'Carlow',
-			'Cavan',
-			'Clare',
-			'Cork',
-			'Donegal',
-			'Dublin',
-			'Galway',
-			'Kerry',
-			'Kildare',
-			'Kilkenny',
-			'Laois',
-			'Leitrim',
-			'Limerick',
-			'Longford',
-			'Louth',
-			'Mayo',
-			'Meath',
-			'Monaghan',
-			'Offaly',
-			'Roscommon',
-			'Sligo',
-			'Tipperary',
-			'Waterford',
-			'Westmeath',
-			'Wexford',
-			'Wicklow',
-		);
+		return class_exists( 'Conexao_Data_Model_Counties' )
+			? Conexao_Data_Model_Counties::names()
+			: array();
 	}
 
 	/**

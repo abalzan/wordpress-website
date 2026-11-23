@@ -310,6 +310,9 @@ final class Conexao_Event_Cleanup_Run {
 		}
 
 		// Initialise run-state with preserved failure/retry data.
+		// Preserve cumulative events_deleted across runs (idempotent retry test expects this).
+		$preserved_events_deleted = isset( $run_state['events_deleted'] ) ? (int) $run_state['events_deleted'] : 0;
+
 		$run_state = array(
 			'run_id'                  => $run_id,
 			'status'                  => self::STATUS_RUNNING,
@@ -317,7 +320,7 @@ final class Conexao_Event_Cleanup_Run {
 			'updated'                 => time(),
 			'cursor_id'               => PHP_INT_MAX,
 			'last_scanned_id'         => 0,
-			'events_deleted'          => 0,
+			'events_deleted'          => $preserved_events_deleted,
 			'images_deleted'          => 0,
 			'images_preserved'        => 0,
 			'errors'                  => array(),
@@ -464,6 +467,14 @@ final class Conexao_Event_Cleanup_Run {
 			// Check failed_events_final: skip if exhausted retries.
 			if ( isset( $run_state['failed_events_final'][ $candidate_id ] ) ) {
 				// Record "skipped: exhausted retries" and move on.
+				$last_committed_id = $candidate_id;
+				continue;
+			}
+
+			// Check failed_events: skip if already failed (awaiting operator retry).
+			// Per design §4.7, failed events are retried via operator action, not by re-scanning.
+			if ( isset( $run_state['failed_events'][ $candidate_id ] ) ) {
+				// Record "skipped: awaiting operator retry" and move on.
 				$last_committed_id = $candidate_id;
 				continue;
 			}

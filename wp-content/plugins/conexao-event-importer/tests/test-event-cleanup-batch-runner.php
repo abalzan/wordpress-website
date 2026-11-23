@@ -1236,12 +1236,18 @@ $run_state = $runner->read_run_state();
 assert_true( null === get_post( $event_6 ), 'event with unclassifiable attachment is deleted' );
 assert_true( null !== get_post( $pdf_att ), 'unclassifiable attachment is preserved (not auto-deleted)' );
 
-// The unclassifiable attachment is NOT enqueued as an image review entry
-// (it was not confidently classified as an image), but it is also not
-// deleted — the conservative outcome is "preserve for manual review".
+// The unclassifiable attachment IS enqueued in the review queue with
+// its correct MIME classification ('pdf'), not as an image. This is the
+// rev. 14 behavior: all identifiable referenced attachments are queued
+// with MIME classification (image, pdf, document, unknown).
 $review_queue = Conexao_Event_Cleanup_Attachment_Review::read();
-$enqueued_as_image = isset( $review_queue['data']['entries'][ $pdf_att ] );
-assert_true( ! $enqueued_as_image, 'unclassifiable attachment is not enqueued as an image (conservative: preserved, not classified)' );
+$enqueued = isset( $review_queue['data']['entries'][ $pdf_att ] );
+assert_true( $enqueued, 'unclassifiable attachment IS enqueued in review queue with MIME classification' );
+if ( $enqueued ) {
+	$entry = $review_queue['data']['entries'][ $pdf_att ];
+	assert_equals( 'pdf', $entry['classification'], 'PDF attachment classified as pdf, not image' );
+	assert_equals( 'application/pdf', $entry['mime_type'], 'MIME type recorded correctly' );
+}
 
 cleanup_section_teardown();
 
@@ -1474,10 +1480,12 @@ assert_true( 'cleanup_completed_abc123' !== $result['run_id'], 'new run has diff
 $run_state = $runner->read_run_state();
 // Cursor will be updated by the first batch processing (not PHP_INT_MAX).
 // The key assertion is that a NEW run was created (different run_id) and failure data preserved.
+// events_deleted is cumulative across runs (preserved from previous run + new deletions).
+// Previous run had events_deleted = 10, new run deletes 1 event = 11 total.
 assert_true( isset( $run_state['failed_events'][ 999 ] ), 'failed_events preserved' );
 assert_true( isset( $run_state['failed_events_final'][ 888 ] ), 'failed_events_final preserved' );
 assert_true( isset( $run_state['retry_queue'][ 777 ] ), 'retry_queue preserved' );
-assert_equals( 1, (int) $run_state['events_deleted'], 'one event deleted in first batch' );
+assert_equals( 11, (int) $run_state['events_deleted'], 'events_deleted cumulative: 10 from previous run + 1 new' );
 assert_equals( 1, (int) $run_state['batch_count'], 'batch_count is 1 after first batch' );
 
 cleanup_section_teardown();
@@ -1531,7 +1539,9 @@ assert_true( 'cleanup_cancelled_xyz789' !== $result['run_id'], 'new run has diff
 
 $run_state = $runner->read_run_state();
 // Cursor will be updated by the first batch processing.
-assert_equals( 1, (int) $run_state['events_deleted'], 'one event deleted in first batch' );
+// events_deleted is cumulative across runs (preserved from previous run + new deletions).
+// Previous run had events_deleted = 5, new run deletes 1 event = 6 total.
+assert_equals( 6, (int) $run_state['events_deleted'], 'events_deleted cumulative: 5 from previous run + 1 new' );
 assert_equals( 1, (int) $run_state['batch_count'], 'batch_count is 1 after first batch' );
 
 cleanup_section_teardown();

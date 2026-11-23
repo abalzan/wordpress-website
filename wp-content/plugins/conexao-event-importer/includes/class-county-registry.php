@@ -22,183 +22,122 @@ class Conexao_County_Registry {
 	/**
 	 * Full county registry.
 	 *
-	 * Each entry: name, slug, jurisdiction, eb_slug, eb_region_labels, hw_where.
+	 * Each entry: eb_slug, eb_region_labels, hw_where ONLY.
+	 *
+	 * The county NAMES and SLUGS are NOT declared here: they come from the ONE
+	 * master list (`Conexao_Data_Model_Counties` in conexao-data-model). This
+	 * class only adds the per-provider source metadata for a county that the
+	 * master list already approves.
 	 *
 	 * @var array
 	 */
-	const COUNTIES = array(
+	const PROVIDER_CONFIG = array(
 		'carlow'     => array(
-			'name'             => 'Carlow',
-			'slug'             => 'carlow',
-			'jurisdiction'     => 'ROI',
 			'eb_slug'          => 'ireland--carlow',
 			'eb_region_labels' => array( 'Carlow' ),
 			'hw_where'         => array( 'carlow' ),
 		),
 		'cavan'      => array(
-			'name'             => 'Cavan',
-			'slug'             => 'cavan',
-			'jurisdiction'     => 'ROI',
 			'eb_slug'          => 'ireland--cavan',
 			'eb_region_labels' => array( 'Cavan' ),
 			'hw_where'         => array( 'cavan' ),
 		),
 		'clare'      => array(
-			'name'             => 'Clare',
-			'slug'             => 'clare',
-			'jurisdiction'     => 'ROI',
 			'eb_slug'          => 'ireland--clare',
 			'eb_region_labels' => array( 'Clare' ),
 			'hw_where'         => array( 'clare' ),
 		),
 		'cork'       => array(
-			'name'             => 'Cork',
-			'slug'             => 'cork',
-			'jurisdiction'     => 'ROI',
 			'eb_slug'          => 'ireland--cork',
 			'eb_region_labels' => array( 'Cork', 'Cork City' ),
 			'hw_where'         => array( 'cork-county' ),
 		),
 		'donegal'    => array(
-			'name'             => 'Donegal',
-			'slug'             => 'donegal',
-			'jurisdiction'     => 'ROI',
 			'eb_slug'          => 'ireland--donegal',
 			'eb_region_labels' => array( 'Donegal' ),
 			'hw_where'         => array( 'donegal' ),
 		),
 		'dublin'     => array(
-			'name'             => 'Dublin',
-			'slug'             => 'dublin',
-			'jurisdiction'     => 'ROI',
 			'eb_slug'          => 'ireland--dublin',
 			'eb_region_labels' => array( 'Dublin City', 'Dunlaoghaire-Rathdown', 'Fingal' ),
 			'hw_where'         => array( 'dublin-city', 'dublin-dunlaoghaire-rathdown', 'dublin-fingal', 'dublin-south' ),
 		),
 		'galway'     => array(
-			'name'             => 'Galway',
-			'slug'             => 'galway',
-			'jurisdiction'     => 'ROI',
 			'eb_slug'          => 'ireland--galway',
 			'eb_region_labels' => array( 'Galway', 'Galway City' ),
 			'hw_where'         => array( 'galway-county', 'galway-city' ),
 		),
 		'kerry'      => array(
-			'name'             => 'Kerry',
-			'slug'             => 'kerry',
-			'jurisdiction'     => 'ROI',
 			'eb_slug'          => 'ireland--kerry',
 			'eb_region_labels' => array( 'Kerry' ),
 			'hw_where'         => array( 'kerry' ),
 		),
 		'kildare'    => array(
-			'name'             => 'Kildare',
-			'slug'             => 'kildare',
-			'jurisdiction'     => 'ROI',
 			'eb_slug'          => 'ireland--kildare',
 			'eb_region_labels' => array( 'Kildare' ),
 			'hw_where'         => array( 'kildare' ),
 		),
 		'kilkenny'   => array(
-			'name'             => 'Kilkenny',
-			'slug'             => 'kilkenny',
-			'jurisdiction'     => 'ROI',
 			'eb_slug'          => 'ireland--kilkenny',
 			'eb_region_labels' => array( 'Kilkenny' ),
 			'hw_where'         => array( 'kilkenny' ),
 		),
 		'laois'      => array(
-			'name'             => 'Laois',
-			'slug'             => 'laois',
-			'jurisdiction'     => 'ROI',
 			'eb_slug'          => 'ireland--laois',
 			'eb_region_labels' => array( 'Laois' ),
 			'hw_where'         => array( 'laois' ),
 		),
 		'leitrim'    => array(
-			'name'             => 'Leitrim',
-			'slug'             => 'leitrim',
-			'jurisdiction'     => 'ROI',
 			'eb_slug'          => 'ireland--leitrim',
 			'eb_region_labels' => array( 'Leitrim' ),
 			'hw_where'         => array( 'leitrim' ),
 		),
 		'limerick'   => array(
-			'name'             => 'Limerick',
-			'slug'             => 'limerick',
-			'jurisdiction'     => 'ROI',
 			'eb_slug'          => 'ireland--limerick',
 			'eb_region_labels' => array( 'Limerick' ),
 			'hw_where'         => array( 'limerick' ),
 		),
 		'longford'   => array(
-			'name'             => 'Longford',
-			'slug'             => 'longford',
-			'jurisdiction'     => 'ROI',
 			'eb_slug'          => 'ireland--longford',
 			'eb_region_labels' => array( 'Longford' ),
 			'hw_where'         => array( 'longford' ),
 		),
 		'louth'      => array(
-			'name'             => 'Louth',
-			'slug'             => 'louth',
-			'jurisdiction'     => 'ROI',
 			'eb_slug'          => 'ireland--louth',
 			'eb_region_labels' => array( 'Louth' ),
 			'hw_where'         => array( 'louth' ),
 		),
 		'mayo'       => array(
-			'name'             => 'Mayo',
-			'slug'             => 'mayo',
-			'jurisdiction'     => 'ROI',
 			'eb_slug'          => 'ireland--mayo',
 			'eb_region_labels' => array( 'Mayo' ),
 			'hw_where'         => array( 'mayo' ),
 		),
 		'meath'      => array(
-			'name'             => 'Meath',
-			'slug'             => 'meath',
-			'jurisdiction'     => 'ROI',
 			'eb_slug'          => 'ireland--meath',
 			'eb_region_labels' => array( 'Meath' ),
 			'hw_where'         => array( 'meath' ),
 		),
 		'monaghan'   => array(
-			'name'             => 'Monaghan',
-			'slug'             => 'monaghan',
-			'jurisdiction'     => 'ROI',
 			'eb_slug'          => 'ireland--monaghan',
 			'eb_region_labels' => array( 'Monaghan' ),
 			'hw_where'         => array( 'monaghan' ),
 		),
 		'offaly'     => array(
-			'name'             => 'Offaly',
-			'slug'             => 'offaly',
-			'jurisdiction'     => 'ROI',
 			'eb_slug'          => 'ireland--offaly',
 			'eb_region_labels' => array( 'Offaly' ),
 			'hw_where'         => array( 'offaly' ),
 		),
 		'roscommon'  => array(
-			'name'             => 'Roscommon',
-			'slug'             => 'roscommon',
-			'jurisdiction'     => 'ROI',
 			'eb_slug'          => 'ireland--roscommon',
 			'eb_region_labels' => array( 'Roscommon' ),
 			'hw_where'         => array( 'roscommon' ),
 		),
 		'sligo'      => array(
-			'name'             => 'Sligo',
-			'slug'             => 'sligo',
-			'jurisdiction'     => 'ROI',
 			'eb_slug'          => 'ireland--sligo',
 			'eb_region_labels' => array( 'Sligo' ),
 			'hw_where'         => array( 'sligo' ),
 		),
 		'tipperary'  => array(
-			'name'             => 'Tipperary',
-			'slug'             => 'tipperary',
-			'jurisdiction'     => 'ROI',
 			'eb_slug'          => 'ireland--tipperary',
 			// Eventbrite labels County Tipperary events under the historical
 			// ridings ("South Tipperary" / "North Tipperary"); the bare
@@ -207,33 +146,21 @@ class Conexao_County_Registry {
 			'hw_where'         => array( 'tipperary' ),
 		),
 		'waterford'  => array(
-			'name'             => 'Waterford',
-			'slug'             => 'waterford',
-			'jurisdiction'     => 'ROI',
 			'eb_slug'          => 'ireland--waterford',
 			'eb_region_labels' => array( 'Waterford' ),
 			'hw_where'         => array( 'waterford' ),
 		),
 		'westmeath'  => array(
-			'name'             => 'Westmeath',
-			'slug'             => 'westmeath',
-			'jurisdiction'     => 'ROI',
 			'eb_slug'          => 'ireland--westmeath',
 			'eb_region_labels' => array( 'Westmeath' ),
 			'hw_where'         => array( 'westmeath' ),
 		),
 		'wexford'    => array(
-			'name'             => 'Wexford',
-			'slug'             => 'wexford',
-			'jurisdiction'     => 'ROI',
 			'eb_slug'          => 'ireland--wexford',
 			'eb_region_labels' => array( 'Wexford' ),
 			'hw_where'         => array( 'wexford' ),
 		),
 		'wicklow'    => array(
-			'name'             => 'Wicklow',
-			'slug'             => 'wicklow',
-			'jurisdiction'     => 'ROI',
 			'eb_slug'          => 'ireland--wicklow',
 			'eb_region_labels' => array( 'Wicklow' ),
 			'hw_where'         => array( 'wicklow' ),
@@ -241,12 +168,38 @@ class Conexao_County_Registry {
 	);
 
 	/**
+	 * The approved counties, from the ONE master list.
+	 *
+	 * @return array<string, string> Slug => canonical name.
+	 */
+	private static function approved_counties() {
+		if ( class_exists( 'Conexao_Data_Model_Counties' ) ) {
+			return Conexao_Data_Model_Counties::all();
+		}
+
+		return array();
+	}
+
+	/**
 	 * Get the full county registry.
 	 *
 	 * @return array Array of county data keyed by county slug.
 	 */
 	public static function get_counties() {
-		return self::COUNTIES;
+		$counties = array();
+
+		foreach ( self::approved_counties() as $slug => $name ) {
+			$counties[ $slug ] = array_merge(
+				array(
+					'name'         => $name,
+					'slug'         => $slug,
+					'jurisdiction' => 'ROI',
+				),
+				isset( self::PROVIDER_CONFIG[ $slug ] ) ? self::PROVIDER_CONFIG[ $slug ] : array()
+			);
+		}
+
+		return $counties;
 	}
 
 	/**
@@ -256,7 +209,8 @@ class Conexao_County_Registry {
 	 * @return array|null County data or null if not found.
 	 */
 	public static function get_county( $slug ) {
-		return isset( self::COUNTIES[ $slug ] ) ? self::COUNTIES[ $slug ] : null;
+		$counties = self::get_counties();
+		return isset( $counties[ $slug ] ) ? $counties[ $slug ] : null;
 	}
 
 	/**
@@ -265,7 +219,7 @@ class Conexao_County_Registry {
 	 * @return array List of county slugs.
 	 */
 	public static function get_slugs() {
-		return array_keys( self::COUNTIES );
+		return array_keys( self::get_counties() );
 	}
 
 	/**

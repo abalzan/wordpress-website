@@ -398,6 +398,61 @@ function conexao_get_terms_for_post_type( $taxonomy, $post_type, $extra_args = a
 	conexao_filter_terms_store( $cache_key, $terms );
 	return $terms;
 }
+/**
+ * County options for a public archive filter — ALWAYS the 26 approved counties.
+ *
+ * LAYER 3 of the county protection: the public filter must never be built from
+ * `get_terms()` / taxonomy counts. Those reflect whatever the database happens
+ * to hold, so a leftover fixture term (`ev-carlow`), an imported junk value
+ * (`Co Clare Ireland`) or a numeric leak (`6724`) becomes a second or bogus
+ * county option.
+ *
+ * The list below comes from the ONE master list in `conexao-data-model`
+ * (`Conexao_Data_Model_Counties`), is alphabetical, and carries exactly one
+ * entry per county: canonical slug + canonical display name. A live term is
+ * resolved only to reuse its `term_id`; its name and slug never win over the
+ * master list.
+ *
+ * `?county=<slug>` still filters exactly as before — the query layer resolves
+ * the slug against the taxonomy, so no URL, cascade or "Todas" behaviour
+ * changes.
+ *
+ * @return WP_Term[] Exactly 26 term objects, alphabetical; empty only when the
+ *                  data-model plugin is inactive.
+ */
+function conexao_get_county_filter_terms() {
+	if ( ! class_exists( 'Conexao_Data_Model_Counties' ) ) {
+		return array();
+	}
+
+	$terms = array();
+
+	foreach ( Conexao_Data_Model_Counties::all() as $slug => $name ) {
+		$live = get_term_by( 'slug', $slug, 'conexao_county' );
+
+		// A synthetic WP_Term keeps the template contract identical
+		// ($term->slug / $term->name) even when a canonical county has no term
+		// row yet (fresh install, deleted term). The list is code, not data.
+		$terms[] = new WP_Term(
+			(object) array(
+				'term_id'          => $live instanceof WP_Term ? (int) $live->term_id : 0,
+				'name'             => $name,
+				'slug'             => $slug,
+				'term_group'       => 0,
+				'term_taxonomy_id' => $live instanceof WP_Term ? (int) $live->term_taxonomy_id : 0,
+				'taxonomy'         => 'conexao_county',
+				'description'      => '',
+				'parent'           => 0,
+				'count'            => $live instanceof WP_Term ? (int) $live->count : 0,
+				'filter'           => 'raw',
+			)
+		);
+	}
+
+	return $terms;
+}
+
+
 
 /**
  * Get town/city terms for the Events archive, optionally scoped to a county.
