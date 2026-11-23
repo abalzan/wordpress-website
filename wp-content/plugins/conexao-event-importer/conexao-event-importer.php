@@ -70,6 +70,7 @@ require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-image-sync-admin
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-cleanup.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-cleanup-lock.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-cleanup-attachment-review.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-cleanup-retry-queue.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-cleanup-run.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-cleanup-admin.php';
 

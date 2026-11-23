@@ -208,10 +208,11 @@ final class Conexao_Event_Cleanup_Attachment_Review {
 	 * @param array $attachment_ids Attachment IDs to enqueue.
 	 * @param int   $event_id       Source event ID.
 	 * @param array $sources        Map of attachment_id => 'banner'|'featured'.
+	 * @param array $mime_types     Map of attachment_id => MIME type.
 	 * @param int   $now            Current timestamp.
 	 * @return array { ok: bool, reason: string, pending_count: int }
 	 */
-	public static function enqueue_in_transaction( array $attachment_ids, int $event_id, array $sources, int $now ): array {
+	public static function enqueue_in_transaction( array $attachment_ids, int $event_id, array $sources, array $mime_types, int $now ): array {
 		global $wpdb;
 
 		// If no attachments to enqueue, return success without CAS.
@@ -245,14 +246,19 @@ final class Conexao_Event_Cleanup_Attachment_Review {
 				);
 			}
 
+			$mime_type = isset( $mime_types[ $attachment_id ] ) ? $mime_types[ $attachment_id ] : 'unknown';
+			$classification = self::classify_mime_type( $mime_type );
+
 			$data['entries'][ $attachment_id ] = array(
-				'event_id'    => $event_id,
-				'added_at'    => $now,
-				'source'      => isset( $sources[ $attachment_id ] ) ? $sources[ $attachment_id ] : 'banner',
-				'status'      => 'pending',
-				'resolved_at' => null,
-				'resolved_by' => null,
-				'resolution'  => null,
+				'event_id'       => $event_id,
+				'added_at'       => $now,
+				'source'         => isset( $sources[ $attachment_id ] ) ? $sources[ $attachment_id ] : 'banner',
+				'mime_type'      => $mime_type,
+				'classification' => $classification,
+				'status'         => 'pending',
+				'resolved_at'    => null,
+				'resolved_by'    => null,
+				'resolution'     => null,
 			);
 
 			$pending++;
@@ -286,6 +292,25 @@ final class Conexao_Event_Cleanup_Attachment_Review {
 			'reason'        => 'enqueued',
 			'pending_count' => $pending,
 		);
+	}
+
+	/**
+	 * Classify a MIME type into a human-readable category.
+	 *
+	 * @param string $mime_type MIME type.
+	 * @return string Classification: 'image', 'pdf', 'document', 'unknown'.
+	 */
+	private static function classify_mime_type( string $mime_type ): string {
+		if ( str_starts_with( $mime_type, 'image/' ) ) {
+			return 'image';
+		}
+		if ( 'application/pdf' === $mime_type ) {
+			return 'pdf';
+		}
+		if ( str_starts_with( $mime_type, 'application/' ) || str_starts_with( $mime_type, 'text/' ) ) {
+			return 'document';
+		}
+		return 'unknown';
 	}
 
 	/**

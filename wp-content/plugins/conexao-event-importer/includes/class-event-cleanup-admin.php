@@ -162,7 +162,7 @@ class Conexao_Event_Cleanup_Admin {
 	}
 
 	/**
-	 * Handle "Retry" for a failed event.
+	 * Handle "Retry" for a failed event (from failed_events or failed_events_final).
 	 */
 	public function handle_retry_failed_event() {
 		if ( ! current_user_can( 'manage_options' ) ) {
@@ -179,14 +179,42 @@ class Conexao_Event_Cleanup_Admin {
 
 		$run_state = $this->runner->read_run_state();
 
+		$failure_record = null;
+		$source         = '';
+
+		// Check failed_events_final first (exhausted retries).
 		if ( isset( $run_state['failed_events_final'][ $event_id ] ) ) {
+			$failure_record = $run_state['failed_events_final'][ $event_id ];
 			unset( $run_state['failed_events_final'][ $event_id ] );
-			$run_state['failed_events'][ $event_id ] = array(
-				'attempts'        => 0,
-				'last_reason'     => '',
-				'last_attempt_at' => 0,
-				'first_failed_at' => time(),
+			$source = 'final';
+		}
+		// Check failed_events (initial failures).
+		elseif ( isset( $run_state['failed_events'][ $event_id ] ) ) {
+			$failure_record = $run_state['failed_events'][ $event_id ];
+			unset( $run_state['failed_events'][ $event_id ] );
+			$source = 'initial';
+		}
+
+		if ( $failure_record ) {
+			// Reset attempts for retry.
+			$failure_record['attempts']        = 0;
+			$failure_record['last_reason']     = '';
+			$failure_record['last_attempt_at'] = 0;
+			$failure_record['first_failed_at'] = time();
+
+			// Add to retry queue (persistent, survives run completion).
+			$retry_queue = isset( $run_state['retry_queue'] ) ? $run_state['retry_queue'] : array();
+			$retry_queue[ $event_id ] = array(
+				'event_id'       => $event_id,
+				'added_at'       => time(),
+				'last_retry_at'  => 0,
+				'retry_reason'   => '',
+				'attempts'       => 0,
+				'first_failed_at'=> $failure_record['first_failed_at'] ?? time(),
+				'status'         => 'pending',
 			);
+			$run_state['retry_queue'] = $retry_queue;
+
 			$this->runner->write_run_state( $run_state );
 		}
 
@@ -347,6 +375,48 @@ class Conexao_Event_Cleanup_Admin {
 					</div>
 				<?php endif; ?>
 
+				<?php if ( ! empty( $run_state['failed_events'] ) ) : ?>
+					<div class="notice notice-warning is-dismissible">
+						<p><strong><?php esc_html_e( 'Failed events (retryable)', 'conexao-event-importer' ); ?></strong></p>
+						<ul style="list-style: disc; padding-left: 20px; margin: 8px 0 0;">
+							<?php foreach ( $run_state['failed_events'] as $event_id => $entry ) : ?>
+								<li>
+									<?php echo esc_html( sprintf( __( 'Event #%d: %s (attempts: %d)', 'conexao-event-importer' ), $event_id, $entry['last_reason'], $entry['attempts'] ) ); ?>
+									<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="display: inline;">
+										<input type="hidden" name="action" value="conexao_retry_failed_event">
+										<input type="hidden" name="event_id" value="<?php echo esc_attr( $event_id ); ?>">
+										<?php wp_nonce_field( 'conexao_retry_failed_event', 'conexao_retry_nonce' ); ?>
+										<button type="submit" class="button button-small"><?php esc_html_e( 'Retry', 'conexao-event-importer' ); ?></button>
+									</form>
+									<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="display: inline;">
+										<input type="hidden" name="action" value="conexao_dismiss_failed_event">
+										<input type="hidden" name="event_id" value="<?php echo esc_attr( $event_id ); ?>">
+										<?php wp_nonce_field( 'conexao_dismiss_failed_event', 'conexao_dismiss_nonce' ); ?>
+										<button type="submit" class="button button-small"><?php esc_html_e( 'Dismiss', 'conexao-event-importer' ); ?></button>
+									</form>
+								</li>
+							<?php endforeach; ?>
+						</ul>
+					</div>
+				<?php endif; ?>
+
+				<?php if ( ! empty( $run_state['retry_queue'] ) ) : ?>
+					$pending_retries = array_filter( $run_state['retry_queue'], function ( $e ) { return 'pending' === ( $e['status'] ?? '' ); } );
+					if ( ! empty( $pending_retries ) ) :
+				?>
+					<div class="notice notice-info is-dismissible">
+						<p><strong><?php esc_html_e( 'Events queued for retry', 'conexao-event-importer' ); ?></strong></p>
+						<p><?php esc_html_e( 'These events will be retried on the next cleanup run.', 'conexao-event-importer' ); ?></p>
+						<ul style="list-style: disc; padding-left: 20px; margin: 8px 0 0;">
+							<?php foreach ( $pending_retries as $event_id => $entry ) : ?>
+								<li>
+									<?php echo esc_html( sprintf( __( 'Event #%d (attempts: %d)', 'conexao-event-importer' ), $event_id, $entry['attempts'] ?? 0 ) ); ?>
+								</li>
+							<?php endforeach; ?>
+						</ul>
+					</div>
+				<?php endif; endif; ?>
+
 				<?php
 				$review_queue = Conexao_Event_Cleanup_Attachment_Review::read();
 				if ( ! empty( $review_queue['data']['entries'] ) ) :
@@ -359,7 +429,20 @@ class Conexao_Event_Cleanup_Admin {
 						<ul style="list-style: disc; padding-left: 20px; margin: 8px 0 0;">
 							<?php foreach ( $pending as $attachment_id => $entry ) : ?>
 								<li>
-									<?php echo esc_html( sprintf( __( 'Attachment #%d (from event #%d): %s', 'conexao-event-importer' ), $attachment_id, $entry['event_id'], $entry['reason'] ) ); ?>
+									<?php
+									$mime_type      = isset( $entry['mime_type'] ) ? $entry['mime_type'] : 'unknown';
+									$classification = isset( $entry['classification'] ) ? $entry['classification'] : 'unknown';
+									$source         = isset( $entry['source'] ) ? $entry['source'] : 'banner';
+									$label          = sprintf(
+										__( 'Attachment #%d (from event #%d, %s, %s): %s', 'conexao-event-importer' ),
+										$attachment_id,
+										$entry['event_id'],
+										$classification,
+										$source,
+										$mime_type
+									);
+									echo esc_html( $label );
+									?>
 									<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="display: inline;">
 										<input type="hidden" name="action" value="conexao_mark_attachment_reviewed">
 										<input type="hidden" name="attachment_id" value="<?php echo esc_attr( $attachment_id ); ?>">
@@ -370,7 +453,7 @@ class Conexao_Event_Cleanup_Admin {
 							<?php endforeach; ?>
 						</ul>
 					</div>
-				<?php endif; endif; ?>
+				<?php endif; ?>
 
 				<?php if ( in_array( $run_state['status'], array( 'running', 'paused_capacity', 'paused_capacity_review' ), true ) ) : ?>
 					<div class="conexao-event-transfer">

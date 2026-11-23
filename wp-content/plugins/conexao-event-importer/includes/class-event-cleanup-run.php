@@ -24,6 +24,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
+require_once __DIR__ . '/class-event-cleanup-retry-queue.php';
+
 /**
  * Batch runner for the event cleanup.
  */
@@ -84,6 +86,14 @@ final class Conexao_Event_Cleanup_Run {
 	 * @var int
 	 */
 	const MAX_ATTEMPTS = 3;
+
+	/**
+	 * Clock function for time-budget tracking.
+	 * Production uses hrtime/microtime; tests can inject a controlled clock.
+	 *
+	 * @var callable
+	 */
+	private $clock_fn;
 
 	/**
 	 * Run status: in progress.
@@ -169,9 +179,17 @@ final class Conexao_Event_Cleanup_Run {
 	 * Constructor.
 	 *
 	 * @param Conexao_Event_Cleanup $engine Cleanup engine.
+	 * @param callable|null         $clock_fn Optional clock function for time-budget tracking.
+	 *                                        Defaults to a monotonic clock (hrtime if available, else microtime).
 	 */
-	public function __construct( Conexao_Event_Cleanup $engine ) {
-		$this->engine = $engine;
+	public function __construct( Conexao_Event_Cleanup $engine, callable $clock_fn = null ) {
+		$this->engine   = $engine;
+		$this->clock_fn = $clock_fn ?? function (): float {
+			if ( function_exists( 'hrtime' ) ) {
+				return hrtime( true ) / 1e9;
+			}
+			return microtime( true );
+		};
 	}
 
 	/**
@@ -191,14 +209,39 @@ final class Conexao_Event_Cleanup_Run {
 		$batch_time_seconds = isset( $args['batch_time_seconds'] ) ? (int) $args['batch_time_seconds'] : self::DEFAULT_BATCH_TIME_SECONDS;
 		$scan_window        = isset( $args['scan_window'] ) ? (int) $args['scan_window'] : self::DEFAULT_SCAN_WINDOW;
 
-		// Ensure the lock row and queue row exist before the destructive transaction.
+		// Ensure the lock row and queue rows exist before the destructive transaction.
 		Conexao_Event_Cleanup_Lock::ensure_row_exists();
 		Conexao_Event_Cleanup_Attachment_Review::ensure_row_exists();
+		Conexao_Event_Cleanup_Retry_Queue::ensure_row_exists();
 
-		// Check for an existing run-state (resume).
+		// Check for an existing run-state.
 		$run_state = $this->read_run_state();
 
-		if ( ! empty( $run_state ) && isset( $run_state['run_id'] ) ) {
+		$terminal_statuses = array(
+			self::STATUS_COMPLETED,
+			self::STATUS_COMPLETED_WITH_ERRORS,
+			self::STATUS_CANCELLED,
+			self::STATUS_FAILED,
+		);
+
+		$resumable_statuses = array(
+			self::STATUS_RUNNING,
+			self::STATUS_PAUSED_CAPACITY,
+			self::STATUS_PAUSED_CAPACITY_REVIEW,
+		);
+
+		$has_existing_run = ! empty( $run_state ) && isset( $run_state['run_id'] );
+		$existing_status  = $has_existing_run ? ( $run_state['status'] ?? '' ) : '';
+
+		// Determine if we should resume or start a new run.
+		$should_resume = $has_existing_run && in_array( $existing_status, $resumable_statuses, true );
+		$should_start_new = $has_existing_run && in_array( $existing_status, $terminal_statuses, true );
+
+		// Terminal states (completed, cancelled, failed) always start a new run.
+		// Do not attempt to resume them even if the lock could be acquired.
+		if ( $should_start_new ) {
+			// Start a new run (fall through).
+		} elseif ( $should_resume ) {
 			// Resume: verify the lock is still ours.
 			$lock = Conexao_Event_Cleanup_Lock::acquire(
 				array(
@@ -242,7 +285,12 @@ final class Conexao_Event_Cleanup_Run {
 			);
 		}
 
-		// No existing run: start a new one.
+		// Start a new run (either no existing run, or existing run is terminal).
+		// Preserve retry queue, failed events, and final failed events across runs.
+		$preserved_retry_queue      = isset( $run_state['retry_queue'] ) ? $run_state['retry_queue'] : array();
+		$preserved_failed_events    = isset( $run_state['failed_events'] ) ? $run_state['failed_events'] : array();
+		$preserved_failed_events_final = isset( $run_state['failed_events_final'] ) ? $run_state['failed_events_final'] : array();
+
 		$run_id = 'cleanup_' . wp_generate_password( 12, false, false );
 		$lock   = Conexao_Event_Cleanup_Lock::acquire(
 			array(
@@ -261,26 +309,27 @@ final class Conexao_Event_Cleanup_Run {
 			);
 		}
 
-		// Initialise run-state.
+		// Initialise run-state with preserved failure/retry data.
 		$run_state = array(
-			'run_id'         => $run_id,
-			'status'         => self::STATUS_RUNNING,
-			'created'        => time(),
-			'updated'        => time(),
-			'cursor_id'      => PHP_INT_MAX,
-			'last_scanned_id' => 0,
-			'events_deleted' => 0,
-			'images_deleted' => 0,
-			'images_preserved' => 0,
-			'errors'         => array(),
-			'failed_events'  => array(),
-			'failed_events_final' => array(),
-			'batch_count'    => 0,
+			'run_id'                  => $run_id,
+			'status'                  => self::STATUS_RUNNING,
+			'created'                 => time(),
+			'updated'                 => time(),
+			'cursor_id'               => PHP_INT_MAX,
+			'last_scanned_id'         => 0,
+			'events_deleted'          => 0,
+			'images_deleted'          => 0,
+			'images_preserved'        => 0,
+			'errors'                  => array(),
+			'failed_events'           => $preserved_failed_events,
+			'failed_events_final'     => $preserved_failed_events_final,
+			'retry_queue'             => $preserved_retry_queue,
+			'batch_count'             => 0,
 			'last_batch_events_deleted' => 0,
 			'last_batch_time_seconds'   => 0.0,
-			'owner_lock_id'  => $run_id,
-			'fence_token'    => $lock['record']['fence_token'],
-			'lease_expires_at' => time() + max( 60, 2 * $batch_time_seconds ),
+			'owner_lock_id'           => $run_id,
+			'fence_token'             => $lock['record']['fence_token'],
+			'lease_expires_at'        => time() + max( 60, 2 * $batch_time_seconds ),
 		);
 
 		$this->write_run_state( $run_state );
@@ -289,12 +338,12 @@ final class Conexao_Event_Cleanup_Run {
 		$batch_result = $this->process_batch( $batch_events, $batch_time_seconds, $scan_window );
 
 		return array(
-			'ok'           => true,
-			'run_id'       => $run_state['run_id'],
-			'status'       => $batch_result['status'],
-			'reason'       => $batch_result['reason'],
-			'batch_result' => $batch_result,
-		);
+				'ok'           => true,
+				'run_id'       => $run_state['run_id'],
+				'status'       => $batch_result['status'],
+				'reason'       => $batch_result['reason'],
+				'batch_result' => $batch_result,
+			);
 	}
 
 	/**
@@ -325,12 +374,45 @@ final class Conexao_Event_Cleanup_Run {
 			);
 		}
 
-		$batch_start   = microtime( true );
+		$batch_start   = ( $this->clock_fn )();
 		$events_deleted = 0;
 		$last_deleted_id = 0;
 		$last_committed_id = 0;
 		$last_scanned_id = 0;
 		$stop_reason = '';
+
+		// First, process any queued retries (bounded by batch limits).
+		$retry_queue = isset( $run_state['retry_queue'] ) ? $run_state['retry_queue'] : array();
+		if ( ! empty( $retry_queue ) ) {
+			$batch_result = $this->process_retry_queue( $retry_queue, $batch_events, $batch_time_seconds, $batch_start, $run_state );
+			$events_deleted      += $batch_result['events_deleted'];
+			$last_deleted_id      = $batch_result['last_deleted_id'] ?: $last_deleted_id;
+			$last_committed_id    = $batch_result['last_committed_id'] ?: $last_committed_id;
+			$stop_reason          = $batch_result['stop_reason'] ?: $stop_reason;
+			$run_state            = $batch_result['run_state'];
+
+			// If retry queue processing hit a limit, return early.
+			if ( $stop_reason ) {
+				$run_state['last_batch_events_deleted'] = $events_deleted;
+				$run_state['last_batch_time_seconds']   = ( $this->clock_fn )() - $batch_start;
+				$run_state['updated']                   = time();
+				$this->write_run_state( $run_state );
+
+				if ( in_array( $run_state['status'], array( self::STATUS_COMPLETED, self::STATUS_COMPLETED_WITH_ERRORS, self::STATUS_CANCELLED, self::STATUS_FAILED ), true ) ) {
+					Conexao_Event_Cleanup_Lock::release( $run_state['run_id'] );
+				}
+
+				return array(
+					'status'         => $run_state['status'],
+					'reason'         => $stop_reason,
+					'events_deleted' => $events_deleted,
+					'last_deleted_id' => $last_deleted_id,
+					'last_committed_id' => $last_committed_id,
+					'last_scanned_id' => $last_scanned_id,
+					'cursor_id'      => $run_state['cursor_id'],
+				);
+			}
+		}
 
 		// Fetch the scan window (keyset, read-only).
 		$candidate_ids = $this->fetch_candidate_ids( (int) $run_state['cursor_id'], $scan_window );
@@ -354,8 +436,8 @@ final class Conexao_Event_Cleanup_Run {
 		foreach ( $candidate_ids as $candidate_id ) {
 			$candidate_id = (int) $candidate_id;
 
-			// Check time budget.
-			if ( ( microtime( true ) - $batch_start ) >= $batch_time_seconds ) {
+			// Check time budget using the clock function.
+			if ( ( ( $this->clock_fn )() - $batch_start ) >= $batch_time_seconds ) {
 				$stop_reason = 'time_budget';
 				break;
 			}
@@ -657,17 +739,21 @@ final class Conexao_Event_Cleanup_Run {
 		}
 
 		// Step 3: Enqueue attachments into the review queue (inside the transaction).
-		$attachment_ids = $this->get_event_attachment_ids( $event_id );
+		$attachment_infos = $this->get_event_attachment_ids( $event_id );
+		$attachment_ids = array_column( $attachment_infos, 'attachment_id' );
 		$sources        = array();
+		$mime_types     = array();
 
-		foreach ( $attachment_ids as $attachment_id ) {
-			$sources[ $attachment_id ] = 'banner'; // simplified; could be 'featured'
+		foreach ( $attachment_infos as $info ) {
+			$sources[ $info['attachment_id'] ]   = $info['source'];
+			$mime_types[ $info['attachment_id'] ] = $info['mime_type'];
 		}
 
 		$enqueue_result = Conexao_Event_Cleanup_Attachment_Review::enqueue_in_transaction(
 			$attachment_ids,
 			$event_id,
 			$sources,
+			$mime_types,
 			time()
 		);
 
@@ -709,25 +795,152 @@ final class Conexao_Event_Cleanup_Run {
 	}
 
 	/**
+	 * Process the retry queue.
+	 *
+	 * @param array $retry_queue    Retry queue entries.
+	 * @param int   $batch_events   Max events to delete.
+	 * @param int   $batch_time_seconds Max seconds.
+	 * @param float $batch_start    Batch start time.
+	 * @param array $run_state      Run state (by reference).
+	 * @return array { events_deleted, last_deleted_id, last_committed_id, stop_reason, run_state }
+	 */
+	private function process_retry_queue( array $retry_queue, int $batch_events, int $batch_time_seconds, float $batch_start, array &$run_state ): array {
+		$events_deleted      = 0;
+		$last_deleted_id     = 0;
+		$last_committed_id   = 0;
+		$stop_reason         = '';
+		$updated_retry_queue = $retry_queue;
+
+		foreach ( $retry_queue as $event_id => $entry ) {
+			if ( 'pending' !== ( $entry['status'] ?? '' ) ) {
+				continue;
+			}
+
+			// Check time budget.
+			if ( ( ( $this->clock_fn )() - $batch_start ) >= $batch_time_seconds ) {
+				$stop_reason = 'time_budget';
+				break;
+			}
+
+			// Check event-count budget.
+			if ( $events_deleted >= $batch_events ) {
+				$stop_reason = 'event_count';
+				break;
+			}
+
+			$event_id = (int) $event_id;
+
+			// Already gone (idempotent no-op).
+			if ( null === get_post( $event_id ) ) {
+				// Mark as successfully retried (remove from queue).
+				$mark_result = Conexao_Event_Cleanup_Retry_Queue::mark_retried( $event_id, time() );
+				if ( $mark_result['ok'] ) {
+					unset( $updated_retry_queue[ $event_id ] );
+				}
+				$last_committed_id = $event_id;
+				continue;
+			}
+
+			// Attempt deletion inside a transaction.
+			$delete_result = $this->delete_event_transactional( $event_id, $run_state );
+
+			if ( $delete_result['ok'] ) {
+				$events_deleted++;
+				$last_deleted_id   = $event_id;
+				$last_committed_id = $event_id;
+				$run_state['events_deleted']++;
+				$run_state['images_preserved'] += $delete_result['images_preserved'];
+
+				// Mark as successfully retried (remove from queue).
+				$mark_result = Conexao_Event_Cleanup_Retry_Queue::mark_retried( $event_id, time() );
+				if ( $mark_result['ok'] ) {
+					unset( $updated_retry_queue[ $event_id ] );
+				}
+
+				// Also remove from failed_events if present.
+				if ( isset( $run_state['failed_events'][ $event_id ] ) ) {
+					unset( $run_state['failed_events'][ $event_id ] );
+				}
+				if ( isset( $run_state['failed_events_final'][ $event_id ] ) ) {
+					unset( $run_state['failed_events_final'][ $event_id ] );
+				}
+			} elseif ( 'queue_capacity' === $delete_result['reason'] ) {
+				// The attachment-review queue is full. The event was NOT
+				// deleted (the transaction rolled back). Pause the run.
+				$stop_reason = 'capacity_review';
+				break;
+			} else {
+				// Failed retry: update attempt count in retry queue.
+				$new_attempts = ( $entry['attempts'] ?? 0 ) + 1;
+				$update_result = Conexao_Event_Cleanup_Retry_Queue::update_after_failure(
+					$event_id,
+					$new_attempts,
+					$delete_result['reason'],
+					time()
+				);
+
+				if ( $update_result['ok'] ) {
+					$updated_retry_queue[ $event_id ]['attempts']      = $new_attempts;
+					$updated_retry_queue[ $event_id ]['last_retry_at'] = time();
+					$updated_retry_queue[ $event_id ]['retry_reason']  = $delete_result['reason'];
+				}
+
+				// Also update failed_events/failed_events_final.
+				$this->record_failure( $run_state, $event_id, $delete_result['reason'] );
+				$last_committed_id = $event_id;
+
+				// Check capacity.
+				if ( count( $run_state['failed_events'] ) >= self::MAX_FAILED_TRACKED ) {
+					$stop_reason = 'failed_capacity';
+					break;
+				}
+			}
+		}
+
+		$run_state['retry_queue'] = $updated_retry_queue;
+
+		return array(
+			'events_deleted'      => $events_deleted,
+			'last_deleted_id'     => $last_deleted_id,
+			'last_committed_id'   => $last_committed_id,
+			'stop_reason'         => $stop_reason,
+			'run_state'           => $run_state,
+		);
+	}
+
+	/**
 	 * Get the attachment IDs for an event (banner + featured).
 	 *
+	 * Returns all referenced attachment IDs with their MIME types and sources,
+	 * not just images. This supports the attachment review queue for all types.
+	 *
 	 * @param int $event_id Event ID.
-	 * @return int[]
+	 * @return array[] Array of attachment info: [attachment_id, mime_type, source]
 	 */
 	private function get_event_attachment_ids( int $event_id ): array {
-		$attachment_ids = array();
+		$attachments = array();
 
 		$banner_attach = get_post_meta( $event_id, Conexao_Event_Cleanup::EVENT_BANNER_META, true );
-		if ( $banner_attach && wp_attachment_is_image( $banner_attach ) ) {
-			$attachment_ids[] = (int) $banner_attach;
+		if ( $banner_attach ) {
+			$mime_type = get_post_mime_type( $banner_attach );
+			$attachments[] = array(
+				'attachment_id' => (int) $banner_attach,
+				'mime_type'     => $mime_type ?: 'unknown',
+				'source'        => 'banner',
+			);
 		}
 
 		$thumb_id = get_post_thumbnail_id( $event_id );
-		if ( $thumb_id && wp_attachment_is_image( $thumb_id ) && ! in_array( $thumb_id, $attachment_ids, true ) ) {
-			$attachment_ids[] = (int) $thumb_id;
+		if ( $thumb_id && ! in_array( $thumb_id, array_column( $attachments, 'attachment_id' ), true ) ) {
+			$mime_type = get_post_mime_type( $thumb_id );
+			$attachments[] = array(
+				'attachment_id' => (int) $thumb_id,
+				'mime_type'     => $mime_type ?: 'unknown',
+				'source'        => 'featured',
+			);
 		}
 
-		return $attachment_ids;
+		return $attachments;
 	}
 
 	/**

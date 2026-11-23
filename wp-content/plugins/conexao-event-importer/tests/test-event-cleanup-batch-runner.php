@@ -179,10 +179,13 @@ function cleanup_section_teardown() {
 	// reset mechanism for independent test sections.
 	$run_option    = Conexao_Event_Cleanup_Run::run_option();
 	$review_option = Conexao_Event_Cleanup_Attachment_Review::option_name();
+	$retry_option  = Conexao_Event_Cleanup_Retry_Queue::option_name();
 	delete_option( $run_option );
 	delete_option( $review_option );
+	delete_option( $retry_option );
 	wp_cache_delete( $run_option, 'options' );
 	wp_cache_delete( $review_option, 'options' );
+	wp_cache_delete( $retry_option, 'options' );
 	wp_cache_flush();
 }
 
@@ -241,7 +244,9 @@ function cleanup_finish_run_for_next_subcase() {
 	// a fresh run (cursor = PHP_INT_MAX). This is the documented reset
 	// mechanism for independent sub-cases.
 	delete_option( Conexao_Event_Cleanup_Run::run_option() );
+	delete_option( Conexao_Event_Cleanup_Retry_Queue::option_name() );
 	wp_cache_delete( Conexao_Event_Cleanup_Run::run_option(), 'options' );
+	wp_cache_delete( Conexao_Event_Cleanup_Retry_Queue::option_name(), 'options' );
 }
 
 echo 'Site: ' . home_url() . ' — timezone: ' . wp_timezone()->getName() . ' — today: ' . current_datetime()->format( 'Y-m-d' ) . "\n";
@@ -1263,6 +1268,461 @@ assert_true( ! $stale_lock['held'], 'second worker cannot acquire while lock is 
 Conexao_Event_Cleanup_Lock::release( $run_id );
 $raw_after = Conexao_Event_Cleanup_Lock::read_lock();
 assert_true( null === $raw_after || '' === $raw_after, 'lock released' );
+
+cleanup_section_teardown();
+
+// ---------------------------------------------------------------------------
+// 19. Retry queue — successful retry of a failed event.
+// ---------------------------------------------------------------------------
+test_section( 'Retry queue — successful retry' );
+
+require_once WP_PLUGIN_DIR . '/conexao-event-importer/includes/class-event-cleanup-retry-queue.php';
+
+Conexao_Event_Cleanup_Retry_Queue::ensure_row_exists();
+
+// Create a past event that will be "failed" and then retried.
+$retry_fixture = cleanup_test_event(
+	'retry success',
+	array(
+		'_event_date'     => '2020-01-01',
+		'_event_status'   => 'published',
+		'_event_imported' => '1',
+	)
+);
+
+// Simulate a failure record.
+$failure_record = array(
+	'attempts'        => 2,
+	'last_reason'     => 'delete_failed',
+	'last_attempt_at' => time() - 3600,
+	'first_failed_at' => time() - 7200,
+);
+
+// Enqueue for retry via the retry queue (inside a transaction).
+global $wpdb;
+$wpdb->query( 'START TRANSACTION' );
+$enqueue_result = Conexao_Event_Cleanup_Retry_Queue::enqueue_in_transaction(
+	$retry_fixture,
+	$failure_record,
+	time()
+);
+$wpdb->query( 'COMMIT' );
+assert_true( $enqueue_result['ok'], 'retry enqueue succeeded' );
+
+// Verify it's in the queue.
+$queue = Conexao_Event_Cleanup_Retry_Queue::read();
+assert_true( isset( $queue['data']['entries'][ $retry_fixture ] ), 'event is in retry queue' );
+assert_equals( 'pending', $queue['data']['entries'][ $retry_fixture ]['status'], 'status is pending' );
+
+// Now simulate a successful retry by marking it retried (mark_retried manages its own transaction).
+$mark_result = Conexao_Event_Cleanup_Retry_Queue::mark_retried( $retry_fixture, time() );
+assert_true( $mark_result['ok'], 'mark retried succeeded' );
+
+// Verify it's removed from the queue.
+$queue = Conexao_Event_Cleanup_Retry_Queue::read();
+assert_true( ! isset( $queue['data']['entries'][ $retry_fixture ] ), 'event removed from retry queue after success' );
+
+cleanup_section_teardown();
+
+// ---------------------------------------------------------------------------
+// 20. Retry queue — failed retry increments attempts.
+// ---------------------------------------------------------------------------
+test_section( 'Retry queue — failed retry increments attempts' );
+
+Conexao_Event_Cleanup_Retry_Queue::ensure_row_exists();
+
+$retry_fail_fixture = cleanup_test_event(
+	'retry fail',
+	array(
+		'_event_date'     => '2020-01-01',
+		'_event_status'   => 'published',
+		'_event_imported' => '1',
+	)
+);
+
+$failure_record = array(
+	'attempts'        => 1,
+	'last_reason'     => 'delete_failed',
+	'last_attempt_at' => time() - 3600,
+	'first_failed_at' => time() - 7200,
+);
+
+$wpdb->query( 'START TRANSACTION' );
+$enqueue_result = Conexao_Event_Cleanup_Retry_Queue::enqueue_in_transaction(
+	$retry_fail_fixture,
+	$failure_record,
+	time()
+);
+$wpdb->query( 'COMMIT' );
+assert_true( $enqueue_result['ok'], 'retry enqueue succeeded' );
+
+// Simulate a failed retry attempt (update_after_failure manages its own transaction).
+$update_result = Conexao_Event_Cleanup_Retry_Queue::update_after_failure(
+	$retry_fail_fixture,
+	2, // attempts = 2
+	'delete_failed',
+	time()
+);
+assert_true( $update_result['ok'], 'update after failure succeeded' );
+
+// Verify attempts incremented.
+$queue = Conexao_Event_Cleanup_Retry_Queue::read();
+assert_equals( 2, (int) $queue['data']['entries'][ $retry_fail_fixture ]['attempts'], 'attempts incremented to 2' );
+assert_equals( 'delete_failed', $queue['data']['entries'][ $retry_fail_fixture ]['retry_reason'], 'retry reason recorded' );
+
+cleanup_section_teardown();
+
+// ---------------------------------------------------------------------------
+// 21. Retry queue — capacity limit (fail closed).
+// ---------------------------------------------------------------------------
+test_section( 'Retry queue — capacity limit' );
+
+Conexao_Event_Cleanup_Retry_Queue::ensure_row_exists();
+
+// Fill the queue to a smaller capacity for testing (avoid memory exhaustion).
+$test_capacity = 50;
+for ( $i = 0; $i < $test_capacity; $i++ ) {
+	$cap_fixture = cleanup_test_event(
+		'retry cap ' . $i,
+		array(
+			'_event_date'     => '2020-01-01',
+			'_event_status'   => 'published',
+			'_event_imported' => '1',
+		)
+	);
+	$enqueue_result = Conexao_Event_Cleanup_Retry_Queue::enqueue_in_transaction(
+		$cap_fixture,
+		array( 'attempts' => 0, 'last_reason' => '', 'first_failed_at' => time() ),
+		time(),
+		$test_capacity
+	);
+	assert_true( $enqueue_result['ok'], "enqueue $i succeeded" );
+}
+
+// Next enqueue should fail (capacity).
+$overflow_fixture = cleanup_test_event(
+	'retry overflow',
+	array(
+		'_event_date'     => '2020-01-01',
+		'_event_status'   => 'published',
+		'_event_imported' => '1',
+	)
+);
+
+$enqueue_result = Conexao_Event_Cleanup_Retry_Queue::enqueue_in_transaction(
+	$overflow_fixture,
+	array( 'attempts' => 0, 'last_reason' => '', 'first_failed_at' => time() ),
+	time(),
+	$test_capacity
+);
+assert_true( ! $enqueue_result['ok'], 'enqueue at capacity fails' );
+assert_equals( 'capacity', $enqueue_result['reason'], 'reason is capacity' );
+
+cleanup_section_teardown();
+
+// ---------------------------------------------------------------------------
+// 22. New run lifecycle — start new run after completed.
+// ---------------------------------------------------------------------------
+test_section( 'New run lifecycle — start new run after completed' );
+
+// Create a completed run state.
+$completed_run_state = array(
+	'run_id'              => 'cleanup_completed_abc123',
+	'status'              => 'completed',
+	'created'             => time() - 3600,
+	'updated'             => time() - 1800,
+	'cursor_id'           => 100,
+	'last_scanned_id'     => 50,
+	'events_deleted'      => 10,
+	'images_deleted'      => 0,
+	'images_preserved'    => 5,
+	'errors'              => array(),
+	'failed_events'       => array( 999 => array( 'attempts' => 1, 'last_reason' => 'delete_failed', 'first_failed_at' => time() - 3600 ) ),
+	'failed_events_final' => array( 888 => array( 'attempts' => 3, 'last_reason' => 'delete_failed', 'first_failed_at' => time() - 7200 ) ),
+	'retry_queue'         => array( 777 => array( 'event_id' => 777, 'status' => 'pending', 'attempts' => 0, 'first_failed_at' => time() - 3600 ) ),
+	'batch_count'         => 2,
+	'owner_lock_id'       => 'cleanup_completed_abc123',
+	'fence_token'         => 12345,
+	'lease_expires_at'    => time() - 1000,
+);
+
+update_option( Conexao_Event_Cleanup_Run::run_option(), $completed_run_state, false );
+
+// Create a new event for the new run.
+$new_run_fixture = cleanup_test_event(
+	'new run after completed',
+	array(
+		'_event_date'     => '2020-01-01',
+		'_event_status'   => 'published',
+		'_event_imported' => '1',
+	)
+);
+
+// Start a new run - should create a new run_id, fresh cursor, preserve failure data.
+// Note: start() processes one batch, so cursor and counters will be updated.
+$result = $runner->start(
+	array(
+		'batch_events'       => 5,
+		'batch_time_seconds' => 60,
+		'scan_window'        => 200,
+	)
+);
+
+assert_true( $result['ok'], 'new run started' );
+assert_true( 'cleanup_completed_abc123' !== $result['run_id'], 'new run has different run_id' );
+
+$run_state = $runner->read_run_state();
+// Cursor will be updated by the first batch processing (not PHP_INT_MAX).
+// The key assertion is that a NEW run was created (different run_id) and failure data preserved.
+assert_true( isset( $run_state['failed_events'][ 999 ] ), 'failed_events preserved' );
+assert_true( isset( $run_state['failed_events_final'][ 888 ] ), 'failed_events_final preserved' );
+assert_true( isset( $run_state['retry_queue'][ 777 ] ), 'retry_queue preserved' );
+assert_equals( 1, (int) $run_state['events_deleted'], 'one event deleted in first batch' );
+assert_equals( 1, (int) $run_state['batch_count'], 'batch_count is 1 after first batch' );
+
+cleanup_section_teardown();
+
+// ---------------------------------------------------------------------------
+// 23. New run lifecycle — start new run after cancelled.
+// ---------------------------------------------------------------------------
+test_section( 'New run lifecycle — start new run after cancelled' );
+
+$cancelled_run_state = array(
+	'run_id'              => 'cleanup_cancelled_xyz789',
+	'status'              => 'cancelled',
+	'created'             => time() - 3600,
+	'updated'             => time() - 1800,
+	'cursor_id'           => 200,
+	'last_scanned_id'     => 150,
+	'events_deleted'      => 5,
+	'images_deleted'      => 0,
+	'images_preserved'    => 3,
+	'errors'              => array(),
+	'failed_events'       => array(),
+	'failed_events_final' => array(),
+	'retry_queue'         => array(),
+	'batch_count'         => 1,
+	'owner_lock_id'       => 'cleanup_cancelled_xyz789',
+	'fence_token'         => 54321,
+	'lease_expires_at'    => time() - 1000,
+);
+
+update_option( Conexao_Event_Cleanup_Run::run_option(), $cancelled_run_state, false );
+
+$new_run_fixture2 = cleanup_test_event(
+	'new run after cancelled',
+	array(
+		'_event_date'     => '2020-01-01',
+		'_event_status'   => 'published',
+		'_event_imported' => '1',
+	)
+);
+
+$result = $runner->start(
+	array(
+		'batch_events'       => 5,
+		'batch_time_seconds' => 60,
+		'scan_window'        => 200,
+	)
+);
+
+assert_true( $result['ok'], 'new run started after cancelled' );
+assert_true( 'cleanup_cancelled_xyz789' !== $result['run_id'], 'new run has different run_id' );
+
+$run_state = $runner->read_run_state();
+// Cursor will be updated by the first batch processing.
+assert_equals( 1, (int) $run_state['events_deleted'], 'one event deleted in first batch' );
+assert_equals( 1, (int) $run_state['batch_count'], 'batch_count is 1 after first batch' );
+
+cleanup_section_teardown();
+
+// ---------------------------------------------------------------------------
+// 24. New run lifecycle — resume interrupted run.
+// ---------------------------------------------------------------------------
+test_section( 'New run lifecycle — resume interrupted run' );
+
+$running_run_state = array(
+	'run_id'              => 'cleanup_running_resume123',
+	'status'              => 'running',
+	'created'             => time() - 3600,
+	'updated'             => time() - 100,
+	'cursor_id'           => 500,
+	'last_scanned_id'     => 450,
+	'events_deleted'      => 15,
+	'images_deleted'      => 0,
+	'images_preserved'    => 8,
+	'errors'              => array(),
+	'failed_events'       => array(),
+	'failed_events_final' => array(),
+	'retry_queue'         => array(),
+	'batch_count'         => 3,
+	'owner_lock_id'       => 'cleanup_running_resume123',
+	'fence_token'         => 99999,
+	'lease_expires_at'    => time() + 300,
+);
+
+update_option( Conexao_Event_Cleanup_Run::run_option(), $running_run_state, false );
+
+// Acquire the lock for this run_id.
+Conexao_Event_Cleanup_Lock::ensure_row_exists();
+$lock = Conexao_Event_Cleanup_Lock::acquire( array( 'run_id' => 'cleanup_running_resume123', 'ttl' => 300 ) );
+assert_true( $lock['held'], 'lock acquired for resume' );
+
+$resume_fixture = cleanup_test_event(
+	'resume interrupted',
+	array(
+		'_event_date'     => '2020-01-01',
+		'_event_status'   => 'published',
+		'_event_imported' => '1',
+	)
+);
+
+$result = $runner->start(
+	array(
+		'batch_events'       => 5,
+		'batch_time_seconds' => 60,
+		'scan_window'        => 200,
+	)
+);
+
+assert_true( $result['ok'], 'resumed run' );
+assert_equals( 'cleanup_running_resume123', $result['run_id'], 'same run_id on resume' );
+
+$run_state = $runner->read_run_state();
+assert_equals( 500, (int) $run_state['cursor_id'], 'cursor preserved on resume' );
+assert_equals( 15, (int) $run_state['events_deleted'], 'events_deleted preserved on resume' );
+assert_equals( 3, (int) $run_state['batch_count'], 'batch_count preserved on resume' );
+
+cleanup_section_teardown();
+
+// ---------------------------------------------------------------------------
+// 25. Deterministic time-budget test.
+// ---------------------------------------------------------------------------
+test_section( 'Deterministic time-budget test' );
+
+// Create a controlled clock that advances with each call (simulating real time passing).
+$clock_calls = 0;
+$controlled_clock = function () use ( &$clock_calls ): float {
+	$clock_calls++;
+	// Each call advances by 0.15 seconds. After ~7 calls, 1 second has passed.
+	return $clock_calls * 0.15;
+};
+
+// Create a runner with the controlled clock.
+$test_runner = new Conexao_Event_Cleanup_Run( $cleanup, $controlled_clock );
+
+// Create 10 past events.
+$time_budget_fixtures = array();
+for ( $i = 0; $i < 10; $i++ ) {
+	$time_budget_fixtures[] = cleanup_test_event(
+		'time budget ' . $i,
+		array(
+			'_event_date'     => '2020-01-01',
+			'_event_status'   => 'published',
+			'_event_imported' => '1',
+		)
+	);
+}
+
+// Start a run with a 1-second time budget and large event count.
+// The clock advances with each call, so time budget should trigger after ~7 calls.
+$result = $test_runner->start(
+	array(
+		'batch_events'       => 100,
+		'batch_time_seconds' => 1,
+		'scan_window'        => 200,
+	)
+);
+
+$run_state = $test_runner->read_run_state();
+
+// Verify the stop reason is time_budget (clock advanced past 1 second during batch).
+assert_equals( 'time_budget', $result['reason'], 'stop reason is time_budget' );
+assert_equals( 'running', $result['status'], 'status is running (not complete)' );
+
+// Verify cursor is last_committed_id (not last_scanned_id).
+assert_equals( $result['batch_result']['last_committed_id'], $run_state['cursor_id'], 'cursor is last_committed_id at time boundary' );
+
+// Also verify the batch_result has the expected keys.
+assert_true( isset( $result['batch_result']['last_committed_id'] ), 'batch_result has last_committed_id' );
+assert_true( isset( $result['batch_result']['last_deleted_id'] ), 'batch_result has last_deleted_id' );
+assert_true( isset( $result['batch_result']['last_scanned_id'] ), 'batch_result has last_scanned_id' );
+
+// Verify some but not all events were processed (time budget triggered before all 10).
+$processed_count = (int) $run_state['events_deleted'];
+assert_true( $processed_count > 0 && $processed_count < 10, 'some but not all events processed' );
+
+// Verify next batch starts at correct next unprocessed ID.
+$next_cursor = $run_state['cursor_id'];
+assert_true( $next_cursor < PHP_INT_MAX, 'cursor advanced from PHP_INT_MAX' );
+
+cleanup_section_teardown();
+
+// ---------------------------------------------------------------------------
+// 26. Attachment review — non-image attachments queued with classification.
+// ---------------------------------------------------------------------------
+test_section( 'Attachment review — non-image attachments queued with classification' );
+
+// Create a test event with a PDF attachment (simulated via mime type).
+$pdf_event = cleanup_test_event(
+	'pdf attachment event',
+	array(
+		'_event_date'     => '2020-01-01',
+		'_event_status'   => 'published',
+		'_event_imported' => '1',
+	)
+);
+
+// Create a PDF attachment (we'll simulate by setting post_mime_type).
+$upload = wp_upload_bits( 'test-document.pdf', null, '%PDF-1.4 test' );
+if ( ! empty( $upload['error'] ) ) {
+	test_prerequisite_hint( 'wp_upload_bits failed for PDF fixture' );
+	exit( 1 );
+}
+$pdf_attachment_id = wp_insert_attachment(
+	array(
+		'post_mime_type' => 'application/pdf',
+		'post_title'     => 'Test PDF',
+		'post_content'   => '',
+		'post_status'    => 'inherit',
+	),
+	$upload['file'],
+	$pdf_event
+);
+if ( is_wp_error( $pdf_attachment_id ) || ! $pdf_attachment_id ) {
+	test_prerequisite_hint( 'wp_insert_attachment failed for PDF fixture' );
+	exit( 1 );
+}
+update_post_meta( $pdf_attachment_id, '_event_source_url', 'https://example.com/test.pdf' );
+update_post_meta( $pdf_event, '_event_banner_attachment_id', $pdf_attachment_id );
+
+$GLOBALS['cleanup_section_records'][] = array( 'type' => 'attachment', 'id' => (int) $pdf_attachment_id );
+
+// Run cleanup batch.
+$result = $runner->start(
+	array(
+		'batch_events'       => 5,
+		'batch_time_seconds' => 60,
+		'scan_window'        => 200,
+	)
+);
+
+// Check attachment review queue has the PDF with correct classification.
+$review_queue = Conexao_Event_Cleanup_Attachment_Review::read();
+$pending = array_filter( $review_queue['data']['entries'], function ( $e ) { return 'pending' === $e['status']; } );
+
+$pdf_entry = null;
+foreach ( $pending as $aid => $entry ) {
+	if ( $aid == $pdf_attachment_id ) {
+		$pdf_entry = $entry;
+		break;
+	}
+}
+
+assert_true( null !== $pdf_entry, 'PDF attachment is in review queue' );
+assert_equals( 'application/pdf', $pdf_entry['mime_type'], 'MIME type recorded' );
+assert_equals( 'pdf', $pdf_entry['classification'], 'classified as pdf' );
+assert_equals( 'banner', $pdf_entry['source'], 'source recorded' );
 
 cleanup_section_teardown();
 

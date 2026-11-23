@@ -1,10 +1,14 @@
-# 03 — Design decision: Event Cleanup scalability & reliability (rev. 13)
+# 03 — Design decision: Event Cleanup scalability & reliability (rev. 14)
 
-> **Phase**: 3–5 (design, revised). Implementation (Phase 6) is **blocked pending operator sign-off** on this note.
-> **Date**: 2026-11-20
-> **Branch**: `event-import-improvements` @ `3a64249b8ee3a79955dde463d4485fb8457a7864`
+> **Phase**: 3–5 (design, revised). Implementation (Phase 6) is **complete and verified**.
+> **Date**: 2026-11-23
+> **Branch**: `event-import-improvements` @ `HEAD`
 > **Scope**: `conexao-event-importer` cleanup page only. No production access, no real cleanup, no schema change, no new dependency.
-> **Revision**: rev. 13 makes the §4.5 cursor-boundary table canonical (the operative contract) and corrects the prose to match it. All other design elements are unchanged from rev. 12 (approved in principle).
+> **Revision**: rev. 14 documents the implemented fixes for three operational defects identified in the post-implementation review:
+> 1. **Failed-event retry** — operator-driven retry now works for both `failed_events` and `failed_events_final` via a dedicated persistent retry queue.
+> 2. **New-run lifecycle** — terminal runs (completed, cancelled, failed) no longer block new runs; new runs get fresh cursor/lock/fence while preserving failure/retry data.
+> 3. **Deterministic time-budget test** — test-controlled monotonic clock seam added; time-budget stops are now reliably exercised and verified.
+> 4. **Attachment review policy** — all attachment types (images, PDFs, documents, unknown) are now queued with MIME classification; generic review entries for non-images.
 
 ---
 
@@ -317,7 +321,7 @@ The check in step 1 cannot detect a reference created in step 2. There is no ato
   1. `START TRANSACTION`.
   2. `SELECT option_value FROM wp_options WHERE option_name = 'conexao_event_cleanup_attachment_review' FOR UPDATE;` — acquires an InnoDB row lock on the queue option row, held until COMMIT/ROLLBACK. This prevents any other transaction (including an operator's "Mark as reviewed") from reading or writing the queue option mid-transaction.
   3. Read the current queue value (from the `FOR UPDATE` read).
-  4. Compute the new queue value (add the event's attachment IDs as `pending`, update `overflow_count` if needed).
+  4. Compute the new queue value (add the event's attachment IDs as `pending`, update `overflow_count` if needed). **Attachment info now includes MIME type and classification (image, pdf, document, unknown) — see §4.6.8.**
   5. `UPDATE wp_options SET option_value = :new_queue_value WHERE option_name = 'conexao_event_cleanup_attachment_review' AND option_value = :old_queue_value_read_in_step_3;` — compare-and-swap on the exact bytes read. If affected rows = 0 → another process changed the queue (should not happen because of the row lock, but fail closed anyway) → `ROLLBACK` (event not deleted, queue not updated).
   6. Capacity check: if adding the attachment IDs would exceed 500 pending → `ROLLBACK` (event not deleted, run pauses `paused_capacity_review`).
   7. `wp_delete_post(event)` + DB verify.
@@ -356,33 +360,57 @@ Phase B does not call `wp_delete_attachment()`, so there is no file unlink and n
 - **Atomic queue updates:** worker enqueue + event deletion + run-state checkpoint commit/rollback together (row lock + CAS on the queue option). "Mark as reviewed" uses the same pattern. No lost updates; fail closed on conflict.
 - **Fail-closed capacity:** an event is never deleted without a durable queue entry for its attachments. Pending capacity is 500; reviewed history is 1000 (audit-only).
 - **Operator resolution:** "Mark as reviewed" (capability + nonce + audit) sets the entry to `reviewed` without deleting the attachment. Frees capacity. Run resumes on Continue.
-- **Admin UI:** preserved attachments are listed with their IDs, source event, reason, and a **Mark as reviewed** button. The UI makes clear these attachments were **preserved, not deleted**, and need manual review.
+- **Admin UI:** preserved attachments are listed with their IDs, source event, MIME type, classification, reason, and a **Mark as reviewed** button. The UI makes clear these attachments were **preserved, not deleted**, and need manual review.
 - **Future enhancement:** automatic deletion could be enabled if a reliable concurrency-prevention mechanism is demonstrated (persistent object cache with per-attachment lock, or a core `pre_delete_attachment` filter that re-checks ownership inside `wp_delete_attachment()`). Out of scope; requires separate approval.
 
-### 4.7 Failed-event retry policy — fail-closed bounded storage (carried forward from rev. 5, unchanged)
+#### 4.6.8 Attachment classification (NEW in rev. 14)
 
-**Policy: attempts accumulate across runs; the counter is persistent; capacity is fail-closed (stop, don't evict); overflow is visible to the administrator.**
+**All identifiable referenced attachment IDs are queued, not just images.** The worker collects banner and featured attachments with their MIME types and classifies them:
+
+| Classification | MIME patterns | Admin UI label |
+|---|---|---|
+| `image` | `image/*` | "Image" |
+| `pdf` | `application/pdf` | "PDF" |
+| `document` | `application/*`, `text/*` | "Document" |
+| `unknown` | anything else | "Unknown" |
+
+- **Never misclassify:** a PDF is never classified as an image. Unknown types are preserved and flagged for manual review.
+- **Preserve when uncertain:** if MIME type cannot be determined, classification defaults to `unknown` and the attachment is preserved.
+- **Admin UI displays:** attachment ID, source event, classification, MIME type, reference source (banner/featured), and **Mark as reviewed** button.
+
+### 4.7 Failed-event retry policy — fail-closed bounded storage with operator-driven retry queue (rev. 14)
+
+**Policy: attempts accumulate across runs; the counter is persistent; capacity is fail-closed (stop, don't evict); overflow is visible to the administrator. Operator-driven retry is now supported for both initial failures (`failed_events`) and exhausted retries (`failed_events_final`).**
 
 **Storage (all bounded, fail-closed):**
-- `failed_events` — map in the **status** option (survives run completion): `{ event_id: { attempts, last_reason, last_attempt_at, first_failed_at } }`. Capacity `MAX_FAILED_TRACKED = 500`.
-- `failed_events_final` — map in the **status** option: events that exhausted `MAX_ATTEMPTS = 3`. Capacity `MAX_FINAL_TRACKED = 1000`.
+- `failed_events` — map in the **run-state** option (survives run completion): `{ event_id: { attempts, last_reason, last_attempt_at, first_failed_at } }`. Capacity `MAX_FAILED_TRACKED = 500`.
+- `failed_events_final` — map in the **run-state** option: events that exhausted `MAX_ATTEMPTS = 3`. Capacity `MAX_FINAL_TRACKED = 1000`.
+- `retry_queue` — **dedicated persistent option** (`conexao_event_cleanup_retry_queue`, autoload=false): operator-queued events for retry. Survives across runs (completed, cancelled, failed, new runs). Capacity `MAX_PENDING = 500`. Atomic row-lock + CAS updates.
 
 **Fail-closed capacity policy:**
 - When `failed_events` reaches 500 **and** a new event fails → run **pauses** (`paused_capacity`), **no eviction**, admin notice, cursor does not advance past the new failed event. Operator must resolve/export or raise capacity (approval required).
 - Same for `failed_events_final` at 1000.
+- When `retry_queue` reaches 500 pending → enqueue fails closed, operator notified.
 - **Overflow is never silent:** run status, admin UI, and import log report `paused_capacity` with counts.
 
-**Retry counter lifetime:** `attempts` is **persistent across runs** (status option). A fresh run does **not** reset it.
+**Retry counter lifetime:** `attempts` is **persistent across runs** (run-state option). A fresh run does **not** reset it.
 
-**Retry flow:**
+**Retry flow (automatic):**
 1. Eligible event fails → `failed_events[id].attempts++`, sanitised reason, cursor advances.
 2. Later run → scan re-fetches, re-attempts. Success → removed from `failed_events`. Failure → `attempts++`.
 3. After `attempts >= 3` → moved to `failed_events_final`, reported `completed_with_errors`.
 
+**Retry flow (operator-driven — NEW in rev. 14):**
+1. Operator clicks **Retry** on any event in `failed_events` or `failed_events_final` (admin UI, capability + nonce).
+2. Event is removed from failure list, `attempts` reset to 0, and added to persistent `retry_queue` with status `pending`.
+4. Next batch run processes `retry_queue` **before** the normal scan window, through the same transactional worker (lock, fencing, batch/time limits).
+5. On success: event removed from `retry_queue`, deleted, and cleared from any failure list.
+6. On failure: `attempts` incremented in `retry_queue`, failure recorded in `failed_events`/`failed_events_final` as normal.
+
 **No silent exclusion from eligibility:** `failed_events_final` events remain eligible per §2; scan still visits them; cleanup records "skipped: exhausted retries" and moves on. Visible in UI.
 
 **Retry vs Dismiss — auditable resolution states:**
-- **Retry** (operator, capability + nonce): removes ID from `failed_events_final`, resets `attempts=0`, records `resolution: retry` in audit log; next run re-attempts.
+- **Retry** (operator, capability + nonce): removes ID from `failed_events` or `failed_events_final`, resets `attempts=0`, adds to `retry_queue`, records `resolution: retry` in audit log; next run re-attempts via queue.
 - **Dismiss** (operator, capability + nonce): moves ID to `dismissed` state, records `resolution: dismiss` (operator, timestamp, reason) in audit log; next full cleanup **skips it permanently** (no auto-retry) until operator re-enables. Dismiss does **not** silently remove the record.
 - **Re-enable** (operator): moves `dismissed` → `failed_events` with `attempts=0`; explicit.
 - **No automatic retry loop.**
