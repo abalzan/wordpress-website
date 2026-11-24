@@ -103,7 +103,7 @@ class Conexao_Source_Mondello_Park extends Conexao_Source_Base {
 	public function get_http_user_agent() {
 		return apply_filters(
 			'conexao_event_importer_http_user_agent',
-			'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'
+			'WordPress/' . get_bloginfo('version') . '; ' . get_bloginfo('url')
 		);
 	}
 
@@ -135,17 +135,25 @@ class Conexao_Source_Mondello_Park extends Conexao_Source_Base {
 		);
 
 		if ( is_wp_error( $response ) ) {
+			$error_code    = $response->get_error_code();
+			$error_message = $response->get_error_message();
+			$error_data    = $response->get_error_data();
+
 			Conexao_Import_Log::add(
 				$this->get_id(), 'error',
-				'Falha ao buscar REST da Mondello Park: ' . $response->get_error_message(),
-				array( 'url' => $base_url )
+				'Falha ao buscar REST da Mondello Park: ' . $error_message,
+				array(
+					'url'         => $base_url,
+					'error_code'  => $error_code,
+					'error_data'  => $error_data,
+				)
 			);
 
 			// Stage 2 / P3 — an unreachable listing is a FAILED fetch, never an
 			// empty one. The engine records a failed source instead of
 			// `found=0, status=success`, and no reconciliation can run on it.
 			throw new Conexao_Source_Fetch_Exception(
-				esc_html( 'Falha ao buscar REST da Mondello Park: ' . $response->get_error_message() ),
+				esc_html( 'Falha ao buscar REST da Mondello Park: ' . $error_message ),
 				0
 			);
 		}
