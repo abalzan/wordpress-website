@@ -200,4 +200,44 @@ the commemorative presentation no longer reads it. Its date methods gained an
 optional injected clock (`is_active( $now = null )`) so the Halloween regression
 suite is date-independent, as r10 §9.1 requires.
 
+## Theme independence
+
+The plugin is **fully theme-independent**. It has no direct dependencies on the
+`conexao-br-irlanda` theme or any specific WordPress theme.
+
+### Verified capabilities without a theme
+
+| Capability | Works without theme |
+|---|---|
+| Plugin initialization | ✅ |
+| Event record persistence | ✅ |
+| Event creation and editing | ✅ |
+| Event dates (all rule types) | ✅ |
+| Recurring schedules | ✅ |
+| Fixed annual events | ✅ |
+| Variable annual events (Easter) | ✅ |
+| Event translations | ✅ |
+| Event activation and expiration | ✅ |
+| Event priority | ✅ |
+| Scheduling and resolution | ✅ |
+| Event administration | ✅ |
+| Preview and validation | ✅ |
+| Cache management | ✅ |
+| Public event data interface | ✅ |
+
+### Tested with alternative themes
+
+- **Twenty Twenty-Five** (default WordPress theme): All plugin functionality works. No commemorative presentations render (expected — the theme doesn't register packages).
+
+### Architectural regression test
+
+`test-commemorative-theme-independence.php` protects against:
+- Direct theme slug references
+- Theme directory functions (`get_template_directory()`, etc.)
+- Theme constants (`CONEXAO_THEME_*`)
+- Theme-specific functions (`conexao_asset_version`, etc.)
+
+Run with: `./scripts/run-tests.sh --only conexao-commemorative`
+
 _Last verified: 2026-11-09 by the plugin documentation audit_
+_Last verified: 2026-11-25 by the theme independence implementation_

@@ -1192,4 +1192,37 @@ _Last verified: 2026-10-27 by Halloween theme compatibility_
 _Last verified: 2026-10-27 by Halloween mobile spontaneous appearances_
 _Last verified: 2026-11-05 by Lazer header cleanup (proximity control removed)_
 
+### Theme independence and the Commemorative Events plugin
+
+The theme is a **consumer** of the `conexao-commemorative` plugin's public API.
+The plugin owns event management; the theme owns visual presentation.
+
+#### How the theme integrates
+
+1. **Registers packages** via the `conexao_commemorative_presentations` filter in `inc/commemorative-presentations.php`
+2. **Dispatches placements** using `conexao_commemorative_render_placement()` in templates
+3. **Enqueues assets** conditionally via `conexao_commemorative_enqueue_assets()`
+4. **Handles missing plugin gracefully** — all dispatcher functions return `false` when the plugin is inactive, no fatal errors
+
+#### What happens when the plugin is deactivated
+
+- `conexao_commemorative_has_placement()` → `false`
+- `conexao_commemorative_render_placement()` → `false`
+- `conexao_commemorative_request_plan()` → empty plan
+- `conexao_commemorative_enqueue_assets()` → enqueues nothing
+- No PHP warnings, no fatal errors, ordinary site functionality unaffected
+
+#### What happens when the theme changes
+
+- Plugin continues managing events (scheduling, admin, preview, cache)
+- New theme must register packages via the filter to display presentations
+- Event records, translations, scheduling all preserved
+
+#### Verified compatibility
+
+Tested with:
+- **Conexão BR Irlanda** (this theme) — full presentation support (Halloween, Christmas, New Year)
+- **Twenty Twenty-Five** (default WordPress theme) — plugin initializes, event admin works, scheduling works, records accessible, preview works, no fatal errors
+
 _Last verified: 2026-11-17 by the language-switcher default-enabled change (shipped constant true; gate rebuilt around the enabled default with a disabled child-process proof)_
+_Last verified: 2026-11-25 by the theme independence implementation_
