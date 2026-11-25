@@ -725,6 +725,11 @@ The theme's `pt_BR` catalogue is an identity catalogue by design (the source lan
 | Each plugin ZIP excludes `tests/`, fixtures, `*.json` reports and OS junk | MUST |
 | Every build emits `dist/release.json`: component, version, git SHA, built-at, file count, sha256 | MUST |
 | Versions are bumped in the component header and recorded in `CHANGELOG.md` / `docs/releases.md` with the git SHA | MUST |
+| **Component versions follow Semantic Versioning (MAJOR.MINOR.PATCH) with independent versioning per component** | MUST |
+| **PATCH is the normal default for bug fixes and routine improvements; MINOR for backward-compatible features; MAJOR for breaking changes** | MUST |
+| **Only components with actual source changes are version-bumped; documentation-only and test-only changes do not require version bumps** | MUST |
+| **Version constants (e.g., `CONEXAO_CONTENT_VERSION`, `CONEXAO_THEME_VERSION`) must remain synchronized with the authoritative header** | MUST |
+| **CI validates version bumps on every PR targeting `master`: valid SemVer increment, constant sync, no unrelated bumps, no downgrades** | MUST |
 | The production activation order in `docs/deployment.md` matches `plugins.json` | MUST |
 | Every release runs `scripts/verify-deploy.py` (HTTP smoke matrix: homepage, every archive, one single per CPT, `/en/` pairs, canonical, hreflang, sitemap, 404) | MUST |
 | Every release has a rollback note (previous ZIPs, previous plugin state, content rollback if a rollout ran) | MUST |
@@ -742,6 +747,52 @@ Normative release sequence:
 python3 scripts/verify-deploy.py --site https://conexaobr.ie    # 5. verify over HTTP
 # 6. record the release in docs/releases.md (versions + SHA + verification result)
 ```
+
+### 11.1 Component versioning policy
+
+**Semantic Versioning (SemVer)** is mandatory for every active plugin and the active theme.
+
+| Level | When to use | Example |
+|---|---|---|
+| **PATCH** (default) | Backward-compatible bug fixes, maintenance, styling changes, internal improvements | `1.2.3` → `1.2.4` |
+| **MINOR** | New backward-compatible functionality | `1.2.3` → `1.3.0` |
+| **MAJOR** | Backward-incompatible public API or contract changes | `1.2.3` → `2.0.0` |
+
+**Rules:**
+- Each component has its own independent version — no lockstep versioning.
+- Only increment a component when that component's source files have actually changed.
+- A PR affecting multiple components must increment each affected component independently.
+- One PR produces one version increment per affected component, regardless of commit count.
+- Documentation-only changes (`docs/`, `README.md`, `CHANGELOG.md`) and test-only changes (`tests/`) do not require version bumps.
+- Version bumps belong in the same PR as the code changes, before merging into `master`.
+
+**Authoritative version sources:**
+- Plugins: the `Version:` header in the file declared as `version_source` in `plugins.json`.
+- Theme: the `Version:` field in `wp-content/themes/conexao-br-irlanda/style.css`.
+
+**Version constants:** Where a component defines a PHP version constant (e.g., `CONEXAO_CONTENT_VERSION`, `CONEXAO_THEME_VERSION`), it must be kept synchronized with the authoritative header. The bump script handles this automatically.
+
+**Version bump command:**
+```bash
+# Dry-run preview
+python3 scripts/bump-component-version.py --component <slug> --level patch --dry-run
+
+# Apply bump (with confirmation)
+python3 scripts/bump-component-version.py --component <slug> --level patch
+
+# Bump multiple components
+python3 scripts/bump-component-version.py --component conexao-content --component conexao-event-runtime --level patch
+
+# List all components and current versions
+python3 scripts/bump-component-version.py --list-components
+```
+
+**CI validation:** On every PR targeting `master`, the `validate-version-bumps.py` script runs and enforces:
+- Valid single-step SemVer increment (patch/minor/major) for each changed component.
+- Version constants synchronized with headers.
+- No version bumps for components without source changes.
+- No version downgrades or invalid increments (e.g., `1.9.1` → `1.10.1` is invalid).
+- Retired plugins are never auto-bumped.
 
 ---
 

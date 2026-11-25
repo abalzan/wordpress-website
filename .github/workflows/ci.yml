@@ -153,6 +153,11 @@ jobs:
           echo "./scripts/lint.sh, which fails on NEW violations only." >&2
           composer lint || echo "::warning::Raw PHPCS debt is non-zero by design (legacy baseline, Stage C). Not a CI failure." >&2
 
+      - name: Version bump validation (PRs targeting master)
+        if: github.event_name == 'pull_request' && github.base_ref == 'master'
+        run: |
+          python3 scripts/validate-version-bumps.py --base-ref ${{ github.base_ref }} --head-ref ${{ github.head_ref }}
+
   # ---------------------------------------------------------------------
   # Stage J — release integrity.
   #
