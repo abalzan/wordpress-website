@@ -1511,6 +1511,92 @@ var ctaSparkleController = null;
 		// Development helper: trigger Santa fly-by immediately
 		triggerSantaFlyby: function () {
 			return santaFlybyController && typeof santaFlybyController.triggerNow === 'function' ? santaFlybyController.triggerNow() : false;
+		},
+		// Development helper: trigger all Christmas animations for testing
+		testAllAnimations: function () {
+			var results = {};
+			
+			// 1. Trigger Santa fly-by
+			results.santaFlyby = santaFlybyController && typeof santaFlybyController.triggerNow === 'function' ? santaFlybyController.triggerNow() : false;
+			
+			// 2. Trigger content reveal (make all sections visible immediately)
+			if (contentRevealController && typeof contentRevealController.disconnect === 'function') {
+				// Force reveal all observed elements
+				var doc = win && win.document;
+				if (doc) {
+					var elements = doc.querySelectorAll('.ce-xmas-reveal-ready');
+					elements.forEach(function(el) {
+						el.classList.remove('ce-xmas-reveal-ready');
+						el.classList.add('ce-xmas-revealed');
+					});
+					// Also pulse journey stars
+					var journeys = doc.querySelectorAll('.ce-christmas-journey');
+					journeys.forEach(function(journey) {
+						pulseJourneyStar(journey, doc, win);
+					});
+				}
+				results.contentReveal = true;
+			} else {
+				results.contentReveal = false;
+			}
+			
+			// 3. Trigger CTA sparkle on all CTAs
+			if (ctaSparkleController) {
+				var doc = win && win.document;
+				if (doc) {
+					var ctas = doc.querySelectorAll('.ce-christmas-hero__cta, .ce-christmas-closing__cta');
+					ctas.forEach(function(cta) {
+						var event = new MouseEvent('click', { bubbles: true, cancelable: true, view: win });
+						cta.dispatchEvent(event);
+					});
+				}
+				results.ctaSparkle = true;
+			} else {
+				results.ctaSparkle = false;
+			}
+			
+			// 4. Force ambient decorations to spawn (if scheduler is accessible)
+			// Note: The ambient scheduler is managed by the shared framework
+			results.ambientDecorations = 'managed by shared framework';
+			
+			// 5. Hero snowfall and twinkle are CSS-only, always running
+			results.heroSnowfall = 'CSS animation (always running)';
+			results.heroTwinkle = 'CSS animation (always running)';
+			
+			console.log('[ConexaoChristmas] testAllAnimations results:', results);
+			return results;
+		},
+		// Development helper: enable dev mode for faster animation intervals
+		enableDevMode: function () {
+			try {
+				if (win && win.localStorage) {
+					win.localStorage.setItem('conexao_christmas_dev_mode', '1');
+				}
+				if (win) {
+					win.CONEXAO_CHRISTMAS_DEV_MODE = true;
+				}
+				console.log('[ConexaoChristmas] Dev mode enabled. Reload page for faster intervals.');
+				return true;
+			} catch (e) {
+				console.warn('[ConexaoChristmas] Could not enable dev mode:', e);
+				return false;
+			}
+		},
+		// Development helper: disable dev mode
+		disableDevMode: function () {
+			try {
+				if (win && win.localStorage) {
+					win.localStorage.removeItem('conexao_christmas_dev_mode');
+				}
+				if (win) {
+					win.CONEXAO_CHRISTMAS_DEV_MODE = false;
+				}
+				console.log('[ConexaoChristmas] Dev mode disabled. Reload page for production intervals.');
+				return true;
+			} catch (e) {
+				console.warn('[ConexaoChristmas] Could not disable dev mode:', e);
+				return false;
+			}
 		}
 	};
 });
