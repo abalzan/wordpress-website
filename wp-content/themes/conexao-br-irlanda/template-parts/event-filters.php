@@ -81,6 +81,10 @@ if ( is_wp_error( $county_terms ) ) {
 
 // Towns used by published events, scoped to the selected county when one
 // is active (County -> City cascade — same helper the query layer relies on).
+// NOTE: The City (Cidade) filter has been removed from the visible interface
+// as part of a UX experiment (see docs/reports/2026-11-25-remove-city-filter.md).
+// The underlying town taxonomy and query handling remain intact for backward
+// compatibility with existing ?cidade= URLs and event detail pages.
 $town_terms = function_exists( 'conexao_get_event_towns' ) ? conexao_get_event_towns( $current_county ) : conexao_get_terms_for_post_type( 'conexao_town', 'event' );
 if ( is_wp_error( $town_terms ) ) {
 	$town_terms = array();
@@ -95,7 +99,11 @@ $has_county   = ! empty( $county_terms );
 $has_town     = ! empty( $town_terms );
 $has_category = ! empty( $category_terms );
 
-if ( ! $has_county && ! $has_town && ! $has_category ) {
+// City filter is intentionally hidden from the UI (UX experiment).
+// The $has_town variable is kept for backward compatibility with URL handling.
+$has_town = false;
+
+if ( ! $has_county && ! $has_category ) {
 	return;
 }
 
@@ -113,6 +121,9 @@ foreach ( $town_terms as $term ) {
 foreach ( $category_terms as $term ) {
 	$category_by_slug[ $term->slug ] = $term->name;
 }
+
+// Resolved display name for active town (for backward compatibility with ?cidade= URLs).
+$active_town_name = ( $current_town && isset( $town_by_slug[ $current_town ] ) ) ? $town_by_slug[ $current_town ] : $current_town;
 
 /**
  * Local helper: the filter URL with the given dimensions overridden.
@@ -159,6 +170,7 @@ $has_active_filters = ( '' !== $current_county || '' !== $current_town || '' !==
 $clear_url          = $archive_url;
 
 // Number of active filters, shown as the badge on the mobile trigger.
+// City filter is hidden from UI but still counts if active via URL.
 $active_filter_count = ( $current_county ? 1 : 0 ) + ( $current_town ? 1 : 0 ) + ( $current_category ? 1 : 0 );
 
 // Resolved display names for the active values (fall back to the slug).
@@ -169,7 +181,8 @@ $active_category_name = ( $current_category && isset( $category_by_slug[ $curren
 // Client-side search is only rendered for long option lists — the same
 // threshold the Lazer/Empregos widgets use.
 $show_county_search = count( $county_terms ) > 8;
-$show_town_search   = count( $town_terms ) > 8;
+// City filter search removed from UI (UX experiment).
+$show_town_search = false;
 
 // Lightweight result summary. The main archive query already computes
 // found_posts for pagination, so reading it here costs no extra query.
@@ -241,55 +254,12 @@ $event_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int) $
 			</div>
 		<?php endif; ?>
 
-		<?php if ( $has_town ) : ?>
-			<div class="event-filters-group">
-				<div class="event-filters-dropdown" data-dropdown>
-					<button
-						type="button"
-						class="event-filters-dropdown-trigger<?php echo $current_town ? ' is-selected' : ''; ?>"
-						aria-expanded="false"
-						aria-controls="event-filters-town-panel"
-						aria-label="<?php echo esc_attr( $event_trigger_aria( __( 'Cidade', 'conexao-br-irlanda' ), $active_town_name ) ); ?>"
-						data-dropdown-trigger>
-						<?php if ( $current_town ) : ?>
-							<span class="event-filters-dot" aria-hidden="true"></span>
-						<?php endif; ?>
-						<span class="event-filters-dropdown-label"><?php echo esc_html( $current_town ? $active_town_name : __( 'Cidade', 'conexao-br-irlanda' ) ); ?></span>
-						<span class="event-filters-dropdown-caret" aria-hidden="true">▾</span>
-					</button>
-
-					<div class="event-filters-dropdown-panel" id="event-filters-town-panel" data-dropdown-panel data-option-scope>
-						<?php if ( $show_town_search ) : ?>
-							<input
-								type="search"
-								class="event-filters-dropdown-search"
-								data-option-search
-								placeholder="<?php esc_attr_e( 'Procurar cidade', 'conexao-br-irlanda' ); ?>"
-								aria-label="<?php esc_attr_e( 'Procurar cidade', 'conexao-br-irlanda' ); ?>"
-								autocomplete="off">
-						<?php endif; ?>
-						<div class="event-filters-dropdown-list" aria-label="<?php esc_attr_e( 'Cidade', 'conexao-br-irlanda' ); ?>" data-option-list>
-							<?php // Town options are already scoped to the selected county
-							      // (server-side cascade). "Todas" clears ONLY ?cidade=. ?>
-							<a class="event-filters-dropdown-link <?php echo '' === $current_town ? 'is-active' : ''; ?>" href="<?php echo esc_url( $event_state_url( array( 'cidade' => '' ) ) ); ?>"<?php echo '' === $current_town ? ' aria-current="true"' : ''; ?>>
-								<span class="event-filters-checkmark" aria-hidden="true"><?php echo '' === $current_town ? '✓' : ''; ?></span>
-								<span><?php esc_html_e( 'Todas', 'conexao-br-irlanda' ); ?></span>
-							</a>
-							<?php foreach ( $town_terms as $term ) : ?>
-								<?php $town_is_active = ( $term->slug === $current_town ); ?>
-								<a class="event-filters-dropdown-link <?php echo $town_is_active ? 'is-active' : ''; ?>"<?php echo $town_is_active ? ' aria-current="true"' : ''; ?> data-option-item href="<?php echo esc_url( $event_state_url( array( 'cidade' => $town_is_active ? '' : $term->slug ) ) ); ?>">
-									<span class="event-filters-checkmark" aria-hidden="true"><?php echo $town_is_active ? '✓' : ''; ?></span>
-									<span><?php echo esc_html( $term->name ); ?></span>
-								</a>
-							<?php endforeach; ?>
-						</div>
-						<?php if ( $show_town_search ) : ?>
-							<p class="event-filters-options-empty" data-option-empty hidden><?php esc_html_e( 'Nenhuma cidade encontrada.', 'conexao-br-irlanda' ); ?></p>
-						<?php endif; ?>
-					</div>
-				</div>
-			</div>
-		<?php endif; ?>
+		<?php
+		// City (Cidade) filter intentionally removed from visible UI as part of UX experiment.
+		// The underlying town taxonomy and ?cidade= query parameter handling remain intact
+		// for backward compatibility with existing bookmarked URLs and event detail pages.
+		// See docs/reports/2026-11-25-remove-city-filter.md for details.
+		?>
 
 		<?php if ( $has_category ) : ?>
 			<div class="event-filters-group">
@@ -342,12 +312,11 @@ $event_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int) $
 						<span class="event-filters-chip-remove" aria-hidden="true">×</span>
 					</a>
 				<?php endif; ?>
-				<?php if ( $current_town ) : ?>
-					<a class="event-filters-chip" href="<?php echo esc_url( $event_state_url( array( 'cidade' => '' ) ) ); ?>" aria-label="<?php echo esc_attr( sprintf( __( 'Remover filtro: %s', 'conexao-br-irlanda' ), $active_town_name ) ); ?>">
-						<span class="event-filters-chip-name"><?php echo esc_html( $active_town_name ); ?></span>
-						<span class="event-filters-chip-remove" aria-hidden="true">×</span>
-					</a>
-				<?php endif; ?>
+				<?php
+				// City (Cidade) filter chip intentionally hidden from UI (UX experiment).
+				// The ?cidade= parameter is still handled for backward compatibility.
+				// If a town filter is active via URL, it will be cleared by "Limpar filtros".
+				?>
 				<?php if ( $current_category ) : ?>
 					<a class="event-filters-chip" href="<?php echo esc_url( $event_state_url( array( 'categoria' => '' ) ) ); ?>" aria-label="<?php echo esc_attr( sprintf( __( 'Remover filtro: %s', 'conexao-br-irlanda' ), $active_category_name ) ); ?>">
 						<span class="event-filters-chip-name"><?php echo esc_html( $active_category_name ); ?></span>
@@ -443,34 +412,11 @@ $event_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int) $
 							</fieldset>
 						<?php endif; ?>
 
-						<?php if ( $has_town ) : ?>
-							<fieldset class="event-filters-mobile-section" data-option-scope>
-								<legend class="event-filters-mobile-legend"><?php esc_html_e( 'Cidade', 'conexao-br-irlanda' ); ?></legend>
-								<?php if ( $show_town_search ) : ?>
-									<input
-										type="search"
-										class="event-filters-mobile-search"
-										data-option-search
-										placeholder="<?php esc_attr_e( 'Procurar cidade', 'conexao-br-irlanda' ); ?>"
-										aria-label="<?php esc_attr_e( 'Procurar cidade', 'conexao-br-irlanda' ); ?>">
-								<?php endif; ?>
-								<div class="event-filters-options" data-option-list>
-									<label class="event-filters-option">
-										<input class="event-filters-radio" type="radio" name="cidade" value="" <?php checked( '' === $current_town ); ?>>
-										<span><?php esc_html_e( 'Todas', 'conexao-br-irlanda' ); ?></span>
-									</label>
-									<?php foreach ( $town_terms as $term ) : ?>
-										<label class="event-filters-option" data-option-item>
-											<input class="event-filters-radio" type="radio" name="cidade" value="<?php echo esc_attr( $term->slug ); ?>" <?php checked( $current_town === $term->slug ); ?>>
-											<span><?php echo esc_html( $term->name ); ?></span>
-										</label>
-									<?php endforeach; ?>
-								</div>
-								<?php if ( $show_town_search ) : ?>
-									<p class="event-filters-options-empty" data-option-empty hidden><?php esc_html_e( 'Nenhuma cidade encontrada', 'conexao-br-irlanda' ); ?></p>
-								<?php endif; ?>
-							</fieldset>
-						<?php endif; ?>
+						<?php
+							// City (Cidade) filter intentionally removed from mobile UI (UX experiment).
+							// The underlying town taxonomy and ?cidade= query parameter handling remain intact
+							// for backward compatibility with existing bookmarked URLs and event detail pages.
+							?>
 
 						<?php if ( $has_category ) : ?>
 							<fieldset class="event-filters-mobile-section">

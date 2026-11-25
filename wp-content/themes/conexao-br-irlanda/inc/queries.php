@@ -544,6 +544,12 @@ function conexao_get_event_towns( $county_slug = '' ) {
  * Invalid slugs pass through untouched — the query layer ignores unknown
  * slugs gracefully (zero results rather than an error).
  *
+ * NOTE: The City (Cidade) filter has been removed from the visible UI as part
+ * of a UX experiment (see docs/reports/2026-11-25-remove-city-filter.md).
+ * The 'cidade' parameter is still handled here for backward compatibility with
+ * existing bookmarked URLs and event detail pages. The UI no longer generates
+ * new cidade filter URLs.
+ *
  * @param array  $filters Filter state: 'county', 'cidade', 'categoria' slugs.
  * @param string $base    Optional base URL (defaults to the event archive).
  * @return string Filter URL.
@@ -558,6 +564,8 @@ function conexao_event_filter_url( array $filters, $base = '' ) {
 	if ( ! empty( $filters['county'] ) ) {
 		$url = add_query_arg( 'county', sanitize_title( $filters['county'] ), $url );
 	}
+	// City (Cidade) filter preserved for backward compatibility with existing ?cidade= URLs.
+	// The UI no longer generates new cidade filter links (UX experiment).
 	if ( ! empty( $filters['cidade'] ) ) {
 		$url = add_query_arg( 'cidade', sanitize_title( $filters['cidade'] ), $url );
 	}
