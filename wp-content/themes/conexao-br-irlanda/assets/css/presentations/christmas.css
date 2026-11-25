@@ -48,6 +48,14 @@
   --ce-xmas-on-night-hairline: rgba(232, 194, 115, 0.26);
   --ce-xmas-motion: 700ms cubic-bezier(0.22, 0.61, 0.36, 1);
   --ce-xmas-radius: 18px;
+
+  /* Enhanced animation tokens. */
+  --ce-xmas-snowfall-duration: 8s;
+  --ce-xmas-snowflake-size-min: 2px;
+  --ce-xmas-snowflake-size-max: 6px;
+  --ce-xmas-santa-duration: 20s;
+  --ce-xmas-twinkle-duration: 3s;
+  --ce-xmas-float-duration: 6s;
 }
 
 :root[data-theme="dark"] .ce-package--christmas,
@@ -823,6 +831,227 @@ body.ce-active.ce-package-christmas.ce-placement-homepage-hero .ce-placement--ho
   }
 }
 
+/* ===== 8b. Enhanced ambient decorations ===== */
+/* Additional decorative motifs for the ambient layer. */
+.ce-package--christmas .ce-ambient-decoration--snowflake {
+  animation: ce-xmas-ambient-snowflake var(--ce-xmas-float-duration, 6s) cubic-bezier(0.22, 0.61, 0.36, 1) 1 both;
+}
+
+.ce-package--christmas .ce-ambient-decoration--bauble {
+  animation: ce-xmas-ambient-bauble var(--ce-xmas-float-duration, 6s) cubic-bezier(0.22, 0.61, 0.36, 1) 1 both;
+}
+
+.ce-package--christmas .ce-ambient-decoration--holly {
+  animation: ce-xmas-ambient-holly var(--ce-xmas-float-duration, 6s) cubic-bezier(0.22, 0.61, 0.36, 1) 1 both;
+}
+
+.ce-package--christmas .ce-ambient-decoration--bell {
+  animation: ce-xmas-ambient-bell var(--ce-xmas-float-duration, 6s) cubic-bezier(0.22, 0.61, 0.36, 1) 1 both;
+}
+
+.ce-package--christmas .ce-ambient-decoration--gift {
+  animation: ce-xmas-ambient-gift var(--ce-xmas-float-duration, 6s) cubic-bezier(0.22, 0.61, 0.36, 1) 1 both;
+}
+
+@keyframes ce-xmas-ambient-snowflake {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) rotate(-45deg) scale(0.8);
+  }
+  30% {
+    opacity: 0.9;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(20px) rotate(45deg) scale(1);
+  }
+}
+
+@keyframes ce-xmas-ambient-bauble {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.9);
+  }
+  35% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(15px) scale(1.05);
+  }
+}
+
+@keyframes ce-xmas-ambient-holly {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) rotate(-30deg) scale(0.95);
+  }
+  40% {
+    opacity: 0.85;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(12px) rotate(30deg) scale(1);
+  }
+}
+
+@keyframes ce-xmas-ambient-bell {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.9);
+  }
+  35% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(14px) scale(1.02);
+  }
+}
+
+@keyframes ce-xmas-ambient-gift {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.95);
+  }
+  40% {
+    opacity: 0.9;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(10px) scale(1);
+  }
+}
+
+/* ===== 8c. Hero snowfall overlay ===== */
+/* Subtle snowfall effect for the homepage hero. */
+.ce-christmas-hero__snowfall {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
+  z-index: 1;
+}
+
+.ce-christmas-hero__snowfall::before,
+.ce-christmas-hero__snowfall::after {
+  content: "";
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  top: -50%;
+  left: -50%;
+  background-image:
+    radial-gradient(2px 2px at 10% 20%, var(--ce-xmas-gold-soft, #fff6d8) 50%, transparent 52%),
+    radial-gradient(1.5px 1.5px at 30% 40%, var(--ce-xmas-on-night, #ece5d6) 50%, transparent 52%),
+    radial-gradient(2.5px 2.5px at 50% 60%, var(--ce-xmas-gold-soft, #fff6d8) 50%, transparent 52%),
+    radial-gradient(1px 1px at 70% 80%, var(--ce-xmas-on-night, #ece5d6) 50%, transparent 52%),
+    radial-gradient(3px 3px at 90% 10%, var(--ce-xmas-gold-soft, #fff6d8) 50%, transparent 52%),
+    radial-gradient(1.5px 1.5px at 20% 90%, var(--ce-xmas-on-night, #ece5d6) 50%, transparent 52%),
+    radial-gradient(2px 2px at 40% 10%, var(--ce-xmas-gold-soft, #fff6d8) 50%, transparent 52%),
+    radial-gradient(1px 1px at 60% 30%, var(--ce-xmas-on-night, #ece5d6) 50%, transparent 52%),
+    radial-gradient(2.5px 2.5px at 80% 50%, var(--ce-xmas-gold-soft, #fff6d8) 50%, transparent 52%),
+    radial-gradient(1.5px 1.5px at 10% 70%, var(--ce-xmas-on-night, #ece5d6) 50%, transparent 52%);
+  background-repeat: repeat;
+  animation: ce-xmas-snowfall var(--ce-xmas-snowfall-duration, 8s) linear infinite;
+  opacity: 0.6;
+}
+
+.ce-christmas-hero__snowfall::after {
+  animation-delay: calc(var(--ce-xmas-snowfall-duration, 8s) / 2);
+  opacity: 0.4;
+  background-image:
+    radial-gradient(2px 2px at 15% 15%, var(--ce-xmas-gold-soft, #fff6d8) 50%, transparent 52%),
+    radial-gradient(1px 1px at 35% 35%, var(--ce-xmas-on-night, #ece5d6) 50%, transparent 52%),
+    radial-gradient(3px 3px at 55% 55%, var(--ce-xmas-gold-soft, #fff6d8) 50%, transparent 52%),
+    radial-gradient(1.5px 1.5px at 75% 75%, var(--ce-xmas-on-night, #ece5d6) 50%, transparent 52%),
+    radial-gradient(2px 2px at 95% 5%, var(--ce-xmas-gold-soft, #fff6d8) 50%, transparent 52%),
+    radial-gradient(1px 1px at 25% 85%, var(--ce-xmas-on-night, #ece5d6) 50%, transparent 52%),
+    radial-gradient(2.5px 2.5px at 45% 5%, var(--ce-xmas-gold-soft, #fff6d8) 50%, transparent 52%),
+    radial-gradient(1.5px 1.5px at 65% 25%, var(--ce-xmas-on-night, #ece5d6) 50%, transparent 52%),
+    radial-gradient(2px 2px at 85% 45%, var(--ce-xmas-gold-soft, #fff6d8) 50%, transparent 52%),
+    radial-gradient(1px 1px at 5% 65%, var(--ce-xmas-on-night, #ece5d6) 50%, transparent 52%);
+}
+
+@keyframes ce-xmas-snowfall {
+  from {
+    transform: translateY(0) translateX(0);
+  }
+  to {
+    transform: translateY(50%) translateX(25%);
+  }
+}
+
+/* ===== 8d. Hero star twinkle ===== */
+/* Subtle twinkle effect for the hero's star. */
+.ce-christmas-hero__star-twinkle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120%;
+  height: 120%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 2;
+  background:
+    radial-gradient(circle at 30% 30%, var(--ce-xmas-gold-soft, #fff6d8) 0 8px, transparent 10px),
+    radial-gradient(circle at 70% 70%, var(--ce-xmas-gold, #e8c273) 0 6px, transparent 8px),
+    radial-gradient(circle at 50% 50%, var(--ce-xmas-gold-soft, #fff6d8) 0 4px, transparent 6px);
+  opacity: 0;
+  animation: ce-xmas-star-twinkle var(--ce-xmas-twinkle-duration, 3s) ease-in-out infinite;
+}
+
+@keyframes ce-xmas-star-twinkle {
+  0%, 100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  50% {
+    opacity: 0.4;
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+}
+
+/* ===== 8e. Santa fly-by (optional, for landing page) ===== */
+.ce-christmas-santa-flyby {
+  position: fixed;
+  left: 0;
+  top: 10vh;
+  width: clamp(270px, 40vw, 540px);
+  height: auto;
+  z-index: 950;
+  pointer-events: none;
+  opacity: 0;
+  filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.18));
+  will-change: transform, opacity;
+  transform: translateX(105vw) scaleX(-1);
+}
+
+.ce-christmas-santa-flyby.is-flying {
+  opacity: 1;
+  animation: ce-xmas-santa-cross var(--ce-xmas-santa-duration, 20s) linear forwards;
+}
+
+@keyframes ce-xmas-santa-cross {
+  from {
+    transform: translateX(105vw) scaleX(-1);
+  }
+  to {
+    transform: translateX(-125vw) scaleX(-1);
+  }
+}
+
+@media (max-width: 640px) {
+  .ce-christmas-santa-flyby {
+    top: 12vh;
+    width: min(88vw, 390px);
+  }
+  .ce-christmas-santa-flyby.is-flying {
+    animation-duration: 15s;
+  }
+}
+
 /* ===== 9. Responsive ===== */
 @media (max-width: 900px) {
   .ce-christmas-hero {
@@ -903,8 +1132,27 @@ body.ce-active.ce-package-christmas.ce-placement-homepage-hero .ce-placement--ho
     transition: none !important;
   }
 
-  .ce-package--christmas .ce-ambient-decoration {
+  .ce-package--christmas .ce-ambient-decoration,
+  .ce-package--christmas .ce-ambient-decoration--snowflake,
+  .ce-package--christmas .ce-ambient-decoration--bauble,
+  .ce-package--christmas .ce-ambient-decoration--holly,
+  .ce-package--christmas .ce-ambient-decoration--bell,
+  .ce-package--christmas .ce-ambient-decoration--gift {
     animation: none !important;
+  }
+
+  .ce-christmas-hero__snowfall::before,
+  .ce-christmas-hero__snowfall::after {
+    animation: none !important;
+  }
+
+  .ce-christmas-hero__star-twinkle {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+
+  .ce-christmas-santa-flyby {
+    display: none !important;
   }
 }
 

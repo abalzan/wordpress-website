@@ -28,8 +28,9 @@ if ( ! $ce_page instanceof WP_Post ) {
 
 $ce_attributes = conexao_commemorative_wrapper_attributes( $ce );
 $ce_content    = isset( $ce['placement']['content'] ) ? (string) $ce['placement']['content'] : '';
+$ce_template_uri = get_template_directory_uri();
 ?>
-<div<?php echo $ce_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built and escaped by conexao_commemorative_wrapper_attributes(). ?> data-ce-landing="<?php echo esc_attr( (string) $ce['page_id'] ); ?>">
+<div<?php echo $ce_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built and escaped by conexao_commemorative_wrapper_attributes(). ?> data-ce-landing="<?php echo esc_attr( (string) $ce['page_id'] ); ?>" data-ce-template-uri="<?php echo esc_url( $ce_template_uri ); ?>">
 	<div class="site-container ce-landing">
 		<header class="ce-landing__hero">
 			<p class="ce-landing__kicker"><?php echo esc_html( $ce['package']['label'] ); ?></p>

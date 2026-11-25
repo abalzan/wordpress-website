@@ -195,6 +195,10 @@ $ce_is_preview = function_exists( 'conexao_commemorative_is_preview' ) && conexa
 					fetchpriority="low"
 					draggable="false"
 				>
+				<!-- Subtle snowfall overlay -->
+				<div class="ce-christmas-hero__snowfall" aria-hidden="true"></div>
+				<!-- Star twinkle effect -->
+				<div class="ce-christmas-hero__star-twinkle" aria-hidden="true"></div>
 			</figure>
 			<div class="ce-christmas-hero__body">
 				<p class="ce-christmas-hero__kicker">
