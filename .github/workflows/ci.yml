@@ -590,14 +590,9 @@ jobs:
               FLUSH PRIVILEGES;
             "
           "
-          
           # Write the test credentials to .conexao-test.env (mode 0600)
-          cat > .conexao-test.env <<CREDS
-CONEXAO_TEST_DB_USER=conexao_test
-CONEXAO_TEST_DB_PASSWORD=conexao_test_password
-CREDS
+          printf 'CONEXAO_TEST_DB_USER=conexao_test\nCONEXAO_TEST_DB_PASSWORD=conexao_test_password\n' > .conexao-test.env
           chmod 0600 .conexao-test.env
-          
           # Export for subsequent steps
           echo "CONEXAO_TEST_DB_NAME=${TEST_DB_NAME}" >> $GITHUB_ENV
           
