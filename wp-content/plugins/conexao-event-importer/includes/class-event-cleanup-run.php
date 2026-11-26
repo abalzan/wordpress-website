@@ -239,9 +239,7 @@ final class Conexao_Event_Cleanup_Run {
 
 		// Terminal states (completed, cancelled, failed) always start a new run.
 		// Do not attempt to resume them even if the lock could be acquired.
-		if ( $should_start_new ) {
-			// Start a new run (fall through).
-		} elseif ( $should_resume ) {
+		if ( ! $should_start_new && $should_resume ) {
 			// Resume: verify the lock is still ours.
 			$lock = Conexao_Event_Cleanup_Lock::acquire(
 				array(

@@ -551,6 +551,60 @@ jobs:
           echo "##[endgroup]"
 
       # -------------------------------------------------------------------
+
+      # -------------------------------------------------------------------
+      # Create the isolated test database and restricted user for the
+      # WordPress/DB-dependent test suites.
+      #
+      # The test suites connect as `conexao_test` to a disposable schema
+      # (CONEXAO_TEST_DB_NAME) that is separate from the shared WordPress
+      # database. The credentials are written to `.conexao-test.env` (mode 0600)
+      # on the host, then copied into the container by `run-tests.sh`.
+      # This step MUST run before "Run in-process PHP suites".
+      - name: Create isolated test database and credentials
+        run: |
+          echo "##[group]Create isolated test database and credentials"
+          START=$(date +%s)
+          set -euo pipefail
+          
+          # Generate a unique test database name following the pattern
+          TEST_DB_TOKEN=$(openssl rand -hex 16)
+          TEST_DB_NAME="conexao_stage05_test_${TEST_DB_TOKEN}"
+          
+          # Get database connection details from the running container
+          WP_CONTAINER="$(docker compose ps -q wordpress)"
+          [ -n "$WP_CONTAINER" ] || { echo "::error::no wordpress container"; exit 1; }
+          for v in WORDPRESS_DB_HOST WORDPRESS_DB_NAME WORDPRESS_DB_USER WORDPRESS_DB_PASSWORD MYSQL_ROOT_PASSWORD; do
+            val="$(docker inspect -f '{{range .Config.Env}}{{println .}}{{end}}' "$WP_CONTAINER" 
+                   | grep "^$v=" | head -1 | cut -d= -f2-)"
+            export "$v=$val"
+          done
+          
+          # Create the isolated test database and restricted user
+          # Use root credentials since we need administrative privileges
+          docker compose exec -T db sh -c "
+            mysql -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "
+              CREATE DATABASE IF NOT EXISTS `${TEST_DB_NAME}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+              CREATE USER IF NOT EXISTS 'conexao_test'@'%' IDENTIFIED BY 'conexao_test_password';
+              GRANT ALL PRIVILEGES ON `${TEST_DB_NAME}`.* TO 'conexao_test'@'%';
+              FLUSH PRIVILEGES;
+            "
+          "
+          
+          # Write the test credentials to .conexao-test.env (mode 0600)
+          cat > .conexao-test.env <<CREDS
+CONEXAO_TEST_DB_USER=conexao_test
+CONEXAO_TEST_DB_PASSWORD=conexao_test_password
+CREDS
+          chmod 0600 .conexao-test.env
+          
+          # Export for subsequent steps
+          echo "CONEXAO_TEST_DB_NAME=${TEST_DB_NAME}" >> $GITHUB_ENV
+          
+          END=$(date +%s)
+          echo "Isolated test database created: ${TEST_DB_NAME}"
+          echo "Create isolated test database duration: $((END - START))s"
+          echo "##[endgroup]"
       # Create the local test administrator used by the HTTP acceptance suites.
       #
       # `verify-commemorative-http.py` logs in as this user through wp-login.php
@@ -642,7 +696,7 @@ jobs:
           # configuration — 4 workers regresses due to CPU contention on the
           # serial group (901s -> 1109s), while 3 workers improves on 2
           # (901s -> 835s serial, 259s -> 239s parallel).
-          CONEXAO_TEST_DB_NAME=wordpress CONEXAO_TEST_WORKERS=3 ./scripts/run-tests.sh --php 2>&1 | tee "$RUNNER_TEMP/ci-evidence/run-tests-php.log"
+          CONEXAO_TEST_DB_NAME=${CONEXAO_TEST_DB_NAME} CONEXAO_TEST_WORKERS=3 ./scripts/run-tests.sh --php 2>&1 | tee "$RUNNER_TEMP/ci-evidence/run-tests-php.log"
           status="${PIPESTATUS[0]}"
           END=$(date +%s)
           echo "PHP suites duration: $((END - START))s"

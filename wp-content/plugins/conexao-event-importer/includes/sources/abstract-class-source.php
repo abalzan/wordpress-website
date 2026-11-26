@@ -414,11 +414,11 @@ abstract class Conexao_Source_Base {
 	/**
 	 * Install an injectable sleeper (tests) or clear it (real sleep).
 	 *
-	 * @param callable|null $callable Receives the delay in seconds.
+	 * @param callable|null $sleeper Receives the delay in seconds.
 	 * @return void
 	 */
-	public function set_http_sleeper( $callable ) {
-		$this->http_sleeper = is_callable( $callable ) ? $callable : null;
+	public function set_http_sleeper( $sleeper ) {
+		$this->http_sleeper = is_callable( $sleeper ) ? $sleeper : null;
 	}
 
 	/**

@@ -468,7 +468,6 @@ class Conexao_Event_Sources {
 			'conexao-event-sources',
 			array( $this, 'render_sources_page' )
 		);
-
 	}
 
 	/**
