@@ -242,7 +242,7 @@ if ( ! isset( $wpdb->dbname ) || $wpdb->dbname !== $conexao_tests_expected_db ||
  * instance the test suite will use, AFTER WordPress has connected, and BEFORE
  * any suite assertion or test-side write. It establishes:
  *
- *   - CURRENT_USER() resolves to the restricted `conexao_test` account;
+ *   - CURRENT_USER() resolves to the requested restricted test account;
  *   - DATABASE() is the disposable test schema;
  *   - the query ran through the same $wpdb object the suite uses.
  *

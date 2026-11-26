@@ -58,7 +58,7 @@ same conventions, no special runner, no hand-maintained list.
 | Language-scoped caching | (a) **static**: a `token_get_all` scan of production source finds no unscoped `conexao_*` transient/object-cache key; (b) **runtime**: PT and EN keys differ, an EN read never returns the PT value, and `conexao_flush_language_cache()` clears every language variant. | `verify-cache-key-scoping.py`, `test-cache-language-scoping.php` | Script contract + in-process PHP |
 | Legacy EN→PT redirect precedence | A legacy EN path keeps its **301** to the **PT** destination even when a newly created EN page has the same slug, and the legacy table still runs before Polylang's canonical. The conflicting page is created and deleted inside the suite. | `test-redirect-precedence.php` | In-process PHP |
 | Documentation drift | Orchestrates the Stage G/I/K gates (it does not reimplement them) and owns the §9.2 rules: `_Last verified:` markers on the living reference set, no root-level report/evidence file, `AGENTS.md` stays orientation, the authoritative sources still exist. | `verify-documentation-drift.py` | Script contract |
-| i18n catalogue freshness | A `.pot` is never older than the PHP defining its strings. Signal: **git commit time**, not mtime (a fresh clone gives every file the checkout time, so mtime cannot express this rule). | `verify-i18n-freshness.py`, `scripts/i18n-check.sh` | Script contract |
+| i18n catalogue freshness | A `.pot` is never older than the PHP defining its strings. Clean checkouts use **git commit time**; CI fetches full history and shallow history fails closed. Modified worktree files use mtime only to compare uncommitted local edits. | `verify-i18n-freshness.py`, `scripts/i18n-check.sh` | Script contract |
 
 #### The commemorative gates (r10 Stages 4–6)
 
@@ -152,8 +152,10 @@ Each gate separates **pre-existing debt** from a **new regression**:
 - `new > 0` means **you** introduced a violation. `new = 0` with `failed > 0`
   means the repository already had the debt and Stage L merely made it visible.
 
-Evidence lands in `docs/evidence/2026-09-26-stage-l/gate.json`, generated from
-real execution output by `scripts/verify-permanent-gates.py` — never hand-edited.
+Evidence lands in `docs/evidence/<date>-stage-l/gate.json`, generated in a
+date-stamped directory from real execution output by
+`scripts/verify-permanent-gates.py` — never hand-edited or written over an
+earlier run's evidence.
 
 `./scripts/verify-release.sh` runs the whole release workflow end to end locally
 (registry gate → build → manifest → allowlist/hash verification → determinism →
@@ -203,6 +205,18 @@ WordPress database. The shared `tests/bootstrap.php` repeats the preflight
 before `wp-load.php`, verifies the local `wp-config.php` reads
 `WORDPRESS_DB_NAME`, and confirms WordPress connected to the expected database.
 
+The CI workflow explicitly prepares its environment with
+`.github/scripts/isolated-test-database.sh`: it creates a per-run schema and
+restricted per-run account, clones the initialized CI WordPress database into
+that schema, verifies the account cannot access the shared schema, and
+restarts the CI WordPress service against the clone. The local test
+administrator and committed synthetic fixtures are then built in the clone,
+before any application tests run. The generated credentials are kept in
+mode-0600 files and are removed with the isolated account/schema after the run;
+the original CI schema is not used by application tests. The helper is CI-only
+and does not change the runner's rule that local test databases must be
+prepared deliberately.
+
 For local work, create and verify a dedicated database clone, neutralize only
 inherited importer continuation queue/lock/cron state in that clone before its
 first WordPress bootstrap, then pass its database name explicitly:
@@ -212,8 +226,9 @@ CONEXAO_TEST_DB_NAME=conexao_stage05_test_abc123 ./scripts/run-tests.sh --php
 ```
 
 These safeguards do not make a shared database safe for tests: missing,
-unreachable, or mismatched database identity fails closed. Ephemeral CI may use
-its freshly created `wordpress` database; no developer database is reused.
+unreachable, or mismatched database identity fails closed. The selected test
+database must differ from the original shared WordPress database, including in
+CI.
 
 The HTTP acceptance runner applies the same contract before its first request:
 it compares the configured server container's `WORDPRESS_DB_NAME` with
@@ -1007,3 +1022,5 @@ test-plugin-separation.php requires deliberate plugin-activation change.
 *Counting method: suites classified as MANUAL in `scripts/run-tests.sh --list`, excluding the section header line.*
 
 _Last verified: 2026-11-11 by CI optimization and PHP suite classification update_
+
+_Last verified: 2026-11-26 by isolated CI database setup, credential handoff and Stage L gate verification_

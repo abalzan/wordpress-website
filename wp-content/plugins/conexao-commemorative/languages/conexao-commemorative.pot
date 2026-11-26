@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-06 10:59+0000\n"
+"POT-Creation-Date: 2026-11-26 20:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 
 
@@ -28,23 +28,23 @@ msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/commemorative-presentations.php:261
 msgid "Experiência de Natal"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/commemorative-presentations.php:338
+#: wp-content/themes/conexao-br-irlanda/inc/commemorative-presentations.php:344
 msgid "Experiência de Ano Novo"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/commemorative-presentations.php:348
+#: wp-content/themes/conexao-br-irlanda/inc/commemorative-presentations.php:419
 msgid "Experiência do Dia de São Patrício"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/commemorative-presentations.php:358
+#: wp-content/themes/conexao-br-irlanda/inc/commemorative-presentations.php:429
 msgid "Experiência do Dia dos Namorados"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/commemorative-presentations.php:368
+#: wp-content/themes/conexao-br-irlanda/inc/commemorative-presentations.php:439
 msgid "Experiência de Páscoa"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/commemorative-presentations.php:1085
+#: wp-content/themes/conexao-br-irlanda/inc/commemorative-presentations.php:1208
 msgid "Pré-visualização"
 msgstr ""
 #. translators: %s: event key.
-#: wp-content/themes/conexao-br-irlanda/inc/commemorative-presentations.php:1089
+#: wp-content/themes/conexao-br-irlanda/inc/commemorative-presentations.php:1212
 #, php-format
 msgid ""
 "Você está vendo uma pré-visualização privada do evento \"%s\". Esta página "
@@ -53,200 +53,206 @@ msgstr ""
 #: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:63
 msgid "Comemorativo — diagnóstico e preferência anual"
 msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:93
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:101
 msgid "Janela calculada (próxima ocorrência)"
 msgstr ""
 #. translators: 1: window range, 2: occurrence year.
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:98
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:106
 #, php-format
 msgid "%1$s — ano de ocorrência %2$s"
 msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:103
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:111
 msgid "Sem janela resolvível com a configuração atual."
 msgstr ""
 #. translators: %s: reason label.
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:110
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:118
 #, php-format
 msgid "Estado: %s"
 msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:131
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:129
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:225
+msgid "Preferência anual manual"
+msgstr ""
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:130
+msgid ""
+"A preferência anual, o agendamento e a prioridade pertencem ao registo "
+"canónico (PT). Abra o registo PT ligado para os alterar."
+msgstr ""
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:146
 msgid "Cache e limite de ativação"
 msgstr ""
 #. translators: 1: datetime, 2: event key, 3: boundary type.
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:137
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:152
 #, php-format
 msgid "Próximo limite agendado: %1$s (%2$s, %3$s)"
 msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:143
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:158
 msgid "Nenhum limite agendado (nenhum evento publicado e ativo)."
 msgstr ""
 #. translators: 1: reason, 2: datetime, 3: number of transients deleted.
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:151
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:166
 #, php-format
 msgid "Última purga: %1$s em %2$s (%3$d transients removidos)."
 msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:157
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:172
 msgid "Nenhuma purga registrada nesta instalação."
 msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:161
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:176
 msgid ""
 "Garantia registrada: Option B — o limite vale no primeiro pedido PHP após a "
 "data (ou dentro do TTL verificado). A verificação do cache de produção é uma "
 "atividade separada e não é afirmada aqui."
 msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:174
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:189
 msgid "Pré-visualização privada"
 msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:177
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:192
 msgid ""
 "Defina uma chave de evento (_ce_event_key) para gerar o link de pré-"
 "visualização."
 msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:182
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:197
 msgid "Pré-visualizar no site ↗"
 msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:183
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:198
 msgid ""
 "O link é assinado, funciona apenas para administradores que possam editar "
 "este registro, não altera o agendamento e não ativa o evento para o público."
 msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:210
-msgid "Preferência anual manual"
-msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:211
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:226
 msgid ""
 "Marque este evento para prevalecer sobre outro evento comemorativo, apenas "
 "no ano de ocorrência selecionado. A preferência nunca altera o agendamento, "
 "a ativação ou a prioridade global."
 msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:213
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:228
 msgid "Ano de ocorrência"
 msgstr ""
 #. translators: %s: occurrence year.
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:230
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:245
 #, php-format
 msgid "Preferir este evento se colidir com outro evento comemorativo em %s"
 msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:236
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:251
 msgid "Nota (opcional, máx. 200 caracteres)"
 msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:240
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:255
 msgid "Preferências registradas:"
 msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:245
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:260
 msgid "preferido"
 msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:245
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:260
 msgid "não preferido"
 msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:265
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:280
 msgid "Simulação de data (somente leitura)"
 msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:275
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:290
 msgid "Data a testar"
 msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:277
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:292
 msgid "Testar data"
 msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:292
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:307
 msgid "Data inválida."
 msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:300
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:315
 msgid "Resultado"
 msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:301
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:316
 msgid "Elegível nessa data"
 msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:301
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:316
 msgid "Não elegível nessa data"
 msgstr ""
 #. translators: 1: start, 2: end, 3: occurrence year.
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:307
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:322
 #, php-format
 msgid "Janela nessa data: %1$s → %2$s (ano de ocorrência %3$d)"
 msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:314
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:329
 msgid "A simulação não altera o agendamento nem publica qualquer conteúdo."
 msgstr ""
 #. translators: 1: submitted year, 2: minimum year, 3: maximum year.
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:388
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:411
 #, php-format
 msgid ""
 "O ano de ocorrência %1$s está fora do intervalo aceito (%2$d–%3$d) e não foi "
 "gravado."
 msgstr ""
 #. translators: 1: submitted value, 2: field name.
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:448
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:471
 #, php-format
 msgid ""
 "Data rejeitada: \"%1$s\" (%2$s). Use MM-DD; 29 de fevereiro não é aceito "
 "porque só existe em anos bissextos."
 msgstr ""
 #. translators: %s: submitted value.
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:463
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:486
 #, php-format
 msgid "Data única rejeitada: \"%s\". Use AAAA-MM-DD."
 msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:506
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:529
 msgid "Pré-visualizar"
 msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:535
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:558
 msgid "Caches comemorativos purgados e próximo limite reagendado."
 msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:541
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:564
 msgid "Eventos comemorativos"
 msgstr ""
 #. translators: %s: datetime.
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:545
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:568
 #, php-format
 msgid "próximo limite agendado: %s."
 msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:549
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:572
 msgid "nenhum limite agendado."
 msgstr ""
 #. translators: 1: reason, 2: datetime.
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:556
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:579
 #, php-format
 msgid "Última purga: %1$s (%2$s)."
 msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:566
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:589
 msgid "Purgar caches comemorativos"
 msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:572
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:595
 msgid "Revisão recomendada"
 msgstr ""
 #. translators: 1: occurrence year, 2: comma-separated event keys.
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:579
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:602
 #, php-format
 msgid ""
 "Mais de um evento está marcado como preferido em %1$s: %2$s. A prioridade "
 "global e a chave do evento decidem a ordem."
 msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:665
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:688
 msgid "Publicado"
 msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:666
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:689
 msgid "Rascunho"
 msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:668
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:691
 msgid "Ativo"
 msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:669
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:692
 msgid "Desativado"
 msgstr ""
 #. translators: %s: occurrence year.
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:682
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:705
 #, php-format
 msgid "ano de ocorrência %s"
 msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:689
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:712
 msgid "Sim"
 msgstr ""
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:690
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:713
 msgid "Não"
 msgstr ""
 #. translators: %s: occurrence year.
-#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:702
+#: wp-content/plugins/conexao-commemorative/includes/class-conexao-commemorative-admin.php:725
 #, php-format
 msgid "preferido em %s"
 msgstr ""

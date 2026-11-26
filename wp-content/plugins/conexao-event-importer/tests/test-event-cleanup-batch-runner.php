@@ -68,7 +68,7 @@ if ( ! defined( 'WP_ADMIN' ) ) {
 }
 
 $cleanup = new Conexao_Event_Cleanup();
-$runner  = new Conexao_Event_Cleanup_Run( $cleanup );
+$runner  = new Conexao_Event_Cleanup_Run();
 
 /**
  * Per-section record registry.
@@ -1619,7 +1619,7 @@ $controlled_clock = function () use ( &$clock_calls ): float {
 };
 
 // Create a runner with the controlled clock.
-$test_runner = new Conexao_Event_Cleanup_Run( $cleanup, $controlled_clock );
+$test_runner = new Conexao_Event_Cleanup_Run( $controlled_clock );
 
 // Create 10 past events.
 $time_budget_fixtures = array();

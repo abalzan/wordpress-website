@@ -1,7 +1,8 @@
 # Local environment / secrets
 .env
 .env.local
-.conexao-test.env
+.conexao-test.env*
+.conexao-test-compose.env*
 
 # Build output
 dist/

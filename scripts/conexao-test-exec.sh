@@ -3,7 +3,7 @@
 # conexao-test-exec.sh — container-side launcher for the isolated test process.
 #
 # This wrapper is the ONLY sanctioned path by which a WordPress/DB-dependent
-# test process receives the restricted `conexao_test` database credentials.
+# test process receives generated, schema-restricted test database credentials.
 # It exists so the password never appears in a host command line, a Docker
 # `-e NAME=value` argument, `ps` argv, shell history or a log.
 #
@@ -17,7 +17,8 @@
 #      the WordPress DB environment variables for the child PHP process.
 #   3. It `exec`s the requested command (PHP + suite path) so the restricted
 #      environment is in place BEFORE `wp-config.php` runs. WordPress must
-#      connect as `conexao_test` from its very first database connection;
+#      connect as the requested restricted test account from its first database
+#      connection;
 #      reconnecting `$wpdb` after `wp-load` is too late.
 #
 # The host-side command line contains only this wrapper's path, the secret-file
@@ -27,7 +28,7 @@
 # Environment inputs (set by the host runner, never by a secret value):
 #   CONEXAO_TEST_DB_ENV_FILE   Path to the protected .conexao-test.env copy.
 #   CONEXAO_TEST_DB_NAME       Expected disposable test schema name.
-#   CONEXAO_TEST_DB_USER       Expected restricted account (must be conexao_test).
+#   CONEXAO_TEST_DB_USER       Expected generated restricted test account.
 #   CONEXAO_TEST_SHARED_DB_NAME  Shared schema the test DB must differ from.
 #   WORDPRESS_DB_HOST          Database host (preserved from the environment).
 #
@@ -58,16 +59,17 @@ if [ ! -r "$CONEXAO_TEST_DB_ENV_FILE" ]; then
 	fail "secret file is not readable: $CONEXAO_TEST_DB_ENV_FILE"
 fi
 
-# The expected account must be exactly the restricted test account. Refuse to
-# launch if the caller asks for anything else.
-if [ "$CONEXAO_TEST_DB_USER" != "conexao_test" ]; then
-	fail "CONEXAO_TEST_DB_USER must be exactly 'conexao_test' (got '$CONEXAO_TEST_DB_USER')"
+# The expected account is either the legacy local test account or a generated
+# per-run account. Refuse arbitrary database identities.
+if ! printf '%s' "$CONEXAO_TEST_DB_USER" | grep -qE '^conexao_test(_[a-f0-9]{12})?$'; then
+	fail "CONEXAO_TEST_DB_USER is not an approved restricted test account"
 fi
 
 # The requested test database must be a bare identifier.
 if ! printf '%s' "$CONEXAO_TEST_DB_NAME" | grep -qE '^[A-Za-z0-9_]+$'; then
 	fail "CONEXAO_TEST_DB_NAME is not a valid database identifier"
 fi
+REQUESTED_TEST_DB_USER="$CONEXAO_TEST_DB_USER"
 
 # The test database must differ from the shared schema (outside CI, where the
 # shared identity may be unknown but the test DB is still explicit).
@@ -97,15 +99,15 @@ if [ -z "${CONEXAO_TEST_DB_PASSWORD:-}" ]; then
 	fail "CONEXAO_TEST_DB_PASSWORD is empty after loading the secret file"
 fi
 
-if [ "$CONEXAO_TEST_DB_USER" != "conexao_test" ]; then
-	fail "the secret file's CONEXAO_TEST_DB_USER is not 'conexao_test'"
+if [ "$CONEXAO_TEST_DB_USER" != "$REQUESTED_TEST_DB_USER" ]; then
+	fail "the secret file's test account does not match the requested account"
 fi
 
 # --- Export the WordPress DB environment for the child PHP process ---------
 #
 # These are the variables `wp-config.php` reads via getenv_docker(). They must
-# be in place before PHP starts so WordPress connects as `conexao_test` to the
-# disposable schema from its first connection.
+# be in place before PHP starts so WordPress connects as the restricted test
+# account to the disposable schema from its first connection.
 
 export WORDPRESS_DB_USER="$CONEXAO_TEST_DB_USER"
 export WORDPRESS_DB_PASSWORD="$CONEXAO_TEST_DB_PASSWORD"

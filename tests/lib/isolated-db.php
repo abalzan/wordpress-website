@@ -22,7 +22,7 @@ function conexao_test_db_preflight() {
 		return conexao_test_db_fail( 'WORDPRESS_DB_NAME does not match the explicitly requested test database.' );
 	}
 
-	if ( is_string( $shared ) && '' !== $shared && $expected === $shared && 'true' !== getenv( 'GITHUB_ACTIONS' ) ) {
+	if ( is_string( $shared ) && '' !== $shared && $expected === $shared ) {
 		return conexao_test_db_fail( 'the test database is the shared local WordPress database.' );
 	}
 

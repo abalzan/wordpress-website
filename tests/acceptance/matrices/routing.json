@@ -866,11 +866,12 @@
         "class=\"event-filters\" data-event-filters",
         "data-event-filters",
         "event-filters-county-panel",
-        "event-filters-town-panel",
         "event-filters-dropdown-trigger"
       ],
-      "expect_absent": [],
-      "note": "PT Events archive renders the county/town filter widget. Baseline for the EN i18n regression below."
+      "expect_absent": [
+        "event-filters-town-panel"
+      ],
+      "note": "PT Events archive renders the county filter while the city control is intentionally hidden; the legacy ?cidade= query remains covered below."
     },
     {
       "id": "en-eventos-filters-present",
@@ -880,11 +881,12 @@
         "class=\"event-filters\" data-event-filters",
         "data-event-filters",
         "event-filters-county-panel",
-        "event-filters-town-panel",
         "event-filters-dropdown-trigger"
       ],
-      "expect_absent": [],
-      "note": "EN Events archive renders the SAME shared filter widget as PT (request-visible i18n regression: the B2 filter helper must stay language-widened)."
+      "expect_absent": [
+        "event-filters-town-panel"
+      ],
+      "note": "EN Events archive renders the same shared county filter as PT; the city control is intentionally hidden and the legacy ?cidade= query remains supported."
     },
     {
       "id": "en-eventos-filters-english-copy",
@@ -892,28 +894,29 @@
       "expect_status": 200,
       "expect_contains": [
         "event-filters-dropdown-label\">County",
-        "event-filters-dropdown-label\">Town",
-        "Search county",
-        "Search town"
+        "Search county"
       ],
       "expect_absent": [
+        "event-filters-town-panel",
+        "Search town",
+        "event-filters-dropdown-label\">Town",
         "event-filters-dropdown-label\">Cidade",
         "event-filters-dropdown-label\">Categoria"
       ],
-      "note": "EN filter labels/placeholders are localized to English while PT keeps 'Cidade'/'Categoria'."
+      "note": "Visible EN filter labels/placeholders are localized to English. The intentionally hidden city control must not leak its old label or search field."
     },
     {
       "id": "en-eventos-filter-links-stay-en",
       "url": "/en/eventos/",
       "expect_status": 200,
       "expect_contains": [
-        "/en/eventos/?county=",
-        "/en/eventos/?cidade="
+        "/en/eventos/?county="
       ],
       "expect_absent": [
-        "href=\"http://localhost:8080/eventos/?county="
+        "href=\"http://localhost:8080/eventos/?county=",
+        "/en/eventos/?cidade="
       ],
-      "note": "EN filter links target /en/eventos/ and keep the shared ?county= / ?cidade= slug family; no link bounces an English visitor back to the PT archive."
+      "note": "Visible EN filter links target /en/eventos/; no link bounces an English visitor to the PT archive or exposes the intentionally hidden city control."
     },
     {
       "id": "en-eventos-county-filter-works",
@@ -934,11 +937,12 @@
       "url": "/en/eventos/?cidade=adare",
       "expect_status": 200,
       "expect_contains": [
-        "data-event-filters",
-        "event-filters-dropdown-label\">Adare"
+        "rel=\"canonical\" href=\"http://localhost:8080/en/eventos/\""
       ],
-      "expect_absent": [],
-      "note": "Selected town/city works on EN with the active state reflected (same shared ?cidade= parameter as PT)."
+      "expect_absent": [
+        "event-filters-town-panel"
+      ],
+      "note": "A legacy ?cidade= URL remains a valid EN archive request with an EN canonical; the intentionally hidden city control is not rendered."
     },
     {
       "id": "en-cursos-category-filter-bar-renders",

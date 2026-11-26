@@ -58,7 +58,28 @@ SUITE_TIMEOUT="${CONEXAO_TEST_TIMEOUT:-300}"
 CONEXAO_TEST_WORKERS="${CONEXAO_TEST_WORKERS:-1}"
 
 WORK_DIR="$(mktemp -d)"
-trap 'rm -rf "$WORK_DIR"' EXIT
+
+# shellcheck disable=SC2329 # Bash invokes this callback through the EXIT trap below; ShellCheck does not resolve it in this script.
+cleanup_runner_on_exit() {
+	local exit_status=$?
+	trap - EXIT
+	if declare -F remove_test_secret_from_container >/dev/null; then
+		if ! remove_test_secret_from_container; then
+			if [ "$exit_status" -eq 0 ]; then
+				exit_status=1
+			fi
+		fi
+	fi
+	if ! rm -rf "$WORK_DIR"; then
+		printf 'WARNING: could not remove the test runner temporary directory\n' >&2
+		if [ "$exit_status" -eq 0 ]; then
+			exit_status=1
+		fi
+	fi
+	exit "$exit_status"
+}
+
+trap cleanup_runner_on_exit EXIT
 
 # --- Test DB credentials (.conexao-test.env) -------------------------------
 #
@@ -72,8 +93,8 @@ trap 'rm -rf "$WORK_DIR"' EXIT
 # `wp-config.php` runs. This keeps the password out of host argv, Docker `-e`
 # arguments, `ps` output, shell history and logs.
 #
-# The host only needs the non-secret test DB name to validate the environment;
-# the user/password are read inside the container.
+# The host uses only the non-secret test DB name and account name to validate
+# the environment; the password is read inside the container.
 TEST_DB_ENV_FILE="$REPO_ROOT/.conexao-test.env"
 # Container-side protected path for the copied secret file. The scripts/ tree
 # is bind-mounted into the container, so this path is writable and readable
@@ -84,13 +105,57 @@ TEST_DB_ENV_FILE_CONTAINER="/var/www/html/scripts/.conexao-test.env"
 # and the shared WordPress DB identity. It no longer contains any test
 # credential. Sourcing it on the host is safe: the only DB password it holds is
 # the shared `wordpress` runtime password, which is never forwarded to a test
-# process (the wrapper exports the restricted `conexao_test` credentials).
+# process (the wrapper exports the generated restricted test-account credentials).
+# A CI step may provide a fresh isolated database/account after the `.env` file
+# is loaded; preserve those explicit environment overrides.
+TEST_DB_NAME_WAS_SET="${CONEXAO_TEST_DB_NAME+x}"
+TEST_DB_NAME_OVERRIDE="${CONEXAO_TEST_DB_NAME-}"
+TEST_DB_USER_WAS_SET="${CONEXAO_TEST_DB_USER+x}"
+TEST_DB_USER_OVERRIDE="${CONEXAO_TEST_DB_USER-}"
+TEST_SHARED_DB_WAS_SET="${CONEXAO_TEST_SHARED_DB_NAME+x}"
+TEST_SHARED_DB_OVERRIDE="${CONEXAO_TEST_SHARED_DB_NAME-}"
+WP_USERNAME_WAS_SET="${WP_USERNAME+x}"
+WP_USERNAME_OVERRIDE="${WP_USERNAME-}"
+WP_TEST_PASSWORD_WAS_SET="${WP_TEST_USER_PASSWORD+x}"
+WP_TEST_PASSWORD_OVERRIDE="${WP_TEST_USER_PASSWORD-}"
+WP_APPLICATION_PASSWORD_WAS_SET="${WP_APPLICATION_PASSWORD+x}"
+WP_APPLICATION_PASSWORD_OVERRIDE="${WP_APPLICATION_PASSWORD-}"
 if [ -f "$REPO_ROOT/.env" ]; then
 	set -a
 	# shellcheck disable=SC1091
 	. "$REPO_ROOT/.env"
 	set +a
 fi
+if [ "$TEST_DB_NAME_WAS_SET" = "x" ]; then
+	CONEXAO_TEST_DB_NAME="$TEST_DB_NAME_OVERRIDE"
+	export CONEXAO_TEST_DB_NAME
+fi
+if [ "$TEST_DB_USER_WAS_SET" = "x" ]; then
+	CONEXAO_TEST_DB_USER="$TEST_DB_USER_OVERRIDE"
+	export CONEXAO_TEST_DB_USER
+fi
+if [ "$TEST_SHARED_DB_WAS_SET" = "x" ]; then
+	CONEXAO_TEST_SHARED_DB_NAME="$TEST_SHARED_DB_OVERRIDE"
+	export CONEXAO_TEST_SHARED_DB_NAME
+fi
+if [ "$WP_USERNAME_WAS_SET" = "x" ]; then
+	WP_USERNAME="$WP_USERNAME_OVERRIDE"
+	export WP_USERNAME
+fi
+if [ "$WP_TEST_PASSWORD_WAS_SET" = "x" ]; then
+	WP_TEST_USER_PASSWORD="$WP_TEST_PASSWORD_OVERRIDE"
+	export WP_TEST_USER_PASSWORD
+fi
+if [ "$WP_APPLICATION_PASSWORD_WAS_SET" = "x" ]; then
+	printf -v WP_APPLICATION_PASSWORD '%s' "$WP_APPLICATION_PASSWORD_OVERRIDE"
+	export WP_APPLICATION_PASSWORD
+fi
+unset TEST_DB_NAME_WAS_SET TEST_DB_NAME_OVERRIDE
+unset TEST_DB_USER_WAS_SET TEST_DB_USER_OVERRIDE
+unset TEST_SHARED_DB_WAS_SET TEST_SHARED_DB_OVERRIDE
+unset WP_USERNAME_WAS_SET WP_USERNAME_OVERRIDE
+unset WP_TEST_PASSWORD_WAS_SET WP_TEST_PASSWORD_OVERRIDE
+unset WP_APPLICATION_PASSWORD_WAS_SET WP_APPLICATION_PASSWORD_OVERRIDE
 
 # --- Output helpers --------------------------------------------------------
 
@@ -293,6 +358,7 @@ if [ "$NEEDS_WORDPRESS" = "1" ]; then
 fi
 
 ISOLATED_DB_NAME="${CONEXAO_TEST_DB_NAME:-}"
+ISOLATED_DB_USER="${CONEXAO_TEST_DB_USER:-conexao_test}"
 ISOLATED_SHARED_DB_NAME="${CONEXAO_TEST_SHARED_DB_NAME:-}"
 ISOLATED_DB_ENV_READY=0
 
@@ -311,20 +377,25 @@ ensure_isolated_db_environment() {
 		return 1
 	fi
 
+	if ! [[ "$ISOLATED_DB_USER" =~ ^conexao_test(_[a-f0-9]{12})?$ ]]; then
+		blocked "CONEXAO_TEST_DB_USER must be the restricted test account"
+		return 1
+	fi
+
 	local compose_shared_db=""
 	if [ "$IN_CONTAINER" = "1" ]; then
 		compose_shared_db="${WORDPRESS_DB_NAME:-}"
 	elif [ "$HAVE_DOCKER" = "1" ]; then
-		compose_shared_db="$(docker compose exec -T wordpress printenv WORDPRESS_DB_NAME 2>/dev/null || true)"
-	fi
-
-	if [ -n "${ISOLATED_SHARED_DB_NAME:-}" ] && [ -n "$compose_shared_db" ] && [ "$ISOLATED_SHARED_DB_NAME" != "$compose_shared_db" ]; then
-		blocked "CONEXAO_TEST_SHARED_DB_NAME does not match the configured local WordPress database"
-		return 1
+		if ! compose_shared_db="$(docker compose exec -T wordpress printenv WORDPRESS_DB_NAME 2>/dev/null)"; then
+			blocked "could not read the configured WordPress database identity"
+			return 1
+		fi
 	fi
 
 	if [ -z "$ISOLATED_SHARED_DB_NAME" ]; then
-		ISOLATED_SHARED_DB_NAME="$compose_shared_db"
+		if [ -n "$compose_shared_db" ] && [ "$compose_shared_db" != "$ISOLATED_DB_NAME" ]; then
+			ISOLATED_SHARED_DB_NAME="$compose_shared_db"
+		fi
 	fi
 
 	if [ -z "$ISOLATED_SHARED_DB_NAME" ] && [ "${GITHUB_ACTIONS:-}" != "true" ]; then
@@ -332,7 +403,13 @@ ensure_isolated_db_environment() {
 		return 1
 	fi
 
-	if [ "$ISOLATED_DB_NAME" = "$ISOLATED_SHARED_DB_NAME" ] && [ "${GITHUB_ACTIONS:-}" != "true" ]; then
+	if [ -n "$ISOLATED_SHARED_DB_NAME" ] \
+		&& ! [[ "$ISOLATED_SHARED_DB_NAME" =~ ^[A-Za-z0-9_]+$ ]]; then
+		blocked "CONEXAO_TEST_SHARED_DB_NAME must be a database identifier"
+		return 1
+	fi
+
+	if [ -n "$ISOLATED_SHARED_DB_NAME" ] && [ "$ISOLATED_DB_NAME" = "$ISOLATED_SHARED_DB_NAME" ]; then
 		blocked "the requested test database is the shared local WordPress database"
 		return 1
 	fi
@@ -363,35 +440,40 @@ copy_test_secret_into_container() {
 		blocked "test secret file is not readable: $TEST_DB_ENV_FILE"
 		return 1
 	fi
+	if [ "$(stat -c '%a' "$TEST_DB_ENV_FILE" 2>/dev/null)" != "600" ]; then
+		blocked "test secret file must have mode 0600"
+		return 1
+	fi
 
 	# Copy into the container. `docker compose cp` carries file contents, not a
 	# command-line secret value. The destination is inside the bind-mounted
 	# scripts/ tree so no extra mount is required.
+	# Mark it before copying so the EXIT cleanup also covers a partial copy.
+	TEST_DB_ENV_COPIED=1
 	if ! docker compose cp "$TEST_DB_ENV_FILE" "wordpress:$TEST_DB_ENV_FILE_CONTAINER"; then
 		blocked "could not copy the test secret file into the WordPress container"
+		remove_test_secret_from_container || :
 		return 1
 	fi
 
 	# Restrict the container-side copy to the file owner only.
 	if ! docker compose exec -T wordpress chmod 600 "$TEST_DB_ENV_FILE_CONTAINER"; then
 		blocked "could not restrict permissions on the container-side test secret file"
+		remove_test_secret_from_container || :
 		return 1
 	fi
-
-	TEST_DB_ENV_COPIED=1
 }
 
 remove_test_secret_from_container() {
 	if [ "$TEST_DB_ENV_COPIED" != "1" ]; then
 		return 0
 	fi
-	# Best-effort removal; never fail the run on cleanup.
-	docker compose exec -T wordpress rm -f "$TEST_DB_ENV_FILE_CONTAINER" >/dev/null 2>&1 || true
+	if ! docker compose exec -T wordpress rm -f "$TEST_DB_ENV_FILE_CONTAINER" >/dev/null 2>&1; then
+		printf '%sWARNING: could not remove the copied test credential file from WordPress%s\n' "$C_BLOCK" "$C_RESET" >&2
+		return 1
+	fi
 	TEST_DB_ENV_COPIED=0
 }
-
-# Ensure the container-side secret is removed when the runner exits.
-trap 'remove_test_secret_from_container' EXIT
 
 run_isolated_db_preflight() {
 	if ! ensure_isolated_db_environment; then
@@ -403,7 +485,7 @@ run_isolated_db_preflight() {
 		# container path (placed there by an operator or a prior copy step).
 		CONEXAO_TEST_DB_ENV_FILE="$TEST_DB_ENV_FILE_CONTAINER" \
 		CONEXAO_TEST_DB_NAME="$ISOLATED_DB_NAME" \
-		CONEXAO_TEST_DB_USER="conexao_test" \
+		CONEXAO_TEST_DB_USER="$ISOLATED_DB_USER" \
 		CONEXAO_TEST_SHARED_DB_NAME="$ISOLATED_SHARED_DB_NAME" \
 		WORDPRESS_DB_HOST="${WORDPRESS_DB_HOST:-}" \
 		GITHUB_ACTIONS="${GITHUB_ACTIONS:-false}" \
@@ -416,7 +498,7 @@ run_isolated_db_preflight() {
 		docker compose exec -T \
 			-e "CONEXAO_TEST_DB_ENV_FILE=$TEST_DB_ENV_FILE_CONTAINER" \
 			-e "CONEXAO_TEST_DB_NAME=$ISOLATED_DB_NAME" \
-			-e "CONEXAO_TEST_DB_USER=conexao_test" \
+			-e "CONEXAO_TEST_DB_USER=$ISOLATED_DB_USER" \
 			-e "CONEXAO_TEST_SHARED_DB_NAME=$ISOLATED_SHARED_DB_NAME" \
 			-e "GITHUB_ACTIONS=${GITHUB_ACTIONS:-false}" \
 			wordpress bash /var/www/html/scripts/conexao-test-exec.sh \
@@ -763,7 +845,7 @@ run_php() {
 		if [ -n "$arg" ]; then
 			CONEXAO_TEST_DB_ENV_FILE="$TEST_DB_ENV_FILE_CONTAINER" \
 			CONEXAO_TEST_DB_NAME="$ISOLATED_DB_NAME" \
-			CONEXAO_TEST_DB_USER="conexao_test" \
+			CONEXAO_TEST_DB_USER="$ISOLATED_DB_USER" \
 			CONEXAO_TEST_SHARED_DB_NAME="$ISOLATED_SHARED_DB_NAME" \
 			WORDPRESS_DB_HOST="${WORDPRESS_DB_HOST:-}" \
 			GITHUB_ACTIONS="${GITHUB_ACTIONS:-false}" \
@@ -772,7 +854,7 @@ run_php() {
 		else
 			CONEXAO_TEST_DB_ENV_FILE="$TEST_DB_ENV_FILE_CONTAINER" \
 			CONEXAO_TEST_DB_NAME="$ISOLATED_DB_NAME" \
-			CONEXAO_TEST_DB_USER="conexao_test" \
+			CONEXAO_TEST_DB_USER="$ISOLATED_DB_USER" \
 			CONEXAO_TEST_SHARED_DB_NAME="$ISOLATED_SHARED_DB_NAME" \
 			WORDPRESS_DB_HOST="${WORDPRESS_DB_HOST:-}" \
 			GITHUB_ACTIONS="${GITHUB_ACTIONS:-false}" \
@@ -788,7 +870,7 @@ run_php() {
 			timeout "$SUITE_TIMEOUT" docker compose exec -T \
 				-e "CONEXAO_TEST_DB_ENV_FILE=$TEST_DB_ENV_FILE_CONTAINER" \
 				-e "CONEXAO_TEST_DB_NAME=$ISOLATED_DB_NAME" \
-				-e "CONEXAO_TEST_DB_USER=conexao_test" \
+				-e "CONEXAO_TEST_DB_USER=$ISOLATED_DB_USER" \
 				-e "CONEXAO_TEST_SHARED_DB_NAME=$ISOLATED_SHARED_DB_NAME" \
 				-e "GITHUB_ACTIONS=${GITHUB_ACTIONS:-false}" \
 				wordpress bash /var/www/html/scripts/conexao-test-exec.sh \
@@ -797,7 +879,7 @@ run_php() {
 			timeout "$SUITE_TIMEOUT" docker compose exec -T \
 				-e "CONEXAO_TEST_DB_ENV_FILE=$TEST_DB_ENV_FILE_CONTAINER" \
 				-e "CONEXAO_TEST_DB_NAME=$ISOLATED_DB_NAME" \
-				-e "CONEXAO_TEST_DB_USER=conexao_test" \
+				-e "CONEXAO_TEST_DB_USER=$ISOLATED_DB_USER" \
 				-e "CONEXAO_TEST_SHARED_DB_NAME=$ISOLATED_SHARED_DB_NAME" \
 				-e "GITHUB_ACTIONS=${GITHUB_ACTIONS:-false}" \
 				wordpress bash /var/www/html/scripts/conexao-test-exec.sh \
@@ -839,7 +921,10 @@ acceptance_db_preflight() {
 	if [ "$IN_CONTAINER" = "1" ]; then
 		server_db="${WORDPRESS_DB_NAME:-}"
 	elif [ "$HAVE_DOCKER" = "1" ]; then
-		server_db="$(docker compose exec -T wordpress printenv WORDPRESS_DB_NAME 2>/dev/null || true)"
+		if ! server_db="$(docker compose exec -T wordpress printenv WORDPRESS_DB_NAME 2>/dev/null)"; then
+			blocked "could not read the HTTP server's WordPress database identity; no request was sent"
+			return 1
+		fi
 	fi
 
 	if [ "$server_db" != "$ISOLATED_DB_NAME" ]; then

@@ -142,6 +142,8 @@ jobs:
           # The shared shell library is sourced, not executed, so scripts/*.sh
           # alone would leave it unchecked (Stage J added scripts/lib/zip-build.sh).
           shellcheck scripts/lib/*.sh
+          bash -n .github/scripts/isolated-test-database.sh
+          shellcheck .github/scripts/isolated-test-database.sh
 
       - name: Telemetry (non-blocking) — raw legacy PHPCS debt
         if: always()
@@ -249,6 +251,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          # Stage L compares per-file catalogue/source commit times; a shallow
+          # checkout would make every path appear to have the same timestamp.
+          fetch-depth: 0
 
       - name: Set up PHP
         # PHP-backed script checks run as a separate explicit mode below.
@@ -346,6 +352,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          # Stage L requires complete per-file history for the i18n freshness
+          # invariant. Shallow history is rejected by the gate.
+          fetch-depth: 0
 
       - name: Set up PHP
         # The script-contract layer (tests/scripts/verify-script-conventions.py)
@@ -556,48 +566,19 @@ jobs:
       # Create the isolated test database and restricted user for the
       # WordPress/DB-dependent test suites.
       #
-      # The test suites connect as `conexao_test` to a disposable schema
-      # (CONEXAO_TEST_DB_NAME) that is separate from the shared WordPress
-      # database. The credentials are written to `.conexao-test.env` (mode 0600)
-      # on the host, then copied into the container by `run-tests.sh`.
+      # The test suites connect as a generated, schema-restricted account to a
+      # disposable clone of the initialized CI database. The test administrator
+      # and synthetic fixtures are built after the service switches to that
+      # clone. The original shared WordPress schema is not used by application
+      # tests. Credentials are written to `.conexao-test.env` (mode 0600) and
+      # never printed.
       # This step MUST run before "Run in-process PHP suites".
       - name: Create isolated test database and credentials
         run: |
           echo "##[group]Create isolated test database and credentials"
           START=$(date +%s)
-          set -euo pipefail
-          
-          # Generate a unique test database name following the pattern
-          TEST_DB_TOKEN=$(openssl rand -hex 16)
-          TEST_DB_NAME="conexao_stage05_test_${TEST_DB_TOKEN}"
-          
-          # Get database connection details from the running container
-          WP_CONTAINER="$(docker compose ps -q wordpress)"
-          [ -n "$WP_CONTAINER" ] || { echo "::error::no wordpress container"; exit 1; }
-          for v in WORDPRESS_DB_HOST WORDPRESS_DB_NAME WORDPRESS_DB_USER WORDPRESS_DB_PASSWORD MYSQL_ROOT_PASSWORD; do
-            val="$(docker inspect -f '{{range .Config.Env}}{{println .}}{{end}}' "$WP_CONTAINER" \
-                   | grep "^$v=" | head -1 | cut -d= -f2-)"
-            export "$v=$val"
-          done
-          
-          # Create the isolated test database and restricted user
-          # Use root credentials since we need administrative privileges
-          docker compose exec -T db sh -c "
-            mysql -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "
-              CREATE DATABASE IF NOT EXISTS `${TEST_DB_NAME}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-              CREATE USER IF NOT EXISTS 'conexao_test'@'%' IDENTIFIED BY 'conexao_test_password';
-              GRANT ALL PRIVILEGES ON `${TEST_DB_NAME}`.* TO 'conexao_test'@'%';
-              FLUSH PRIVILEGES;
-            "
-          "
-          # Write the test credentials to .conexao-test.env (mode 0600)
-          printf 'CONEXAO_TEST_DB_USER=conexao_test\nCONEXAO_TEST_DB_PASSWORD=conexao_test_password\n' > .conexao-test.env
-          chmod 0600 .conexao-test.env
-          # Export for subsequent steps
-          echo "CONEXAO_TEST_DB_NAME=${TEST_DB_NAME}" >> $GITHUB_ENV
-          
+          bash .github/scripts/isolated-test-database.sh create
           END=$(date +%s)
-          echo "Isolated test database created: ${TEST_DB_NAME}"
           echo "Create isolated test database duration: $((END - START))s"
           echo "##[endgroup]"
       # Create the local test administrator used by the HTTP acceptance suites.
@@ -802,6 +783,10 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
+      - name: Clean up isolated test database and credentials
+        if: always()
+        run: |
+          bash .github/scripts/isolated-test-database.sh cleanup
 
       # The ephemeral database is DESTROYED here, volumes included. This is the
       # documented teardown mechanism (docs/development.md) and it is the reason

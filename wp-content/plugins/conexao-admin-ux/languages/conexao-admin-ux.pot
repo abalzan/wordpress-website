@@ -2,14 +2,14 @@
 # This file is distributed under the GNU General Public License v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Conexão BR Irlanda — Admin UX 1.0.9\n"
+"Project-Id-Version: Conexão BR Irlanda — Admin UX 1.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/conexao-br-irlanda\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-06 10:59+0000\n"
+"POT-Creation-Date: 2026-11-26 20:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 
 
@@ -24,132 +24,306 @@ msgid "Link inválido. Tente novamente."
 msgstr ""
 #: wp-content/plugins/conexao-admin-ux/includes/class-admin.php:282
 #: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:113
-#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:321
-#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:652
+#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:379
+#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:653
 msgid "Excluir permanentemente? Esta ação não pode ser desfeita."
 msgstr ""
 #: wp-content/plugins/conexao-admin-ux/includes/class-admin.php:283
 #: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:114
-#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:315
+#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:373
 msgid "Arquivar este conteúdo? Ele deixará de aparecer no site público."
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:50
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:51
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:235
+msgid "Counties"
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:66
+msgid "Você não tem permissão para reparar counties."
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:237
+msgid ""
+"Fonte única: a lista fixa de 26 condados aprovados da República da Irlanda "
+"(Conexao_Data_Model_Counties). Os filtros públicos mostram apenas esta "
+"lista; este ecrã corrige os dados da taxonomia para que ela também "
+"corresponda."
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:241
+msgid "Condados aprovados"
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:244
+msgid "Termos fora da lista"
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:246
+msgid "Nenhum. A taxonomia corresponde aos 26 condados aprovados."
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:248
+msgid ""
+"Estes termos nunca aparecem nos filtros públicos. Reatribua os registos e "
+"remova o termo — nenhum registo é apagado."
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:253
+msgid "Nomes divergentes"
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:254
+msgid ""
+"O slug é aprovado mas o nome apresentado diverge da lista. Normalize o nome "
+"para o valor canónico."
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:289
+msgid "Registos reatribuídos e termo fora da lista removido."
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:290
+msgid ""
+"Registos reatribuídos, mas o termo ainda tem referências e NÃO foi removido. "
+"Reveja a lista e repita."
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:291
+msgid "Operação concluída."
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:292
+msgid "Nome do condado normalizado para o valor canónico."
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:293
+msgid "Não foi possível normalizar o nome deste termo."
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:294
+msgid "Termo inválido."
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:311
+msgid "County"
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:312
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:492
+msgid "Slug"
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:313
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:531
+msgid "Termo"
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:314
+msgid "Registos"
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:324
+msgid "ausente"
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:352
+msgid "Nenhum registo associado. O termo pode ser removido com segurança."
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:358
+msgid "objeto inexistente"
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:399
+msgid "Reatribuir os registos a:"
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:401
+msgid "— Sem condado (deixar sem atribuição) —"
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:408
+msgid "Pré-visualizar (sem escrever)"
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:410
+msgid "Reatribuir os registos e remover este termo? Nenhum registo é apagado."
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:410
+msgid "Aplicar reparação"
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:422
+msgid "Remover termo vazio"
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:440
+msgid "Pré-visualização da reparação"
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:445
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:542
+msgid "Sem condado"
+msgstr ""
+#. translators: %d: number of records.
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:453
+#, php-format
+msgid ""
+"Registos que serão reatribuídos: %d. O termo será removido apenas se não "
+"restarem referências. Nenhum registo é apagado."
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:464
+msgid "Registo"
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:465
+msgid "Tipo"
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:466
+msgid "Estado"
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:491
+msgid "Nome atual"
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:493
+msgid "Nome canónico"
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:494
+msgid "Ação"
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:508
+msgid "Normalizar nome"
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:527
+msgid "Última reparação"
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:530
+msgid "Data"
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:532
+msgid "Destino"
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:533
+msgid "Registos reatribuídos"
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:534
+msgid "Termo removido"
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:535
+msgid "Referências restantes"
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:540
+msgid "sim"
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-counties-admin.php:540
+msgid "não"
 msgstr ""
 #: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:170
 msgid "Publicação"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:264
+#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:214
+msgid ""
+"Este registo é a tradução. Agendamento, ativação, prioridade e preferência "
+"anual pertencem ao registo canónico (PT) e não podem ser alterados aqui."
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:322
 msgid "Onde este conteúdo aparece"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:266
-#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:623
+#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:324
+#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:624
 msgid "Ver no site ↗"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:270
-#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:627
+#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:328
+#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:628
 msgid "Visualizar rascunho ↗"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:274
+#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:332
 msgid "Página pública:"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:280
+#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:338
 #: wp-content/plugins/conexao-admin-ux/includes/class-leisure-image-admin.php:472
 msgid "Status"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:296
-#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:300
+#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:354
+#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:358
 msgid "Salvar rascunho"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:297
+#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:355
 msgid "Publicar"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:299
+#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:357
 msgid "Atualizar"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:315
-#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:644
+#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:373
+#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:645
 msgid "Arquivar"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:321
-#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:652
+#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:379
+#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:653
 msgid "Excluir permanentemente"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:326
+#. translators: %s: plural label of the content type.
+#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:386
 #, php-format
 msgid "Voltar para %s"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:358
+#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:422
 msgid "Importado automaticamente"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:363
+#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:427
 msgid "Fonte"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:366
+#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:430
 msgid "Importado"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:369
+#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:433
 msgid "Última verificação"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:372
+#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:436
 msgid "Abrir evento original ↗"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:821
+#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:886
 msgid "Não foi possível publicar."
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:829
+#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:894
 msgid "Preencha os campos obrigatórios antes de publicar."
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:188
-msgid "— Selecionar —"
-msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:218
-msgid "Nenhuma opção disponível."
-msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:297
-msgid "Nenhuma imagem selecionada"
-msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:299
-msgid "Selecionar imagem"
-msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:300
-msgid "Remover"
-msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:326
-msgid "Nenhum contato adicional."
-msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:327
-msgid "Adicionar contato"
-msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:340
+#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:76
+#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:385
 #: wp-content/plugins/conexao-admin-ux/includes/class-list.php:363
 msgid "Sim"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:347
+#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:77
+msgid "Não"
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:83
+msgid "Configuração partilhada: só pode ser editada no registo canónico (PT)."
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:219
+#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:233
+msgid "— Selecionar —"
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:224
+msgid "Lista fixa de 26 condados aprovados da República da Irlanda."
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:263
+msgid "Nenhuma opção disponível."
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:342
+msgid "Nenhuma imagem selecionada"
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:344
+msgid "Selecionar imagem"
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:345
+msgid "Remover"
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:371
+msgid "Nenhum contato adicional."
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:372
+msgid "Adicionar contato"
+msgstr ""
+#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:392
 msgid "—"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:760
+#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:927
 msgid "Tipo de contato"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:761
+#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:928
 msgid "Tipo…"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:774
+#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:941
 msgid "nome@exemplo.com"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:776
+#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:943
 msgid "https://wa.me/353… ou número com DDI"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:777
+#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:944
 msgid "https://"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:779
+#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:946
 msgid "Link do contato"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:782
+#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:949
 msgid "Mover para cima"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:783
+#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:950
 msgid "Mover para baixo"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:784
+#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:951
 msgid "Remover contato"
 msgstr ""
 #: wp-content/plugins/conexao-admin-ux/includes/class-leisure-image-admin.php:51
@@ -336,14 +510,15 @@ msgstr ""
 #: wp-content/plugins/conexao-admin-ux/includes/class-list.php:431
 msgid "Todos os condados"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:603
+#. translators: 1: number of records changed, 2: bulk action label.
+#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:604
 #, php-format
-msgid "%d %s com sucesso."
+msgid "%1$d %2$s com sucesso."
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:636
+#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:637
 msgid "Duplicar"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:652
+#: wp-content/plugins/conexao-admin-ux/includes/class-list.php:653
 msgid "Excluir"
 msgstr ""
 #: wp-content/plugins/conexao-admin-ux/includes/class-translation-state.php:202
@@ -407,5 +582,5 @@ msgstr ""
 
 #. Version of the plugin
 #: wp-content/plugins/conexao-admin-ux/conexao-admin-ux.php:1
-msgid "1.0.9"
+msgid "1.1.0"
 msgstr ""
