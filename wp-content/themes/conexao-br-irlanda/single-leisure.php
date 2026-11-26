@@ -255,9 +255,9 @@ if ( function_exists( 'conexao_b2_fallback_notice' ) ) {
 
 				<?php
 				// Phase 2 — practical notes + verification (individual page only).
-			if ( $leisure_practical_notes ) :
-			?>
-				<div class="leisure-single-block leisure-single--practical">
+				if ( $leisure_practical_notes ) :
+					?>
+						<div class="leisure-single-block leisure-single--practical">
 					<h2 class="leisure-single-block-title"><?php esc_html_e( 'Observações práticas', 'conexao-br-irlanda' ); ?></h2>
 					<div class="leisure-practical-notes">
 						<?php echo wp_kses_post( wpautop( $leisure_practical_notes ) ); ?>

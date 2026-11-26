@@ -843,7 +843,12 @@ class Conexao_Import_Log {
 			}
 		);
 
-		return array_map( static function ( $row ) { return $row['entry']; }, $keyed );
+		return array_map(
+			static function ( $row ) {
+				return $row['entry'];
+			},
+			$keyed
+		);
 	}
 
 	/**

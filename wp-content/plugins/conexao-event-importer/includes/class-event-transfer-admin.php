@@ -981,13 +981,13 @@ class Conexao_Event_Transfer_Admin {
 		<?php
 		if ( ! empty( $errors ) ) :
 		?>
-		<div class="notice notice-error is-dismissible">
-			<p><strong><?php esc_html_e( 'Errors', 'conexao-event-importer' ); ?></strong></p>
-			<ul class="conexao-import-errors">
-				<?php foreach ( $errors as $error_message ) : ?>
-					<li><?php echo esc_html( $error_message ); ?></li>
-				<?php endforeach; ?>
-			</ul>
+			<div class="notice notice-error is-dismissible">
+				<p><strong><?php esc_html_e( 'Errors', 'conexao-event-importer' ); ?></strong></p>
+				<ul class="conexao-import-errors">
+					<?php foreach ( $errors as $error_message ) : ?>
+						<li><?php echo esc_html( $error_message ); ?></li>
+					<?php endforeach; ?>
+				</ul>
 		</div>
 		<?php
 		endif;

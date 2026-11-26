@@ -403,7 +403,12 @@ class Conexao_Event_Cleanup_Admin {
 				<?php
 				$pending_retries = array();
 				if ( ! empty( $run_state['retry_queue'] ) ) {
-					$pending_retries = array_filter( $run_state['retry_queue'], function ( $e ) { return 'pending' === ( $e['status'] ?? '' ); } );
+					$pending_retries = array_filter(
+						$run_state['retry_queue'],
+						static function ( $e ) {
+							return 'pending' === ( $e['status'] ?? '' );
+						}
+					);
 				}
 				if ( ! empty( $pending_retries ) ) :
 				?>
@@ -422,10 +427,15 @@ class Conexao_Event_Cleanup_Admin {
 				<?php
 				$review_queue = Conexao_Event_Cleanup_Attachment_Review::read();
 				if ( ! empty( $review_queue['data']['entries'] ) ) :
-					$pending = array_filter( $review_queue['data']['entries'], function ( $e ) { return 'pending' === $e['status']; } );
+					$pending = array_filter(
+						$review_queue['data']['entries'],
+						static function ( $e ) {
+							return 'pending' === $e['status'];
+						}
+					);
 					if ( ! empty( $pending ) ) :
-				?>
-					<div class="notice notice-info is-dismissible">
+						?>
+							<div class="notice notice-info is-dismissible">
 						<p><strong><?php esc_html_e( 'Attachments preserved for manual review', 'conexao-event-importer' ); ?></strong></p>
 						<p><?php esc_html_e( 'These attachments were preserved (not deleted) after their event was deleted. Review them in the Media Library if needed.', 'conexao-event-importer' ); ?></p>
 						<ul style="list-style: disc; padding-left: 20px; margin: 8px 0 0;">
