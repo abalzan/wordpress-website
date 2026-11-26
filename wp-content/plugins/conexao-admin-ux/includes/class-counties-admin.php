@@ -520,7 +520,7 @@ final class Conexao_Admin_Ux_Counties_Admin {
 	 * @param array $last Stored last-run record.
 	 */
 	private function render_last_run( $last ) {
-		if ( empty( $last ) || ! is_array( $last ) ) {
+		if ( empty( $last ) ) {
 			return;
 		}
 

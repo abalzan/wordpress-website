@@ -169,21 +169,12 @@ final class Conexao_Event_Cleanup_Run {
 	}
 
 	/**
-	 * The cleanup engine (for eligibility + deletion).
-	 *
-	 * @var Conexao_Event_Cleanup
-	 */
-	private $engine;
-
-	/**
 	 * Constructor.
 	 *
-	 * @param Conexao_Event_Cleanup $engine Cleanup engine.
-	 * @param callable|null         $clock_fn Optional clock function for time-budget tracking.
-	 *                                        Defaults to a monotonic clock (hrtime if available, else microtime).
+	 * @param callable|null $clock_fn Optional clock function for time-budget tracking.
+	 *                                Defaults to a monotonic clock (hrtime if available, else microtime).
 	 */
-	public function __construct( Conexao_Event_Cleanup $engine, callable $clock_fn = null ) {
-		$this->engine   = $engine;
+	public function __construct( ?callable $clock_fn = null ) {
 		$this->clock_fn = $clock_fn ?? function (): float {
 			if ( function_exists( 'hrtime' ) ) {
 				return hrtime( true ) / 1e9;
@@ -955,9 +946,9 @@ final class Conexao_Event_Cleanup_Run {
 	/**
 	 * Record a failure for an event.
 	 *
-	 * @param array $run_state Run state (by reference).
-	 * @param int   $event_id  Event ID.
-	 * @param string $reason   Failure reason.
+	 * @param array  $run_state Run state (by reference).
+	 * @param int    $event_id  Event ID.
+	 * @param string $reason    Failure reason.
 	 */
 	private function record_failure( array &$run_state, int $event_id, string $reason ): void {
 		if ( ! isset( $run_state['failed_events'][ $event_id ] ) ) {

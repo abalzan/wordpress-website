@@ -575,7 +575,7 @@ jobs:
           WP_CONTAINER="$(docker compose ps -q wordpress)"
           [ -n "$WP_CONTAINER" ] || { echo "::error::no wordpress container"; exit 1; }
           for v in WORDPRESS_DB_HOST WORDPRESS_DB_NAME WORDPRESS_DB_USER WORDPRESS_DB_PASSWORD MYSQL_ROOT_PASSWORD; do
-            val="$(docker inspect -f '{{range .Config.Env}}{{println .}}{{end}}' "$WP_CONTAINER" 
+            val="$(docker inspect -f '{{range .Config.Env}}{{println .}}{{end}}' "$WP_CONTAINER" \
                    | grep "^$v=" | head -1 | cut -d= -f2-)"
             export "$v=$val"
           done

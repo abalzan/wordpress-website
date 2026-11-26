@@ -192,13 +192,13 @@ final class Conexao_Event_Cleanup_Retry_Queue {
 	 * value, computes the new value, and CAS-updates it. If the CAS fails
 	 * (0 rows), the caller must roll back.
 	 *
-	 * @param int   $event_id       Event ID to enqueue for retry.
-	 * @param array $failure_record The failure record from failed_events/failed_events_final.
-	 * @param int   $now            Current timestamp.
-	 * @param int   $capacity       Optional capacity override for testing (defaults to MAX_PENDING).
+	 * @param int      $event_id       Event ID to enqueue for retry.
+	 * @param array    $failure_record The failure record from failed_events/failed_events_final.
+	 * @param int      $now            Current timestamp.
+	 * @param int|null $capacity       Optional capacity override for testing (defaults to MAX_PENDING).
 	 * @return array { ok: bool, reason: string, pending_count: int }
 	 */
-	public static function enqueue_in_transaction( int $event_id, array $failure_record, int $now, int $capacity = null ): array {
+	public static function enqueue_in_transaction( int $event_id, array $failure_record, int $now, ?int $capacity = null ): array {
 		global $wpdb;
 
 		$option = self::option_name();

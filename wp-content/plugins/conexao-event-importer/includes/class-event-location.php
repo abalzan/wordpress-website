@@ -427,7 +427,7 @@ class Conexao_Event_Location {
 				error_log(
 					sprintf(
 						'[conexao-county] importer rejected county "%s" (not on the 26-county master list)',
-						is_scalar( $county_name ) ? (string) $county_name : gettype( $county_name )
+						(string) $county_name
 					)
 				);
 			}

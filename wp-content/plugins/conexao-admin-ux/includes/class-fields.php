@@ -655,14 +655,9 @@ final class Conexao_Admin_Ux_Fields {
 					continue;
 				}
 
-				if ( is_array( $term_value ) ) {
-					$term_ids = array_map( "absint", $term_value );
-					$term_ids = array_filter( $term_ids );
-					wp_set_object_terms( $post_id, array_values( $term_ids ), $taxonomy );
-				} else {
-					$term_id = absint( $term_value );
-					wp_set_object_terms( $post_id, $term_id ? array( $term_id ) : array(), $taxonomy );
-				}
+				$term_ids = array_map( "absint", $term_value );
+				$term_ids = array_filter( $term_ids );
+				wp_set_object_terms( $post_id, array_values( $term_ids ), $taxonomy );
 			}
 		}
 
@@ -1254,8 +1249,8 @@ final class Conexao_Admin_Ux_Fields {
 				$term = wp_insert_term( $town_meta, 'conexao_town' );
 			}
 			if ( $term && ! is_wp_error( $term ) ) {
-				$term_id = is_array( $term ) ? $term['term_id'] : $term;
-				wp_set_object_terms( $post_id, array( (int) $term_id ), 'conexao_town' );
+				$term_id = (int) $term['term_id'];
+				wp_set_object_terms( $post_id, array( $term_id ), 'conexao_town' );
 			}
 		} elseif ( '' === $town_meta && isset( $fields['event_town'] ) ) {
 			wp_set_object_terms( $post_id, array(), 'conexao_town' );

@@ -174,7 +174,7 @@ final class Conexao_Event_Importer {
 		$this->transfer  = new Conexao_Event_Transfer_Admin();
 		$this->image_sync = new Conexao_Event_Image_Sync_Admin();
 		$this->cleanup   = new Conexao_Event_Cleanup();
-		$this->cleanup_runner = new Conexao_Event_Cleanup_Run( $this->cleanup );
+		$this->cleanup_runner = new Conexao_Event_Cleanup_Run();
 		$this->cleanup_admin = new Conexao_Event_Cleanup_Admin( $this->cleanup, $this->cleanup_runner );
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_assets' ) );

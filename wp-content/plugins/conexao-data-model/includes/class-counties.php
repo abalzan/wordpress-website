@@ -279,7 +279,7 @@ final class Conexao_Data_Model_Counties {
 			return 0;
 		}
 
-		return isset( $created['term_id'] ) ? (int) $created['term_id'] : 0;
+		return (int) $created['term_id'];
 	}
 
 	/**
@@ -301,11 +301,15 @@ final class Conexao_Data_Model_Counties {
 	/**
 	 * Whether a term is a canonical county term (slug AND name agree).
 	 *
-	 * @param WP_Term $term Term object.
+	 * @param mixed $term Term object.
 	 * @return bool
 	 */
 	public static function is_canonical_term( $term ) {
-		if ( ! $term instanceof WP_Term || self::TAXONOMY !== $term->taxonomy ) {
+		if ( ! $term instanceof WP_Term ) {
+			return false;
+		}
+
+		if ( self::TAXONOMY !== $term->taxonomy ) {
 			return false;
 		}
 
@@ -449,7 +453,7 @@ final class Conexao_Data_Model_Counties {
 			sprintf(
 				/* translators: %s: rejected county value. */
 				__( '"%s" não é um dos 26 condados aprovados da República da Irlanda. Use a lista de condados.', 'conexao-data-model' ),
-				is_scalar( $term ) ? (string) $term : ''
+				(string) $term
 			),
 			array( 'status' => 400 )
 		);
@@ -461,10 +465,10 @@ final class Conexao_Data_Model_Counties {
 	 * A valid but loosely written value ("Co. Laois", "LAOIS") can therefore
 	 * never create a duplicate or a differently formatted term.
 	 *
-	 * @param array  $data     Term data (name, slug, term_group).
+	 * @param mixed  $data     Term data (name, slug, term_group).
 	 * @param string $taxonomy Taxonomy slug.
-	 * @param array  $args     Insert arguments.
-	 * @return array
+	 * @param mixed  $args     Insert arguments.
+	 * @return mixed
 	 */
 	public static function canonical_insert_data( $data, $taxonomy, $args ) {
 		unset( $args );
@@ -494,11 +498,11 @@ final class Conexao_Data_Model_Counties {
 	 * (which rejects the resulting duplicate slug); a rename to junk keeps the
 	 * current identity instead of corrupting the vocabulary.
 	 *
-	 * @param array  $data     Term data (name, slug, term_group, parent).
+	 * @param mixed  $data     Term data (name, slug, term_group, parent).
 	 * @param int    $term_id  Term id.
 	 * @param string $taxonomy Taxonomy slug.
-	 * @param array  $args     Update arguments.
-	 * @return array
+	 * @param mixed  $args     Update arguments.
+	 * @return mixed
 	 */
 	public static function guard_update_data( $data, $term_id, $taxonomy, $args ) {
 		unset( $args );
@@ -579,7 +583,7 @@ final class Conexao_Data_Model_Counties {
 			return;
 		}
 
-		$value = is_scalar( $value ) ? (string) $value : gettype( $value );
+		$value = (string) $value;
 
 		error_log(
 			sprintf(

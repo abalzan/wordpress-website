@@ -338,15 +338,15 @@ class Conexao_Event_Cleanup_Admin {
 					</div>
 					<div class="conexao-import-stat">
 						<span class="conexao-import-stat-label"><?php esc_html_e( 'Events deleted', 'conexao-event-importer' ); ?></span>
-						<span class="conexao-import-stat-value"><?php echo esc_html( (int) $run_state['events_deleted'] ); ?></span>
+						<span class="conexao-import-stat-value"><?php echo esc_html( (string) $run_state['events_deleted'] ); ?></span>
 					</div>
 					<div class="conexao-import-stat">
 						<span class="conexao-import-stat-label"><?php esc_html_e( 'Images preserved', 'conexao-event-importer' ); ?></span>
-						<span class="conexao-import-stat-value"><?php echo esc_html( (int) $run_state['images_preserved'] ); ?></span>
+						<span class="conexao-import-stat-value"><?php echo esc_html( (string) $run_state['images_preserved'] ); ?></span>
 					</div>
 					<div class="conexao-import-stat">
 						<span class="conexao-import-stat-label"><?php esc_html_e( 'Cursor', 'conexao-event-importer' ); ?></span>
-						<span class="conexao-import-stat-value"><?php echo esc_html( (int) $run_state['cursor_id'] ); ?></span>
+						<span class="conexao-import-stat-value"><?php echo esc_html( (string) $run_state['cursor_id'] ); ?></span>
 					</div>
 				</div>
 
@@ -400,9 +400,12 @@ class Conexao_Event_Cleanup_Admin {
 					</div>
 				<?php endif; ?>
 
-				<?php if ( ! empty( $run_state['retry_queue'] ) ) : ?>
+				<?php
+				$pending_retries = array();
+				if ( ! empty( $run_state['retry_queue'] ) ) {
 					$pending_retries = array_filter( $run_state['retry_queue'], function ( $e ) { return 'pending' === ( $e['status'] ?? '' ); } );
-					if ( ! empty( $pending_retries ) ) :
+				}
+				if ( ! empty( $pending_retries ) ) :
 				?>
 					<div class="notice notice-info is-dismissible">
 						<p><strong><?php esc_html_e( 'Events queued for retry', 'conexao-event-importer' ); ?></strong></p>
@@ -415,8 +418,7 @@ class Conexao_Event_Cleanup_Admin {
 							<?php endforeach; ?>
 						</ul>
 					</div>
-				<?php endif; endif; ?>
-
+				<?php endif; ?>
 				<?php
 				$review_queue = Conexao_Event_Cleanup_Attachment_Review::read();
 				if ( ! empty( $review_queue['data']['entries'] ) ) :
@@ -453,6 +455,7 @@ class Conexao_Event_Cleanup_Admin {
 							<?php endforeach; ?>
 						</ul>
 					</div>
+				<?php endif; ?>
 				<?php endif; ?>
 
 				<?php if ( in_array( $run_state['status'], array( 'running', 'paused_capacity', 'paused_capacity_review' ), true ) ) : ?>
@@ -582,12 +585,12 @@ class Conexao_Event_Cleanup_Admin {
 						<?php foreach ( array_slice( $history, 0, 20 ) as $entry ) : ?>
 							<tr>
 								<td><?php echo esc_html( $entry['time'] ); ?></td>
-								<td><?php echo esc_html( (int) $entry['events_found'] ); ?></td>
-								<td><?php echo esc_html( (int) $entry['events_deleted'] ); ?></td>
-								<td><?php echo esc_html( (int) $entry['images_evaluated'] ); ?></td>
-								<td><?php echo esc_html( (int) $entry['images_deleted'] ); ?></td>
-								<td><?php echo esc_html( (int) $entry['images_preserved'] ); ?></td>
-								<td><?php echo esc_html( (int) $entry['error_count'] ); ?></td>
+								<td><?php echo esc_html( (string) $entry['events_found'] ); ?></td>
+								<td><?php echo esc_html( (string) $entry['events_deleted'] ); ?></td>
+								<td><?php echo esc_html( (string) $entry['images_evaluated'] ); ?></td>
+								<td><?php echo esc_html( (string) $entry['images_deleted'] ); ?></td>
+								<td><?php echo esc_html( (string) $entry['images_preserved'] ); ?></td>
+								<td><?php echo esc_html( (string) $entry['error_count'] ); ?></td>
 							</tr>
 						<?php endforeach; ?>
 					</tbody>
