@@ -128,7 +128,17 @@ jobs:
         run: php scripts/generate-registry-docs.php --check
 
       - name: Quality gate — ./scripts/lint.sh
-        run: ./scripts/lint.sh
+        # The output is captured to an evidence file so the job summary and the
+        # artifact can be built from what ACTUALLY ran — no analyser is invoked
+        # a second time. `PIPESTATUS[0]` keeps the harness exit status, so
+        # capturing output can never convert a failure into a pass.
+        run: |
+          set -uo pipefail
+          mkdir -p "$RUNNER_TEMP/ci-evidence"
+          ./scripts/lint.sh 2>&1 | tee "$RUNNER_TEMP/ci-evidence/lint.log"
+          status="${PIPESTATUS[0]}"
+          echo "lint.sh exit status: $status"
+          exit "$status"
 
       - name: ShellCheck
         # setup-php does not provide ShellCheck; the runner image does, but
@@ -159,6 +169,61 @@ jobs:
         if: github.event_name == 'pull_request' && github.base_ref == 'master'
         run: |
           python3 scripts/validate-version-bumps.py --base-ref ${{ github.base_ref }} --head-ref ${{ github.head_ref }}
+
+      # ---------------------------------------------------------------------
+      # Diagnostics and reporting. None of these steps decides the verdict: the
+      # blocking gate above already did, and its exit status is the job's.
+      #
+      #   - the failure-only step re-runs the two analysers with a structured
+      #     report format so a red run leaves a machine-readable artifact
+      #     (`lint.sh` itself prints the human form);
+      #   - the summary step appends Markdown to `$GITHUB_STEP_SUMMARY`, so a
+      #     reviewer sees the counts and the failing lines without opening the
+      #     raw log;
+      #   - the upload keeps BOTH outcomes: on a green run it is the evidence
+      #     that the gate ran and what it measured, on a red run it is the
+      #     diagnosis.
+      #
+      # Nothing here uploads a secret: `lint.log`, `phpstan.json` and
+      # `phpcs.json` contain analyser output only. `docker compose config`, the
+      # container environment and `.env` are never captured.
+      # ---------------------------------------------------------------------
+      - name: Static-quality diagnostics (structured reports)
+        if: failure()
+        run: |
+          set -uo pipefail
+          EVIDENCE="$RUNNER_TEMP/ci-evidence"
+          mkdir -p "$EVIDENCE"
+          # Same configuration, same paths, same baseline as `composer analyse`;
+          # only the output format differs. `|| true` because a diagnostics step
+          # must never replace the reported failure with a second one.
+          vendor/bin/phpstan analyse --memory-limit=2G --no-progress \
+            --error-format=json > "$EVIDENCE/phpstan.json" 2>"$EVIDENCE/phpstan.err" || true
+          vendor/bin/phpcs -q --report=json --no-colors \
+            > "$EVIDENCE/phpcs.json" 2>"$EVIDENCE/phpcs.err" || true
+          ls -la "$EVIDENCE"
+
+      - name: Static-quality job summary
+        if: always()
+        run: |
+          set -uo pipefail
+          EVIDENCE="$RUNNER_TEMP/ci-evidence"
+          {
+            php scripts/ci-summary.php --kind=lint --log="$EVIDENCE/lint.log" || true
+            if [ -f "$EVIDENCE/phpstan.json" ]; then
+              php scripts/ci-summary.php --kind=phpstan --json="$EVIDENCE/phpstan.json" \
+                --title="PHPStan detail" || true
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload static-quality evidence
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: static-quality-evidence
+          path: ${{ runner.temp }}/ci-evidence
+          if-no-files-found: warn
+          retention-days: 30
 
   # ---------------------------------------------------------------------
   # Stage J — release integrity.
@@ -212,7 +277,18 @@ jobs:
       - name: Release-integrity gate
         # Builds twice, checks determinism, exclusions, the manifest contract,
         # allowlist enforcement and negative (tamper) proofs.
-        run: python3 tests/scripts/verify-release-integrity.py
+        #
+        # Output is captured so the job summary and the artifact can report the
+        # exact `FAIL:` lines that made the gate red, and `PIPESTATUS[0]` keeps
+        # the gate's own exit status (capturing never converts a failure).
+        run: |
+          set -uo pipefail
+          mkdir -p "$RUNNER_TEMP/ci-evidence"
+          python3 tests/scripts/verify-release-integrity.py 2>&1 \
+            | tee "$RUNNER_TEMP/ci-evidence/release-integrity.log"
+          status="${PIPESTATUS[0]}"
+          echo "verify-release-integrity.py exit status: $status"
+          exit "$status"
 
       - name: Build and verify the release record
         # The same commands a release performs locally, so a break in the
@@ -223,12 +299,23 @@ jobs:
           BUILD_OUTPUT_DIR="${RUNNER_TEMP}/dist" ./scripts/build-theme-zip.sh
           python3 scripts/release-manifest.py --verify --dist "${RUNNER_TEMP}/dist"
 
+      - name: Release-integrity job summary
+        if: always()
+        run: |
+          set -uo pipefail
+          {
+            php scripts/ci-summary.php --kind=release \
+              --log="$RUNNER_TEMP/ci-evidence/release-integrity.log" || true
+          } >> "$GITHUB_STEP_SUMMARY"
+
       - name: Upload the release manifest as evidence
         if: always()
         uses: actions/upload-artifact@v6
         with:
           name: release-manifest
-          path: ${{ runner.temp }}/dist/release.json
+          path: |
+            ${{ runner.temp }}/dist/release.json
+            ${{ runner.temp }}/ci-evidence/release-integrity.log
           if-no-files-found: warn
           retention-days: 30
 
@@ -283,6 +370,22 @@ jobs:
           status="${PIPESTATUS[0]}"
           echo "run-tests.sh --scripts-runtime exit status: $status"
           exit "$status"
+
+      - name: Script-contract job summary
+        if: always()
+        run: |
+          set -uo pipefail
+          EVIDENCE="$RUNNER_TEMP/ci-evidence"
+          {
+            echo "## Script contracts"
+            echo
+            for log in "$EVIDENCE/run-tests-scripts.log" "$EVIDENCE/run-tests-scripts-runtime.log"; do
+              [ -f "$log" ] || continue
+              php scripts/ci-summary.php --kind=harness --log="$log" \
+                --title="$(basename "$log")" || true
+              echo
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload script-contract evidence
         if: always()
@@ -721,10 +824,31 @@ jobs:
         run: |
           echo "##[group]Stage L verification"
           START=$(date +%s)
-          python3 scripts/verify-permanent-gates.py
+          mkdir -p "$RUNNER_TEMP/ci-evidence"
+          # `--out` pins the report to a STABLE artifact path. Without it the
+          # script writes `docs/evidence/<today>-stage-l/gate.json`, and a date
+          # in the name cannot be matched by a fixed workflow path — which is
+          # exactly why the previous upload missed the file on every run that did
+          # not happen to be that one date. It also keeps CI from mutating the
+          # checkout. Local runs are unchanged (no `--out` = the documented
+          # date-stamped evidence directory).
+          python3 scripts/verify-permanent-gates.py --out "$RUNNER_TEMP/ci-evidence/gate.json"
           END=$(date +%s)
           echo "Stage L verification duration: $((END - START))s"
           echo "##[endgroup]"
+
+      - name: Integration job summary
+        if: always()
+        run: |
+          set -uo pipefail
+          EVIDENCE="$RUNNER_TEMP/ci-evidence"
+          {
+            php scripts/ci-summary.php --kind=harness \
+              --log="$EVIDENCE/run-tests-php.log" --title="Test layers" || true
+            echo
+            php scripts/ci-summary.php --kind=gates \
+              --json="$EVIDENCE/gate.json" --title="Permanent invariant gates" || true
+          } >> "$GITHUB_STEP_SUMMARY"
 
       # -------------------------------------------------------------------
       # Failure diagnostics.
@@ -777,9 +901,11 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: integration-evidence
-          path: |
-            ${{ runner.temp }}/ci-evidence
-            docs/evidence/2026-09-26-stage-l/gate.json
+          # `gate.json` lands in this directory because the Stage L step above
+          # writes it with an explicit `--out`. A hard-coded
+          # `docs/evidence/<date>-stage-l/gate.json` path can never match the
+          # date the script computes at run time.
+          path: ${{ runner.temp }}/ci-evidence
           if-no-files-found: warn
           retention-days: 30
 
