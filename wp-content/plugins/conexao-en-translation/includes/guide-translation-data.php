@@ -474,7 +474,7 @@ function conexao_en_translation_guide_data_v1(): array {
 		// para Brasileiros: CNH, IDP e Reduced EDT", the documented successor of the
 		// former "Carteira de Motorista na Irlanda: Como Trocar a CNH" (id 463). The
 		// ONLY change is the stable key; every authored EN field below is byte-unchanged.
-		// Evidence: docs/reports/2026-09-30-en-rollout-blocker-resolution.md
+		// Evidence: docs/plugins/conexao-en-translation.md
 		'carteira-motorista-brasileiros'                => array(
 			'en_slug'             => 'driving-licence-in-ireland-how-to-exchange-your-cnh',
 			'en_title'            => 'Driving Licence in Ireland: How to Exchange Your CNH',
@@ -2646,7 +2646,7 @@ function conexao_en_translation_guide_data_v1(): array {
 		// row, so it cannot be reused here without creating a duplicate source.
 		// The retirement is recorded, not forgotten, in
 		// `includes/exclusions-data.php` (classification NO_REAL_PT_SOURCE) and
-		// evidenced in docs/reports/2026-09-30-en-pt-source-reconciliation.md.
+		// evidenced in docs/plugins/conexao-en-translation.md.
 		// No PT record is recreated and no PT identity is invented.
 		'assistencia-juridica-legal-aid-irlanda-brasileiros'     => array(
 			'en_slug'             => 'legal-aid-in-ireland-how-to-apply-for-civil-legal-aid',

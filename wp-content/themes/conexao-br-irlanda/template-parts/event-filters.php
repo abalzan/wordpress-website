@@ -82,7 +82,7 @@ if ( is_wp_error( $county_terms ) ) {
 // Towns used by published events, scoped to the selected county when one
 // is active (County -> City cascade — same helper the query layer relies on).
 // NOTE: The City (Cidade) filter has been removed from the visible interface
-// as part of a UX experiment (see docs/reports/2026-11-25-remove-city-filter.md).
+// as part of a UX experiment (see docs/routing.md).
 // The underlying town taxonomy and query handling remain intact for backward
 // compatibility with existing ?cidade= URLs and event detail pages.
 $town_terms = function_exists( 'conexao_get_event_towns' ) ? conexao_get_event_towns( $current_county ) : conexao_get_terms_for_post_type( 'conexao_town', 'event' );
@@ -258,7 +258,7 @@ $event_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int) $
 		// City (Cidade) filter intentionally removed from visible UI as part of UX experiment.
 		// The underlying town taxonomy and ?cidade= query parameter handling remain intact
 		// for backward compatibility with existing bookmarked URLs and event detail pages.
-		// See docs/reports/2026-11-25-remove-city-filter.md for details.
+		// See docs/routing.md for details.
 		?>
 
 		<?php if ( $has_category ) : ?>

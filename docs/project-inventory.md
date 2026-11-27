@@ -12,13 +12,13 @@ source. Do not hand-edit this table.
 | conexao-data-model | 1.8.0 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-data-model/` |
 | conexao-content | 1.0.1 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-content/` |
 | conexao-admin-ux | 1.1.0 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-admin-ux/` |
-| conexao-event-runtime | 1.2.3 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-event-runtime/` |
+| conexao-event-runtime | 1.2.4 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-event-runtime/` |
 | conexao-commemorative | 1.0.0 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-commemorative/` |
 | conexao-event-importer | 1.10.1 | tooling | active | no | yes | yes | `wp-content/plugins/conexao-event-importer/` |
 | conexao-leisure-migration | 2.1.0 | tooling | active | no | yes | yes | `wp-content/plugins/conexao-leisure-migration/` |
 | conexao-sponsor-migration | 1.1.0 | tooling | active | no | yes | yes | `wp-content/plugins/conexao-sponsor-migration/` |
 | conexao-translation-rollout | 1.2.0 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-translation-rollout/` |
-| conexao-en-translation | 1.5.0 | tooling | active | no | no | yes | `wp-content/plugins/conexao-en-translation/` |
+| conexao-en-translation | 1.5.1 | tooling | active | no | no | yes | `wp-content/plugins/conexao-en-translation/` |
 | conexao-translation-automation | 0.6.0 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-translation-automation/` |
 
 **Production steady state** (platform, `production: true`) - activate in this order: conexao-data-model -> conexao-content -> conexao-admin-ux -> conexao-event-runtime -> conexao-commemorative -> conexao-translation-rollout -> conexao-translation-automation.
@@ -92,25 +92,7 @@ None. Event importing and cleanup are manual, local-only operations (see docs/pl
 | `scripts/run-event-import.php` | Trigger event import |
 | `scripts/run-leisure-migration.php` | Run leisure migration |
 
-## Documentation Index
+## Documentation
 
-| Document | Path |
-|----------|------|
-| README (human) | `README.md` |
-| Agent orientation | `AGENTS.md` |
-| Architecture | `docs/architecture.md` |
-| Content model | `docs/content-model.md` |
-| Routing | `docs/routing.md` |
-| Frontend/UI | `docs/frontend.md` |
-| Development | `docs/development.md` |
-| Deployment | `docs/deployment.md` |
-| Plugin inventory | `docs/plugins/README.md` |
-| Data Model plugin | `docs/plugins/conexao-data-model.md` |
-| Content plugin | `docs/plugins/conexao-content.md` |
-| Admin UX plugin | `docs/plugins/conexao-admin-ux.md` |
-| Event Runtime plugin | `docs/plugins/conexao-event-runtime.md` |
-| Event Importer plugin | `docs/plugins/conexao-event-importer.md` |
-| Leisure Migration plugin | `docs/plugins/conexao-leisure-migration.md` |
-| Sponsor Migration plugin | `docs/plugins/conexao-sponsor-migration.md` |
-| Theme inventory | `docs/themes/README.md` |
-| Conexão BR Irlanda theme | `docs/themes/conexao-br-irlanda.md` |
+The documentation index has one owner: [`docs/README.md`](README.md). This page
+is a derived inventory only — it is not a second index.

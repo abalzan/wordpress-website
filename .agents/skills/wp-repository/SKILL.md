@@ -2,10 +2,12 @@
 
 ## Purpose
 
-The entry workflow every other skill is used from. It establishes where you are,
-what is authoritative, what the task actually is, what it must not touch, and
-what "done" means — before any file is edited. It also owns **scope control** and
-**reuse**, the two failures that produce the most expensive bad changes here.
+The entry workflow every other skill is used from. Before any file is edited it
+establishes where you are, what is authoritative, what the task actually is, the
+smallest correct scope, what it must not touch, and what "done" means. It owns
+**scope control**, **reuse** and **architecture boundaries** — the three failures
+that produce the most expensive bad changes here. Every step is cheap; a wrong
+scope is not.
 
 ## When to use
 
@@ -83,20 +85,33 @@ This skill owns **no** project data. Every fact it needs is read, never restated
    - generated regions: `scripts/generate-registry-docs.php`
    Copying a plugin, script or engine requires a **written justification** in the
    report. Silent duplication is a defect.
-8. **Keep one logical change per commit.** A behaviour-preserving refactor is
-   never mixed with a behaviour change. Force-pushing a shared branch is
-   forbidden; a history rewrite needs a recorded decision.
+8. **Implement incrementally, and test incrementally.** One logical change per
+   commit. Run the most targeted suite for the component you just touched, then
+   the layer, then the full suite — not the full suite on every save, and not
+   only the full suite at the end. A behaviour-preserving refactor is never mixed
+   with a behaviour change. Force-pushing a shared branch is forbidden; a history
+   rewrite needs a recorded decision.
 9. **Define done before you start**, from `docs/engineering-standard.md` §14, with
    the command that will produce each number.
-10. **Review against the standard** when the change is complete: scope, one
-    source of truth, tests that discriminate, docs updated in the same change,
-    no unintended production or mobile scope.
+10. **Review your own diff before reporting.** `git diff` from the base, and
+    check: only the files the plan named; no debug code, no stray `var_dump`, no
+    commented-out block; no generated region hand-edited; escaping, capability
+    and nonce checks present where the diff touches a request or a write; no
+    unrelated formatting churn. Then check the change against
+    `docs/engineering-standard.md` §14: scope, one source of truth, tests that
+    discriminate, docs updated in the same change, no unintended production or
+    mobile scope.
 
 
 ## Guardrails
 
 - **Read `AGENTS.md` and the standard before changing code.** Orientation is not
   optional and is not skippable because the change "looks small".
+- **Respect the theme/plugin split.** Domain logic, data model, importers,
+  migrations and admin capabilities belong to a plugin; templates, template
+  parts, CSS and browser-facing behaviour belong to the theme. A template that
+  owns a domain rule, or a plugin that owns page markup, is a defect even when it
+  works. See `docs/architecture.md`.
 - **Never introduce a second source of truth.** Any list that must stay in sync
   (plugin load order, activation order, build list, compose mounts, versions,
   routes, script inventory) is generated from one source or checked by CI. If you
@@ -120,12 +135,15 @@ This skill owns **no** project data. Every fact it needs is read, never restated
 
 ```bash
 git status --short                             # only intended files
+git diff                                      # read your own diff
+./scripts/run-tests.sh --only <component>      # targeted suite first
+./scripts/run-tests.sh                         # then the whole contract
 php scripts/generate-registry-docs.php --check # 0 writes, no drift
-./scripts/run-tests.sh                         # the whole contract
 ./scripts/lint.sh                              # syntax + PHPCS + PHPStan
 python3 tests/scripts/verify-agent-governance.py
 ```
 
+- The targeted suite ran **before** the full suite, and both results are reported.
 - The working tree contains only the files the plan named.
 - Every canonical document the change depends on was read, not guessed.
 - No list is now maintained in two places.
@@ -133,6 +151,10 @@ python3 tests/scripts/verify-agent-governance.py
 
 ## Failure handling
 
+- **A production or destructive action lacks explicit written authorisation.**
+  Stop. Do not infer permission from "it will probably be fine", from a previous
+  task, or from the existence of a script. Report `BLOCKED`, name the exact action
+  and what authorisation would be needed, and do nothing else.
 - **You cannot find an authoritative source for a fact you need.** Do not invent
   one. Record the gap; either the change adds the owner (and the fact) or the
   change is blocked. State it in the report's limitations.
@@ -167,7 +189,9 @@ evidence file is ever added at the repository root.
 - [ ] Every fact the change depends on has exactly one named authoritative source.
 - [ ] No shared engine was copied; any copy has a written justification.
 - [ ] One logical change per commit; no refactor mixed with a behaviour change.
+- [ ] The targeted suite ran before the full suite, and your own diff was reviewed.
+- [ ] Architecture boundaries held: domain logic in a plugin, presentation in the theme.
 - [ ] `docs/engineering-standard.md` §14 is satisfied, with real numbers.
 - [ ] The Flutter/mobile repository was not touched; no production write occurred.
 
-_Last verified: 2026-11-09 by the agent skills review and hardening_
+_Last verified: 2026-11-27 by the documentation and agent-skill rationalisation_

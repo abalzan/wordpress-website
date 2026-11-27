@@ -7,7 +7,7 @@
 # It exists so the password never appears in a host command line, a Docker
 # `-e NAME=value` argument, `ps` argv, shell history or a log.
 #
-# Contract (see docs/evidence/2026-11-16-stage-4/06-tests-and-gates.md):
+# Contract (see docs/testing.md, "Isolated database for WordPress-dependent tests"):
 #
 #   1. The host runner copies the protected `.conexao-test.env` (mode 0600,
 #      containing only CONEXAO_TEST_DB_USER and CONEXAO_TEST_DB_PASSWORD)

@@ -8,7 +8,7 @@ writes screenshots plus one JSON report into the directory you give it. A produc
 host is refused outright.
 
 Why a signed preview: the defect this script guards
-(`docs/reports/2026-11-06-christmas-landing-page-active-dispatch-fix.md`) only
+(`docs/commemorative-events.md`) only
 exists while the Christmas occurrence is inside its window, which is not the case
 for most of the year. The signed, capability-gated preview is the engine's own
 sanctioned way to request that state without touching data or the clock.

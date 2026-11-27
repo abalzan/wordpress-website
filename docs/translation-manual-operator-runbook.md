@@ -46,9 +46,8 @@ identify PT scope → inventory → manifest → dry-run → snapshot → review
 | **Never** | Changes Portuguese content. PT is canonical and immutable. |
 
 There is **no cron, no webhook, no automatic trigger, no external broker and no
-permanent provider credential**. Automatic translation was retired in Stage 17
-([report](reports/2026-10-02-stage-17-retire-automatic-translation.md)) and
-the machine-checkable statement of that is
+permanent provider credential**. Automatic translation was retired in Stage 17,
+and the machine-checkable statement of that is
 `tests/scripts/verify-stage17-retirement.py`, which fails closed if any of it
 returns.
 

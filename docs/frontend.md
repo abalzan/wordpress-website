@@ -337,12 +337,10 @@ visible keyboard focus, and no focus trap. The hero content is inert while the
 presentation is open. Bats use short CSS flight and wing animations; reduced
 motion disables them. The seasonal styles live in
 `wp-content/themes/conexao-br-irlanda/assets/css/main.css` and behavior in the
-existing `assets/js/main.js` bundle. See the
-[theme reference](themes/conexao-br-irlanda.md#seasonal-halloween-welcome) and
-[homepage report](reports/2026-10-26-halloween-homepage-report.md) for the
-presentation foundation and the
-[theme compatibility report](reports/2026-10-27-halloween-theme-compatibility-report.md)
-for the theme-specific verification.
+existing `assets/js/main.js` bundle. The
+[theme reference](themes/conexao-br-irlanda.md#seasonal-halloween-welcome) owns
+the presentation foundation; the light/dark treatment rules below are the
+contract.
 
 The Halloween palette is scoped to the presentation and temporary navigation
 effect layer. Light mode uses a warm cream card, deep-plum text, and shaded
@@ -379,9 +377,8 @@ Reduced-motion users receive neither a persisted nor resumed effect, and the
 witch is hidden by the reduced-motion stylesheet. Welcome-card dismissal
 remains a separate key and does not disable nav effects. The witch appears
 only while the existing selected occasion emits the Halloween marker; no
-date/window logic is duplicated. See the [navigation continuity report](reports/2026-10-27-halloween-navigation-continuity-report.md)
-and [witch animation report](reports/2026-10-27-halloween-witch-animation-report.md)
-for implementation and verification details.
+date/window logic is duplicated. **These rules are the contract**; the theme
+tests named in `docs/themes/conexao-br-irlanda.md` assert them.
 
 ### Occasional mobile appearances
 
@@ -410,17 +407,7 @@ spontaneous layer. The welcome-card dismissal remains independent, and theme
 changes recolor an in-flight effect through the existing `data-theme` tokens
 without restarting the timer. `prefers-reduced-motion: reduce` prevents new
 surprises and disables any in-flight CSS animation. The system adds no
-persistent preference, sound, asset request, or animation loop. See the
-[mobile experience report](reports/2026-10-27-halloween-mobile-experience-report.md)
-for actual responsive and timing evidence.
+persistent preference, sound, asset request, or animation loop. The cadence and
+bounds above are the contract, asserted by the seasonal theme tests.
 
-_Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_
-_Last verified: 2026-10-03 by Stage 20 — hero preload fallback (Firefox speculative-loader cost bound)_
-
-_Last verified: 2026-10-08 by the Apoiadores single-page directory change (single-page directory; the shared pagination component renders nothing)_
-_Last verified: 2026-10-10 by UI polish Phase 3 — card-CTA 44px floor, single editorial measure, component-heading tokens_
-_Last verified: 2026-10-26 by Halloween homepage presentation refinement_
-_Last verified: 2026-10-27 by Halloween navigation continuity_
-_Last verified: 2026-10-27 by Halloween witch animation_
-_Last verified: 2026-10-27 by Halloween theme compatibility_
-_Last verified: 2026-10-27 by Halloween mobile spontaneous appearances_
+_Last verified: 2026-11-27 by the documentation and agent-skill rationalisation (design-token, cache-key and CSS-load-order claims re-checked; links repaired after the historical-document prune)_

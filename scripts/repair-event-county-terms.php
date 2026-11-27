@@ -3,7 +3,7 @@
  * Repair the missing `conexao_county` term on Events imported from a source
  * whose county hint is (or was) empty.
  *
- * Stage 7.x. See docs/reports/2026-09-26-stage7-laois-events-visibility-plan.md.
+ * Taxonomy policy: docs/content-model.md.
  *
  * ## Root cause this script corrects
  *

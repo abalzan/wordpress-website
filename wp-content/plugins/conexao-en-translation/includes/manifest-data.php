@@ -430,7 +430,7 @@ function conexao_en_translation_manifest_data(): array {
 			// title, excerpt, meta description, body) are byte-unchanged; the row moved
 			// here from the `guide` block because the real PT record is a `post`
 			// (production id 25028), not a `guide`. Evidence and the full source table:
-			// docs/reports/2026-09-30-en-rollout-blocker-resolution.md
+			// docs/plugins/conexao-en-translation.md
 			'outono-irlanda-alimentacao-bem-estar'       => array(
 				'en_slug'             => 'autumn-in-ireland-eating-and-wellbeing',
 				'en_title'            => 'Autumn has arrived in Ireland… and so has the change in our bodies',

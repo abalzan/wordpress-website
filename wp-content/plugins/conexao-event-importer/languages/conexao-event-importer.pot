@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-26 22:41+0000\n"
+"POT-Creation-Date: 2026-11-27 11:56+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 
 
@@ -2345,7 +2345,7 @@ msgid ""
 "%3$d, re-validating %4$d page(s) of overlap)."
 msgstr ""
 #. translators: 1: source that was rate limited first, 2: cooldown in minutes
-#: wp-content/plugins/conexao-event-importer/includes/sources/class-eventbrite-source.php:538
+#: wp-content/plugins/conexao-event-importer/includes/sources/class-eventbrite-source.php:537
 #, php-format
 msgid ""
 "Not attempted: Eventbrite already rate-limited source %1$s earlier in this "
@@ -2353,12 +2353,12 @@ msgid ""
 "individually later, after at least %2$d minutes."
 msgstr ""
 #. translators: %s: discovery URL
-#: wp-content/plugins/conexao-event-importer/includes/sources/class-eventbrite-source.php:569
+#: wp-content/plugins/conexao-event-importer/includes/sources/class-eventbrite-source.php:568
 #, php-format
 msgid "Failed to fetch Eventbrite discovery page: %s"
 msgstr ""
 #. translators: 1: declared object count, 2: page count, 3: page size
-#: wp-content/plugins/conexao-event-importer/includes/sources/class-eventbrite-source.php:657
+#: wp-content/plugins/conexao-event-importer/includes/sources/class-eventbrite-source.php:656
 #, php-format
 msgid ""
 "Eventbrite enumeration is INCOMPLETE: this listing declares %1$d objects but "
@@ -2367,19 +2367,19 @@ msgid ""
 "source_not_found)."
 msgstr ""
 #. translators: 1: last completed page, 2: total pages
-#: wp-content/plugins/conexao-event-importer/includes/sources/class-eventbrite-source.php:713
+#: wp-content/plugins/conexao-event-importer/includes/sources/class-eventbrite-source.php:712
 #, php-format
 msgid ""
 "Eventbrite import reached its time budget after page %1$d/%2$d — remaining "
 "pages will be picked up by the next run."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/sources/class-eventbrite-source.php:732
+#: wp-content/plugins/conexao-event-importer/includes/sources/class-eventbrite-source.php:731
 msgid ""
 "Eventbrite deferred the next request because its pacing wait did not fit the "
 "invocation window; the source remains resumable and was not budget-exhausted."
 msgstr ""
 #. translators: 1: page number, 2: total pages, 3: first page reached
-#: wp-content/plugins/conexao-event-importer/includes/sources/class-eventbrite-source.php:784
+#: wp-content/plugins/conexao-event-importer/includes/sources/class-eventbrite-source.php:783
 #, php-format
 msgid ""
 "Eventbrite stopped this source at page %1$d/%2$d because it is rate limiting "
@@ -2387,7 +2387,7 @@ msgid ""
 "retried on a later run."
 msgstr ""
 #. translators: %s: reason the walk is incomplete
-#: wp-content/plugins/conexao-event-importer/includes/sources/class-eventbrite-source.php:910
+#: wp-content/plugins/conexao-event-importer/includes/sources/class-eventbrite-source.php:909
 #, php-format
 msgid ""
 "Eventbrite enumeration is INCOMPLETE (%s). Events absent from this walk will "

@@ -16,5 +16,5 @@ was invented: the standard's drift protection is the
 `.agents/skills/*/SKILL.md` structure plus the CI governance gate
 (`tests/scripts/verify-agent-governance.py`), not a hash manifest.
 
-Moved by Stage K (2026-09-26). Rationale, evidence and negative proofs:
-`docs/evidence/2026-09-26-stage-k/`.
+Moved out of the active namespace by Stage K (2026-09-26); the rationale and
+negative proofs are recorded in the Git history of that change.

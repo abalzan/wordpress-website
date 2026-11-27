@@ -56,8 +56,7 @@ function conexao_en_translation_exclusions_v1(): array {
 			'stage'          => 'en-guide',
 			'en_slug'        => 'brazilian-driving-licence-in-ireland-theory-test-and-learner-permit',
 			'retired_on'     => '2026-09-30',
-			'evidence'       => 'docs/reports/2026-09-30-en-pt-source-reconciliation.md; '
-				. 'docs/evidence/2026-09-30-en-pt-source-reconciliation/08-row1-exhaustive.txt',
+			'evidence'       => 'docs/plugins/conexao-en-translation.md (exclusions)',
 		),
 	);
 }

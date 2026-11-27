@@ -10,7 +10,7 @@
  * rate limiting as a *condition*.
  *
  * The measured baseline shows what that produced (see
- * `docs/reports/2026-10-04-eventbrite-rate-limit-strategy.md`):
+ * `docs/plugins/conexao-event-importer.md (Eventbrite pacing and rate-limit handling)`):
  *
  *   - a 49-page Cork walk fetched 7 pages, then received HTTP 429;
  *   - the 429 page was retried three times at ~2 s and ~4 s and stayed 429;

@@ -33,7 +33,7 @@
  * ## Default ceiling
  *
  * The default is chosen from the measured post-G1–G3 runtime baseline, not
- * guessed. See `docs/reports/2026-10-03-event-import-g4.md` §G4C for the numbers
+ * guessed. See `docs/plugins/conexao-event-importer.md (Request efficiency, retry policy and bounded execution)` §G4C for the numbers
  * and the rationale; the ceiling is comfortably above the largest legitimate
  * observed source and well below a runaway.
  *

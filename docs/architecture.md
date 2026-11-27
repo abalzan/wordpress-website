@@ -39,13 +39,13 @@ Plugins load in registry order, and dependencies always precede their dependents
 1. **conexao-data-model** (`platform`, active) v1.8.0. **Required on production.**
 2. **conexao-content** (`platform`, active) v1.0.1. **Required on production.**
 3. **conexao-admin-ux** (`platform`, active) v1.1.0. **Required on production.**
-4. **conexao-event-runtime** (`platform`, active) v1.2.3. **Required on production.** Declared dependencies (`Requires Plugins` header): `conexao-data-model`.
+4. **conexao-event-runtime** (`platform`, active) v1.2.4. **Required on production.** Declared dependencies (`Requires Plugins` header): `conexao-data-model`.
 5. **conexao-commemorative** (`platform`, active) v1.0.0. **Required on production.** Declared dependencies (`Requires Plugins` header): `conexao-data-model`.
 6. **conexao-event-importer** (`tooling`, active) v1.10.1. **Never required on production.** Declared dependencies (`Requires Plugins` header): `conexao-data-model`, `conexao-event-runtime`.
 7. **conexao-leisure-migration** (`tooling`, active) v2.1.0. **Never required on production.**
 8. **conexao-sponsor-migration** (`tooling`, active) v1.1.0. **Never required on production.**
 9. **conexao-translation-rollout** (`platform`, active) v1.2.0. **Required on production.**
-10. **conexao-en-translation** (`tooling`, active) v1.5.0. **Never required on production.** Declared dependencies (`Requires Plugins` header): `conexao-translation-rollout`.
+10. **conexao-en-translation** (`tooling`, active) v1.5.1. **Never required on production.** Declared dependencies (`Requires Plugins` header): `conexao-translation-rollout`.
 11. **conexao-translation-automation** (`platform`, active) v0.6.0. **Required on production.** Declared dependencies (`Requires Plugins` header): `conexao-translation-rollout`.
 
 The authoritative registry is [`plugins.json`](../plugins.json): the load order, the
@@ -91,8 +91,7 @@ were historical rollout containers; their authored translation data had already
 been consolidated into the shared stages, which was proved before deletion. They
 were never part of the production steady state and were never in a release ZIP,
 so removing them changes no runtime and no deployed artifact. Their historical
-implementation and provenance remain recoverable from Git history and from the
-stage reports under [`docs/reports/`](reports/).
+implementation and provenance remain recoverable from Git history.
 
 One consequence is recorded honestly rather than hidden: the retired **job**
 rollout's authored manifest is **not** represented by an active stage. `job` is
@@ -133,5 +132,5 @@ See `docs/themes/conexao-br-irlanda.md` §Runtime Architecture for the full modu
 - Handles: titles, meta descriptions, canonical URLs, hreflang, Open Graph, Twitter Cards, schema.org, breadcrumbs, XML sitemap, robots.txt, redirects.
 - WordPress core sitemap disabled in favor of custom lightweight sitemap.
 - English-to-Portuguese redirects at two levels: `.htaccess` (Apache) and `inc/seo/redirects.php` (PHP).
-_Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_
-_Last verified: 2026-09-29 by the production artifact version bump (generated plugin registry regions regenerated)_
+
+_Last verified: 2026-11-27 by the documentation and agent-skill rationalisation (plugin/theme boundaries and load order re-verified against plugins.json and wp-content/)_

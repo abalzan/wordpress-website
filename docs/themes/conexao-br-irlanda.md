@@ -24,7 +24,7 @@ Modern community portal theme for Conexão BR Irlanda. Features a green/orange p
 | `home.php` | `/blog/` | Blog archive |
 | `search.php` | `/search/` | Search results |
 | `404.php` | 404 | 404 page |
-| `header.php` | All | Site header, nav, mobile menu. The header hosts the "Anuncie Aqui" CTA in three responsive forms — full-text `.header-cta` (>1024px), compact `.header-cta-compact` in the mobile/tablet top bar (≤1024px; labelled ≥480px, 48px icon pill below), and the full-text drawer instance `.mobile-menu-cta` — all pointing to `/anuncie/`. In dark mode all three keep a white label + upload icon on the unchanged orange accent (the shared accent-CTA rule in `dark-mode.css` pins them). See `docs/ui/mobile-anuncie-aqui-cta-report.md` |
+| `header.php` | All | Site header, nav, mobile menu. The header hosts the "Anuncie Aqui" CTA in three responsive forms — full-text `.header-cta` (>1024px), compact `.header-cta-compact` in the mobile/tablet top bar (≤1024px; labelled ≥480px, 48px icon pill below), and the full-text drawer instance `.mobile-menu-cta` — all pointing to `/anuncie/`. In dark mode all three keep a white label + upload icon on the unchanged orange accent (the shared accent-CTA rule in `dark-mode.css` pins them). |
 | `footer.php` | All | Site footer |
 | `sidebar.php` | All | Sidebar widget area |
 | `comments.php` | Posts | Comments template |
@@ -98,9 +98,8 @@ treatment or a midnight-plum/warm-amber dark treatment. Inline pumpkin artwork
 and active CSS effects inherit those values directly; the toggle changes colors
 in place without a second theme state, animation restart, or change to the
 session-only welcome dismissal. The witch retains its locally stored SVG and
-warm outline, with CSS rim lighting for separation against both themes. See
-the [theme compatibility report](../reports/2026-10-27-halloween-theme-compatibility-report.md)
-for the measured light/dark treatment.
+warm outline, with CSS rim lighting for separation against both themes. **The
+light/dark treatment rules here are the contract.**
 
 The header navigation marker is emitted only while the existing occasion
 engine selects Halloween. Eligible same-origin navigation effects use a
@@ -111,9 +110,8 @@ expiry. Four restrained CSS sparkles follow the witch. Its locally stored SVG
 (`assets/images/halloween/witch-broom.svg`) is requested only when selected.
 The existing single-active-effect guard prevents overlap, link activation is
 not delayed, and reduced motion prevents persistence and replay and hides the
-witch. The handoff does not share the welcome-card dismissal state. See the
-[navigation continuity report](../reports/2026-10-27-halloween-navigation-continuity-report.md)
-and [witch animation report](../reports/2026-10-27-halloween-witch-animation-report.md).
+witch. The handoff does not share the welcome-card dismissal state. **These
+timings are the contract**, asserted by `test-seasonal-halloween-nav-effects.php`.
 
 The same initializer also owns sparse, spontaneous mobile appearances; it does
 not add another seasonal system. It requires the existing Halloween marker,
@@ -124,9 +122,9 @@ reject visible content and controls; a dense screen is allowed to skip an
 appearance. The one timer pauses across hidden/ineligible states, direct
 navigation remains higher priority, the welcome dismissal stays independent,
 and theme changes remain CSS-only. Reduced motion suppresses scheduling and
-animation. Full behavior and browser evidence are recorded in the
-[frontend contract](../frontend.md#occasional-mobile-appearances) and
-[mobile experience report](../reports/2026-10-27-halloween-mobile-experience-report.md).
+animation. Full behavior is in the
+[frontend contract](../frontend.md#occasional-mobile-appearances); **the cadence
+above is the contract**, asserted by the seasonal theme tests.
 
 ## Commemorative presentation framework (r10 Stages 4–6)
 
@@ -192,10 +190,6 @@ sponsor carousel. The band that used to sit in the hero (and the
 | What in the signed private preview? | The template marks BOTH the root and the dialog with `data-ce-welcome-preview="1"`. The controller then **auto-opens the same modal** as the public view — no click, no trigger — while its close never reads or writes `ce_christmas_welcome_dismissed_v1`, so a reload (or a preview opened after a public dismissal) shows the popup again. The card is pinned below the preview notice, the WordPress admin bar and the sticky header through the measured `--ce-xmas-welcome-obstruction-top`, and the preview-only backdrop tint keeps the notice readable above the card. Closing leaves state `preview`: nothing in the hero flow, no card, no trigger. Preview authorisation, signatures and WordPress data are untouched; `ConexaoChristmas.openWelcome()` remains available to drive it programmatically. |
 | What about the old `[data-ce-reveal]` hooks? | `template-parts/commemorative/homepage-hero.php` still ships a `<noscript>` block for `[data-ce-reveal]` / `[data-ce-dismiss]`. Those hooks are real for **Halloween** and have always been inert for Christmas (the Christmas hero never carried them), so the welcome ships its own explicit contract above instead of relying on them. |
 
-_Last verified: 2026-11-06 by the Christmas homepage welcome modal_
-_Last verified: 2026-11-06 by the Christmas homepage popup UI fix (closed dialog, compact fallback, preview trigger, no reserved band)_
-_Last verified: 2026-11-07 by the Christmas welcome top-of-screen popup fix (preview auto-open, top-pinned card, notice-safe backdrop)_
-
 ## Homepage Apoiadores Carousel
 
 The Featured Apoiadores carousel is a compact supporting showcase **inside the homepage Hero** (right-hand column beside the copy at every breakpoint, including mobile), rendered by the reusable template part `template-parts/featured-sponsors.php`. It is a responsive, dependency-free carousel over the **existing sponsor data model** — no new content type, no duplicated supporter data:
@@ -259,7 +253,7 @@ Features:
 - Eventos archive filter (`initEventFilters`, same `initDirectoryFilters` contract as the agency directory — see `template-parts/event-filters.php`): server-side, URL-driven filtering of `/eventos/` via the event dimensions `?county=` (Localização), `?cidade=` (Cidade) and `?categoria=` (Categoria) — single-select per dimension, AND-combined (`?county=laois&cidade=portlaoise` = Laois AND Portlaoise), option URLs built through `conexao_event_filter_url()` (full state preserved, page cursor resets). Desktop: three hyperlink dropdowns (disclosure pattern: a trigger button with `aria-expanded` + `aria-controls` over a named group of plain hyperlinks — the options keep their native link role and the active one is marked `aria-current="true"`, never `role="option"` — active dot + selected value on the trigger, client-side search in the Localização/Cidade popovers when the option list is long), active-filter chips, "Limpar filtros" and a `role="status"` result count. Mobile: "Filtrar" bottom sheet (radio fieldsets + search; a radio change applies immediately by navigating to the clean filtered URL, empty "Todas"/"Todos" values stripped) — the County → City cascade stays server-side, so a county change re-renders the scoped town list and no invalid County + City combination can be built from the UI. Styling: `.event-filters-*` in `main.css` + `dark-mode.css` (39c).
 - Sponsors carousel (homepage Apoiadores: scroll-snap track, arrows, keyboard nav, adaptive static mode, 10-second autoplay on the Hero variant with pause-on-interaction and reduced-motion support)
 - Infinite scroll (`initInfiniteScroll`) — progressive enhancement on the Blog (`/blog/`), Guias (`/guias/`), Lazer (`/lazer/`), **Eventos (`/eventos/`)** and **Cursos (`/cursos/`)** archives, plus the Blog's own category-filtered views (`/blog/?categoria=slug`), and the unified Empregos directory (`/empregos/` — a static page, so pagination there is a hand-rendered `?pagina=N` component over the already-filtered merged opportunities array in `template-parts/employment-opportunities.php`: 24 cards per page, stable `id="opp-{key}"` per card, pagination URLs preserve every active filter, filter links never carry `pagina`). Grids are tagged `data-infinite-scroll` in `home.php`/`archive.php`; the JS reads the next-page URL from the server-rendered `.conexao-pagination` component, fetches the real `/page/N/` URL (so `?categoria=`/`?county=` filters and main-query ordering are preserved by construction), parses the document, dedupes by `id="post-{ID}"`, and appends the cards via an IntersectionObserver sentinel (no scroll listeners). One request at a time; `history.pushState` per loaded page; `aria-live="polite"` loading state; manual "Tentar novamente" retry on error; observer disconnects at the end of pagination. A `pageshow` (bfcache) guard resets an in-flight request abandoned by back/forward navigation so scrolling continues where it stopped. Without JavaScript the numeric pagination keeps rendering and working — it is only hidden via the `.conexao-pagination--infinite-hidden` class when the enhancement initializes.
-- Manual Load More (`initLoadMore`) — explicit "Carregar mais" button; **no archive currently uses it** (Cursos was the last one and was retagged to infinite scroll in the 2026-10-18 change — see `docs/reports/2026-10-18-cursos-infinite-scroll-plan.md`). The handler stays in `main.js` and binds to any grid tagged `data-load-more` in `archive.php`; the mechanism is otherwise identical to infinite scroll (next-page URL read from the server-rendered pagination component, real `/page/N/` fetch, `id="post-{ID}"` dedupe, append-only). The button is disabled with a "Carregando..." label while the request is active, announces "Mais N cursos carregados." via an `aria-live="polite"` status region, has a visible `:focus-visible` outline, is re-enabled by a `pageshow` (bfcache) guard after back/forward cache restore, and is removed with a "Você chegou ao fim." note when no further page exists. Without JavaScript the numeric pagination keeps working untouched. (Eventos was retagged to infinite scroll in the 2026-10-17 change — see `docs/reports/2026-10-17-eventos-infinite-scroll-plan.md`.)
+- Manual Load More (`initLoadMore`) — explicit "Carregar mais" button; **no archive currently uses it** (Cursos was the last one and was retagged to infinite scroll). The handler stays in `main.js` and binds to any grid tagged `data-load-more` in `archive.php`; the mechanism is otherwise identical to infinite scroll (next-page URL read from the server-rendered pagination component, real `/page/N/` fetch, `id="post-{ID}"` dedupe, append-only). The button is disabled with a "Carregando..." label while the request is active, announces "Mais N cursos carregados." via an `aria-live="polite"` status region, has a visible `:focus-visible` outline, is re-enabled by a `pageshow` (bfcache) guard after back/forward cache restore, and is removed with a "Você chegou ao fim." note when no further page exists. Without JavaScript the numeric pagination keeps working untouched. (Eventos was retagged to infinite scroll.)
 - Lazer location services (`initLeisureProximity` + `assets/js/leisure-proximity.js`) — proximity ordering + distance estimates on `/lazer/` and `/en/lazer/`; the service starts automatically and there is **no in-header control** since the 2026-11-05 cleanup (see the dedicated section below).
 
 ## Lazer location services (proximity ordering + distance estimates)
@@ -281,7 +275,7 @@ the archive header stays identical to every other archive header.
 > **History.** Until 2026-11-05 the request was gated behind an in-header
 > "Mostrar distância de mim" button. That button was removed as a UI cleanup and
 > the automatic start keeps the feature working without any control — see
-> `docs/reports/2026-11-05-lazer-proximity-button-removal.md`.
+> the proximity opt-in control is gone; distance starts automatically.
 
 **Files**
 
@@ -759,7 +753,7 @@ Breadcrumb hierarchy (`conexao_seo_breadcrumb_data()`), rendered by `header.php`
 - Blog archive `/blog/` (incl. `?categoria=` filtered views): Início → Blog (current page).
 - Blog single: Início → Blog (`/blog/` posts page) → Category (native `category` taxonomy, i.e. `/category/{slug}/` — the `?categoria=` filter is only used by the archive UI) → Post title. With multiple categories, the first term returned by `get_the_terms()` (ordered by name) is used.
 - Other CPT singles: Início → CPT archive → `conexao_category` term (when present) → `conexao_county` term for events/apoiadores → title.
-- **Guides (`guide`)**: the `conexao_category` crumb links to the EXISTING filtered Guias archive (`/guias/?categoria=<slug>` — the same tax_query the archive filter bar applies), built through the shared `conexao_get_guide_category_url()` helper. It never links to the taxonomy term archive (`/categories/<slug>/` would 301 to the standalone `/<slug>/` static page, e.g. `/moradia/`). Multiple categories: first term returned by `get_the_terms()` (ordered by name) is used, the same deterministic rule applied before. See [`docs/reports/2026-09-27-guias-breadcrumb-filter-report.md`](reports/2026-09-27-guias-breadcrumb-filter-report.md).
+- **Guides (`guide`)**: the `conexao_category` crumb links to the EXISTING filtered Guias archive (`/guias/?categoria=<slug>` — the same tax_query the archive filter bar applies), built through the shared `conexao_get_guide_category_url()` helper. It never links to the taxonomy term archive (`/categories/<slug>/` would 301 to the standalone `/<slug>/` static page, e.g. `/moradia/`). Multiple categories: first term returned by `get_the_terms()` (ordered by name) is used, the same deterministic rule applied before.
 
 ### Navigation Logic
 
@@ -933,11 +927,10 @@ runs slightly over is preferred over an artificial split.
 - `assets/js/main.js` — frontend JavaScript
 ## UI convergence Phase 1 (T1.1–T1.5, 2026-10-03)
 
-The first controlled convergence phase of
-[`docs/audit/2026-10-03-ui-ux-audit.md`](../audit/2026-10-03-ui-ux-audit.md)
-(Direction A, "Converged Minimal"). It fixes two real defects and enforces the
-existing design system; it does not redesign anything. Full evidence:
-[`docs/reports/2026-10-03-ui-convergence-t1-report.md`](../reports/2026-10-03-ui-convergence-t1-report.md).
+The first controlled convergence phase of the UI work (Direction A,
+"Converged Minimal"). It fixed two real defects and enforced the existing
+design system; it did not redesign anything. **The rules below are the current
+visual contract** — they are normative, not a record of a past stage.
 
 ### `/empregos/` — the grid follows the media, not an assumption (T1.1 / D1)
 
@@ -1010,12 +1003,10 @@ token blocks.**
 
 ## UI convergence Phase 2 (T1.6–T1.14, 2026-10-03)
 
-The second controlled convergence phase of
-[`docs/audit/2026-10-03-ui-ux-audit.md`](../audit/2026-10-03-ui-ux-audit.md).
-Six of the remaining nine Tier-1 items were implemented; **T1.9 and T1.14 are
-recorded as NOT IMPLEMENTED** with their measured evidence, and the T1.6 and
-T1.13 diagnoses were corrected against measurement. Full evidence:
-[`docs/reports/2026-10-03-ui-convergence-t1-report.md`](../reports/2026-10-03-ui-convergence-t1-report.md).
+The second controlled convergence phase. Six of the remaining nine Tier-1
+items were implemented; **T1.9 and T1.14 are deliberately NOT IMPLEMENTED**, and
+the T1.6 and T1.13 diagnoses were corrected against measurement before
+implementation. **The rules below are the current visual contract.**
 
 ### Heading level is a contract, not a literal (T1.6 / D4) — diagnosis corrected
 
@@ -1173,25 +1164,6 @@ measurement.
   styling with dark-mode mirrors, and rendered-archive agreement including a
   date-less event.
 
-_Last verified: 2026-10-19 by UI/UX improvement 1 (event date badge, audit T1.9)_
-
-_Last verified: 2026-10-03 by UI convergence Phase 1 (T1.1–T1.5)_
-
-_Last verified: 2026-10-03 by UI convergence Phase 1 (T1.1–T1.5)_
-
-_Last verified: 2026-09-29 by the production theme version bump (1.0.0 → 1.0.1; `style.css` + `CONEXAO_THEME_VERSION`)_
-_Last verified: 2026-10-03 by Stage 20 — hero preload fallback (Firefox speculative-loader cost bound)_
-
-_Last verified: 2026-10-08 by the Apoiadores single-page directory change (the archive renders its whole editor-curated set on one page; no pagination is generated and `/apoiadores/page/N/` keeps its 404)_
-_Last verified: 2026-10-10 by UI polish Phase 3 — card-CTA 44px floor and the 720px single editorial measure_
-_Last verified: 2026-10-12 by the Empregos job-search resources restoration — `template-parts/job-resources.php` renders on `/empregos/` again and its CTA follows the homepage "Acessar" pattern_
-_Last verified: 2026-10-26 by Halloween homepage presentation refinement_
-_Last verified: 2026-10-27 by Halloween navigation continuity_
-_Last verified: 2026-10-27 by Halloween witch animation_
-_Last verified: 2026-10-27 by Halloween theme compatibility_
-_Last verified: 2026-10-27 by Halloween mobile spontaneous appearances_
-_Last verified: 2026-11-05 by Lazer header cleanup (proximity control removed)_
-
 ### Theme independence and the Commemorative Events plugin
 
 The theme is a **consumer** of the `conexao-commemorative` plugin's public API.
@@ -1224,5 +1196,4 @@ Tested with:
 - **Conexão BR Irlanda** (this theme) — full presentation support (Halloween, Christmas, New Year)
 - **Twenty Twenty-Five** (default WordPress theme) — plugin initializes, event admin works, scheduling works, records accessible, preview works, no fatal errors
 
-_Last verified: 2026-11-17 by the language-switcher default-enabled change (shipped constant true; gate rebuilt around the enabled default with a disabled child-process proof)_
-_Last verified: 2026-11-25 by the theme independence implementation_
+_Last verified: 2026-11-27 by the documentation and agent-skill rationalisation (theme internals re-checked; the UI-convergence sections are now marked as the normative visual contract)_

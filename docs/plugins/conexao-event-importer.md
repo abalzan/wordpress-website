@@ -199,9 +199,8 @@ The multi-county expansion introduced 52 county source registrations
 and the G8 expansion added 78 Eventbrite date-window registrations on top.
 Together with the six legacy defaults above this is a **136-source registry**.
 All 130 county/window sources ship **inactive**: registering a source never
-starts an import. See
-[the G16 report](../reports/2026-10-05-eventbrite-full-activation.md) for which
-classes are eligible and enabled.
+starts an import. Eligibility of a source class is decided by the class itself,
+not by the registry entry.
 
 **Source key scheme:**
 - Eventbrite: `eventbrite_<county-slug>` (e.g. `eventbrite_cork`)
@@ -218,7 +217,7 @@ LOGGED (never silently accepted).
 
 **Heritage Week `where[]` policy:** Multiple `where[]` values are walked within
 a single source registration (relevant for Galway, Dublin). The 2026 form values
-are audited in `docs/importers/events-expansion-stage-a-audit.md`.
+are recorded per county in `Conexao_County_Registry` (code is authoritative).
 
 ### Eventbrite date-window sources (G8)
 
@@ -322,16 +321,6 @@ php wp-content/plugins/conexao-event-importer/tests/dry-run-county-sources.php
 
 **Local-only restriction:** All county sources must remain local-only.
 Eventbrite discovery blocks datacenter IPs (405). No production-side fetching.
-## Default Sources (seeded on activation)
-
-| ID | Name | Type |
-|----|------|------|
-| `laois_tourism` | Laois Tourism | iCalendar (webcal) |
-| `heritage_week` | National Heritage Week | Website |
-| `eventbrite` | Eventbrite — Laois | Eventbrite |
-| `ivvcc` | IVVCC — Irish Veteran & Vintage Car Club | Website (inactive) |
-| `motorsport_ireland` | Motorsport Ireland | Website (inactive) |
-
 ### Cloudflare / bot protection
 
 Some sources (e.g. `laoistourism.ie`) sit behind Cloudflare and return **403 to generic user agents**. All source HTTP requests therefore use a real-browser Chrome UA by default (overridable via the `conexao_event_importer_http_user_agent` filter). This works fine from a residential/local connection.
@@ -360,9 +349,9 @@ augment this path:
 
 G6 measured this and returned **`NOT VIABLE`**; G7 then retired the dead
 `eventbrite_api_token` plumbing (a stored, never-read token) rather than leaving
-it as a false prerequisite. Full evidence:
-[`docs/reports/2026-10-04-eventbrite-api-feasibility.md`](../reports/2026-10-04-eventbrite-api-feasibility.md)
-and [`docs/reports/2026-10-04-eventbrite-api-retirement.md`](../reports/2026-10-04-eventbrite-api-retirement.md).
+it as a false prerequisite. The verdict and the retirement rationale are
+summarised above; the code (`class-import-settings.php`, `class-eventbrite-source.php`)
+carries the same note.
 
 **Reopening the question** is legitimate if an external fact materially changes
 — e.g. Eventbrite restores a location-scoped/public discovery endpoint, or a
@@ -475,7 +464,7 @@ split the export.
 complete export files (for example the parts of a multipart export) in one
 operation. It was non-functional until 2026-10-05; the root cause and repair are
 in
-[`docs/reports/2026-10-05-multi-file-event-import-repair.md`](../reports/2026-10-05-multi-file-event-import-repair.md).
+See "Multi-file import" above.
 Read that report before relying on this path.
 
 The architecture is unchanged by the repair:
@@ -829,7 +818,7 @@ Eventbrite is an **external dependency that can rate-limit the importer**.
 G5 does not make Eventbrite succeed. It makes the importer respond to that
 condition in a bounded, sequential, truthful and operationally recoverable
 manner. Evidence and measurements:
-[`docs/reports/2026-10-04-eventbrite-rate-limit-strategy.md`](../reports/2026-10-04-eventbrite-rate-limit-strategy.md).
+See "Eventbrite pacing and rate-limit handling (G5)" above.
 
 ### High-volume sources are the stress cases
 
@@ -2241,4 +2230,4 @@ meta group deleted, so a withdrawn series can never leave an orphan rule.
 - `includes/class-event-export.php` / `includes/class-event-import.php` — the local→production transfer (UUIDs + embedded images)
 - `includes/class-event-sources.php` — source CRUD + dashboard
 
-_Last verified: 2026-11-15 by Stage 1 run coordination, rate limiting and Heritage eligibility_
+_Last verified: 2026-11-27 by the documentation and agent-skill rationalisation (the duplicated Default Sources section was merged and historical report pointers replaced)_

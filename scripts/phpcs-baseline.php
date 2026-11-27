@@ -200,7 +200,7 @@ function phpcs_baseline_update( $report_path, $baseline_path ) {
 	$baseline = array(
 		'_meta'  => array(
 			'generated' => date( 'Y-m-d' ),
-			'policy'    => 'Per-sniff legacy ERROR/WARNING counts for phpcs.xml.dist. MUST NOT grow: any increased or new sniff count fails scripts/lint.sh. Regenerate via "php scripts/phpcs-baseline.php update <report>" only after deliberately paying down debt (see docs/reports/site/).',
+			'policy'    => 'Per-sniff legacy ERROR/WARNING counts for phpcs.xml.dist. MUST NOT grow: any increased or new sniff count fails scripts/lint.sh. Regenerate via "php scripts/phpcs-baseline.php update <report>" only after deliberately paying down debt (see docs/reports/).',
 		),
 		'totals' => $aggregate['totals'],
 		'sniffs' => $aggregate['sniffs'],

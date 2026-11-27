@@ -185,6 +185,4 @@ orders already-eligible events, it never changes a date or an eligibility.
 | Festa Junina and Dia dos Namorados | before June | review the configured June window; set a preference if the overlap needs a winner |
 | Christmas and New Year | before December | no normal overlap is expected; verify the 25/26 December handover and the New Year occurrence year |
 
-_Last verified: 2026-11-06 by the commemorative-events Stages 4–6 implementation_
-_Last verified: 2026-11-06 by the Christmas signature experience (the `christmas` brief now describes the shared star, the twilight palette and the two-sky journey)_
-
+_Last verified: 2026-11-27 by the documentation and agent-skill rationalisation (links repaired after the historical-document prune)_

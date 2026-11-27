@@ -339,7 +339,7 @@ $evidence = array(
 	'cooldown_records'      => count( (array) $cooldown ),
 );
 
-$out = dirname( __DIR__, 2 ) . '/docs/evidence/2026-10-05-eventbrite-g16/01-source-eligibility.json';
+$out = dirname( __DIR__, 2 ) . '/tests/experiments/observations/eventbrite-g16/01-source-eligibility.json';
 
 if ( ! is_dir( dirname( $out ) ) ) {
 	wp_mkdir_p( dirname( $out ) );

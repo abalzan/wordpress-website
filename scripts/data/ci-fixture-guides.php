@@ -43,7 +43,7 @@
  *     carry. The authored EN row was re-keyed to the REAL replacement PT
  *     guide `carteira-motorista-brasileiros` (production id 25031), so the
  *     fixture must create the replacement guide, not the retired key.
- *     Evidence: docs/reports/2026-09-30-en-rollout-blocker-resolution.md
+ *     Reference: docs/testing.md (fixtures) and docs/plugins/conexao-en-translation.md
  *
  * Both changes keep the dataset a subset of the authored English manifest,
  * which is the invariant this file exists to hold.

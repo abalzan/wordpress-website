@@ -1,20 +1,18 @@
 # IVVCC Event Importer
 
 > **Source:** `https://www.ivvcc.ie/` — Irish Veteran & Vintage Car Club.
-> **Stage B implementation** of [ivvcc-audit.md](ivvcc-audit.md).
+> **Implementation:** local-only source, parsed from the public calendar pages.
 > **Status:** implemented + dry-run/live-parse validated. The source ships
 > **inactive** — activate it in *Event Import → Event Sources* for local
 > import/transfer only after operator confirmation as an internal deployment
 > control. This is separate from any source-owner permission requirement.
 >
-> **Stage C source-use determination (2026-09-10):** `IVVCC STAGE C
-> SOURCE-USE PASSED` for the intended A + limited B use case (link to public
-> IVVCC event pages + display of factual event metadata with source
-> attribution). See [ivvcc-stage-c-source-use-report.md](ivvcc-stage-c-source-use-report.md).
+> **Source-use determination (2026-09-10):** passed for the intended A + limited B
+> use case (link to public IVVCC event pages + display of factual event metadata
+> with source attribution).
 >
-> **Stage D production import:** Requires explicit operator confirmation before
-> any production write. Production activation is an internal deployment control
-> only. See [ivvcc-stage-d-report.md](ivvcc-stage-d-report.md) when available.
+> **Production import:** requires explicit operator confirmation before any
+> production write. Production activation is an internal deployment control only.
 
 ## Source
 

@@ -32,8 +32,7 @@ rollout no longer needs its own `apply.php` + `audit.php` + admin class.
 | Runtime dependency | none (a stage adapter needs Polylang at run time) |
 | Tests | `wp-content/plugins/conexao-translation-rollout/tests/` (4 suites) |
 
-Owner: project maintainer. Introduced by Stage H
-(`docs/reports/2026-09-26-stage-h-shared-rollout-engine.md`).
+Owner: project maintainer. Introduced by Stage H.
 
 ## The admin endpoint is CLOSED (Stage 8, v1.2.0)
 
@@ -276,6 +275,4 @@ their plans, counters and gates are byte-identical to before.
 php scripts/generate-registry-docs.php --check
 ```
 
-_Last verified: 2026-09-27 by the EN Leisure description rollout — additive `stage_conflict` state key_
-
-_Last verified: 2026-09-28 by the B1 English Guides content rollout — the additive optional taxonomy keys (`taxonomy_callback` / `taxonomy_gate_callback`)_
+_Last verified: 2026-11-27 by the documentation and agent-skill rationalisation (historical stage-report pointer removed)_

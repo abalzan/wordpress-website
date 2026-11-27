@@ -8,7 +8,9 @@ where this file and the standard disagree, the standard wins.
 
 This file does not restate safety policy, architecture or workflows: one owner
 per fact, so nothing here can silently drift from `AGENTS.md`, the canonical
-`docs/` references or the skills.
+`docs/` references or the skills. The architecture — the theme owns presentation,
+the plugins own domain logic and data — is in `AGENTS.md` §"Architecture in one
+screen" and elaborated only by `docs/architecture.md`.
 
 ## Quick commands
 
@@ -54,7 +56,7 @@ python3 scripts/verify-permanent-gates.py       # Stage L permanent invariants -
 |---|---|
 | Orientation, scope, safety rules, the plan/build/verify/report workflow | [`AGENTS.md`](../AGENTS.md) |
 | Engineering rules (MUST/SHOULD) and the §0 change-safety principles | [`docs/engineering-standard.md`](../docs/engineering-standard.md) |
-| Architecture, stack, plugin load order | [`docs/architecture.md`](../docs/architecture.md) + the generated plugin table in `AGENTS.md` |
+| Architecture, theme/plugin boundaries, plugin load order | [`docs/architecture.md`](../docs/architecture.md) + the generated plugin table in `AGENTS.md` |
 | Content types, taxonomies, meta, language policy | [`docs/content-model.md`](../docs/content-model.md) |
 | Routes, redirects, archives, the `/en/` layer | [`docs/routing.md`](../docs/routing.md) |
 | Testing model, layers, permanent gates | [`docs/testing.md`](../docs/testing.md) |
@@ -88,7 +90,10 @@ engines and helpers over new copies (copying requires a written justification);
 verify with `./scripts/run-tests.sh` and paste **real** numbers; then report
 from [`docs/templates/report.md`](../docs/templates/report.md) with machine
 evidence under `docs/evidence/<date>-<stage>/`. Never claim "fully verified"
-when a verifier could not run — use `PASS WITH LIMITATION` and say why.
+when a verifier could not run — use `PASS WITH LIMITATION` and say why. Report
+proportionately: a documentation-only or single-file fix needs no report or plan
+unless it changes a rule a maintainer must know, and a merged report or plan is
+pruned rather than archived ([`docs/reports/README.md`](../docs/reports/README.md)).
 
 ## Agent skills
 

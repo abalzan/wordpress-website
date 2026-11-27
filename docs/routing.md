@@ -57,7 +57,7 @@ English URLs wrap the same paths in `/en/`:
 | Job singles | `/empregos/{slug}/` | `/en/empregos/{en-slug}/` (real EN translation since Stage 6; before that the approved B2 fallback — PT body under the EN shell + notice; once translated, the PT slug under `/en/` redirects to the PT job) |
 | Blog | `/blog/` | `/en/blog/` — **real English archive, complete since Stage O** (linked, published EN posts page created by stage `en-blog-page` + the 42 translated EN posts). Before Stage O it was the approved B2 fallback (PT posts under the EN URL + notice). EN posts live at `/en/{en-slug}/`; the archive paginates `/en/blog/page/N/`. |
 | County pages + `/irlanda/` | `/dublin/`, `/irlanda/`, … | `/en/dublin/`, `/en/irlanda/` (B2: PT body under EN shell + notice) |
-| Filters | `/eventos/?cidade=dublin` | `/en/eventos/?cidade=dublin` |
+| Filters | `/eventos/?county=dublin` | `/en/eventos/?county=dublin` |
 
 Rules:
 
@@ -97,9 +97,9 @@ those routes fall through to page-name lookup and return **404 even though the
 code is byte-identical and correct**. This was proven during the baseline
 recovery: after a byte-perfect theme restore, `/en/guias/` and `/en/eventos/`
 still 404'd until a local flush took the `en/`-prefixed CPT-archive rules from
-**0 to 92** (`docs/evidence/2026-09-27-baseline-recovery-implementation/06-phase11-http-routes.txt`).
-The same applies to any local database restored from a snapshot that predates
-the current registration state (see `scripts/restore-updraft-db.sh`).
+**0 to 92**. The same applies to any local database restored from a snapshot
+that predates the current registration state (see
+`scripts/restore-updraft-db.sh`).
 
 The documented remedy is a **local database operation, never a code fix**: run
 `scripts/flush-blog-rewrite-rules.php` (a pure `flush_rewrite_rules()`; see
@@ -472,7 +472,7 @@ system. Owner: **`inc/rest-language.php`** (theme, loaded from
 | Archive | Parameters | Taxonomy/Meta |
 |---------|-----------|---------------|
 | `/eventos/` | `?county=slug` | `conexao_county` |
-| `/eventos/` | `?cidade=slug` | `conexao_town` |
+| `/eventos/` | `?cidade=slug` — **accepted, no control** | `conexao_town` |
 | `/eventos/` | `?categoria=slug` | `conexao_category` |
 | `/lazer/` | `?county=slug` | `conexao_county` |
 | `/lazer/` | `?categoria=slug` | `conexao_category` |
@@ -482,7 +482,7 @@ system. Owner: **`inc/rest-language.php`** (theme, loaded from
 | `/blog/` | `?categoria=slug` | `category` (native) |
 | `/empregos/` | `?tipo=` (`agency`/`public_sector`/`permit_history`), `?area=`, `?localizacao=`, `?contrato=` | canonical `resource_type` / `_agency_job_types` / normalized `_agency_location` / `_agency_temporary`+`_agency_permanent` (meta) — unified opportunities directory; `?permit_history` requires the structured `has_permit_history` flag |
 
-Filters are content-type-aware: the same `?categoria=` parameter resolves to different taxonomies/meta on different archives. On `/eventos/` the three location/category dimensions (`?county=`/`?cidade=`/`?categoria=`) are AND-combined — a town from another county can never override the county selection, invalid slugs yield zero results gracefully, and option lists derive from counties/towns actually used by published events (county → city scoping via `conexao_get_event_towns()`; all option URLs are built through the shared `conexao_event_filter_url()` helper so filter changes never drop other dimensions and always reset to page 1). The same `?county=` convention is shared with `/lazer/`. `/cursos/` is a **B2** archive, so the same `?categoria=slug` (the `sanitize_title()` of the stored Portuguese `_provider_category` value, identical in both languages) applies on `/en/cursos/`; the option list is discovered by `conexao_get_provider_categories()`, whose secondary query goes through the shared `conexao_b2_widen_query_args()` boundary so an EN request sees the same B2 provider records the archive itself lists, and the option text is language-aware via `conexao_provider_category_label()` while the stored meta is never rewritten. Blog category links point at `/blog/?categoria=slug` (the Blog archive itself), not at the native `/category/{slug}/` archive — which remains intact for direct access, feeds and wp-admin. The `/empregos/` parameters are page-level (static landing template) and filter the unified "Oportunidades de emprego" directory rendered by `template-parts/employment-opportunities.php`: `?tipo=` selects the resource type (agencies / public-sector portals / permit-history employers, the latter via the structured `has_permit_history` flag) while `?area=`/`?localizacao=`/`?contrato=` keep their exact pre-existing agency-directory semantics (AND logic, backward-compatible URLs).
+Filters are content-type-aware: the same `?categoria=` parameter resolves to different taxonomies/meta on different archives. On `/eventos/` the two **rendered** filter dimensions are `?county=` and `?categoria=`, AND-combined — a category from another county can never override the county selection, invalid slugs yield zero results gracefully, and option lists derive from counties/categories actually used by published events (all option URLs are built through the shared `conexao_event_filter_url()` helper so filter changes never drop other dimensions and always reset to page 1). **The City (`?cidade=`) filter control was intentionally removed from the `/eventos/` interface (2026-11-25) and must not be reintroduced.** The `conexao_town` taxonomy and the `?cidade=` query parameter remain implemented and are still applied when a bookmarked or externally-linked URL supplies them — a compatibility surface, not a UI feature: `conexao_event_filter_url()` preserves `?cidade=` and the archive query still AND-combines it. The same `?county=` convention is shared with `/lazer/`. `/cursos/` is a **B2** archive, so the same `?categoria=slug` (the `sanitize_title()` of the stored Portuguese `_provider_category` value, identical in both languages) applies on `/en/cursos/`; the option list is discovered by `conexao_get_provider_categories()`, whose secondary query goes through the shared `conexao_b2_widen_query_args()` boundary so an EN request sees the same B2 provider records the archive itself lists, and the option text is language-aware via `conexao_provider_category_label()` while the stored meta is never rewritten. Blog category links point at `/blog/?categoria=slug` (the Blog archive itself), not at the native `/category/{slug}/` archive — which remains intact for direct access, feeds and wp-admin. The `/empregos/` parameters are page-level (static landing template) and filter the unified "Oportunidades de emprego" directory rendered by `template-parts/employment-opportunities.php`: `?tipo=` selects the resource type (agencies / public-sector portals / permit-history employers, the latter via the structured `has_permit_history` flag) while `?area=`/`?localizacao=`/`?contrato=` keep their exact pre-existing agency-directory semantics (AND logic, backward-compatible URLs).
 
 ## Redirect Architecture
 
@@ -638,11 +638,6 @@ automatic page list (see CONEXAO_BR_HEADER_NAVIGATION_REGRESSION_REPORT.md).
   `functions.php`, which is now a loader only.)
   _Updated 2026-09-29 by the header regression fix — the fallback used to render
   nothing, which is exactly what emptied the production header._
-_Last verified: 2026-09-26 by Stage I — Scripts Standardisation_
-
-_Last verified: 2026-09-26 by Stage N — Remaining EN Blog Translations_
-
-_Last verified: 2026-09-27 by the EN Leisure description rollout — Stage 7 executed by the shared `en-leisure-description` stage; B2 policy, canonical, hreflang and sitemap unchanged_
 
 ### Shared-slug pages (`/en/blog/`, `/en/empregos/` and `/en/newsletter/`)
 
@@ -731,16 +726,5 @@ missing those rules and re-flushes once. It repairs persisted state only: no
 route allowlist, no redirect, no second routing system, and Polylang remains the
 sole generator of the rules. The post types it protects are derived at read time
 from `conexao_polylang_translated_post_types()`, so there is no second list.
-See `docs/reports/2026-09-28-en-archive-404-fix.md`.
 
-_Last verified: 2026-09-28 by the EN archive 404 fix — the three routes were
-restored, `/en/cursos/` recovered from a stray 301, PT unchanged_
-
-_Last verified: 2026-09-28 by the B1 English Guides content rollout — 48/48 linked EN guides + 13 EN `conexao_category` terms applied through the shared `en-guide` stage; `guide` remains B1, no fallback, no B2 widening, canonical/hreflang/redirect policy unchanged_
-
-_Last verified: 2026-09-28 by the EN Jobs URL consistency change — the EN Jobs landing now shares the PT `empregos` post_name and resolves at `/en/empregos/` (200, self-canonical) through `conexao_resolve_shared_slug_page_request()`; applied via the `en-jobs-page` stage with `PT-drift=0`; `/en/jobs/` retired to 404 with no new redirect rule; PT `/empregos/`, the Polylang pair, canonical and hreflang unchanged_
-
-_Last verified: 2026-09-30 by the EN rollout blocker resolution — `newsletter` adopted as the third declared shared-slug B1 page (Option A). The permit is now read from each stage's own manifest by `conexao_en_translation_shared_page_slug_for()` instead of a hard-coded list, and is always paired with the shared-slug duplicate guard. The regenerated read-only dry-run plans `en-page::newsletter` at target slug `newsletter` (never `newsletter-2`); `unresolved_slug_conflicts` 1 → 0. `newsletter` was NOT added to the B2 page allowlist. Production untouched: 0 writes, 0 EN records, 0 links; `/newsletter/` still PT and `/en/newsletter-2/` still 404_
-
-_Last verified: 2026-10-08 by the Apoiadores single-page directory change (PT and EN Apoiadores are single-page directories; paged URLs keep their 404)_
-_Last verified: 2026-11-07 by the agent, skills and documentation audit (three broken plugin-doc links corrected)_
+_Last verified: 2026-11-27 by the documentation and agent-skill rationalisation (the /eventos/ City-filter removal and the ?cidade= compatibility surface re-verified against the theme query layer)_

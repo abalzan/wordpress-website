@@ -2,12 +2,12 @@
 
 | | |
 |---|---|
-| **Status** | **Proposal — not yet enforced.** Produced by the [2026-09-25 standardisation audit](audit/2026-09-25-wordpress-engineering-standardisation-audit.md). Adoption is sequenced in §15. |
-| **Version** | 1.0 (proposed) |
+| **Status** | **In force.** Every change must comply; §15 states what compliance means and how it is proven. |
+| **Version** | 1.0 |
 | **Scope** | The WordPress website repository (`wp-content/`, `scripts/`, `docker/`, `docs/`, build/deploy). **Flutter/mobile is explicitly out of scope.** |
 | **Audience** | Maintainers, contributors and AI agents working on this repository |
 | **Enforcement levels** | **MUST** — breaking this is a defect · **SHOULD** — deviation requires a written reason in the PR/report · **MAY** — optional improvement |
-| **How to use** | Read §0 for principles, then the section for your change type. §14 is the checklist every change must pass. §15 states what to adopt when. |
+| **How to use** | Read §0 for principles, then the section for your change type. §14 is the checklist every change must pass; §15 states how compliance is demonstrated. |
 
 This document is the single normative contract for engineering work in this repository. Where an existing document (`AGENTS.md`, `docs/routing.md`, `docs/content-model.md`, plugin docs, stage reports) disagrees with this standard, **this standard wins** and the other document MUST be corrected in the same change. It encodes and formalises practices already proven in the Stage 1–9 English rollout; it does not invent a new architecture.
 
@@ -633,7 +633,7 @@ a historical measurement, not a current fact.
 | `.agents/skills/<name>/SKILL.md` | reusable agent workflows, procedural checklists, operational guardrails, verification sequences | versions, route lists, plugin inventories, taxonomy policies — those are read from their owner below |
 | `AGENTS.md` | scope, safety rules, the authoritative-source map, skill selection | procedures (they live in skills) |
 | `docs/` (canonical) | specifications, policy, architecture, content model, route definitions, release policy, testing semantics | procedures, historical measurements |
-| `docs/reports/`, `docs/evidence/`, `docs/audit/` | completed work, audits, measurements, machine evidence | current instructions — never a procedure's home |
+| `docs/reports/`, `docs/plans/`, `docs/evidence/` | the record of one change in flight, and machine proof a current process depends on | current instructions — never a fact's home, never a procedure's home |
 
 | Path | Content | Owner |
 |---|---|---|
@@ -643,10 +643,9 @@ a historical measurement, not a current fact.
 | `docs/architecture.md`, `docs/content-model.md`, `docs/routing.md`, `docs/frontend.md`, `docs/deployment.md`, `docs/development.md` | Evergreen reference | Project maintainer |
 | `docs/plugins/<slug>.md` | Per-plugin doc (metadata block per §4.1) | Plugin maintainer |
 | `docs/themes/conexao-br-irlanda.md` | Theme reference | Theme maintainer |
-| `docs/reports/<date>-<stage>-<topic>.md` | Stage/feature history (the root `CONEXAO_*` reports move here) | Change author |
-| `docs/plans/<date>-<topic>.md` | Pre-change plans filled from `docs/templates/plan.md` (scope, impact sections, approach, risks) | Change author |
-| `docs/evidence/<date>-<stage>/` | Machine-readable proof (matrices, `gate.json`, snapshots) | Change author |
-| `docs/audit/` | Audits | Project maintainer |
+| `docs/reports/<date>-<topic>.md` | The completion record of one change, from `docs/templates/report.md`; pruned once merged, after any enduring finding moves to its owner (`docs/reports/README.md`) | Change author |
+| `docs/plans/<date>-<topic>.md` | The pre-change plan of one change, from `docs/templates/plan.md`; pruned once merged (`docs/plans/README.md`) | Change author |
+| `docs/evidence/<date>-<topic>/` | Machine-readable proof a current gate, CI job or operational procedure still depends on (`docs/evidence/README.md`) | Change author |
 | `docs/templates/` | `plan.md`, `report.md` | Project maintainer |
 | `docs/engineering-standard.md` | This document | Project maintainer |
 
@@ -657,7 +656,9 @@ a historical measurement, not a current fact.
 | A list that must stay in sync (plugin counts, versions, load order, routes) is generated or CI-checked — never hand-maintained in two places | MUST |
 | Every doc ends with `_Last verified: YYYY-MM-DD by <area>_` | MUST |
 | A change touching content types, routes, filters, REST, EN coverage or deployment updates the matching docs **in the same commit** | MUST |
-| Stage/feature work produces a report from `docs/templates/report.md` containing: scope, files touched, verification (with numbers), PT-integrity result, gate result, rollback, limitations | MUST |
+| Multi-file work, a content write, or a change to routes, English/Polylang, release or deployment produces a report from `docs/templates/report.md` containing: scope, files touched, verification (with numbers), PT-integrity result, gate result, rollback, limitations. A documentation-only or single-file fix needs one only when it changes a rule a maintainer must know | MUST |
+| A report or plan is pruned once its change is merged, after any enduring finding has moved into the canonical document or skill that owns it. The repository keeps no report or plan archive | MUST |
+| No historical record is on the normal agent reading path: a current fact is never sourced from a finished report or an evidence dump | MUST |
 | No root-level report or evidence file is added; use `docs/reports/` and `docs/evidence/` | MUST |
 | `AGENTS.md` stays short (< ~250 lines); depth lives in `docs/` and the skills | SHOULD |
 | A **procedure** is maintained in exactly one skill; a canonical document links to it instead of restating it | MUST |
@@ -882,24 +883,16 @@ Every change (human or agent) MUST satisfy all applicable items:
 
 ---
 
-## 15. Adoption roadmap and compliance
+## 15. Compliance
 
-| Stage | Adopt | Depends on |
-|---|---|---|
-| A | This standard + the audit; `AGENTS.md` links; doc index | — |
-| B | §1.2, §1.3 hygiene (gitignore/gitattributes/cleanup) | A |
-| C | §1.1, §1.4, §1.5, §1.6 + `scripts/lint.sh` | B |
-| D | §1.7 CI (static) | C |
-| E | §8 harness (`tests/bootstrap.php`, `tests/lib/assertions.php`, `scripts/run-tests.sh`); migrate existing suites | B |
-| F | §3.1 theme module split | E (regression safety) |
-| G | §1.8 registry + generated docs/load order/build/mounts | A |
-| H | §4.1 shared rollout engine; §5.2 contract enforcement | E, G |
-| I | §10 scripts (`scripts/lib/`, catalogue, flags) | C |
-| J | §11 release manifest + `verify-deploy.py` + `docs/releases.md` | G |
-| K | §13 skills + `docs/templates/` | A |
-| L | §6.3 + §8.2 permanent invariant gates in CI | E, H |
+This standard is **in force**. It applies to every change, to new work and to
+existing code that a change touches. Where the surrounding code does not yet
+comply, a change MUST leave it no worse and MUST comply itself.
 
-**Compliance statement:** until Stages B–D are complete this standard is *advisory* for existing code and **mandatory for all new work**. New plugins, scripts, tests, migrations and documentation added after adoption MUST follow it, even where the surrounding code does not yet comply.
+Compliance is not self-declared. It is demonstrated by the executable gates the
+section names — `./scripts/run-tests.sh`, `./scripts/lint.sh`, the registry drift
+gate, `python3 scripts/verify-permanent-gates.py` and the agent-governance gate —
+with real output and honest limitations in the report (`docs/templates/report.md`).
 
 ### Appendix — change → document map
 
@@ -918,9 +911,4 @@ Every change (human or agent) MUST satisfy all applicable items:
 
 ---
 
-_Last verified: 2026-09-25 by the WordPress engineering standardisation audit (proposal stage — no code changed)._
-
-
-_Last verified: 2026-09-26 by Stage I — Scripts Standardisation_
-_Last verified: 2026-09-30 by the agent skills / documentation migration_
-_Last verified: 2026-11-09 by the agent skills review and hardening (§13.1 skills table, §9.2 last-verified rule)_
+_Last verified: 2026-11-27 by the documentation and agent-skill rationalisation (§9.1/§9.2 documentation retention, §15 compliance statement)_

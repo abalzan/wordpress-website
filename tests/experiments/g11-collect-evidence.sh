@@ -17,7 +17,7 @@ set -uo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$REPO_ROOT"
 
-EVIDENCE_DIR="${1:-docs/reports/evidence/eventbrite-g11}"
+EVIDENCE_DIR="${1:-tests/experiments/observations/eventbrite-g11}"
 
 
 mkdir -p "$EVIDENCE_DIR/observations"

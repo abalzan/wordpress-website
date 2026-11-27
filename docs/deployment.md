@@ -263,6 +263,4 @@ The engine registers its admin action with `manage_options` and a nonce, never
 writes on page load or on GET, and performs no content write on activation.
 See [`docs/plugins/conexao-translation-rollout.md`](plugins/conexao-translation-rollout.md).
 
-_Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_
-_Last verified: 2026-09-30 by the agent skills / documentation migration_
-_Last verified: 2026-11-07 by the agent, skills and documentation audit (generated `plugins.json` link corrected; production WP-CLI recommendation replaced with the admin/plugin path)_
+_Last verified: 2026-11-27 by the documentation and agent-skill rationalisation (production constraints and the activation order re-checked; links repaired after the historical-document prune)_

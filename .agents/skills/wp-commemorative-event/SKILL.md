@@ -103,7 +103,7 @@ the other.
 2. Verify actual APIs, hooks, registries, naming, file conventions, and package loading conditions before coding.
 3. Identify canonical/shared vs translated metadata and enforce existing Polylang ownership rules.
 4. Confirm event selection and package registration; avoid introducing redundant dispatch logic.
-5. For landing pages, trace both page-owned and event-owned context and test precedence explicitly (the page-owned `landing_page` placement must resolve before the event-driven copy of the same placement id — see `docs/reports/2026-11-06-christmas-landing-page-active-dispatch-fix.md`).
+5. For landing pages, trace both page-owned and event-owned context and test precedence explicitly (the page-owned `landing_page` placement must resolve before the event-driven copy of the same placement id — `docs/commemorative-events.md` §2, `conexao_commemorative_placement_context()`).
 6. For popups, trace the entire render path, JS controller, CSS, preview state, fallback markup, and dismissal lifecycle. Do not treat `dialog open` as equivalent to a modal.
 7. Keep any newly proposed mechanism out of scope unless separately approved.
 
@@ -248,9 +248,10 @@ approved brief, and the general rules live in the guardrails above.
   localised `_ce_heading` / `_ce_subheading` / `_ce_cta_*` content and returned
   an empty event under preview.
 - **An approved cadence is a requirement, not a default.** *(Halloween-specific
-  approved requirement — `docs/reports/2026-10-27-halloween-mobile-experience-plan.md`
-  §1/§5, asserted by `test-seasonal-halloween-nav-effects.php`; not a default
-  for any other package.)* The Halloween mobile
+  approved requirement — `docs/commemorative-events.md` "Halloween exception"
+  and `docs/commemorative-content.md`, asserted by
+  `test-seasonal-halloween-nav-effects.php`; not a default for any other
+  package.)* The Halloween mobile
   navigation-surprise cadence (20–30 s first, 25–35 s later) was once shipped as
   5–10 s / 10–15 s. The tests were right; the implementation regressed. Never
   swap an approved cadence for the energy table's values, and never copy one

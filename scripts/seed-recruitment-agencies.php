@@ -20,7 +20,7 @@ if ( ! post_type_exists( 'recruitment_agency' ) ) {
 /**
  * Agency definitions (27 agencies: original Top 15 + 12 validated in the
  * 2026-09 Employment page expansion — see
- * docs/research/2026-09-empregos-agencies-and-employment-permits.md).
+ * docs/content-model.md, "Empregos editorial rules").
  *
  * Data source: the agency research document supplied with the directory task,
  * re-verified against each agency's own official website (2026-09-02): title,

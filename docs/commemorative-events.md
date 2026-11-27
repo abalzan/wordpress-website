@@ -109,6 +109,13 @@ renders nothing until its placement map ships.
 - **A landing page is a page.** It is not a modal, not a CPT route. It carries the
   template *and* `_ce_landing_package`, renders from the PAGE's copy (never the event
   schedule, so it survives the window), and is excluded from the sitemap.
+- **The `landing_page` placement is PAGE-owned, and the page opt-in wins.**
+  When a package also declares `landing_page` on the `landing` route, the same
+  placement id appears in the request plan while its event is active, carrying no
+  page identity (`page_id = 0`). `conexao_commemorative_placement_context()`
+  resolves the page-owned context first, so dispatch never blanks the route. This
+  is a precedence rule, not a bypass: the page-owned branch is populated only for
+  a page whose slug matches the package's declared slug for the current language.
 - **A hero may be presented as a welcome, not as a second experience.** The
   `homepage_hero` placement of a package may be rendered once inside a native
   `<dialog>` that ships **closed**, which the package script promotes to a modal
@@ -351,9 +358,4 @@ Tested with:
 - **Conexão BR Irlanda** (custom theme) — full presentation support
 - **Twenty Twenty-Five** (default WordPress theme) — plugin initializes, event admin works, scheduling works, records accessible, preview works, no fatal errors
 
-_Last verified: 2026-11-06 by the commemorative-events local remediation_
-_Last verified: 2026-11-06 by the Christmas homepage popup UI fix (the welcome dialog ships closed; the compact fallback and preview trigger replace the inline band)_
-_Last verified: 2026-11-07 by the Christmas welcome top-of-screen popup fix (the welcome auto-opens in the signed preview and pins below every top obstruction)_
-_Last verified: 2026-11-07 by the agent, skills and documentation audit (theme-internals link corrected)_
-_Last verified: 2026-11-25 by the theme independence implementation (plugin tested with Twenty Twenty-Five theme)_
-
+_Last verified: 2026-11-27 by the documentation and agent-skill rationalisation (the page-owned landing_page precedence invariant was added from conexao_commemorative_placement_context())_

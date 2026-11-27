@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Conexão BR Irlanda — Event Runtime
  * Description: Production event runtime. Registers event metadata and the Town/City taxonomy, owns the _event_status visibility gate for public event queries, and provides the event status admin UI. Contains no import/export tooling — see Conexão BR Irlanda Event Importer (local-only).
- * Version: 1.2.3
+ * Version: 1.2.4
  * Requires Plugins: conexao-data-model
  * Text Domain: conexao-event-runtime
  *
@@ -12,7 +12,7 @@
 defined( 'ABSPATH' ) || exit;
 
 define( 'CONEXAO_EVENT_RUNTIME_FILE', __FILE__ );
-define( 'CONEXAO_EVENT_RUNTIME_VERSION', '1.2.3' );
+define( 'CONEXAO_EVENT_RUNTIME_VERSION', '1.2.4' );
 define( 'CONEXAO_EVENT_RUNTIME_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CONEXAO_EVENT_RUNTIME_URL', plugin_dir_url( __FILE__ ) );
 
@@ -172,7 +172,7 @@ final class Conexao_Event_Runtime {
 	 *   1. `wp-admin` — admin lists / the editor must show every status.
 	 *   2. WP-CLI (`defined('WP_CLI') && WP_CLI`) — the local importer and its
 	 *      tooling run from the command line (e.g. `wp conexao-events import`).
-	 *      See docs/importers/events-expansion-stage-c2-report.md §5.
+	 *      See docs/plugins/conexao-event-importer.md §5.
 	 *   3. An importer-internal reconciliation query — the importer's own
 	 *      identity lookup, opened explicitly through
 	 *      `Conexao_Event_Internal_Query::run()` and carrying that process's

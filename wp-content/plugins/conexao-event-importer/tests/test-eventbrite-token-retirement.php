@@ -27,7 +27,7 @@
  * Every proof below was mutation-verified: the guard was deliberately removed
  * or inverted and the suite re-run to confirm it FAILS. The results are
  * recorded in
- * `docs/evidence/2026-10-04-eventbrite-api-retirement/04-mutation-proofs.txt`.
+ * `docs/plugins/conexao-event-importer.md`.
  * A proof that cannot fail is not a proof.
  *
  * ## Safety

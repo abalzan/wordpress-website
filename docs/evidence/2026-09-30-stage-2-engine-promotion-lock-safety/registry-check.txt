@@ -1,1 +1,0 @@
-registry OK: 15 plugins validated, 24 generated regions current (zero writes).

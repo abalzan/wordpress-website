@@ -1,2 +1,0 @@
-Note: Using configuration file /home/andrei/IdeaProjects/wordpress-website/phpstan.neon.dist.
-EXIT=0

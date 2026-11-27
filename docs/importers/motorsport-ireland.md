@@ -2,7 +2,7 @@
 
 > **Source:** `https://www.motorsportireland.com/events` — Motorsport Ireland
 > master calendar (aggregates all 32 affiliated clubs).
-> **Stage B implementation** of [motorsport-ireland-audit.md](motorsport-ireland-audit.md).
+> **Implementation:** local-only source, parsed from the public master-calendar page.
 > **Status:** implemented + dry-run validated. The source ships **inactive** —
 > see [Stage C gate](#stage-c-production-import-gate) below.
 

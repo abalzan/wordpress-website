@@ -217,6 +217,14 @@ the original CI schema is not used by application tests. The helper is CI-only
 and does not change the runner's rule that local test databases must be
 prepared deliberately.
 
+Inside the container, `scripts/conexao-test-exec.sh` is the only sanctioned way
+a WordPress-dependent test process receives those generated credentials: it
+sources only the restricted `.conexao-test.env`, validates the values and the
+requested test database, exports the WordPress DB environment and `exec`s the
+suite — so the restricted connection is in place **before** `wp-config.php`
+runs. A password never appears in a host command line, a Docker `-e` argument,
+`ps` argv or a log.
+
 For local work, create and verify a dedicated database clone, neutralize only
 inherited importer continuation queue/lock/cron state in that clone before its
 first WordPress bootstrap, then pass its database name explicitly:
@@ -793,8 +801,7 @@ the Node suite above, and the admin-field suite
 `wp-content/plugins/conexao-admin-ux/tests/test-leisure-coordinates.php`.
 
 > **UI contract since 2026-11-05.** The header's `Mostrar distância de mim`
-> opt-in button was removed (see
-> `docs/reports/2026-11-05-lazer-proximity-button-removal.md`); both browser
+> opt-in button was removed; both browser
 > suites now assert the **automatic** start instead: no control/explanation is
 > rendered, the archive header receives no injected node, exactly one geolocation
 > request is made per page load, and the transient notes sit above the results
@@ -923,9 +930,8 @@ measured inventory, the size budget and the rules are in
   passed **vacuously** over an empty population. That requirement is now
   satisfied by the committed fixtures, and hosted determinism was proven on two
   consecutive fresh `workflow_dispatch` runs (GitHub Actions runs 36575383129
-  and 36579787054, branch `i18n`); see
-  [`reports/2026-09-29-stage-p-ci-readiness.md`](reports/2026-09-29-stage-p-ci-readiness.md).
-  The requirement itself is unchanged and still binding: **never** satisfy
+  and 36579787054, branch `i18n`). The requirement itself is unchanged and
+  still binding: **never** satisfy
   determinism by weakening assertions or committing a database dump.
 - This is a blocking integration job with ordinary CI failure semantics. It is
   not perfect and not immune to infrastructure failure — a red runner, a slow
@@ -975,37 +981,6 @@ convention-based, and CI calls the same command you do.
 | `wp-content/themes/conexao-br-irlanda/tests/test-cache-language-scoping.php` | `PERMANENT_INVARIANT` (Stage L) | yes — blocking; §6.1 cache scoping |
 | `wp-content/themes/conexao-br-irlanda/tests/test-redirect-precedence.php` | `PERMANENT_INVARIANT` (Stage L) | yes — blocking; §6.3 redirect precedence |
 
-_Last verified: 2026-10-02 by Stage 21 — the ICS occurrence fixture and the two hermetic script-contract gates_
-
-_Last verified: 2026-09-26 by Stage I — Scripts Standardisation_
-_Last verified: 2026-09-26 by Stage J — Build, Release & Deploy Verification_
-
-_Last verified: 2026-09-28 by CI integration setup recovery_
-_Last verified: 2026-10-01 by Stage 7 — supersession contract gate registration_
-_Last verified: 2026-09-26 by Stage K — Agent Skills + Templates_
-_Last verified: 2026-09-26 by Stage O — Enable the Real English Blog Archive_
-
-_Last verified: 2026-10-01 by Stage 10 — bounded batch suite (243 assertions) + 20 injected-negative structural proofs; Stage 8 control-plane gate extended to 141_
-
-_Last verified: 2026-09-30 by the agent skills / documentation migration_
-_Last verified: 2026-10-01 by Stage 13 — commissioning-readiness gate (768 assertions, 34 injected-negative proofs)_
-
-_Last verified: 2026-10-02 by Stage 17 — retirement of automatic translation automation (Stage 13 gate 808 assertions / 44 proofs; new `verify-stage17-retirement.py` 110 assertions / 9 mutations; new manual-workflow suite 49 assertions)_
-
-_Last verified: 2026-10-02 by Stage 18 — manual translation operator workflow (new `verify-stage18-operator-runbook.py` 111 assertions / 15 mutations; manual-workflow suite 49 -> 66)_
-
-_Last verified: 2026-10-08 by the Apoiadores single-page directory change (opt-in browser acceptance `tests/browser/verify-sponsors-archive-browser.py` documented)_
-
-_Last verified: 2026-10-08 by the Featured Apoiadores carousel mobile-compactness fix (opt-in browser regression `tests/browser/verify-sponsor-carousel-mobile-browser.py` documented: 236 assertions / 25-mutation negative control)_
-
-_Last verified: 2026-11-04 by the Lazer proximity feature (opt-in Node layer `tests/js/` and the two Lazer proximity browser suites documented; browserless halves named)_
-
-_Last verified: 2026-11-05 by the Lazer header cleanup (proximity control removed; the two Lazer proximity browser suites marked as encoding the removed button)_
-
-_Last verified: 2026-11-06 by the Christmas homepage popup UI fix (the `commemorative_ambient_runtime` gate row updated for the closed-dialog welcome, 18 runtime cases)_
-
-_Last verified: 2026-11-07 by the Christmas welcome top-of-screen popup fix (the `commemorative_ambient_runtime` gate row updated for the preview auto-open and the top-obstruction offset, 19 welcome runtime cases)_
-
 ## PHP Suite Classifications (Phase 2)
 The 137 in-process PHP test suites are classified into three categories:
 ### PARALLEL (81 suites)
@@ -1021,6 +996,4 @@ Documented special handling, never run by default.
 test-plugin-separation.php requires deliberate plugin-activation change.
 *Counting method: suites classified as MANUAL in `scripts/run-tests.sh --list`, excluding the section header line.*
 
-_Last verified: 2026-11-11 by CI optimization and PHP suite classification update_
-
-_Last verified: 2026-11-26 by isolated CI database setup, credential handoff and Stage L gate verification_
+_Last verified: 2026-11-27 by the documentation and agent-skill rationalisation (test-layer, isolation and permanent-gate claims re-checked; the test-exec wrapper contract repointed to this document)_

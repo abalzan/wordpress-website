@@ -8,10 +8,9 @@
  * The engine (`conexao-commemorative`) reads these fields; the admin UX
  * (`conexao-admin-ux`) edits them.
  *
- * Source of truth:
- * `docs/reports/2026-11-03-commemorative-events-architecture-proposal-r10-revised.md`
- * §3.2 (fields), §3.3 (enabled vs post status), §3.5 (validation), §3.6
- * (Polylang shared-vs-translated split) and §5.7 / §4.3 (occurrence years).
+ * Source of truth: `docs/plugins/conexao-commemorative.md` (the field table,
+ * enabled-vs-status, validation, the Polylang shared-vs-translated split and
+ * occurrence-year identity) and `docs/content-model.md` (the `_ce_*` meta).
  *
  * @package Conexao_BR_Irlanda_Data_Model
  */

@@ -545,7 +545,7 @@ function conexao_get_event_towns( $county_slug = '' ) {
  * slugs gracefully (zero results rather than an error).
  *
  * NOTE: The City (Cidade) filter has been removed from the visible UI as part
- * of a UX experiment (see docs/reports/2026-11-25-remove-city-filter.md).
+ * of a UX experiment (see docs/routing.md).
  * The 'cidade' parameter is still handled here for backward compatibility with
  * existing bookmarked URLs and event detail pages. The UI no longer generates
  * new cidade filter URLs.

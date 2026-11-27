@@ -462,20 +462,18 @@ Generated work trees and local tooling are **not** committed (engineering
 standard §1.3, enforced by the root `.gitignore`):
 
 - `stage*-work/` / `*-work/`, `*.body`, `*.log` — disposable probe output and
-  run logs. Regenerate on demand; distil findings into `docs/reports/` and
-  keep only curated machine-readable proof under `docs/evidence/<date>-<stage>/`
-  (see `docs/evidence/README.md`).
+  run logs. Regenerate on demand; distil any enduring finding into the
+  canonical document that owns it, and keep only reproducible machine proof
+  under `docs/evidence/<date>-<stage>/` (see `docs/evidence/README.md`).
 - `.local/` — local toolchains. The repository previously shipped a 24 MB
   PHP CLI under `.local/php/`; it was removed in Stage B. To run PHP outside
   the container, use `docker compose exec wordpress php ...` (or `wp ...`
   for WP-CLI scripts), install a system PHP CLI, or point the scripts that
   accept it at your binary via `PHP_BIN=/path/to/php`.
 
-Historical stage reports live in `docs/reports/` (index in
-`docs/reports/README.md`); never add reports or evidence files at the
-repository root.
+A plan goes to `docs/plans/` and a completion report to `docs/reports/`; both
+are point-in-time artefacts for the change in flight, and the retention rule is
+`docs/reports/README.md`. Never add reports or evidence files at the repository
+root.
 
-_Last verified: 2026-09-26 by Stage I — Scripts Standardisation_
-
-_Last verified: 2026-09-28 by CI integration setup recovery_
-_Last verified: 2026-11-07 by the agent, skills and documentation audit (retired `run-guide-translation.php` commands removed from the Stage 9 section)_
+_Last verified: 2026-11-27 by the documentation and agent-skill rationalisation (local workflow and the repository-hygiene section re-checked; links repaired after the historical-document prune)_
