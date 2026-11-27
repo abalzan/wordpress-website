@@ -217,7 +217,7 @@ final class Conexao_Admin_Ux_Editor {
 
 		foreach ( $sections as $key => $section ) {
 			$icon    = isset( $section['icon'] ) ? $section['icon'] : 'dashicons-admin-generic';
-			$section_id = 'conexao-section--' . sanitize_html_class( $key );
+			$section_id = 'conexao-section--' . sanitize_html_class( (string) $key );
 			echo '<div class="conexao-section" id="' . esc_attr( $section_id ) . '">';
 			echo '<div class="conexao-section-header">';
 			echo '<span class="conexao-section-icon dashicons ' . esc_attr( $icon ) . '" aria-hidden="true"></span>';
@@ -754,7 +754,8 @@ final class Conexao_Admin_Ux_Editor {
 			// administrator removed the image, and Fields::save() has already
 			// deleted every legacy relationship).
 			foreach ( array( '_sponsor_mobile_image', '_sponsor_desktop_image' ) as $legacy_key ) {
-				if ( isset( $state[ 'mobile' === $legacy_key ? 'mobile' : 'desktop' ] ) ) {
+				$state_key = '_sponsor_mobile_image' === $legacy_key ? 'mobile' : 'desktop';
+				if ( isset( $state[ $state_key ] ) ) {
 					$stored = get_post_meta( $post_id, $legacy_key, true );
 					$stored_id = absint( $stored );
 					if ( $stored_id && 'attachment' === get_post_type( $stored_id ) && wp_attachment_is_image( $stored_id ) ) {
