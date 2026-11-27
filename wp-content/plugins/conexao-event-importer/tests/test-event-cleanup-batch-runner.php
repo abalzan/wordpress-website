@@ -7,7 +7,12 @@
  * - Batch limits (event count, time budget)
  * - Keyset cursor no-skip at event-count and time boundaries
  * - Resume after interruption
+ * - Resume accounting: an exhausted cursor preserves cursor/counters, and a
+ *   resumed batch with work advances the cursor and counts exactly one batch
  * - Idempotent retry
+ * - Retry hardening: a retry deletes exactly the record it names — never a
+ *   non-event post, never an event that is no longer eligible — and a resolved
+ *   or failed retry is never counted as a successful deletion
  * - Concurrency (two workers)
  * - Stale lock reclaim
  * - Failed-record handling
@@ -545,7 +550,20 @@ for ( $i = 0; $i < 10; $i++ ) {
 }
 
 // Start a run with a very short time budget.
-$result = $runner->start(
+//
+// The clock is injected so the stop is DETERMINISTIC: each read advances 0.9s,
+// so the second read exceeds the 1s budget and the batch stops after exactly
+// one event, in the middle of the window. Without it the assertion below only
+// held when the whole window happened to fit in one second (true on a fast
+// machine, false on a loaded one) — an environment assumption, not a contract.
+$time_clock_reads = 0;
+$time_clock       = function () use ( &$time_clock_reads ): float {
+	$time_clock_reads++;
+	return $time_clock_reads * 0.9;
+};
+$time_runner = new Conexao_Event_Cleanup_Run( $time_clock );
+
+$result = $time_runner->start(
 	array(
 		'batch_events'       => 100,
 		'batch_time_seconds' => 1,
@@ -553,12 +571,31 @@ $result = $runner->start(
 	)
 );
 
-$run_state = $runner->read_run_state();
+$run_state         = $time_runner->read_run_state();
 $cursor_after_time = (int) $run_state['cursor_id'];
 
-// The cursor should be the last committed ID (not last - 1).
-$last_committed = (int) $run_state['last_scanned_id'];
-assert_equals( $last_committed, $cursor_after_time, 'cursor is the last committed ID at time boundary' );
+// Design §4.5: at a TIME BUDGET stop the cursor is the last COMMITTED ID (not
+// `last_committed_id - 1`), so the next batch starts at the next unprocessed
+// event and nothing is skipped.
+assert_equals( 'time_budget', $result['reason'], 'the batch stopped at the time budget' );
+assert_equals(
+	(int) $result['batch_result']['last_committed_id'],
+	$cursor_after_time,
+	'cursor is the last committed ID at time boundary'
+);
+assert_true(
+	(int) $result['batch_result']['last_committed_id'] > (int) $result['batch_result']['last_scanned_id'],
+	'the budget stopped the batch inside the window (the time-boundary path really ran)'
+);
+
+// No skip: every fixture below the cursor is still pending for the next batch.
+$time_fixtures_below_cursor = 0;
+foreach ( $time_fixtures as $time_fixture ) {
+	if ( (int) $time_fixture < $cursor_after_time && null !== get_post( $time_fixture ) ) {
+		$time_fixtures_below_cursor++;
+	}
+}
+assert_true( $time_fixtures_below_cursor > 0, 'events below the cursor are still pending (no skip)' );
 
 cleanup_section_teardown();
 
@@ -1482,6 +1519,27 @@ cleanup_section_teardown();
 // ---------------------------------------------------------------------------
 test_section( 'New run lifecycle — start new run after completed' );
 
+/*
+ * A retry-queue entry names a RECORD, not a magic number.
+ *
+ * This section used to seed `retry_queue[777]`. An arbitrary small ID is not
+ * isolation: in the deterministic CI database ID 777 belongs to a real post,
+ * and a retry must delete exactly the event it names — never "whatever holds
+ * that ID". The entry therefore points at an event this section created and
+ * already deleted, which exercises the idempotent "already gone" resolution
+ * (design §4.7: a retry whose deletion is already achieved resolves without a
+ * second delete and without being counted).
+ */
+$retry_gone_fixture = cleanup_test_event(
+	'retry entry already gone',
+	array(
+		'_event_date'     => '2020-01-01',
+		'_event_status'   => 'published',
+		'_event_imported' => '1',
+	)
+);
+wp_delete_post( $retry_gone_fixture, true );
+
 // Create a completed run state.
 $completed_run_state = array(
 	'run_id'              => 'cleanup_completed_abc123',
@@ -1496,7 +1554,14 @@ $completed_run_state = array(
 	'errors'              => array(),
 	'failed_events'       => array( 999 => array( 'attempts' => 1, 'last_reason' => 'delete_failed', 'first_failed_at' => time() - 3600 ) ),
 	'failed_events_final' => array( 888 => array( 'attempts' => 3, 'last_reason' => 'delete_failed', 'first_failed_at' => time() - 7200 ) ),
-	'retry_queue'         => array( 777 => array( 'event_id' => 777, 'status' => 'pending', 'attempts' => 0, 'first_failed_at' => time() - 3600 ) ),
+	'retry_queue'         => array(
+		$retry_gone_fixture => array(
+			'event_id'        => $retry_gone_fixture,
+			'status'          => 'pending',
+			'attempts'        => 0,
+			'first_failed_at' => time() - 3600,
+		),
+	),
 	'batch_count'         => 2,
 	'owner_lock_id'       => 'cleanup_completed_abc123',
 	'fence_token'         => 12345,
@@ -1517,11 +1582,16 @@ $new_run_fixture = cleanup_test_event(
 
 // Start a new run - should create a new run_id, fresh cursor, preserve failure data.
 // Note: start() processes one batch, so cursor and counters will be updated.
+//
+// `scan_window = 1` bounds the batch to the single newest candidate, which is
+// this section's fixture: the exact counts below are a contract of THIS
+// section, so they must not depend on records other suites leave in the shared
+// test database.
 $result = $runner->start(
 	array(
 		'batch_events'       => 5,
 		'batch_time_seconds' => 60,
-		'scan_window'        => 200,
+		'scan_window'        => 1,
 	)
 );
 
@@ -1535,7 +1605,7 @@ $run_state = $runner->read_run_state();
 // Previous run had events_deleted = 10, new run deletes 1 event = 11 total.
 assert_true( isset( $run_state['failed_events'][ 999 ] ), 'failed_events preserved' );
 assert_true( isset( $run_state['failed_events_final'][ 888 ] ), 'failed_events_final preserved' );
-assert_true( isset( $run_state['retry_queue'][ 777 ] ), 'retry_queue preserved' );
+assert_true( isset( $run_state['retry_queue'][ $retry_gone_fixture ] ), 'retry_queue preserved' );
 assert_equals( 11, (int) $run_state['events_deleted'], 'events_deleted cumulative: 10 from previous run + 1 new' );
 assert_equals( 1, (int) $run_state['batch_count'], 'batch_count is 1 after first batch' );
 
@@ -1577,11 +1647,14 @@ $new_run_fixture2 = cleanup_test_event(
 	)
 );
 
+// `scan_window = 1` keeps the batch to this section's own fixture, so the exact
+// counts below cannot be inflated by records other suites leave in the shared
+// test database (see section 22).
 $result = $runner->start(
 	array(
 		'batch_events'       => 5,
 		'batch_time_seconds' => 60,
-		'scan_window'        => 200,
+		'scan_window'        => 1,
 	)
 );
 
@@ -1598,17 +1671,37 @@ assert_equals( 1, (int) $run_state['batch_count'], 'batch_count is 1 after first
 cleanup_section_teardown();
 
 // ---------------------------------------------------------------------------
-// 24. New run lifecycle — resume interrupted run.
+// 24. New run lifecycle — resume an interrupted run.
 // ---------------------------------------------------------------------------
-test_section( 'New run lifecycle — resume interrupted run' );
+/*
+ * "Resume" has two separate contracts, and each needs its own deterministic
+ * case. A shared test database cannot express both in one batch:
+ *
+ *  (a) An EXHAUSTED cursor. Resuming must not restart the walk and must not
+ *      count the resume call itself as a processed batch: the persisted cursor,
+ *      `events_deleted` and `batch_count` survive unchanged. The section still
+ *      creates its own fixture so the assertion is a real detector — a runner
+ *      that reset the cursor to PHP_INT_MAX would find that fixture, delete it
+ *      and move all three counters, and the test would fail loudly. (Seeding
+ *      cursor = 500 did NOT have that property: the deterministic site imports
+ *      records below 500 that are legitimate scan candidates but ineligible for
+ *      deletion, so the resumed window was always non-empty and the cursor
+ *      legitimately advanced to the window end. That assertion encoded the
+ *      absence of foreign rows, not a runner contract.)
+ *
+ *  (b) A cursor with exactly ONE candidate below it: section 24b.
+ */
+test_section( 'New run lifecycle — resume interrupted run (exhausted cursor)' );
 
 $running_run_state = array(
 	'run_id'              => 'cleanup_running_resume123',
 	'status'              => 'running',
 	'created'             => time() - 3600,
 	'updated'             => time() - 100,
-	'cursor_id'           => 500,
-	'last_scanned_id'     => 450,
+	// Keyset exhausted: the next query is `ID < 1`, which matches nothing in
+	// any database, so the resume has no candidate work.
+	'cursor_id'           => 1,
+	'last_scanned_id'     => 1,
 	'events_deleted'      => 15,
 	'images_deleted'      => 0,
 	'images_preserved'    => 8,
@@ -1650,9 +1743,82 @@ assert_true( $result['ok'], 'resumed run' );
 assert_equals( 'cleanup_running_resume123', $result['run_id'], 'same run_id on resume' );
 
 $run_state = $runner->read_run_state();
-assert_equals( 500, (int) $run_state['cursor_id'], 'cursor preserved on resume' );
+assert_equals( 1, (int) $run_state['cursor_id'], 'cursor preserved on resume' );
 assert_equals( 15, (int) $run_state['events_deleted'], 'events_deleted preserved on resume' );
 assert_equals( 3, (int) $run_state['batch_count'], 'batch_count preserved on resume' );
+assert_equals( 'completed', $run_state['status'], 'exhausted cursor completes the run on resume' );
+assert_true(
+	null !== get_post( $resume_fixture ),
+	'resume did not restart the walk: an event ABOVE the persisted cursor is untouched'
+);
+
+cleanup_section_teardown();
+
+// ---------------------------------------------------------------------------
+// 24b. New run lifecycle — resume a run that still has work.
+// ---------------------------------------------------------------------------
+test_section( 'New run lifecycle — resumed batch advances the cursor' );
+
+$advance_fixture = cleanup_test_event(
+	'resume advance',
+	array(
+		'_event_date'     => '2020-01-01',
+		'_event_status'   => 'published',
+		'_event_imported' => '1',
+	)
+);
+
+// The window is bounded twice so the resumed batch has exactly ONE candidate:
+// `cursor_id` is the fixture's own ID + 1 (nothing above it is in scope) and
+// `scan_window` is a single row (nothing below it — including records other
+// suites own — is in scope).
+$advance_run_id = 'cleanup_running_advance456';
+$advance_state  = array(
+	'run_id'              => $advance_run_id,
+	'status'              => 'running',
+	'created'             => time() - 3600,
+	'updated'             => time() - 100,
+	'cursor_id'           => $advance_fixture + 1,
+	'last_scanned_id'     => 0,
+	'events_deleted'      => 15,
+	'images_deleted'      => 0,
+	'images_preserved'    => 8,
+	'errors'              => array(),
+	'failed_events'       => array(),
+	'failed_events_final' => array(),
+	'retry_queue'         => array(),
+	'batch_count'         => 3,
+	'owner_lock_id'       => $advance_run_id,
+	'fence_token'         => 4242,
+	'lease_expires_at'    => time() + 300,
+);
+
+update_option( Conexao_Event_Cleanup_Run::run_option(), $advance_state, false );
+
+$lock = Conexao_Event_Cleanup_Lock::acquire( array( 'run_id' => $advance_run_id, 'ttl' => 300 ) );
+assert_true( $lock['held'], 'lock acquired for the resumed batch' );
+
+$result = $runner->start(
+	array(
+		'batch_events'       => 5,
+		'batch_time_seconds' => 60,
+		'scan_window'        => 1,
+	)
+);
+
+assert_true( $result['ok'], 'resumed run with work' );
+assert_equals( $advance_run_id, $result['run_id'], 'same run_id on resume with work' );
+
+$run_state = $runner->read_run_state();
+assert_true( null === get_post( $advance_fixture ), 'the resumed batch deleted the pending event' );
+assert_equals( 16, (int) $run_state['events_deleted'], 'the resumed batch counted exactly one deletion' );
+assert_equals( 4, (int) $run_state['batch_count'], 'the resumed batch counted exactly one batch' );
+assert_equals( (int) $advance_fixture, (int) $run_state['cursor_id'], 'cursor advanced to the last processed ID' );
+assert_true(
+	(int) $run_state['cursor_id'] < (int) $advance_state['cursor_id'],
+	'cursor advanced downwards past the resumed event (never reset upwards)'
+);
+assert_equals( (int) $advance_fixture, (int) $run_state['last_scanned_id'], 'last_scanned_id records the window end' );
 
 cleanup_section_teardown();
 
@@ -1784,6 +1950,218 @@ assert_true( null !== $pdf_entry, 'PDF attachment is in review queue' );
 assert_equals( 'application/pdf', $pdf_entry['mime_type'], 'MIME type recorded' );
 assert_equals( 'pdf', $pdf_entry['classification'], 'classified as pdf' );
 assert_equals( 'banner', $pdf_entry['source'], 'source recorded' );
+
+cleanup_section_teardown();
+
+// ---------------------------------------------------------------------------
+// 27. Retry queue — a retry deletes exactly the event it names.
+// ---------------------------------------------------------------------------
+/*
+ * A retry entry is only ever created for an event that failed deletion, so a
+ * well-formed entry names an eligible `event`. Anything else (a stale entry, a
+ * hand-seeded ID, an event an operator has since moved into the future or out
+ * of the cleanup scope) must be resolved WITHOUT a deletion and WITHOUT being
+ * counted: `events_deleted` reports successfully deleted events, never queue
+ * resolutions or deletion attempts.
+ *
+ * Each sub-case seeds a run whose retry queue is the only possible work — the
+ * cursor is exhausted (`ID < 1` matches nothing) — so every count below is
+ * attributable to the retry path alone, in any database.
+ */
+test_section( 'Retry queue — a retry deletes exactly the event it names' );
+
+require_once WP_PLUGIN_DIR . '/conexao-event-importer/includes/class-event-cleanup-retry-queue.php';
+
+Conexao_Event_Cleanup_Retry_Queue::ensure_row_exists();
+Conexao_Event_Cleanup_Lock::ensure_row_exists();
+Conexao_Event_Cleanup_Attachment_Review::ensure_row_exists();
+
+/**
+ * Seed a resumable run-state whose retry queue is the ONLY work.
+ *
+ * @param string $run_id         Run id (must own the lock).
+ * @param array  $retry_entries  Run-state retry mirror.
+ * @param int    $events_deleted Deliberately arbitrary cumulative counter.
+ * @return void
+ */
+$seed_retry_only_run = function ( $run_id, array $retry_entries, $events_deleted ) {
+	update_option(
+		Conexao_Event_Cleanup_Run::run_option(),
+		array(
+			'run_id'              => $run_id,
+			'status'              => 'running',
+			'created'             => time() - 3600,
+			'updated'             => time() - 100,
+			'cursor_id'           => 1,
+			'last_scanned_id'     => 1,
+			'events_deleted'      => $events_deleted,
+			'images_deleted'      => 0,
+			'images_preserved'    => 0,
+			'errors'              => array(),
+			'failed_events'       => array(),
+			'failed_events_final' => array(),
+			'retry_queue'         => $retry_entries,
+			'batch_count'         => 0,
+			'owner_lock_id'       => $run_id,
+			'fence_token'         => 1,
+			'lease_expires_at'    => time() + 300,
+		),
+		false
+	);
+
+	$lock = Conexao_Event_Cleanup_Lock::acquire( array( 'run_id' => $run_id, 'ttl' => 300 ) );
+	assert_true( $lock['held'], 'lock acquired for the retry-only run' );
+};
+
+/**
+ * Mirror an operator retry: enqueue the ID in the persistent queue.
+ *
+ * @param int $post_id Post ID to queue.
+ * @return void
+ */
+$enqueue_for_retry = function ( $post_id ) {
+	global $wpdb;
+
+	// Each sub-case runs after a section teardown that resets the test stores.
+	Conexao_Event_Cleanup_Retry_Queue::ensure_row_exists();
+
+	$wpdb->query( 'START TRANSACTION' );
+	$queued = Conexao_Event_Cleanup_Retry_Queue::enqueue_in_transaction(
+		$post_id,
+		array(
+			'attempts'        => 1,
+			'last_reason'     => 'delete_failed',
+			'first_failed_at' => time() - 3600,
+		),
+		time()
+	);
+	$wpdb->query( 'COMMIT' );
+
+	assert_true( $queued['ok'], 'retry queued for post #' . (int) $post_id );
+};
+
+/**
+ * Run-state retry mirror entry for an ID.
+ *
+ * @param int $post_id Post ID.
+ * @return array
+ */
+$retry_mirror_entry = function ( $post_id ) {
+	return array(
+		$post_id => array(
+			'event_id'        => $post_id,
+			'status'          => 'pending',
+			'attempts'        => 1,
+			'first_failed_at' => time() - 3600,
+		),
+	);
+};
+
+// (a) A stale entry that names a NON-EVENT post must not delete it.
+$non_event_fixture = wp_insert_post(
+	array(
+		'post_type'   => 'page',
+		'post_status' => 'publish',
+		'post_title'  => '[CLEANUP TEST] not an event',
+	),
+	true
+);
+if ( is_wp_error( $non_event_fixture ) || ! $non_event_fixture ) {
+	test_prerequisite_hint( 'wp_insert_post failed for the non-event retry fixture' );
+	exit( 1 );
+}
+$GLOBALS['cleanup_section_records'][] = array( 'type' => 'post', 'id' => (int) $non_event_fixture );
+
+$enqueue_for_retry( $non_event_fixture );
+$seed_retry_only_run( 'cleanup_retry_non_event', $retry_mirror_entry( $non_event_fixture ), 20 );
+
+$result    = $runner->start( array( 'batch_events' => 5, 'batch_time_seconds' => 60, 'scan_window' => 5 ) );
+$run_state = $runner->read_run_state();
+
+assert_true( $result['ok'], 'retry-only run with a non-event entry completed' );
+assert_true( null !== get_post( $non_event_fixture ), 'a retry naming a page does NOT delete the page' );
+assert_equals( 20, (int) $run_state['events_deleted'], 'a resolved non-event entry is not counted as a deletion' );
+assert_true( ! isset( $run_state['failed_events'][ $non_event_fixture ] ), 'a non-event entry records no event failure' );
+assert_true( ! isset( $run_state['retry_queue'][ $non_event_fixture ] ), 'a resolved non-event entry leaves the retry mirror' );
+
+$retry_queue_state = Conexao_Event_Cleanup_Retry_Queue::read();
+assert_true(
+	! isset( $retry_queue_state['data']['entries'][ $non_event_fixture ] ),
+	'a resolved non-event entry leaves the persistent retry queue'
+);
+
+cleanup_section_teardown();
+
+// (b) A stale entry that names an event which is no longer eligible (an
+// operator moved it into the future) must not delete it either.
+$future_retry_fixture = cleanup_test_event(
+	'retry ineligible future',
+	array(
+		'_event_date'     => current_datetime()->modify( '+10 days' )->format( 'Y-m-d' ),
+		'_event_status'   => 'published',
+		'_event_imported' => '1',
+	)
+);
+
+$enqueue_for_retry( $future_retry_fixture );
+$seed_retry_only_run( 'cleanup_retry_ineligible', $retry_mirror_entry( $future_retry_fixture ), 20 );
+
+$result    = $runner->start( array( 'batch_events' => 5, 'batch_time_seconds' => 60, 'scan_window' => 5 ) );
+$run_state = $runner->read_run_state();
+
+assert_true( $result['ok'], 'retry-only run with an ineligible entry completed' );
+assert_true( null !== get_post( $future_retry_fixture ), 'a retry naming an event that is no longer eligible does NOT delete it' );
+assert_equals( 20, (int) $run_state['events_deleted'], 'a resolved ineligible entry is not counted as a deletion' );
+assert_true( ! isset( $run_state['failed_events'][ $future_retry_fixture ] ), 'an ineligible entry records no event failure' );
+assert_true( ! isset( $run_state['retry_queue'][ $future_retry_fixture ] ), 'a resolved ineligible entry leaves the retry mirror' );
+
+cleanup_section_teardown();
+
+// (c) A retry whose deletion FAILS keeps the event and is never counted as a
+// successful deletion; the queue records the attempt.
+$retry_attempt_fixture = cleanup_test_event(
+	'retry attempt fails',
+	array(
+		'_event_date'     => '2020-01-01',
+		'_event_status'   => 'published',
+		'_event_imported' => '1',
+	)
+);
+
+$enqueue_for_retry( $retry_attempt_fixture );
+$seed_retry_only_run( 'cleanup_retry_failure', $retry_mirror_entry( $retry_attempt_fixture ), 20 );
+
+$fail_retry_once = true;
+$retry_pre_delete_cb = function ( $check, $post, $force_delete ) use ( &$fail_retry_once, $retry_attempt_fixture ) {
+	unset( $force_delete );
+	if ( $fail_retry_once && $post instanceof WP_Post && (int) $post->ID === $retry_attempt_fixture ) {
+		$fail_retry_once = false;
+		return false; // Non-null: short-circuit deletion, wp_delete_post() returns false.
+	}
+	return $check;
+};
+add_filter( 'pre_delete_post', $retry_pre_delete_cb, 10, 3 );
+
+$result = $runner->start( array( 'batch_events' => 5, 'batch_time_seconds' => 60, 'scan_window' => 5 ) );
+
+remove_filter( 'pre_delete_post', $retry_pre_delete_cb, 10 );
+
+$run_state = $runner->read_run_state();
+
+assert_true( ! $fail_retry_once, 'the retry attempted the deletion (pre_delete_post fired)' );
+assert_true( null !== get_post( $retry_attempt_fixture ), 'the event survives a failed retry' );
+assert_equals( 20, (int) $run_state['events_deleted'], 'a FAILED retry is not counted as a deleted event' );
+assert_equals( 0, (int) $run_state['batch_count'], 'a retry-only batch with an exhausted cursor counts no scan batch' );
+assert_true( isset( $run_state['failed_events'][ $retry_attempt_fixture ] ), 'the failed retry is recorded in failed_events' );
+assert_equals( 1, (int) $run_state['failed_events'][ $retry_attempt_fixture ]['attempts'], 'attempts = 1 after one failed retry' );
+assert_true( isset( $run_state['retry_queue'][ $retry_attempt_fixture ] ), 'the failed retry stays queued' );
+assert_equals( 2, (int) $run_state['retry_queue'][ $retry_attempt_fixture ]['attempts'], 'queue attempts incremented (1 seeded + 1 failed)' );
+
+$retry_queue_state = Conexao_Event_Cleanup_Retry_Queue::read();
+assert_true(
+	isset( $retry_queue_state['data']['entries'][ $retry_attempt_fixture ] ),
+	'the failed retry remains pending in the persistent retry queue'
+);
 
 cleanup_section_teardown();
 

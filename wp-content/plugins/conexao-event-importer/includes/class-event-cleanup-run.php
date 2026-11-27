@@ -679,6 +679,22 @@ final class Conexao_Event_Cleanup_Run {
 	private function delete_event_transactional( int $event_id, array &$run_state ): array {
 		global $wpdb;
 
+		/*
+		 * Fail-closed backstop: this helper is the ONLY place that hard-deletes
+		 * a post for the cleanup. Every caller passes an ID that the event-
+		 * scoped scan produced or a retry entry re-verified as an eligible
+		 * event, so a non-event here means corrupt state — and deleting a page,
+		 * guide, sponsor or attachment by ID would be unrecoverable. Refuse
+		 * before any transaction is opened, without counting a deletion.
+		 */
+		if ( 'event' !== get_post_type( $event_id ) ) {
+			return array(
+				'ok'               => false,
+				'reason'           => 'not_an_event',
+				'images_preserved' => 0,
+			);
+		}
+
 		$option = Conexao_Event_Cleanup_Attachment_Review::option_name();
 
 		// Start the transaction.
@@ -830,8 +846,37 @@ final class Conexao_Event_Cleanup_Run {
 
 			$event_id = (int) $event_id;
 
-			// Already gone (idempotent no-op).
-			if ( null === get_post( $event_id ) ) {
+			/*
+			 * Resolve a queue entry that does not describe a deletable event
+			 * WITHOUT touching the post.
+			 *
+			 * A retry entry is created only for an event that failed deletion
+			 * (design §4.7), so a well-formed entry always names an `event`
+			 * post that is still an expired (eligible) event. A stale, corrupt
+			 * or hand-seeded entry can name anything: an ID that now belongs to
+			 * a page, guide, sponsor or attachment, or an event the operator has
+			 * since moved into the future or out of the current cleanup scope.
+			 * Deleting by ID alone would destroy that unrelated record and count
+			 * it as a deleted event; the retry path must therefore re-verify the
+			 * target before it hard-deletes anything:
+			 *
+			 *   - the post is gone (`get_post()` returns null) → idempotent
+			 *     no-op: the deletion was already achieved;
+			 *   - the post is not an `event` → nothing this cleanup owns;
+			 *   - the event is no longer eligible under the UNCHANGED eligibility
+			 *     predicate (design §2.1) → nothing this cleanup may delete.
+			 *
+			 * In all three cases the entry is resolved without a deletion and
+			 * `events_deleted` is NOT incremented: the counter reports
+			 * successfully deleted events, never deletion attempts or queue
+			 * resolutions. When the persistent queue still holds the entry it is
+			 * removed (the retry is resolved); when it does not (a run-state
+			 * mirror only, or a failed CAS) the entry is kept, so a retry is
+			 * never silently lost.
+			 */
+			$retry_post = get_post( $event_id );
+
+			if ( null === $retry_post || 'event' !== $retry_post->post_type || ! $this->is_eligible( $event_id ) ) {
 				// Mark as successfully retried (remove from queue).
 				$mark_result = Conexao_Event_Cleanup_Retry_Queue::mark_retried( $event_id, time() );
 				if ( $mark_result['ok'] ) {

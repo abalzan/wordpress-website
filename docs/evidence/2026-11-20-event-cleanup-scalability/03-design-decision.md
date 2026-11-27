@@ -407,6 +407,16 @@ Phase B does not call `wp_delete_attachment()`, so there is no file unlink and n
 5. On success: event removed from `retry_queue`, deleted, and cleared from any failure list.
 6. On failure: `attempts` incremented in `retry_queue`, failure recorded in `failed_events`/`failed_events_final` as normal.
 
+**Retry target re-verification (rev. 15 — clarification, CI hardening):** a retry entry exists only because an *eligible event* failed deletion, so the queue's premise is "an eligible `event`". The worker therefore re-verifies that premise before it hard-deletes anything. The entry is resolved **without a deletion and without incrementing `events_deleted`** when:
+
+| Condition | Outcome |
+|---|---|
+| the post is gone (`get_post()` returns null) | idempotent no-op: the deletion was already achieved |
+| the post is not an `event` (a page, guide, sponsor, attachment, revision) | nothing this cleanup owns; the record is untouched |
+| the event is no longer eligible under §2.1 (operator moved it into the future, or it left the current `cleanup_scope`) | nothing this cleanup may delete |
+
+A resolved entry is removed from the persistent queue; if removal fails (queue CAS conflict, or a run-state mirror entry with no persistent row) the entry stays pending, so a retry is never silently lost. `delete_event_transactional()` additionally refuses any non-`event` post as a fail-closed backstop before opening its transaction. Rationale: deleting by ID alone let a stale or hand-seeded entry destroy an unrelated record and inflate `events_deleted` — the counter must report successfully deleted events, never queue resolutions or deletion attempts.
+
 **No silent exclusion from eligibility:** `failed_events_final` events remain eligible per §2; scan still visits them; cleanup records "skipped: exhausted retries" and moves on. Visible in UI.
 
 **Retry vs Dismiss — auditable resolution states:**
