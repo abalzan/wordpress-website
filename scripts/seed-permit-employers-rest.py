@@ -45,7 +45,7 @@ from plan import PlanBuilder  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # Employer data — matches the APPROVED local dataset (local Docker DB, dumped
-# and verified in docs/research/2026-09-empregos-production-migration-audit.md
+# and verified in docs/content-model.md (Empregos editorial rules)
 # §4). This is the migration source of truth — NOT the older research-doc
 # dataset: no `_employer_sector`, no `_employer_evidence_years` (the local DB
 # carries none), `_employer_roles` only where the local record has one.

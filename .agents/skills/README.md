@@ -44,9 +44,16 @@ its workflow, and consults the canonical documents the skill names.
   and mount facts, routes, taxonomies and the script inventory are read from
   `plugins.json`, `docs/routing.md`, `docs/content-model.md` and
   `scripts/README.md`, never copied into a skill.
-- **History is not instruction.** `docs/reports/` and `docs/evidence/` are an audit
-  record. A number in a report is a historical measurement, not a current fact,
-  unless the report is still the authoritative source for it.
+- **A skill is a workflow, not an essay.** If a section is explaining the project
+  rather than telling the agent what to do, it belongs in a canonical document.
+  Fifteen focused skills beat five long ones, and a skill is retired only when its
+  workflow is genuinely no longer performed.
+- **History is not instruction, and it is not retained as instruction.**
+  `docs/plans/`, `docs/reports/` and `docs/evidence/` hold the record of a change
+  in flight and the machine proof a current process depends on. A number in a
+  report is a historical measurement, never a current fact. A record is pruned
+  once its change is merged, after any enduring finding moves to its owner — so
+  an agent never reads a finished report to learn a current rule.
 - **Retired material stays retired.** `.agents/legacy-flutter-skills/` is
   provenance for a retired Dart/Flutter skill set. It is **not** active, is never
   loaded, and the Flutter/mobile repository is permanently out of scope.
@@ -72,4 +79,4 @@ python3 tests/scripts/verify-agent-governance.py
 Every active skill ends with its `_Last verified: YYYY-MM-DD by <area>_`
 line (engineering standard §9.2).
 
-_Last verified: 2026-11-09 by the agent skills review and hardening_
+_Last verified: 2026-11-27 by the documentation and agent-skill rationalisation_

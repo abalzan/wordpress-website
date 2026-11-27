@@ -162,4 +162,4 @@ Never hand-edit a generated block; edit `plugins.json` and re-run `--write`.
 
 See `AGENTS.md` for AI-agent orientation and `docs/` for detailed documentation.
 _Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_
-_Last verified: 2026-11-07 by the agent, skills and documentation audit (generated registry regions regenerated: `plugins.json` link and empty retired-list sentence fixed)_
+_Last verified: 2026-11-27 by the documentation and agent-skill rationalisation (structure, stack and plugin table re-checked against the repository)_

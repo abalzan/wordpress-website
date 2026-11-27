@@ -1,8 +1,9 @@
 # Report — <stage / task name>
 
-> **This is a template.** Copy it to `docs/reports/<date>-<stage>-<topic>.md`
-> (or `docs/reports/site/` for repository-engineering stages) and fill it in. Do
-> **not** edit this file to turn it into a repository-specific report.
+> **This is a template.** Copy it to `docs/reports/<date>-<topic>.md` and fill it
+> in. Do **not** edit this file to turn it into a repository-specific report. A
+> merged report is pruned after any enduring finding moves to its owner
+> (`docs/reports/README.md`).
 >
 > Required by [`docs/engineering-standard.md`](../engineering-standard.md) §9.2
 > and §13.2. Machine evidence goes in `docs/evidence/<date>-<stage>/`; this
@@ -194,5 +195,4 @@ Justify the chosen status in one sentence. `PASS WITH LIMITATION` is the honest
 answer whenever a verifier did not run; do not reach for `PASS` to look
 complete.
 
-_Last verified: 2026-09-26 by Stage K — Agent Skills + Templates_
-_Last verified: 2026-09-30 by the agent skills / documentation migration_
+_Last verified: 2026-11-27 by the documentation and agent-skill rationalisation (the template was retained and its destination/retention wording aligned with docs/reports/README.md)_

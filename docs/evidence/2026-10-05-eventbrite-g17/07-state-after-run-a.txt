@@ -1,3 +1,0 @@
-events_total=2729
-snf_rows=566
-dup_native_ids=243

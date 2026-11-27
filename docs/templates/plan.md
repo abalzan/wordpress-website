@@ -183,8 +183,4 @@ The conditions that make this task done — restated from
 `docs/engineering-standard.md` §14, not invented. The task is not complete
 until every applicable item holds and the report contains real numbers.
 
-_Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_
-
-_Last verified: 2026-09-30 by the agent skills / documentation migration_
-
-_Last verified: 2026-11-07 by the agent, skills and documentation audit (copy destination corrected to `docs/plans/`)_
+_Last verified: 2026-11-27 by the documentation and agent-skill rationalisation (the template was retained and its destination/retention wording aligned with docs/plans/README.md)_

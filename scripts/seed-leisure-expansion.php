@@ -59,7 +59,7 @@ function conexao_expand_jaccard( $a, $b ) {
 // Load candidate dataset.
 // Parts 1/2: earlier expansion batches. Part 3: Stage C (Lazer
 // expansion — 12 approved NEW records; see
-// docs/importers/lazer-expansion-stage-c-report.md).
+// docs/plugins/conexao-leisure-migration.md).
 // ------------------------------------------------------------------
 $part1 = require dirname( __FILE__ ) . '/data/leisure-expansion-data-1.php';
 $part2 = require dirname( __FILE__ ) . '/data/leisure-expansion-data-2.php';

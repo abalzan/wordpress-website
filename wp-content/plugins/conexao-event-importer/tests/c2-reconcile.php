@@ -7,7 +7,7 @@
  *   php c2-reconcile.php apply      -> reconcile using a verified manifest
  *   php c2-reconcile.php verify     -> re-verify an existing manifest against the DB
  *
- * Safety contract (see docs/importers/events-expansion-stage-c2-report.md 6-9):
+ * Safety contract (see docs/plugins/conexao-event-importer.md (reconciliation) 6-9):
  *  - Requires EXACTLY 117 duplicate pairs, each made of one source_not_found
  *    original (kept, restored to published) + one C2-created published twin
  *    (removed). Any mismatch -> STOP, nothing is written.

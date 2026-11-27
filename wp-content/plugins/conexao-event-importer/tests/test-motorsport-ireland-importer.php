@@ -23,7 +23,7 @@ $failed = 0;
  * Build a deterministic listing-card fixture.
  *
  * Mirrors the real Motorsport Ireland Squarespace HTML structure documented
- * in docs/importers/motorsport-ireland-audit.md (eventlist-event cards with
+ * in docs/importers/motorsport-ireland.md (eventlist-event cards with
  * id="item-{hex}", eventlist-title, eventlist-cats, etc.).
  */
 function mi_card_fixture( $overrides = array() ) {

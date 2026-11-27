@@ -121,9 +121,36 @@ sponsoring"), `unverified` (plain entry, no indicator), or `exception`
 (has the same historical evidence plus a company-stated current-position
 caveat kept in the admin data; it renders as a normal permit-history
 card — the unified directory's compact notice is the single Employment
-Permit explanation). See
-`docs/research/2026-09-empregos-agencies-and-employment-permits.md` for the
-validated data and editorial rules.
+Permit explanation).
+
+#### Empregos editorial rules (binding)
+
+These rules govern every `recruitment_agency` and `permit_employer` record and
+every string rendered for them. They are enforced operationally, not by code,
+so a violation is a content defect:
+
+1. **Historical permit evidence is never current sponsorship.** The wording is
+   "Há histórico oficial de Employment Permits para este empregador" — never
+   "patrocina vistos", "oferece sponsorship", "candidate-se e consiga seu
+   visto" or "esta vaga é elegível".
+2. `verified` in `_employer_permit_status` means **verified historical permit
+   evidence** in the official DETE "Permits issued to companies" statistics.
+   Nothing more.
+3. **Employers are never modelled as recruitment agencies** — separate CPT,
+   separate section, separate wording.
+4. No WRC/DETE reference numbers on the frontend (admin data only). No salary
+   thresholds or permit quotas on cards — link to the official guidance
+   instead, because the rules change.
+5. No search, filters, maps, ratings, logos or sponsorship badges.
+6. **Farm Solutions: on hold** until its WRC/licensing status is manually
+   resolved. Do not publish it and do not describe it as unlicensed.
+7. **Kepak** carries no permit-history badge until the public brand is mapped
+   to one exact DETE legal entity (seeded `unverified`).
+8. **Nua Healthcare** has historical DETE evidence but states it no longer
+   recruits internationally: seed `exception`, render in the "Importante"
+   block, never with a generic verified badge.
+9. **Liffey Meats** is shown under its public name; the DETE legal entity
+   ("Liffey Meats (Cavan) Unlimited Company") stays in admin data.
 
 ## The Blog posts page (Stage O)
 
@@ -522,8 +549,5 @@ Image fields:
 - `_event_source` (e.g. `laois_tourism`) + `_event_source_id` (external ID) form the primary deduplication key.
 - Export adds a UUID meta for cross-instance matching.
 - Matching order: UUID → source+source_id → URL → content title+date.
-_Last verified: 2026-09-26 by Stage O — Enable the Real English Blog Archive_
 
-_Last verified: 2026-10-08 by the Apoiadores single-page directory change (the `/apoiadores/` archive renders the whole ordered set on one page)_
-_Last verified: 2026-11-03 by the Phoenix Park UUID repair — Lazer `_leisure_export_uuid` per-attraction semantics documented_
-_Last verified: 2026-11-05 by the Lazer coordinate REST permission fix — `_leisure_lat` / `_leisure_lng` REST write permission (`auth_callback` = `edit_post`) documented_
+_Last verified: 2026-11-27 by the documentation and agent-skill rationalisation (taxonomy policy, the permit-employer model and the Empregos editorial rules re-verified against the data model plugin)_

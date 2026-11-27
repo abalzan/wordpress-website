@@ -217,7 +217,7 @@ if ( ! empty( $leaked ) ) {
 	exit( 4 );
 }
 
-$evidence_dir = dirname( __DIR__, 2 ) . '/docs/evidence/2026-10-05-eventbrite-g16';
+$evidence_dir = dirname( __DIR__, 2 ) . '/tests/experiments/observations/eventbrite-g16';
 
 if ( ! is_dir( $evidence_dir ) ) {
 	wp_mkdir_p( $evidence_dir );

@@ -2,10 +2,8 @@
 /**
  * Lazer expansion — Stage C dataset (12 approved NEW records).
  *
- * Authority chain:
- *   docs/importers/lazer-expansion-stage-a-audit.md
- *   docs/importers/lazer-expansion-stage-b-report.md (+ stage-b-dataset.json)
- *   docs/importers/lazer-expansion-stage-c-report.md (URL re-verification 2026-10-09)
+ * Authority: docs/plugins/conexao-leisure-migration.md (Lazer expansion).
+ * URLs were last re-verified on 2026-10-09; closer dates are a data defect.
  *
  * Every record was re-verified against the live web on 2026-10-09 before
  * implementation. Fields are populated only where verified evidence exists;

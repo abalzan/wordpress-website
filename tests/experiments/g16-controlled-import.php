@@ -473,7 +473,7 @@ foreach ( $global_before as $key => $v ) {
 	g16_say( sprintf( '  %-28s %s -> %s', $key, g16_printable( $v ), g16_printable( $global_after[ $key ] ) ) );
 }
 
-$evidence_dir = dirname( __DIR__, 2 ) . '/docs/evidence/2026-10-05-eventbrite-g16';
+$evidence_dir = dirname( __DIR__, 2 ) . '/tests/experiments/observations/eventbrite-g16';
 
 $out = array(
 	'label'         => $label,

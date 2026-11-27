@@ -407,7 +407,7 @@ assert_true( false !== strpos( $html, 'event-filters-dropdown-trigger' ) && fals
 assert_true( false === strpos( $html, 'role="option"' ) && false === strpos( $html, 'role="listbox"' ), 'no invalid role="option"/"listbox" on the event filter links' );
 assert_true( false !== strpos( $html, 'county=cavan' ) && false !== strpos( $html, 'county=dublin' ), 'county options rendered from counties used by events' );
 // The City (Cidade) filter is intentionally REMOVED from the visible widget
-// (docs/reports/2026-11-25-remove-city-filter.md): event location data is
+// (docs/routing.md): event location data is
 // county-based and the city metadata is inconsistent. `?cidade=` remains a
 // supported QUERY parameter — the archive-query section above proves it still
 // filters — but the widget must not offer city options again.

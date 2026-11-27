@@ -12,7 +12,7 @@ the local test account exactly as a maintainer would.
 Safety: local only. It refuses a production base URL and never writes to WordPress.
 
 Usage (from the project root):
-  python3 scripts/diagnostics/commemorative-browser-review.py --out docs/evidence/2026-11-06-commemorative-events/stages-4-6/browser
+  python3 scripts/diagnostics/commemorative-browser-review.py --out commemorative-review-work/browser
 
 Environment:
   CONEXAO_TEST_BASE_URL     default http://localhost:8080 (production is refused)
@@ -179,7 +179,7 @@ def find_preview_url(page):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--out", default="docs/evidence/2026-11-06-commemorative-events/stages-4-6/browser")
+    parser.add_argument("--out", default="commemorative-review-work/browser")
     args = parser.parse_args()
 
     guard_base()

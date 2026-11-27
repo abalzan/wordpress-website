@@ -20,9 +20,9 @@ experiences (Halloween, Christmas, New Year, …). It owns **when** an event is
 displayed and **which** event wins; it never renders anything and never knows a
 template, an asset or a holiday name.
 
-Authoritative specification:
-[`docs/reports/2026-11-03-commemorative-events-architecture-proposal-r10-revised.md`](../reports/2026-11-03-commemorative-events-architecture-proposal-r10-revised.md)
-(r10). This page records what exists; the proposal owns the requirements.
+This page and [`docs/commemorative-events.md`](../commemorative-events.md) are
+the authoritative reference: this page owns the engine's contract, the
+presentation system is owned by `docs/commemorative-events.md`.
 
 ## Responsibilities
 
@@ -239,5 +239,4 @@ The plugin is **fully theme-independent**. It has no direct dependencies on the
 
 Run with: `./scripts/run-tests.sh --only conexao-commemorative`
 
-_Last verified: 2026-11-09 by the plugin documentation audit_
-_Last verified: 2026-11-25 by the theme independence implementation_
+_Last verified: 2026-11-27 by the documentation and agent-skill rationalisation (the authoritative-reference pointer was corrected after the historical-document prune)_

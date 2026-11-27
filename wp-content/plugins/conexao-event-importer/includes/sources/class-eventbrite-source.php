@@ -492,8 +492,7 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 	 *     `eventbrite_api_token` plumbing rather than leaving a flag for a mode
 	 *     that never existed.
 	 *
-	 * See `docs/reports/2026-10-04-eventbrite-api-feasibility.md` and
-	 * `docs/reports/2026-10-04-eventbrite-api-retirement.md`. Do not add a
+	 * See `docs/plugins/conexao-event-importer.md`. Do not add a
 	 * credential-conditional branch here without re-running that measurement.
 	 *
 	 * @return array[]

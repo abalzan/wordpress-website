@@ -204,8 +204,7 @@ Same protected-meta/`auth_callback` REST pattern as the agency meta;
 | `_employer_last_checked` | Verification date |
 | `_employer_status` | Custom publishing status |
 
-Editorial rules live in
-`docs/research/2026-09-empregos-agencies-and-employment-permits.md`.
+Editorial rules live in `docs/content-model.md` §"Empregos editorial rules".
 Seeding: `scripts/seed-permit-employers.php` (WP-CLI/local) and
 `scripts/seed-permit-employers-rest.py` (WordPress.com, Application
 Password auth, upsert-by-slug — keep the two in sync).

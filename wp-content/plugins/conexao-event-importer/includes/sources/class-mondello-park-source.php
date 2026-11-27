@@ -6,7 +6,7 @@
  *   Discovery : https://mondellopark.ie/wp-json/wp/v2/events?per_page=100
  *   Detail    : https://mondellopark.ie/events/{slug}/
  *
- * Stage A audit (docs/importers/mondello-park-stage-a-audit.md) found:
+ * Stage A audit (docs/importers/mondello-park-importer.md) found:
  *   - 29 published events via REST (X-WP-Total: 29, one page at per_page=100).
  *   - no public event-date/time/venue/price/ticket API — dates exist only as
  *     visible HTML text on detail pages (US "Month DD, YYYY" format).

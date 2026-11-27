@@ -1,3 +1,0 @@
-MAX_ENTRIES=100
-BEFORE=100 AFTER=100 DELTA=0
-CONCLUSION=count cannot grow -> 'History entry was added' fails on a FULL store

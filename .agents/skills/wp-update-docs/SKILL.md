@@ -2,9 +2,13 @@
 
 ## Purpose
 
-Keep the documentation truthful and non-duplicative: put every fact in the one
-document that owns it, link rather than restate a procedure, keep generated
-regions generated, and stop drift before CI does.
+Keep the documentation **small, truthful and non-duplicative**. Put every fact
+in the one document that owns it; link rather than restate a procedure; keep
+generated regions generated; and stop drift before CI does.
+
+A document is not valuable because it is detailed, recent or expensive to write.
+It is valuable when it helps the next agent make a correct change. Prefer the
+smaller, current sentence.
 
 ## When to use
 
@@ -46,7 +50,7 @@ here, but this skill never substitutes for `wp-add-content-type`,
 | Plugin registry facts | `plugins.json` (generated regions derive from it) |
 | Script inventory | `scripts/README.md` |
 | Agent workflows (procedures) | `.agents/skills/<name>/SKILL.md` |
-| History, audits, measurements | `docs/reports/`, `docs/evidence/`, `docs/audit/` |
+| Point-in-time record (not instruction) | `docs/reports/README.md`, `docs/evidence/README.md`, `docs/plans/README.md` |
 
 ## Preconditions
 
@@ -62,7 +66,7 @@ here, but this skill never substitutes for `wp-add-content-type`,
 | A post type, taxonomy or meta field | `docs/content-model.md`, the owning plugin doc, the header version |
 | A route, archive, single, filter or redirect | `docs/routing.md` (+ sitemap coverage, + HTTP matrix row) |
 | A plugin (new, re-classified, retired) | `plugins.json`, then `php scripts/generate-registry-docs.php --write`; the plugin's own `docs/plugins/<slug>.md` |
-| English/Polylang coverage | `docs/routing.md` §English rollout state, `docs/content-model.md` if meta changed, the rollout stage report |
+| English/Polylang coverage | `docs/routing.md` §English rollout state, `docs/content-model.md` if meta changed, the rollout plugin doc |
 | Theme templates, components, CSS | `docs/themes/conexao-br-irlanda.md`, `docs/frontend.md` (incl. the transient invalidation matrix) |
 | A new or changed script | `scripts/README.md` (purpose, safety level, arguments, default mode, target, last verified) |
 | Build, manifest, deploy or rollback | `docs/releases.md` (and the release log row) |
@@ -90,28 +94,44 @@ here, but this skill never substitutes for `wp-add-content-type`,
    where the templates and the release instructions are. Point to authoritative
    documents instead of duplicating their contents. Do not retain a stale
    operational fact just because it was once true — correct or remove it.
-5. **Write stage/feature reports from the template.** Use
-   `docs/templates/report.md`; put the report in `docs/reports/` (or
-   `docs/reports/site/` for repository-engineering stages) and the machine
-   evidence in `docs/evidence/<date>-<stage>/`. **No root-level report or
-   evidence file is ever added.**
-6. **Plan multi-file work first** by copying `docs/templates/plan.md` to
-   `docs/plans/<date>-<topic>.md` and filling in the copy.
+5. **Report proportionately — do not create a report for every change.** Use
+   `docs/templates/report.md` for multi-file, content-write, route, English or
+   release work. A documentation-only, tests-only or single-file fix needs no
+   report unless it changes a rule a maintainer must know. Put the report in
+   `docs/reports/` and machine evidence in `docs/evidence/<date>-<stage>/`.
+   **No root-level report or evidence file is ever added.**
+6. **Plan only when the risk justifies it.** Copy `docs/templates/plan.md` to
+   `docs/plans/<date>-<topic>.md` for multi-file work, content/route/English
+   changes, and anything destructive or production-adjacent. A trivial one-file
+   edit does not need a plan. Never fill in the template in place.
 7. **End every document with its `_Last verified: YYYY-MM-DD by <area>_` line**,
    updated to today and the area that verified it.
-8. **Check for drift before finishing.** `docs/README.md` links every document;
-   the registry drift gate passes; no document references a path that was
-   renamed or removed.
+8. **Verify every link, and repair the index when you move or delete.** When a
+   document is renamed, moved or deleted, search the whole repository for
+   references to the old path — `AGENTS.md`, `.agents/skills/`, `docs/README.md`,
+   `docs/engineering-standard.md`, plugin docs, scripts, tests and code comments —
+   and update or remove each one. Then confirm no document or skill references a
+   non-existent path, `docs/README.md` links every living document, and the
+   registry and governance gates pass.
 9. **Apply the ownership rule.** A **procedure** lives in exactly one skill. When
    a canonical document needs to mention a procedure, it links to the skill in
    one line instead of restating the steps. A **specification** (a rule, a value,
    a policy, an architecture fact) stays readable in the canonical document. A
-   **historical outcome** stays in the report. When you find the same procedure
+   **historical outcome** is not instruction. When you find the same procedure
    explained in two places, one of them is now wrong within a week.
+10. **Keep history off the normal reading path.** An agent should never have to
+    read a completed plan, a finished report or an evidence dump to learn a
+    current rule. If a fact matters, it belongs in a canonical document or a
+    skill — extract it there and prune the record. Do not add a new archive
+    directory, do not keep a report purely to demonstrate work, and do not cite
+    a historical measurement as a current fact.
 
 ## Guardrails
 
 - Documentation changes live **with** the change, in the same commit.
+- **Write less, not more.** No new document when an existing one owns the
+  subject; no new list when one is generated; no narration of a procedure that
+  already has a skill.
 - Never edit a `GENERATED` region by hand; never add a second copy of a
   generated list.
 - No secrets and no hard-coded local or external URLs in documentation.
@@ -136,7 +156,9 @@ git status --short                               # only intended doc changes
 ```
 
 - Every path referenced by a changed document exists (`git ls-files` / `ls`).
-- `docs/README.md` links each new or moved document.
+- No reference anywhere in the repository points at a moved or deleted document.
+- Each fact lives in exactly one document; nothing was copied to be safe.
+- `docs/README.md` links each living document and each new or moved one.
 - Each touched document ends with an updated `_Last verified_` line.
 - The report from `docs/templates/report.md` contains **real** verification
   numbers and an explicit limitations section.
@@ -156,9 +178,13 @@ git status --short                               # only intended doc changes
 - *The change → document map does not cover a file you touched.* Extend the map
   in the standard so the next change is caught. That is a real improvement to
   governance, not scope creep.
-- *A historical report contradicts current policy.* Do **not** rewrite history.
-  Record the correction in a new report and, if a reader is likely to be misled,
-  add a short pointer in the reports index.
+- *A historical report contradicts current policy.* The canonical document is
+  right; the record is out of date. Do **not** rewrite the historical record and
+  do **not** leave it on the reading path. Extract any enduring decision into the
+  owner, then prune the record (`docs/reports/README.md`).
+- *A document describes a system that no longer exists.* Delete it. Its
+  provenance is Git history. Do not archive it in a second directory and do not
+  preserve it "in case".
 
 ## Evidence and reporting
 
@@ -183,4 +209,4 @@ written for this task goes to `docs/reports/` and its machine output to
 - [ ] The registry drift gate and the script-contract gate pass.
 - [ ] The report states limitations honestly, with no "fully verified" claim.
 
-_Last verified: 2026-11-09 by the agent skills review and hardening_
+_Last verified: 2026-11-27 by the documentation and agent-skill rationalisation_

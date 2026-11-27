@@ -11,7 +11,7 @@
  * against the official files on enterprise.gov.ie (2023, 2024 and 2025
  * publications) on 2026-09-02.
  *
- * Editorial rules (see docs/research/2026-09-empregos-agencies-and-employment-permits.md):
+ * Editorial rules (see docs/content-model.md, "Empregos editorial rules"):
  * - 'verified' = verified HISTORICAL permit evidence in the official DETE
  *   statistics. NEVER "currently sponsoring".
  * - Kepak is seeded as 'unverified' (plain employer entry, NO permit

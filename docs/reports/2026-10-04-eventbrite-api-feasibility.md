@@ -7,7 +7,7 @@
 | **Branch** | `master` |
 | **Start SHA** | `01096321b611981e1c0a3e6aba05faae535b41c2` |
 | **End SHA** | *uncommitted — not deployed, not committed* |
-| **Predecessor** | [G5 — Eventbrite Rate-Limit Strategy](2026-10-04-eventbrite-rate-limit-strategy.md) · [G4](2026-10-03-event-import-g4.md) · [G1–G3](2026-10-03-event-import-fixes-g1-g3.md) |
+| **Predecessor** | G5 — Eventbrite Rate-Limit Strategy · G4 · G1–G3 (records retained in Git history) |
 | **Evidence** | [`docs/evidence/2026-10-04-eventbrite-api-g6/`](../evidence/2026-10-04-eventbrite-api-g6/) |
 | **Plugin version** | `conexao-event-importer` **1.9.0 — unchanged** |
 | **Production files changed** | **0** |

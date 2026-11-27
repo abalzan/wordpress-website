@@ -13,9 +13,8 @@
  * G6 measured that the official API cannot enumerate a county listing anyway —
  * `/v3/events/search/` is 404 and organization discovery is per-user, so a
  * county's events (Cork: 36 distinct organizers, Dublin: 74, Carlow: 51 in 60)
- * span organizers you do not own. See
- * `docs/reports/2026-10-04-eventbrite-api-feasibility.md` (verdict: NOT VIABLE)
- * and `docs/reports/2026-10-04-eventbrite-api-retirement.md`.
+ * span organizers you do not own (verdict: NOT VIABLE). See
+ * `docs/plugins/conexao-event-importer.md`.
  *
  * The token was therefore a dead secret-storage path: it looked like a
  * prerequisite, was never read, and invited a credential nobody needed. G7

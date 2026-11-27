@@ -3,7 +3,7 @@
  * Remove the erroneous `conexao_town` relationship on Events whose town term
  * is only a COUNTY name.
  *
- * Stage P. See docs/reports/2026-09-26-stage-p-county-not-town-report.md.
+ * Taxonomy policy: docs/content-model.md.
  *
  * ## Root cause this script corrects
  *

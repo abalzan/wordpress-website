@@ -37,6 +37,7 @@ Thumbs.db
 # The ACTIVE agent skills are WordPress-domain and tracked: .agents/skills/.
 # The retired Flutter/Dart skill set (wrong domain for this repository) is kept
 # for provenance under .agents/legacy-flutter-skills/ and is not tracked as
-# active skills. See docs/evidence/2026-09-26-stage-k/.
+# active skills. The active set is governed by
+# tests/scripts/verify-agent-governance.py.
 .agents/legacy-flutter-skills/dart-*/
 .agents/legacy-flutter-skills/flutter-*/

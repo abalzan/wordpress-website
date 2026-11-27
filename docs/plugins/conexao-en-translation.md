@@ -48,8 +48,8 @@ records did not exist yet.
 ### Why the data was imported, not re-authored
 
 The complete authored English for these guides already existed in the **retired**
-[`conexao-guide-translation`](conexao-guide-translation.md) plugin (Stage 9), which
-Stage 19 removed from the repository. That
+`conexao-guide-translation` plugin (Stage 9), which Stage 19 removed from the
+repository. That
 plugin's *lifecycle* is retired and stays dormant — it is not activated, and it is
 not a second translation engine. Its *data* is authoritative, so it was imported
 into this stage once, mechanically, rather than re-translated. Concretely: the
@@ -77,9 +77,8 @@ in `includes/exclusions-data.php` rather than left implicit:
 
 The registry is **read-only and is never fed to the engine**: a retired row must
 not reappear as a plan object. It exists so a future contributor who meets the
-missing row can see it was retired on purpose, with the investigation that
-established the deletion
-(`docs/reports/2026-09-30-en-pt-source-reconciliation.md`). The retirement is
+missing row can see it was retired on purpose: the classification and the
+reason live in `includes/exclusions-data.php`. The retirement is
 source-identity only — no PT record was recreated and no PT identity invented.
 
 ### The translated-taxonomy capability
@@ -422,8 +421,7 @@ runtime resolution, canonical and hreflang). Both are discovered by convention
 Two authored rows pointed at a PT identity that production no longer serves
 under that key. Both were corrected as **source-identity** changes only, with
 the authored English carried across byte-for-byte (verified by payload
-SHA-256, see
-`docs/reports/2026-09-30-en-rollout-blocker-resolution.md`):
+SHA-256):
 
 - `outono-irlanda-alimentacao-bem-estar` moved from the `guide` block to the
   `post` block of `includes/manifest-data.php`: the real PT record is a
@@ -434,8 +432,8 @@ SHA-256, see
 
 Seven further authored rows have **no** real PT source and are classified
 `NO_REAL_PT_SOURCE`, an explicit editorial decision — not a silent exclusion and
-not a deletion. They are listed with their evidence in
-`docs/evidence/2026-09-30-en-rollout-blocker-resolution/05-source-resolution-table.txt`.
+not a deletion. Each row, its classification and its reason are recorded in
+`includes/exclusions-data.php`.
 
 Note the data-level change is not sufficient on its own: WordPress resolves
 `pagename` language-blind, so two pages on one slug made the request resolve to
@@ -558,12 +556,10 @@ php wp-content/themes/conexao-br-irlanda/tests/test-translation-completeness.php
 | **Build** | no |
 | **Compose mount** | yes |
 | **Dependencies** | `conexao-translation-rollout` |
-| **Version** | 1.5.0 (authoritative source: `wp-content/plugins/conexao-en-translation/conexao-en-translation.php` header) |
+| **Version** | 1.5.1 (authoritative source: `wp-content/plugins/conexao-en-translation/conexao-en-translation.php` header) |
 | **Registry** | [`plugins.json`](../../plugins.json) |
 
 > **Local-only tooling.** Not a production steady-state dependency.
 <!-- END GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
 
-_Last verified: 2026-09-27 by the EN Leisure description rollout — Stage 7 `en-leisure-description` on the shared engine_
-
-_Last verified: 2026-09-30 by the EN Leisure description rollout — the `en-guide` stage owns the 50-row Guide dataset + 13 EN `conexao_category` terms and applies them through the shared engine. One authored row (`learner-permit-theory-test-irlanda-cnh-brasileira`) was retired on 2026-09-30 because its PT source was permanently deleted; the retirement is recorded in `includes/exclusions-data.php`._
+_Last verified: 2026-11-27 by the documentation and agent-skill rationalisation (evidence pointers were repointed to the exclusions registry in code)_

@@ -25,8 +25,6 @@
 > [`docs/translation-manual-operator-runbook.md`](../translation-manual-operator-runbook.md).**
 > This document is the plugin's architecture; the runbook is the executable
 > workflow, and it is the one an operator follows.
->
-> See [`docs/reports/2026-10-02-stage-17-retire-automatic-translation.md`](../reports/2026-10-02-stage-17-retire-automatic-translation.md).
 
 <!-- BEGIN GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
 | | |
@@ -54,9 +52,7 @@ It is deliberately **not** the translation program itself. It contains no
 translation logic, no second engine, no provider automation, no cron, no
 webhook, no anonymous endpoint and no apply path of its own.
 
-Owner: project maintainer. Introduced by Stage 1
-(`docs/reports/2026-09-30-stage-1-auto-translation-plugin-boundary.md`);
-repurposed by Stage 17.
+Owner: project maintainer. Introduced by Stage 1; repurposed by Stage 17.
 
 ## The operating model (Stage 17)
 
@@ -432,10 +428,7 @@ admin-user-scope cache exemption is untouched.
 | `test-automation-hooks.php` | 50 |
 | `tests/scripts/verify-stage3-automation.py` | 116 |
 
-Full detail:
-`docs/reports/2026-09-30-stage-3-change-detection-provider-trigger.md`.
-
-_Last verified: 2026-09-30 by Stage 3 — change detection, provider boundary, trigger and audit_
+The enforced contract is `tests/scripts/verify-stage3-automation.py`.
 
 ---
 
@@ -497,8 +490,7 @@ fewer rows than the stage's own authored manifest*, because every stage's
 `run_callback` rebuilds its own configuration and the engine had no filter. Stage
 10 reported it rather than working around it.
 
-**Stage 11 closes it** with `MODEL_A — TRUE SUBSET EXECUTION`. See
-`docs/reports/2026-10-01-stage-11-model-a-scope-contract-and-batch-control.md`.
+**Stage 11 closes it** with `MODEL_A — TRUE SUBSET EXECUTION` (next section).
 
 ---
 
@@ -550,4 +542,4 @@ the existing code, **unmodified**, operating on a smaller manifest.
 | `tests/scripts/verify-stage10-batch-boundary.py` | **20 injected-negative proofs, 0 missed** |
 | `tests/scripts/verify-stage8-control-plane.py` | 141 -> **149** |
 
-_Last verified: 2026-10-01 by Stage 11 — Model A scope contract and batch control_
+_Last verified: 2026-11-27 by the documentation and agent-skill rationalisation (historical stage-report pointers replaced with the enforcing gates)_

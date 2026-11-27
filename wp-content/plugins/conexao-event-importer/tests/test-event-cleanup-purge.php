@@ -529,7 +529,7 @@ if ( class_exists( 'Conexao_Event_Query' ) ) {
 // apply path below deletes exactly the ids this suite created, and the sentinel
 // proves the suite's scope is its own fixtures.
 //
-// Coverage note (docs/reports/2026-11-14-stage-0-5-test-safety.md): the
+// Coverage note (docs/testing.md (Test isolation)): the
 // end-to-end run_cleanup() proof is DEFERRED to the isolated-database stage.
 // ---------------------------------------------------------------------------
 test_section( 'Per-fixture cleanup — each fixture purged individually' );

@@ -128,9 +128,9 @@ client.assert_write_allowed(args.confirm_production)   # production guard
 
 ## Evidence
 
-Curated evidence for each stage lives in `docs/evidence/<date>-<stage>/` (for
-Stage I: `docs/evidence/2026-09-26-stage-i/`). No script writes evidence into the
-repository root; `dist/`, `*-work/` and `*.log` are git-ignored.
+Curated evidence for a stage or feature lives in `docs/evidence/<date>-<stage>/`.
+No script writes evidence into the repository root; `dist/`, `*-work/` and `*.log`
+are git-ignored. The retention rule is `docs/evidence/README.md`.
 
 ---
 

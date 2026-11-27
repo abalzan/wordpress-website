@@ -2,9 +2,9 @@
 #
 # lint.sh
 #
-# The single local quality gate for Stage C of the engineering-standard
-# roadmap (docs/engineering-standard.md §1.4–§1.6; see
-# docs/reports/site/2026-09-25-stage-c-static-quality-tooling.md).
+# The single local quality gate for the engineering-standard static-quality
+# rules (docs/engineering-standard.md §1.4–§1.6; procedure in
+# docs/development.md §"Quality tooling").
 #
 # Runs, in order:
 #

@@ -276,7 +276,7 @@ function g11_main( array $args ) {
 
 	$evidence_dir = isset( $args['evidence-dir'] )
 		? rtrim( (string) $args['evidence-dir'], '/' )
-		: dirname( CONEXAO_TESTS_WP_ROOT ) . '/docs/reports/evidence/eventbrite-g11/observations';
+		: dirname( CONEXAO_TESTS_WP_ROOT ) . '/tests/experiments/observations/eventbrite-g11/observations';
 
 	if ( '' === $source_id ) {
 		g11_say( 'missing --source=<registry source id>' );

@@ -71,7 +71,7 @@ mp_test_assert(
 	'Conexao_Source_Mondello_Park::parse_us_month_day_year'('Sep 12, 2026') === '2026-09-12' ,
 	'Sep 12, 2026 → 2026-09-12'
 );
-// Stage A spec (docs/importers/mondello-park-stage-a-audit.md, §Stage B rec. 3
+// Stage A spec (docs/importers/mondello-park-importer.md, §Stage B rec. 3
 // and setup JSON date_source.format "Month DD, YYYY") requires the comma form.
 // A comma-less "September 12 2026" is NOT attested in the source evidence, so
 // the parser correctly rejects it — the old expectation was wrong (TEST).
