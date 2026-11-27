@@ -73,7 +73,7 @@ class Conexao_Import_Result {
 	/** @var string Why the source was skipped or deferred. */
 	protected $source_skip_reason = '';
 
-	/** @var int Unique run ID (microtime). */
+	/** @var string Unique run ID (microtime). */
 	protected $run_id;
 
 	/**
