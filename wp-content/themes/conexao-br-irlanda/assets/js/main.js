@@ -29,7 +29,90 @@
 		initInfiniteScroll();
 		initLoadMore();
 		initLeisureProximity();
+		initChristmasEgg();
 	});
+
+	// ===== Christmas Easter egg (hidden, visitor-triggered) =====
+	//
+	// The egg is a small, deliberately unobtrusive surprise: on the Portuguese
+	// site it opens when a visitor types NATAL, on the English site CHRISTMAS.
+	// The trigger word comes from the server payload's `language` key, which is
+	// resolved by the theme's single language helper — the same value Polylang
+	// serves the page in.
+	//
+	// Rules kept deliberately simple and robust:
+	//   - typing inside an input, textarea, select, contenteditable region or a
+	//     textbox/combobox/searchbox role never arms the egg;
+	//   - Escape, the close button and the backdrop all dismiss it;
+	//   - focus moves to the close control on open and returns to where it was
+	//     on dismissal, so keyboard users are never stranded;
+	//   - `aria-hidden` follows the visible state, and the markup ships hidden,
+	//     so the inactive site exposes nothing to assistive technology;
+	//   - no timer, no interval and no network request is created here.
+	function initChristmasEgg() {
+		const egg = document.getElementById('christmas-egg');
+		if (!egg) return;
+
+		const close = egg.querySelector('.christmas-egg__close');
+		const backdrop = egg.querySelector('.christmas-egg__backdrop');
+		const language = (i18n && i18n.language) ? i18n.language : 'pt';
+		const sequence = 'en' === language ? 'CHRISTMAS' : 'NATAL';
+
+		let active = false;
+		let buffer = '';
+		let previousFocus = null;
+
+		function isInputControl(target) {
+			if (!target || typeof target.matches !== 'function') return false;
+			return target.matches('input, textarea, select, [contenteditable="true"]')
+				|| target.isContentEditable === true
+				|| (typeof target.closest === 'function' && target.closest('[contenteditable="true"]') !== null)
+				|| target.matches('[role="textbox"], [role="combobox"], [role="searchbox"]');
+		}
+
+		function show() {
+			if (active) return;
+			active = true;
+			previousFocus = document.activeElement;
+			egg.setAttribute('aria-hidden', 'false');
+			egg.classList.add('christmas-egg--active');
+			if (close) close.focus();
+		}
+
+		function dismiss() {
+			if (!active) return;
+			active = false;
+			egg.classList.remove('christmas-egg--active');
+			egg.setAttribute('aria-hidden', 'true');
+			if (previousFocus && typeof previousFocus.focus === 'function') {
+				previousFocus.focus();
+			}
+			previousFocus = null;
+		}
+
+		if (close) close.addEventListener('click', dismiss);
+		if (backdrop) backdrop.addEventListener('click', dismiss);
+
+		document.addEventListener('keydown', function (e) {
+			if (active) {
+				if (e.key === 'Escape') {
+					e.preventDefault();
+					dismiss();
+				}
+				return;
+			}
+
+			if (isInputControl(e.target)) return;
+			if (!e.key || 1 !== e.key.length) return;
+
+			buffer = (buffer + e.key.toUpperCase()).slice(-sequence.length);
+
+			if (buffer === sequence) {
+				buffer = '';
+				show();
+			}
+		});
+	}
 
 	function initThemeToggle() {
 		const toggle = document.querySelector('.theme-toggle');

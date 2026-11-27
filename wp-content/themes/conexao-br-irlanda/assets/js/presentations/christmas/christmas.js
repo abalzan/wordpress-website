@@ -328,7 +328,6 @@
 		var decorations = [
 			{ type: 'star', assetAttr: 'data-ce-star-asset', className: 'ce-ambient-decoration', width: 60, height: 75 },
 			{ type: 'snowflake', assetAttr: 'data-ce-snowflake-asset', className: 'ce-ambient-decoration--snowflake', width: 32, height: 32 },
-			{ type: 'bauble', assetAttr: 'data-ce-bauble-asset', className: 'ce-ambient-decoration--bauble', width: 40, height: 48 },
 			{ type: 'holly', assetAttr: 'data-ce-holly-asset', className: 'ce-ambient-decoration--holly', width: 36, height: 36 },
 			{ type: 'bell', assetAttr: 'data-ce-bell-asset', className: 'ce-ambient-decoration--bell', width: 36, height: 44 },
 			{ type: 'gift', assetAttr: 'data-ce-gift-asset', className: 'ce-ambient-decoration--gift', width: 40, height: 40 }
@@ -1162,96 +1161,6 @@ function createCtaSparkle(doc, view) {
 		}
 	}
 
-	/**
-	 * Santa fly-by animation for the landing page.
-	 * Respects reduced motion, pauses when tab is hidden, randomizes intervals.
-	 */
-	function createSantaFlyby(doc, view) {
-		if (!doc || !view) {
-			return null;
-		}
-		if (prefersReducedMotion(view)) {
-			return null;
-		}
-		if (doc.getElementById('ce-christmas-santa-flyby')) {
-			return null;
-		}
-
-		var img = doc.createElement('img');
-		img.id = 'ce-christmas-santa-flyby';
-		img.className = 'ce-christmas-santa-flyby';
-		// Get the template directory URI from the landing page wrapper or ambient marker
-		var landingWrapper = doc.querySelector('[data-ce-placement="landing_page"][data-ce-template-uri]');
-		var marker = doc.querySelector('.ce-christmas-ambient-marker');
-		var baseUri = '';
-		if (landingWrapper && landingWrapper.getAttribute('data-ce-template-uri')) {
-			baseUri = landingWrapper.getAttribute('data-ce-template-uri');
-		} else if (marker && marker.getAttribute('data-ce-star-asset')) {
-			baseUri = marker.getAttribute('data-ce-star-asset').replace(/\/assets\/images\/presentations\/christmas\/decorations\/star\.svg$/, '');
-		}
-		img.src = baseUri + '/assets/images/presentations/christmas/animations/santa-sleigh-reindeer.gif';
-		img.alt = '';
-		img.setAttribute('aria-hidden', 'true');
-		doc.body.appendChild(img);
-
-		var timer = 0;
-		var finishTimer = 0;
-		var duration = 20000; // 20 seconds for desktop
-
-		// Development mode detection: check for a global flag or localStorage
-		var isDevMode = !!(view && view.CONEXAO_CHRISTMAS_DEV_MODE);
-
-		function fly() {
-			if (doc.hidden) {
-				schedule(isDevMode ? 1000 : 12000);
-				return;
-			}
-			img.classList.remove('is-flying');
-			// Force a reflow so the CSS animation can be restarted.
-			void img.offsetWidth;
-			img.classList.add('is-flying');
-			clearTimeout(finishTimer);
-			finishTimer = view.setTimeout(function() {
-				img.classList.remove('is-flying');
-				schedule(isDevMode ? 1000 : (60000 + Math.random() * 60000));
-			}, duration);
-		}
-
-		function schedule(delay) {
-			clearTimeout(timer);
-			timer = view.setTimeout(fly, delay);
-		}
-
-		function onVisibilityChange() {
-			if (doc.hidden) {
-				clearTimeout(timer);
-				clearTimeout(finishTimer);
-				img.classList.remove('is-flying');
-			} else {
-				schedule(isDevMode ? 1000 : (8000 + Math.random() * 12000));
-			}
-		}
-
-		doc.addEventListener('visibilitychange', onVisibilityChange);
-
-		// Start after 1 second in dev mode, 10-20 seconds in production
-		schedule(isDevMode ? 1000 : (10000 + Math.random() * 10000));
-
-		return {
-			destroy: function() {
-				clearTimeout(timer);
-				clearTimeout(finishTimer);
-				doc.removeEventListener('visibilitychange', onVisibilityChange);
-				if (img.parentNode) {
-					img.parentNode.removeChild(img);
-				}
-			},
-			// Development helper: trigger Santa fly-by immediately
-			triggerNow: function() {
-				fly();
-			}
-		};
-	}
 
 	/**
 	 * Boot every Christmas micro-animation controller once per page.
@@ -1271,10 +1180,6 @@ function createCtaSparkle(doc, view) {
 		}
 		createCtaSparkle(doc, view).attach();
 		createContentReveal({ document: doc, window: view });
-		// Santa fly-by only on landing page
-		if (doc.querySelector('.ce-christmas-landing') || doc.querySelector('[data-ce-package="christmas"].ce-placement--landing_page')) {
-			createSantaFlyby(doc, view);
-		}
 	}
 
 	/**
@@ -1358,26 +1263,6 @@ function createCtaSparkle(doc, view) {
 		}
 	}
 
-	var santaFlybyController = null;
-var ambientScheduler = null;
-var contentRevealController = null;
-var ctaSparkleController = null;
-
-	/**
-	 * Development mode flag - set via CONEXAO_CHRISTMAS_DEV_MODE global or localStorage
-	 */
-	function isDevMode(view) {
-		var v = view || win;
-		if (v && v.CONEXAO_CHRISTMAS_DEV_MODE) {
-			return true;
-		}
-		try {
-			return v && v.localStorage && v.localStorage.getItem('conexao_christmas_dev_mode') === '1';
-		} catch (e) {
-			return false;
-		}
-	}
-
 	/**
 	 * Boot every Christmas micro-animation controller once per page.
 	 * Idempotent: a repeated boot adds no second listener or observer.
@@ -1394,14 +1279,14 @@ var ctaSparkleController = null;
 			}
 			doc.documentElement.setAttribute(MICRO_CLAIMED, '1');
 		}
-		ctaSparkleController = createCtaSparkle(doc, view);
-		ctaSparkleController.attach();
-		contentRevealController = createContentReveal({ document: doc, window: view });
-		// Santa fly-by only on landing page
-		if (doc.querySelector('.ce-christmas-landing') || doc.querySelector('[data-ce-package="christmas"].ce-placement--landing_page')) {
-			santaFlybyController = createSantaFlyby(doc, view);
-		}
-		// Ambient scheduler is started by the shared framework via bootAmbient()
+		createCtaSparkle(doc, view).attach();
+		createContentReveal({ document: doc, window: view });
+		// Ambient scheduler is started by the shared framework via bootAmbient().
+		//
+		// Nothing here is timer-driven. The package's motion is CSS-driven, so
+		// the script schedules no interval and no timeout: the welcome is a
+		// one-shot modal, and a timer would be exactly the hidden workaround the
+		// session-scoped presentation contract forbids.
 	}
 
 	/**
@@ -1507,96 +1392,6 @@ var ctaSparkleController = null;
 		},
 		getWelcome: function () {
 			return welcome;
-		},
-		// Development helper: trigger Santa fly-by immediately
-		triggerSantaFlyby: function () {
-			return santaFlybyController && typeof santaFlybyController.triggerNow === 'function' ? santaFlybyController.triggerNow() : false;
-		},
-		// Development helper: trigger all Christmas animations for testing
-		testAllAnimations: function () {
-			var results = {};
-			
-			// 1. Trigger Santa fly-by
-			results.santaFlyby = santaFlybyController && typeof santaFlybyController.triggerNow === 'function' ? santaFlybyController.triggerNow() : false;
-			
-			// 2. Trigger content reveal (make all sections visible immediately)
-			if (contentRevealController && typeof contentRevealController.disconnect === 'function') {
-				// Force reveal all observed elements
-				var doc = win && win.document;
-				if (doc) {
-					var elements = doc.querySelectorAll('.ce-xmas-reveal-ready');
-					elements.forEach(function(el) {
-						el.classList.remove('ce-xmas-reveal-ready');
-						el.classList.add('ce-xmas-revealed');
-					});
-					// Also pulse journey stars
-					var journeys = doc.querySelectorAll('.ce-christmas-journey');
-					journeys.forEach(function(journey) {
-						pulseJourneyStar(journey, doc, win);
-					});
-				}
-				results.contentReveal = true;
-			} else {
-				results.contentReveal = false;
-			}
-			
-			// 3. Trigger CTA sparkle on all CTAs
-			if (ctaSparkleController) {
-				var doc = win && win.document;
-				if (doc) {
-					var ctas = doc.querySelectorAll('.ce-christmas-hero__cta, .ce-christmas-closing__cta');
-					ctas.forEach(function(cta) {
-						var event = new MouseEvent('click', { bubbles: true, cancelable: true, view: win });
-						cta.dispatchEvent(event);
-					});
-				}
-				results.ctaSparkle = true;
-			} else {
-				results.ctaSparkle = false;
-			}
-			
-			// 4. Force ambient decorations to spawn (if scheduler is accessible)
-			// Note: The ambient scheduler is managed by the shared framework
-			results.ambientDecorations = 'managed by shared framework';
-			
-			// 5. Hero snowfall and twinkle are CSS-only, always running
-			results.heroSnowfall = 'CSS animation (always running)';
-			results.heroTwinkle = 'CSS animation (always running)';
-			
-			console.log('[ConexaoChristmas] testAllAnimations results:', results);
-			return results;
-		},
-		// Development helper: enable dev mode for faster animation intervals
-		enableDevMode: function () {
-			try {
-				if (win && win.localStorage) {
-					win.localStorage.setItem('conexao_christmas_dev_mode', '1');
-				}
-				if (win) {
-					win.CONEXAO_CHRISTMAS_DEV_MODE = true;
-				}
-				console.log('[ConexaoChristmas] Dev mode enabled. Reload page for faster intervals.');
-				return true;
-			} catch (e) {
-				console.warn('[ConexaoChristmas] Could not enable dev mode:', e);
-				return false;
-			}
-		},
-		// Development helper: disable dev mode
-		disableDevMode: function () {
-			try {
-				if (win && win.localStorage) {
-					win.localStorage.removeItem('conexao_christmas_dev_mode');
-				}
-				if (win) {
-					win.CONEXAO_CHRISTMAS_DEV_MODE = false;
-				}
-				console.log('[ConexaoChristmas] Dev mode disabled. Reload page for production intervals.');
-				return true;
-			} catch (e) {
-				console.warn('[ConexaoChristmas] Could not disable dev mode:', e);
-				return false;
-			}
 		}
 	};
 });

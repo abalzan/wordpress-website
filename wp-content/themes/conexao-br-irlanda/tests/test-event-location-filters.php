@@ -43,6 +43,28 @@ $failed        = 0;
 $created_posts = array();
 $created_terms = array();
 
+/**
+ * Resolve an EXISTING, real county slug for a fixture.
+ *
+ * `conexao_county` is a CLOSED list of the Republic of Ireland's 26 counties:
+ * `Conexao_Data_Model_Counties` rejects any other term at `pre_insert_term`, so a
+ * fixture may no longer invent "EV Cavan". The county is the site's own shared
+ * term and is deliberately NOT registered for cleanup — this suite must never
+ * delete one.
+ *
+ * @param string $slug Canonical county slug.
+ * @return string The slug when that county term exists, else ''.
+ */
+function ev_real_county( $slug ) {
+	if ( ! taxonomy_exists( 'conexao_county' ) ) {
+		return '';
+	}
+
+	$existing = term_exists( $slug, 'conexao_county' );
+
+	return ( $existing && ! is_wp_error( $existing ) ) ? (string) $slug : '';
+}
+
 /** Get or create a temporary term; returns the slug.
  *
  * Test-owned prefix discipline: slugs under the unique 'ev-' prefix are
@@ -127,13 +149,56 @@ function ev_test_query( array $get_params ) {
 	$saved_wp_the_query      = $GLOBALS['wp_the_query'];
 	$q                       = new WP_Query();
 	$GLOBALS['wp_the_query'] = $q;
-	$q->query(
-		array(
-			'post_type'      => 'event',
-			'post_status'    => 'publish',
-			'posts_per_page' => 100,
-		)
+
+	$args = array(
+		'post_type'      => 'event',
+		'post_status'    => 'publish',
+		'posts_per_page' => 100,
 	);
+
+	/*
+	 * Assert against THIS SUITE'S cohort.
+	 *
+	 * The county taxonomy is a closed list of the 26 real counties, so the
+	 * fixtures have to live in real counties (Cavan, Dublin) instead of
+	 * invented ones. Those counties are SHARED with the site's own content, so
+	 * "the county filter returns exactly these posts" can only be a meaningful,
+	 * population-independent claim over the fixture cohort — the same
+	 * documented technique `test-stage41-rest-language.php` uses for its REST
+	 * membership assertions. The filter dimensions themselves (county, city,
+	 * category, AND-combination, exclusion of non-matching terms) are still
+	 * exercised by the real `pre_get_posts` path: the cohort deliberately
+	 * contains an event from another county and an event with no county at all,
+	 * so a broken filter still fails.
+	 *
+	 * The restriction runs at priority 999, i.e. AFTER the theme's own
+	 * `pre_get_posts` handler, which replaces `post__in` with the upcoming-event
+	 * ID list. Intersecting with that list keeps BOTH constraints: the archive
+	 * still only shows upcoming events, and this suite only sees its cohort.
+	 */
+	$cohort_filter = null;
+
+	if ( ! empty( $GLOBALS['ev_fixture_cohort'] ) ) {
+		$cohort = array_map( 'intval', (array) $GLOBALS['ev_fixture_cohort'] );
+
+		$cohort_filter = static function ( $query ) use ( $cohort ) {
+			$scheduled = array_map( 'intval', (array) $query->get( 'post__in' ) );
+
+			$query->set(
+				'post__in',
+				empty( $scheduled ) ? $cohort : array_values( array_intersect( $scheduled, $cohort ) )
+			);
+		};
+
+		add_action( 'pre_get_posts', $cohort_filter, 999 );
+	}
+
+	$q->query( $args );
+
+	if ( null !== $cohort_filter ) {
+		remove_action( 'pre_get_posts', $cohort_filter, 999 );
+	}
+
 	$GLOBALS['wp_the_query'] = $saved_wp_the_query;
 	$_GET                    = $tmp_get;
 	return $q;
@@ -194,8 +259,11 @@ if ( class_exists( 'Conexao_Event_Location' ) ) {
 // ---------------------------------------------------------------------------
 test_section( 'Fixture' );
 
-$co_cavan  = ev_test_term( 'EV Cavan', 'ev-cavan', 'conexao_county' );
-$co_dublin = ev_test_term( 'EV Dublin', 'ev-dublin', 'conexao_county' );
+// Real counties: the county taxonomy is a closed list of the 26 approved
+// counties and rejects any other term, so the fixtures use the site's own
+// Cavan and Dublin terms instead of inventing one.
+$co_cavan  = ev_real_county( 'cavan' );
+$co_dublin = ev_real_county( 'dublin' );
 $t_ctown   = ev_test_term( 'EV Cavan Town', 'ev-cavan-town', 'conexao_town' );
 $t_dtown   = ev_test_term( 'EV Dublin Town', 'ev-dublin-town', 'conexao_town' );
 $c_alpha   = ev_test_term( 'EV Alpha', 'ev-alpha', 'conexao_category' );
@@ -215,6 +283,9 @@ if ( class_exists( 'Conexao_Event_Query' ) ) {
 
 assert_true( get_post( $post_a ) instanceof WP_Post && get_post( $post_b ) instanceof WP_Post && get_post( $post_c ) instanceof WP_Post && get_post( $post_d ) instanceof WP_Post, 'temporary event posts created' );
 
+// The cohort every archive-query assertion is scoped to (see ev_test_query()).
+$GLOBALS['ev_fixture_cohort'] = array( $post_a, $post_b, $post_c, $post_d );
+
 // ---------------------------------------------------------------------------
 // C/D/E/F/G/H/I/J. Archive query semantics (real pre_get_posts path).
 // ---------------------------------------------------------------------------
@@ -226,7 +297,7 @@ $ids = wp_list_pluck( $q->posts, 'ID' );
 assert_true( in_array( $post_a, $ids, true ) && in_array( $post_b, $ids, true ) && in_array( $post_c, $ids, true ) && in_array( $post_d, $ids, true ), 'unfiltered archive returns all four test events (incl. missing county/town)' );
 
 // County only.
-$q = ev_test_query( array( 'county' => 'ev-cavan' ) );
+$q = ev_test_query( array( 'county' => 'cavan' ) );
 assert_true( array( $post_a, $post_b ) === wp_list_pluck( $q->posts, 'ID' ), 'county filter returns both county events' );
 
 // City only.
@@ -234,22 +305,22 @@ $q = ev_test_query( array( 'cidade' => 'ev-cavan-town' ) );
 assert_true( array( $post_a ) === wp_list_pluck( $q->posts, 'ID' ), 'city filter works without a county (AND across independent dimensions)' );
 
 // County + City: an event without a town still satisfies county alone (I).
-$q = ev_test_query( array( 'county' => 'ev-cavan', 'cidade' => 'ev-cavan-town' ) );
+$q = ev_test_query( array( 'county' => 'cavan', 'cidade' => 'ev-cavan-town' ) );
 assert_true( array( $post_a ) === wp_list_pluck( $q->posts, 'ID' ), 'county AND city combination is deterministic' );
 
 // County + Category.
-$q = ev_test_query( array( 'county' => 'ev-cavan', 'categoria' => 'ev-beta' ) );
+$q = ev_test_query( array( 'county' => 'cavan', 'categoria' => 'ev-beta' ) );
 assert_true( array( $post_b ) === wp_list_pluck( $q->posts, 'ID' ), 'county AND category combination' );
 
 // County + City + Category: no event matches beta in cavan-town.
-$q = ev_test_query( array( 'county' => 'ev-cavan', 'cidade' => 'ev-cavan-town', 'categoria' => 'ev-alpha' ) );
+$q = ev_test_query( array( 'county' => 'cavan', 'cidade' => 'ev-cavan-town', 'categoria' => 'ev-alpha' ) );
 assert_true( array( $post_a ) === wp_list_pluck( $q->posts, 'ID' ), 'county AND city AND category' );
 
-$q = ev_test_query( array( 'county' => 'ev-cavan', 'cidade' => 'ev-cavan-town', 'categoria' => 'ev-beta' ) );
+$q = ev_test_query( array( 'county' => 'cavan', 'cidade' => 'ev-cavan-town', 'categoria' => 'ev-beta' ) );
 assert_true( 0 === $q->found_posts, 'impossible combination returns zero results gracefully' );
 
 // A city filter can never override the county selection.
-$q = ev_test_query( array( 'county' => 'ev-cavan', 'cidade' => 'ev-dublin-town' ) );
+$q = ev_test_query( array( 'county' => 'cavan', 'cidade' => 'ev-dublin-town' ) );
 assert_true( 0 === $q->found_posts, 'city from another county cannot override the county filter (AND semantics)' );
 
 // Invalid slugs fail gracefully (zero results, no error).
@@ -269,7 +340,7 @@ assert_true( in_array( $post_d, wp_list_pluck( $q->posts, 'ID' ), true ) && in_a
 // tax_query structure: AND relation, one group per active dimension.
 // Stage 2: Polylang adds its own `language` group to front-end queries, so the
 // filter dimensions are counted separately from the language group.
-$q = ev_test_query( array( 'county' => 'ev-cavan', 'cidade' => 'ev-cavan-town', 'categoria' => 'ev-alpha' ) );
+$q = ev_test_query( array( 'county' => 'cavan', 'cidade' => 'ev-cavan-town', 'categoria' => 'ev-alpha' ) );
 $tax_query = $q->get( 'tax_query' );
 $tq = is_array( $tax_query ) ? ( isset( $tax_query['queries'] ) ? $tax_query['queries'] : $tax_query ) : array();
 $groups = array_values( array_filter( is_array( $tq ) ? $tq : array(), 'is_array' ) );
@@ -307,7 +378,7 @@ $all_towns = conexao_get_event_towns( '' );
 $all_slugs = wp_list_pluck( $all_towns, 'slug' );
 assert_true( in_array( $t_ctown, $all_slugs, true ) && in_array( $t_dtown, $all_slugs, true ), 'all towns used by events are listed without a county' );
 
-$cavan_towns = conexao_get_event_towns( 'ev-cavan' );
+$cavan_towns = conexao_get_event_towns( 'cavan' );
 $cavan_slugs = wp_list_pluck( $cavan_towns, 'slug' );
 assert_true( in_array( $t_ctown, $cavan_slugs, true ) && ! in_array( $t_dtown, $cavan_slugs, true ), 'towns are scoped to the selected county' );
 
@@ -317,13 +388,13 @@ $base = get_post_type_archive_link( 'event' );
 $url = conexao_event_filter_url( array() );
 assert_true( remove_query_arg( array( 'county', 'cidade', 'categoria' ), $url ) === $base || $url === $base, 'empty filter state builds the clean archive URL (reset behavior)' );
 
-$url = conexao_event_filter_url( array( 'county' => 'ev-cavan', 'cidade' => 'ev-cavan-town', 'categoria' => 'ev-alpha' ) );
-assert_true( false !== strpos( $url, 'county=ev-cavan' ) && false !== strpos( $url, 'cidade=ev-cavan-town' ) && false !== strpos( $url, 'categoria=ev-alpha' ), 'full filter state is preserved in one URL (shareable/refresh-safe)' );
+$url = conexao_event_filter_url( array( 'county' => 'cavan', 'cidade' => 'ev-cavan-town', 'categoria' => 'ev-alpha' ) );
+assert_true( false !== strpos( $url, 'county=cavan' ) && false !== strpos( $url, 'cidade=ev-cavan-town' ) && false !== strpos( $url, 'categoria=ev-alpha' ), 'full filter state is preserved in one URL (shareable/refresh-safe)' );
 
-$url = conexao_event_filter_url( array( 'county' => 'ev-cavan' ), $base . '?paged=2' );
+$url = conexao_event_filter_url( array( 'county' => 'cavan' ), $base . '?paged=2' );
 assert_true( false === strpos( $url, 'paged=' ), 'filter changes reset the page cursor' );
 
-assert_true( conexao_event_filter_url( array( 'county' => 'EV-Cavan' ) ) === conexao_event_filter_url( array( 'county' => 'ev-cavan' ) ), 'URL slugs are canonicalized (case normalization)' );
+assert_true( conexao_event_filter_url( array( 'county' => 'Cavan' ) ) === conexao_event_filter_url( array( 'county' => 'cavan' ) ), 'URL slugs are canonicalized (case normalization)' );
 
 // ---------------------------------------------------------------------------
 // Template markup: Lazer-standard filter widget (dropdowns, chips, sheet).
@@ -334,8 +405,13 @@ $html = ev_test_render_filters( array() );
 assert_true( false !== strpos( $html, 'data-event-filters' ), 'filter widget root rendered (Lazer/Empregos widget contract)' );
 assert_true( false !== strpos( $html, 'event-filters-dropdown-trigger' ) && false !== strpos( $html, 'aria-expanded="false"' ) && false !== strpos( $html, 'aria-current="true"' ), 'desktop dropdown triggers (disclosure) with link options and an active-state marker rendered' );
 assert_true( false === strpos( $html, 'role="option"' ) && false === strpos( $html, 'role="listbox"' ), 'no invalid role="option"/"listbox" on the event filter links' );
-assert_true( false !== strpos( $html, 'county=ev-cavan' ) && false !== strpos( $html, 'county=ev-dublin' ), 'county options rendered from counties used by events' );
-assert_true( false !== strpos( $html, 'cidade=ev-cavan-town' ) && false !== strpos( $html, 'cidade=ev-dublin-town' ), 'city options rendered (all towns, no county selected)' );
+assert_true( false !== strpos( $html, 'county=cavan' ) && false !== strpos( $html, 'county=dublin' ), 'county options rendered from counties used by events' );
+// The City (Cidade) filter is intentionally REMOVED from the visible widget
+// (docs/reports/2026-11-25-remove-city-filter.md): event location data is
+// county-based and the city metadata is inconsistent. `?cidade=` remains a
+// supported QUERY parameter — the archive-query section above proves it still
+// filters — but the widget must not offer city options again.
+assert_true( false === strpos( $html, 'cidade=' ), 'the retired City filter offers no city option links' );
 assert_true( false !== strpos( $html, 'categoria=ev-alpha' ), 'category options still rendered (existing filter preserved)' );
 $county_count   = count( conexao_get_terms_for_post_type( 'conexao_county', 'event' ) );
 $town_count     = count( conexao_get_event_towns() );
@@ -343,10 +419,14 @@ $expects_search = ( $county_count > 8 || $town_count > 8 );
 assert_true( $expects_search === ( false !== strpos( $html, 'data-option-search' ) ), 'client-side search rendered only for long option lists (matches Lazer/Empregos threshold)' );
 assert_true( false === strpos( $html, 'Limpar filtros' ) && false === strpos( $html, 'Filtros ativos' ), 'reset link and active chips hidden when no filter is active' );
 assert_true( false !== strpos( $html, 'data-mobile-form' ) && false !== strpos( $html, 'Mostrar resultados' ), 'mobile bottom sheet form rendered with the apply action' );
-assert_true( false !== strpos( $html, 'name="county"' ) && false !== strpos( $html, 'name="cidade"' ) && false !== strpos( $html, 'name="categoria"' ), 'mobile sheet radios carry the existing event query params' );
+assert_true( false !== strpos( $html, 'name="county"' ) && false !== strpos( $html, 'name="categoria"' ), 'mobile sheet radios carry the county and category query params' );
+assert_true( false === strpos( $html, 'name="cidade"' ), 'the mobile sheet carries no city control (the retired City filter)' );
 
-$html = ev_test_render_filters( array( 'county' => 'ev-cavan', 'categoria' => 'ev-alpha' ) );
-assert_true( false !== strpos( $html, 'cidade=ev-cavan-town' ) && false === strpos( $html, 'cidade=ev-dublin-town' ), 'city options scoped to the selected county in the template' );
+$html = ev_test_render_filters( array( 'county' => 'cavan', 'categoria' => 'ev-alpha' ) );
+assert_true(
+	false === strpos( $html, 'cidade=' ),
+	'the county/category state renders no city options either (County -> City cascade remains a query-layer concern)'
+);
 assert_true( false !== strpos( $html, 'Limpar filtros' ) && false !== strpos( $html, 'Filtros ativos' ), 'reset link and active chips appear when a filter is active' );
 assert_true( false !== strpos( $html, 'Remover filtro:' ), 'active filter chips are removable per dimension' );
 
@@ -408,13 +488,13 @@ assert_true( 1 === substr_count( $html, 'data-event-filters' ), 'exactly ONE fil
 // Filter links must be built from the language-scoped archive URL, so an
 // English visitor stays on /en/eventos/ instead of being bounced to PT.
 $archive_url_now = get_post_type_archive_link( 'event' );
-assert_true( false !== strpos( $html, esc_url( conexao_event_filter_url( array( 'county' => 'ev-cavan' ), $archive_url_now ) ) ), 'filter links are built from the current-language archive URL' );
+assert_true( false !== strpos( $html, esc_url( conexao_event_filter_url( array( 'county' => 'cavan' ), $archive_url_now ) ) ), 'filter links are built from the current-language archive URL' );
 
 // Shared taxonomy invariant: county/town stay ONE term in both languages, so
 // the same ?county= / ?cidade= slug family is used in both languages and no
 // per-language duplicate is invented.
 assert_true( 'conexao_county' === 'conexao_county' && 'conexao_town' === 'conexao_town', 'county/town taxonomies remain the shared, language-neutral ones' );
-$county_term_en = get_term_by( 'slug', 'ev-cavan', 'conexao_county' );
+$county_term_en = get_term_by( 'slug', 'cavan', 'conexao_county' );
 assert_true( $county_term_en instanceof WP_Term, 'the test county term is still ONE shared term resolvable in the current context' );
 
 // ---------------------------------------------------------------------------

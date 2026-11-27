@@ -149,9 +149,39 @@ function cp9_probe( $lang ) {
 	fclose( $pipes[2] );
 	proc_close( $proc );
 
-	$decoded = json_decode( trim( (string) $out ), true );
+	/*
+	 * The probe payload is read from a MARKED line, never from the whole
+	 * stdout.
+	 *
+	 * `tests/bootstrap.php` prints its own start-up evidence to stdout —
+	 * `ISOLATED_DB_PREFLIGHT=PASS …` (the isolated-database preflight) and
+	 * `WPDB_IDENTITY=PASS …` (the connection-identity guard) — before this
+	 * suite's code runs. Decoding the entire stdout therefore always failed
+	 * with "unparseable probe output" even though the child produced a
+	 * perfect payload, which made every assertion read an undefined key.
+	 * The marker makes the protocol independent of the harness's own
+	 * diagnostics; it is the same convention test-operator-log-isolation.php
+	 * uses for its child processes.
+	 */
+	$payload = cp9_marker( (string) $out, 'CP9_PROBE_JSON' );
+	$decoded = '' === $payload ? null : json_decode( $payload, true );
 
 	return is_array( $decoded ) ? $decoded : array( 'error' => 'unparseable probe output', 'stdout' => $out, 'stderr' => $err );
+}
+
+/**
+ * Extract one `MARKER=value` line from a child process's stdout.
+ *
+ * @param string $output Child stdout.
+ * @param string $marker Marker name.
+ * @return string Marker value, or '' when the marker is absent.
+ */
+function cp9_marker( $output, $marker ) {
+	if ( preg_match( '/^' . preg_quote( $marker, '/' ) . '=(.*)$/m', $output, $matches ) ) {
+		return trim( $matches[1] );
+	}
+
+	return '';
 }
 
 /**
@@ -189,7 +219,7 @@ function cp9_probe_mode( $lang ) {
 		$filter_html = cp9_render( get_template_directory() . '/template-parts/course-filters.php', 0 );
 	}
 
-	echo wp_json_encode(
+	echo 'CP9_PROBE_JSON=' . wp_json_encode(
 		array(
 			'requested'      => conexao_requested_language_slug(),
 			'current'        => conexao_current_language_slug(),
@@ -204,7 +234,7 @@ function cp9_probe_mode( $lang ) {
 			'widen_event'    => isset( $widen_event['lang'] ) ? (string) $widen_event['lang'] : '',
 			'widen_leisure'  => isset( $widen_leisure['lang'] ) ? (string) $widen_leisure['lang'] : '',
 		)
-	);
+	) . "\n";
 }
 
 if ( getenv( 'CONEXAO_CP9_PROBE' ) ) {

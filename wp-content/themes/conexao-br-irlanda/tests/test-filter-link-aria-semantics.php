@@ -63,6 +63,28 @@ function a11y_test_term( $name, $slug, $taxonomy ) {
 	return $slug;
 }
 
+/**
+ * Resolve an EXISTING, real county slug for a fixture.
+ *
+ * `conexao_county` is a CLOSED list of the Republic of Ireland's 26 counties:
+ * `Conexao_Data_Model_Counties` rejects any other term at `pre_insert_term`, so a
+ * fixture may no longer invent "A11y County". The county is the site's own
+ * shared term and is deliberately NOT registered for cleanup — this suite must
+ * never delete one.
+ *
+ * @param string $slug Canonical county slug.
+ * @return string The slug when that county term exists, else ''.
+ */
+function a11y_real_county( $slug ) {
+	if ( ! taxonomy_exists( 'conexao_county' ) ) {
+		return '';
+	}
+
+	$existing = term_exists( $slug, 'conexao_county' );
+
+	return ( $existing && ! is_wp_error( $existing ) ) ? (string) $slug : '';
+}
+
 /** Create a temporary published post and track it for cleanup. */
 function a11y_test_post( $title, $slug, $post_type, $terms = array() ) {
 	global $created_posts;
@@ -200,7 +222,7 @@ function a11y_assert_option_semantics( $html, $prefix, $label ) {
 // Fixtures: temporary terms and posts so every widget has real options.
 // ---------------------------------------------------------------------------
 
-$t_county = a11y_test_term( 'A11y County', 'a11y-county', 'conexao_county' );
+$t_county = a11y_real_county( 'laois' );
 $t_town   = a11y_test_term( 'A11y Town', 'a11y-town', 'conexao_town' );
 $t_cat    = a11y_test_term( 'A11y Category', 'a11y-category', 'conexao_category' );
 $t_cat2   = a11y_test_term( 'A11y Category Two', 'a11y-category-two', 'conexao_category' );

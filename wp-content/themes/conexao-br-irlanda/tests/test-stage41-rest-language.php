@@ -857,8 +857,11 @@ assert_true( ! in_array( $guide_pt_master, s41_ids( $guides_en_filtered['data'] 
 
 // Shared county filter works the same in both languages.
 $dublin_id    = $dublin ? (int) $dublin['id'] : 0;
-$ev_en_dublin = s41_rest_array( '/wp/v2/event', array( 'per_page' => 100, 'lang' => 'en', 'conexao_county' => $dublin_id ) );
-$ev_pt_dublin = s41_rest_array( '/wp/v2/event', array( 'per_page' => 100, 'lang' => 'pt', 'conexao_county' => $dublin_id ) );
+// Scoped to the fixture cohort (REST-native `include`): a whole-collection
+// page cannot be used for a MEMBERSHIP claim on a populated site — the same
+// documented rule the collection assertions above follow.
+$ev_en_dublin = s41_rest_containing( '/wp/v2/event', $event_fixtures, array( 'lang' => 'en', 'conexao_county' => $dublin_id ) );
+$ev_pt_dublin = s41_rest_containing( '/wp/v2/event', $event_fixtures, array( 'lang' => 'pt', 'conexao_county' => $dublin_id ) );
 assert_true( in_array( $ev_pt_master, s41_ids( $ev_pt_dublin['data'] ), true ), 'PT events filtered by shared county dublin contain the PT Dublin event' );
 assert_true( in_array( $ev_en_translation, s41_ids( $ev_en_dublin['data'] ), true ), 'EN events filtered by shared county dublin contain the EN Dublin event' );
 assert_true( ! in_array( $ev_pt_master, s41_ids( $ev_en_dublin['data'] ), true ), 'EN events filtered by shared county still replace the translated PT master' );
@@ -910,9 +913,12 @@ assert_true( in_array( $ev_pt_master, s41_ids( $col_search_pt['data'] ), true ) 
 // correct payload regardless of order (no shared response cache exists; the
 // only reused cache is the language-independent B2 replacement set, which the
 // theme invalidates on save/delete).
-$en_first  = s41_ids( s41_rest_array( '/wp/v2/event', array( 'per_page' => 100, 'lang' => 'en' ) )['data'] );
-$pt_warm   = s41_ids( s41_rest_array( '/wp/v2/event', array( 'per_page' => 100, 'lang' => 'pt' ) )['data'] );
-$en_second = s41_ids( s41_rest_array( '/wp/v2/event', array( 'per_page' => 100, 'lang' => 'en' ) )['data'] );
+// Fixture-scoped, so the membership claim does not depend on how many events
+// the site publishes (the EN/PT replacement rule is still evaluated by the
+// server for every requested record).
+$en_first  = s41_ids( s41_rest_containing( '/wp/v2/event', $event_fixtures, array( 'lang' => 'en' ) )['data'] );
+$pt_warm   = s41_ids( s41_rest_containing( '/wp/v2/event', $event_fixtures, array( 'lang' => 'pt' ) )['data'] );
+$en_second = s41_ids( s41_rest_containing( '/wp/v2/event', $event_fixtures, array( 'lang' => 'en' ) )['data'] );
 assert_true( $en_first === $en_second, 'warming PT between two EN reads does not change the EN payload' );
 assert_true( in_array( $ev_pt_master, $pt_warm, true ) && ! in_array( $ev_pt_master, $en_second, true ), 'PT warm-up keeps the PT master; EN read still replaces it' );
 
@@ -936,7 +942,7 @@ foreach ( array( '_event_source', '_event_source_id', '_event_export_uuid', '_ev
 	update_post_meta( $en_event_new, $copy_key, get_post_meta( $ev_pt_b2, $copy_key, true ) );
 }
 
-$en_after_create = s41_rest_array( '/wp/v2/event', array( 'per_page' => 100, 'lang' => 'en' ) );
+$en_after_create = s41_rest_containing( '/wp/v2/event', array_merge( $event_fixtures, array( $en_event_new ) ), array( 'lang' => 'en' ) );
 $en_create_ids   = s41_ids( $en_after_create['data'] );
 assert_true( in_array( $en_event_new, $en_create_ids, true ), 'after creating the EN translation, the EN event collection contains it' );
 assert_true( ! in_array( $ev_pt_b2, $en_create_ids, true ), 'after creating the EN translation, the PT master is replaced (no stale B2 fallback)' );
@@ -956,13 +962,13 @@ foreach ( (array) $en_after_create['data'] as $row ) {
 assert_true( count( $uuids_after ) === count( array_unique( $uuids_after ) ), 'EN event collection still has one row per identity after the translation is created' );
 
 wp_trash_post( $en_event_new );
-$en_after_trash = s41_rest_array( '/wp/v2/event', array( 'per_page' => 100, 'lang' => 'en' ) );
+$en_after_trash = s41_rest_containing( '/wp/v2/event', array_merge( $event_fixtures, array( $en_event_new ) ), array( 'lang' => 'en' ) );
 $en_trash_ids   = s41_ids( $en_after_trash['data'] );
 assert_true( ! in_array( $en_event_new, $en_trash_ids, true ), 'after trashing the EN translation, it leaves the EN collection' );
 assert_true( in_array( $ev_pt_b2, $en_trash_ids, true ), 'after trashing the EN translation, the PT master returns exactly once (B2)' );
 
 // PT collection was never affected by the EN translation lifecycle.
-$pt_after = s41_ids( s41_rest_array( '/wp/v2/event', array( 'per_page' => 100, 'lang' => 'pt' ) )['data'] );
+$pt_after = s41_ids( s41_rest_containing( '/wp/v2/event', $event_fixtures, array( 'lang' => 'pt' ) )['data'] );
 assert_true( $pt_warm === $pt_after, 'PT event collection is identical before/after the EN translation lifecycle' );
 
 // ---------------------------------------------------------------------------

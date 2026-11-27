@@ -514,6 +514,31 @@ abstract class Conexao_Source_Base {
 	}
 
 	/**
+	 * Apply the polite inter-request delay before an outbound request.
+	 *
+	 * Shared by the retrying listing fetch and the single-request detail fetch,
+	 * so "be polite between the requests of one walk" is decided in exactly one
+	 * place. `$this->http_last_request_time` is updated by every fetch path.
+	 *
+	 * @return void
+	 */
+	protected function respect_request_delay() {
+		if ( $this->http_last_request_time <= 0 ) {
+			return;
+		}
+
+		$elapsed = microtime( true ) - $this->http_last_request_time;
+		$delay   = (float) apply_filters(
+			'conexao_event_importer_http_request_delay_seconds',
+			self::HTTP_REQUEST_DELAY_SECONDS
+		);
+
+		if ( $elapsed < $delay ) {
+			$this->sleep_for( $delay - $elapsed );
+		}
+	}
+
+	/**
 	 * Polite, retry-aware HTML fetch.
 	 *
 	 * Like fetch_html(), but instead of failing on the first non-200 response
@@ -540,17 +565,7 @@ abstract class Conexao_Source_Base {
 		);
 		$args = array_merge( $default_args, $args );
 
-		// Inter-request delay: be polite between requests of the same walk.
-		if ( $this->http_last_request_time > 0 ) {
-			$elapsed = microtime( true ) - $this->http_last_request_time;
-			$delay   = (float) apply_filters(
-				'conexao_event_importer_http_request_delay_seconds',
-				self::HTTP_REQUEST_DELAY_SECONDS
-			);
-			if ( $elapsed < $delay ) {
-				$this->sleep_for( $delay - $elapsed );
-			}
-		}
+		$this->respect_request_delay();
 
 		$max_retries   = (int) apply_filters( 'conexao_event_importer_http_max_retries', self::HTTP_MAX_RETRIES );
 		$rate_limit_hits = 0;

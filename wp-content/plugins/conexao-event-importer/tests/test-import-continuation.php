@@ -1401,7 +1401,24 @@ Conexao_Import_Continuation::set_runner(
 // still inside its run when the continuation becomes due.
 $GLOBALS['g18_now'] = $g18_lock_at - 10;
 
-assert_true( Conexao_Import_Continuation::acquire_lock( $g18_source ), 'G18.6: a worker can take the source lock' );
+/*
+ * ANOTHER WORKER holds the lock.
+ *
+ * `acquire_lock()` is deliberately RE-ENTRANT within one process: a
+ * continuation owns the lock for its source and then calls the importer, which
+ * must not be asked to win the same lock again (that is what
+ * `is_locked_by_this_process()` exists for). A single-process test therefore
+ * cannot observe cross-process contention by calling `acquire_lock()` twice —
+ * the second call would legitimately succeed. The persisted lock row is written
+ * directly instead, which is exactly the state a SECOND PHP process leaves
+ * behind, and exactly what the expired-lock case below does.
+ */
+update_option(
+	Conexao_Import_Continuation::LOCK_PREFIX . $g18_source,
+	(string) $GLOBALS['g18_now'],
+	false
+);
+
 assert_true( Conexao_Import_Continuation::is_locked( $g18_source ), 'G18.6: the lock is observable while it is held' );
 assert_true(
 	! Conexao_Import_Continuation::acquire_lock( $g18_source ),
@@ -1425,6 +1442,8 @@ assert_true(
 
 Conexao_Import_Continuation::release_lock( $g18_source );
 assert_true( ! Conexao_Import_Continuation::is_locked( $g18_source ), 'G18.6: releasing the lock makes the source eligible again' );
+assert_true( Conexao_Import_Continuation::acquire_lock( $g18_source ), 'G18.6: a worker can take the source lock once it is free' );
+Conexao_Import_Continuation::release_lock( $g18_source );
 
 // A lock whose holder was killed (a restart) must not wedge its source.
 update_option(

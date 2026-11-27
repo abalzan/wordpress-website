@@ -45,6 +45,38 @@ function ev_test_term( $name, $slug, $taxonomy ) {
     return $slug;
 }
 
+/**
+ * Resolve an EXISTING, real county slug for a fixture.
+ *
+ * `conexao_county` is a CLOSED list of the Republic of Ireland's 26 counties:
+ * `Conexao_Data_Model_Counties` rejects any other term at `pre_insert_term`, so a
+ * fixture may no longer invent "Test County". The county is the site's own
+ * shared term and is deliberately NOT registered for cleanup — this suite must
+ * never delete one.
+ *
+ * @param int $offset Index into the canonical (alphabetical) county list.
+ * @return string Lower-case county slug, or '' when no county term exists.
+ */
+function ev_real_county( $offset = 0 ) {
+    $candidates = class_exists( 'Conexao_Data_Model_Counties' )
+        ? Conexao_Data_Model_Counties::slugs()
+        : array( 'cavan', 'cork', 'dublin', 'galway', 'laois' );
+
+    $candidates = array_values( $candidates );
+    $count      = count( $candidates );
+
+    for ( $i = 0; $i < $count; $i++ ) {
+        $slug     = (string) $candidates[ ( (int) $offset + $i ) % $count ];
+        $existing = term_exists( $slug, 'conexao_county' );
+
+        if ( $existing && ! is_wp_error( $existing ) ) {
+            return $slug;
+        }
+    }
+
+    return '';
+}
+
 /** Create a temporary published event with the given location taxonomy slugs. */
 function ev_test_event( $title, $county_slug, $town_slug, $category_slug ) {
     global $created_posts;
@@ -119,7 +151,7 @@ function ev_test_cache_miss_and_populate() {
     conexao_clear_event_filter_caches();
     
     // Ensure we have test data: a published event with county, town, category.
-    $county_slug   = ev_test_term( 'Test County', 'ev-test-county', 'conexao_county' );
+    $county_slug   = ev_real_county( 0 );
     $town_slug     = ev_test_term( 'Test Town', 'ev-test-town', 'conexao_town' );
     $category_slug = ev_test_term( 'Test Category', 'ev-test-category', 'conexao_category' );
     $event_id      = ev_test_event( 'Test Cache Event', $county_slug, $town_slug, $category_slug );
@@ -223,10 +255,19 @@ function ev_test_empty_results() {
     // read or written by this test.
     $empty_scope = array( 'name' => 'ev-empty-probe-no-such-event' );
 
-    // Towns: a county that EXISTS but owns no event. That is the same
-    // "county known, nothing published in it" path the UI produces, created
-    // here explicitly so the result cannot depend on the site's population.
-    $probe_county_slug = ev_test_term( 'Empty Probe County', 'ev-empty-probe-county', 'conexao_county' );
+    // Towns: a county scope that matches no published event. That is the same
+    // "county known, nothing published in it" path the UI produces, and the
+    // implementation answers it from its own cached-empty branch (an unknown
+    // slug is looked up with `get_term_by()` and yields the stored empty
+    // array — see conexao_get_event_towns()).
+    //
+    // A fixture may NOT create a county term to manufacture this state:
+    // `conexao_county` is a closed list of the 26 approved counties and
+    // `Conexao_Data_Model_Counties` rejects any other term at pre_insert_term.
+    // Using a real county that merely happens to have no events would instead
+    // depend on the site's population, so the probe slug is deliberate and the
+    // assertion below is unchanged.
+    $probe_county_slug = 'ev-empty-probe-county';
 
     conexao_clear_event_filter_caches();
 
@@ -292,7 +333,7 @@ function ev_test_lifecycle_invalidation() {
     global $passed, $failed, $created_posts, $created_terms;
     
     // === A. Create event: should invalidate cache ===
-    $county_slug   = ev_test_term( 'Lifecycle County', 'ev-lifecycle-county', 'conexao_county' );
+    $county_slug   = ev_real_county( 1 );
     $town_slug     = ev_test_term( 'Lifecycle Town', 'ev-lifecycle-town', 'conexao_town' );
     $category_slug = ev_test_term( 'Lifecycle Category', 'ev-lifecycle-category', 'conexao_category' );
     $event_id      = ev_test_event( 'Lifecycle Event', $county_slug, $town_slug, $category_slug );
@@ -339,73 +380,104 @@ function ev_test_lifecycle_invalidation() {
 }
 /** 
  * Taxonomy invalidation test.
- * 
- * Verifies invalidation when county, town, and event-category terms change.
+ *
+ * Verifies that the SHARED filter-cache clearer runs on the term lifecycle
+ * hooks (created / edited / deleted).
+ *
+ * Exercised on `conexao_town`, not on `conexao_county`, and that is deliberate:
+ * `conexao_county` is a CLOSED list of the Republic's 26 counties enforced by
+ * `Conexao_Data_Model_Counties` at `pre_insert_term`, so no runtime actor (an
+ * importer, an editor, a test) can create, rename or delete a county term. The
+ * county hooks in inc/cache.php therefore cannot fire in production either.
+ * Towns ARE created and renamed at runtime by imports, and the same shared
+ * `conexao_filter_term_cache_invalidate()` callback is registered for every
+ * filter taxonomy (county, town, category, leisure attribute), so the town
+ * lifecycle proves exactly the code path under test. Nothing is weakened: the
+ * create, rename and delete assertions below are the same three assertions the
+ * section made for the county.
  */
 function ev_test_taxonomy_invalidation() {
     global $passed, $failed, $created_terms;
-    
-    // === A. Create county: should invalidate event county cache ===
+
+    // === A. Create a town term: the filter caches must be cleared ===
     //
-    // The filter lists are derived FROM published events, so the county is
+    // The filter lists are derived FROM published events, so the town is
     // attached to a controlled event here. Without that link the term exists
     // but can never be part of an event-filter list, and the rename assertion
     // below would prove nothing.
-    $county_slug = ev_test_term( 'Taxonomy County', 'ev-taxonomy-county', 'conexao_county' );
-    ev_test_event( 'Taxonomy Event', $county_slug, '', '' );
+    $town_slug = ev_test_term( 'Taxonomy Town', 'ev-taxonomy-town', 'conexao_town' );
+    ev_test_event( 'Taxonomy Event', ev_real_county( 2 ), $town_slug, '' );
 
-    // County created, cache should be cleared via created_conexao_county hook
-    $county_terms = conexao_get_terms_for_post_type( 'conexao_county', 'event' );
-    if ( is_array( $county_terms ) && ! empty( $county_terms ) ) {
-        echo "  PASS: After county create, cache repopulated\n";
+    // Town created, cache should be cleared via created_conexao_town hook
+    $town_terms = conexao_get_event_towns();
+    $has_created = false;
+    if ( is_array( $town_terms ) ) {
+        foreach ( $town_terms as $t ) {
+            if ( $t->slug === $town_slug ) {
+                $has_created = true;
+            }
+        }
+    }
+    if ( $has_created ) {
+        echo "  PASS: After town create, the town filter list includes it (cache repopulated)
+";
         $passed++;
     } else {
-        echo "  FAIL: After county create, cache not repopulated\n";
+        echo "  FAIL: After town create, the town filter list is stale
+";
         $failed++;
     }
-    
-    // === B. Edit county: rename county ===
-    // Get the term and update its slug/name
-    $term = get_term_by( 'slug', $county_slug, 'conexao_county' );
+
+    // === B. Edit the term: rename it ===
+    $term = get_term_by( 'slug', $town_slug, 'conexao_town' );
     if ( $term && ! is_wp_error( $term ) ) {
-        $term_id = $term->term_id;
-        wp_update_term( $term_id, 'conexao_county', array( 'slug' => 'ev-taxonomy-county-renamed' ) );
+        wp_update_term( $term->term_id, 'conexao_town', array( 'slug' => 'ev-taxonomy-town-renamed' ) );
     }
-    
-    // After rename, cache should be cleared and repopulated
-    $county_terms = conexao_get_terms_for_post_type( 'conexao_county', 'event' );
+
+    $town_terms  = conexao_get_event_towns();
     $has_renamed = false;
-    if ( is_array( $county_terms ) ) {
-        foreach ( $county_terms as $t ) {
-            if ( $t->slug === 'ev-taxonomy-county-renamed' ) {
+    if ( is_array( $town_terms ) ) {
+        foreach ( $town_terms as $t ) {
+            if ( $t->slug === 'ev-taxonomy-town-renamed' ) {
                 $has_renamed = true;
             }
         }
     }
     if ( $has_renamed ) {
-        echo "  PASS: After county rename, cache includes renamed term\n";
+        echo "  PASS: After term rename, cache includes renamed term
+";
         $passed++;
     } else {
-        echo "  FAIL: After county rename, cache missing renamed term\n";
+        echo "  FAIL: After term rename, cache missing renamed term
+";
         $failed++;
     }
-    
-    // === C. Delete county: should invalidate cache ===
-    // Re-get the renamed term and delete it
-    $term = get_term_by( 'slug', 'ev-taxonomy-county-renamed', 'conexao_county' );
+
+    // === C. Delete the term: the caches must be cleared again ===
+    $term = get_term_by( 'slug', 'ev-taxonomy-town-renamed', 'conexao_town' );
     if ( $term && ! is_wp_error( $term ) ) {
-        wp_delete_term( $term->term_id, 'conexao_county' );
+        wp_delete_term( $term->term_id, 'conexao_town' );
     }
-    
-    $county_terms = conexao_get_terms_for_post_type( 'conexao_county', 'event' );
-    if ( empty( $county_terms ) ) {
-        echo "  PASS: After county delete, cache empty\n";
+
+    $town_terms  = conexao_get_event_towns();
+    $has_deleted = false;
+    if ( is_array( $town_terms ) ) {
+        foreach ( $town_terms as $t ) {
+            if ( $t->slug === 'ev-taxonomy-town-renamed' ) {
+                $has_deleted = true;
+            }
+        }
+    }
+    if ( ! $has_deleted ) {
+        echo "  PASS: After term delete, the deleted term is gone from the filter list
+";
         $passed++;
     } else {
-        echo "  INFO: After county delete, cache has " . count( $county_terms ) . " entries\n";
-        $passed++;
+        echo "  FAIL: After term delete, the filter list still serves the deleted term
+";
+        $failed++;
     }
-    
+
     echo "  Taxonomy Invalidation Complete\n";
 }
 /** 
@@ -484,7 +556,8 @@ function ev_test_county_scoped_town_variants() {
     // `wp_set_object_terms()` expects an object ID, which also created a junk
     // town term named after the county), so the scoped list could never be
     // non-empty.
-    $county_slug = ev_test_term( 'Scoping County', 'ev-scoping-county', 'conexao_county' );
+    // A REAL county: the county taxonomy is closed, so a fixture cannot create one.
+    $county_slug = ev_real_county( 3 );
     $town_slug   = ev_test_term( 'Scoped Town', 'ev-scoped-town', 'conexao_town' );
 
     ev_test_event( 'Scoped Event', $county_slug, $town_slug, '' );
@@ -548,85 +621,67 @@ function ev_test_unrelated_cache_preservation() {
     echo "  Unrelated Cache Preservation Complete\n";
 }
 
-/** Regression test: ev-uncounty is excluded from county dropdown. */
-function ev_test_ev_uncounty_excluded() {
-    global $passed, $failed, $created_posts, $created_terms;
+/**
+ * Regression test: the county dropdown offers ONLY the 26 approved counties.
+ *
+ * The dropdown is rendered from the ONE master list
+ * (`Conexao_Data_Model_Counties`), never from whatever term rows exist: that is
+ * what makes junk values (`ev-uncounty`, `Co Clare Ireland`, `6724`) and
+ * duplicate slugs (`carlow` + `ev-carlow`) impossible in the widget. The county
+ * taxonomy itself is closed, so a fixture can neither create nor adopt such a
+ * term — the guarantee is asserted on the RENDERED list instead, which is the
+ * surface a visitor sees.
+ */
+function ev_test_county_dropdown_is_canonical() {
+    global $passed, $failed;
 
-    // Ensure ev-uncounty term does not appear in the county dropdown.
-    // This test creates events with valid counties and verifies that
-    // the invalid 'ev-uncounty' slug is filtered out of the rendered options.
-
-    // Flush any existing filter caches to ensure a clean state.
     conexao_clear_event_filter_caches();
 
-    // Create test events with valid county terms.
-    $valid_counties = array( 'carlow', 'cavan', 'clare', 'cork', 'dublin', 'galway', 'laois', 'wicklow' );
-    foreach ( $valid_counties as $county ) {
-        $slug = 'ev-' . $county;
-        $term = term_exists( $slug, 'conexao_county' );
-        if ( ! $term || is_wp_error( $term ) ) {
-            $inserted = wp_insert_term( ucfirst( $county ), 'conexao_county', array( 'slug' => $slug ) );
-            if ( ! is_wp_error( $inserted ) ) {
-                $created_terms[ 'conexao_county' ][] = (int) $inserted['term_id'];
-                $post_id = wp_insert_post(
-                    array(
-                        'post_type'    => 'event',
-                        'post_title'   => 'Test event for ' . $county,
-                        'post_status'  => 'publish',
-                        'post_content' => 'Test event for filter cache.',
-                    )
-                );
-                $created_posts[] = (int) $post_id;
-                wp_set_object_terms( $post_id, $inserted['term_id'], 'conexao_county', false );
-            }
-        } else {
-            $post_id = wp_insert_post(
-                array(
-                    'post_type'    => 'event',
-                    'post_title'   => 'Test event for ' . $county,
-                    'post_status'  => 'publish',
-                    'post_content' => 'Test event for filter cache.',
-                )
-            );
-            $created_posts[] = (int) $post_id;
-            wp_set_object_terms( $post_id, $term['term_id'], 'conexao_county', false );
-        }
-    }
-
-    // Render the filter bar and check for ev-uncounty exclusion.
     $output = ev_test_render_filters();
 
-    // ev-uncounty should NOT appear in the dropdown options.
-    if ( false !== strpos( $output, 'ev-uncounty' ) ) {
-        echo "  FAIL: ev-uncounty appears in the county dropdown options\\n";
-        $failed++;
-    } else {
-        echo "  PASS: ev-uncounty is excluded from the county dropdown\\n";
-        $passed++;
-    }
+    // Every canonical county slug is offered (code, not data).
+    $expected = class_exists( 'Conexao_Data_Model_Counties' )
+        ? Conexao_Data_Model_Counties::slugs()
+        : array( 'carlow', 'cavan', 'clare', 'cork', 'dublin', 'galway', 'laois', 'wicklow' );
 
-    // Valid counties SHOULD appear in the dropdown options.
-    $all_valid_present = true;
-    foreach ( $valid_counties as $county ) {
-        $slug = 'ev-' . $county;
-        if ( false === strpos( $output, $slug ) ) {
-            echo "  FAIL: Valid county $slug not found in dropdown\\n";
-            $all_valid_present = false;
+    $missing = array();
+    foreach ( $expected as $county ) {
+        if ( false === strpos( $output, 'county=' . $county . '"' ) ) {
+            $missing[] = $county;
         }
     }
-    if ( $all_valid_present ) {
-        echo "  PASS: All valid county options are preserved\\n";
+
+    if ( empty( $missing ) ) {
+        echo "  PASS: every approved county is offered in the dropdown\n";
         $passed++;
     } else {
+        echo "  FAIL: approved counties missing from the dropdown: " . implode( ',', $missing ) . "\n";
         $failed++;
     }
 
-    // 'Todas' should still appear and retain its behavior.
+    // No non-canonical county slug can reach the widget.
+    $junk = array( 'ev-uncounty', 'ev-carlow', 'co-clare-ireland' );
+    $found = array();
+    foreach ( $junk as $slug ) {
+        if ( false !== strpos( $output, 'county=' . $slug ) ) {
+            $found[] = $slug;
+        }
+    }
+
+    if ( empty( $found ) ) {
+        echo "  PASS: no non-canonical county slug is offered\n";
+        $passed++;
+    } else {
+        echo "  FAIL: non-canonical county slugs leaked into the dropdown: " . implode( ',', $found ) . "\n";
+        $failed++;
+    }
+
+    // The reset option is still there.
     if ( false === strpos( $output, 'Todas' ) ) {
-        echo "  FAIL: 'Todas' option missing from dropdown\\n";
+        echo "  FAIL: 'Todas' option missing from dropdown\n";
         $failed++;
     } else {
-        echo "  PASS: 'Todas' option is present\\n";
+        echo "  PASS: 'Todas' option is present\n";
         $passed++;
     }
 }
@@ -641,7 +696,7 @@ ev_test_taxonomy_invalidation();
 ev_test_language_isolation();
 ev_test_county_scoped_town_variants();
 ev_test_unrelated_cache_preservation();
-ev_test_ev_uncounty_excluded();
+ev_test_county_dropdown_is_canonical();
 
 // Leave the shared database as it was found. This suite runs against the
 // POPULATED deterministic site, and every later suite shares that database, so

@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-26 20:20+0000\n"
+"POT-Creation-Date: 2026-11-26 22:41+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 
 
@@ -2367,19 +2367,19 @@ msgid ""
 "source_not_found)."
 msgstr ""
 #. translators: 1: last completed page, 2: total pages
-#: wp-content/plugins/conexao-event-importer/includes/sources/class-eventbrite-source.php:702
+#: wp-content/plugins/conexao-event-importer/includes/sources/class-eventbrite-source.php:713
 #, php-format
 msgid ""
 "Eventbrite import reached its time budget after page %1$d/%2$d — remaining "
 "pages will be picked up by the next run."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/sources/class-eventbrite-source.php:721
+#: wp-content/plugins/conexao-event-importer/includes/sources/class-eventbrite-source.php:732
 msgid ""
 "Eventbrite deferred the next request because its pacing wait did not fit the "
 "invocation window; the source remains resumable and was not budget-exhausted."
 msgstr ""
 #. translators: 1: page number, 2: total pages, 3: first page reached
-#: wp-content/plugins/conexao-event-importer/includes/sources/class-eventbrite-source.php:773
+#: wp-content/plugins/conexao-event-importer/includes/sources/class-eventbrite-source.php:784
 #, php-format
 msgid ""
 "Eventbrite stopped this source at page %1$d/%2$d because it is rate limiting "
@@ -2387,7 +2387,7 @@ msgid ""
 "retried on a later run."
 msgstr ""
 #. translators: %s: reason the walk is incomplete
-#: wp-content/plugins/conexao-event-importer/includes/sources/class-eventbrite-source.php:899
+#: wp-content/plugins/conexao-event-importer/includes/sources/class-eventbrite-source.php:910
 #, php-format
 msgid ""
 "Eventbrite enumeration is INCOMPLETE (%s). Events absent from this walk will "

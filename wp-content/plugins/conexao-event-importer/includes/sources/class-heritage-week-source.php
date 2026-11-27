@@ -1068,8 +1068,35 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 	 * @return string HTML body or empty string on failure.
 	 */
 	protected function fetch_detail_html( $url ) {
+		/*
+		 * ONE request per detail page.
+		 *
+		 * A detail page is enrichment, not enumeration: a failure here leaves
+		 * the stored values untouched (see enrich_event()), and the listing
+		 * walk must not spend its invocation window retrying enrichment URLs.
+		 * Retrying a transport-level failure of the same detail page three
+		 * times turned one unreachable event into three outbound requests and
+		 * made the walk's per-event request count depend on which events
+		 * happened to be down. The retry/backoff contract lives in
+		 * fetch_html_polite() and still governs LISTING pages.
+		 *
+		 * The three outcomes are DISTINGUISHABLE, because they mean different
+		 * things to the operator:
+		 *
+		 *   failed  -> no usable response (transport error or non-200);
+		 *   empty   -> HTTP 200 with a blank body: a valid, empty answer;
+		 *   success -> HTTP 200 with a body to parse.
+		 *
+		 * A blank 200 body is NOT a transport failure, so it must never be
+		 * recorded as one.
+		 */
 		$this->last_detail_fetch_status = 'failed';
-		$html = $this->fetch_html_polite_or_empty(
+
+		$this->respect_request_delay();
+
+		$started = microtime( true );
+
+		$response = $this->request_get(
 			$url,
 			array(
 				'timeout'    => 20,
@@ -1077,12 +1104,70 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 			)
 		);
 
-		if ( '' === $html ) {
+		$this->http_last_request_time = microtime( true );
+
+		$duration = (float) ( $this->http_last_request_time - $started );
+
+		if ( is_wp_error( $response ) ) {
+			Conexao_Import_Log::add(
+				$this->get_id(),
+				'error',
+				'Falha ao buscar a página de detalhe: ' . $response->get_error_message(),
+				array(
+					'url'                 => $url,
+					'http_status'         => 0,
+					'reason'              => 'transport_error',
+					'detail_fetch_status' => 'failed',
+					'duration'            => $duration,
+					'run_id'              => $this->get_current_run_id(),
+				)
+			);
+			return '';
+		}
+
+		$code = (int) wp_remote_retrieve_response_code( $response );
+		if ( 200 !== $code ) {
+			Conexao_Import_Log::add(
+				$this->get_id(),
+				'error',
+				'Resposta HTTP ' . $code . ' ao buscar a página de detalhe.',
+				array(
+					'url'                 => $url,
+					'http_status'         => $code,
+					'reason'              => 'http_error',
+					'detail_fetch_status' => 'failed',
+					'duration'            => $duration,
+					'run_id'              => $this->get_current_run_id(),
+				)
+			);
+			return '';
+		}
+
+		$body = (string) wp_remote_retrieve_body( $response );
+
+		if ( '' === trim( $body ) ) {
+			$this->last_detail_fetch_status = 'empty';
+
+			Conexao_Import_Log::add(
+				$this->get_id(),
+				'info',
+				'A página de detalhe respondeu 200 com um corpo vazio.',
+				array(
+					'url'                 => $url,
+					'http_status'         => $code,
+					'reason'              => 'empty_body',
+					'detail_fetch_status' => 'empty',
+					'duration'            => $duration,
+					'run_id'              => $this->get_current_run_id(),
+				)
+			);
+
 			return '';
 		}
 
 		$this->last_detail_fetch_status = 'success';
-		return $html;
+
+		return $body;
 	}
 
 	/**

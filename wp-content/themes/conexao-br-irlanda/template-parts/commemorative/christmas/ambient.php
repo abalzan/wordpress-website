@@ -23,7 +23,6 @@ if ( empty( $ce['package'] ) || 'christmas' !== $ce['package']['slug'] ) {
 $ce_assets = array(
 	'star'       => get_template_directory_uri() . '/assets/images/presentations/christmas/decorations/star.svg',
 	'snowflake'  => get_template_directory_uri() . '/assets/images/presentations/christmas/decorations/snowflake.svg',
-	'bauble'     => get_template_directory_uri() . '/assets/images/presentations/christmas/decorations/christmas-bauble.svg',
 	'holly'      => get_template_directory_uri() . '/assets/images/presentations/christmas/decorations/holly.svg',
 	'bell'       => get_template_directory_uri() . '/assets/images/presentations/christmas/decorations/christmas-bell.svg',
 	'gift'       => get_template_directory_uri() . '/assets/images/presentations/christmas/decorations/christmas-gift.svg',
@@ -33,7 +32,6 @@ $ce_assets = array(
 	class="ce-christmas-ambient-marker"
 	data-ce-star-asset="<?php echo esc_url( $ce_assets['star'] ); ?>"
 	data-ce-snowflake-asset="<?php echo esc_url( $ce_assets['snowflake'] ); ?>"
-	data-ce-bauble-asset="<?php echo esc_url( $ce_assets['bauble'] ); ?>"
 	data-ce-holly-asset="<?php echo esc_url( $ce_assets['holly'] ); ?>"
 	data-ce-bell-asset="<?php echo esc_url( $ce_assets['bell'] ); ?>"
 	data-ce-gift-asset="<?php echo esc_url( $ce_assets['gift'] ); ?>"

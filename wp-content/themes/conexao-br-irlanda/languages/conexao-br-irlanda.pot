@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-26 20:20+0000\n"
+"POT-Creation-Date: 2026-11-26 22:41+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 
 
@@ -418,6 +418,20 @@ msgid ""
 "Imagem da vaga: use uma imagem vertical, preferencialmente 1080 × 1920 px "
 "(formato Instagram Stories)."
 msgstr ""
+#: wp-content/themes/conexao-br-irlanda/inc/assets.php:136
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:145
+msgid "Feliz Natal!"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/inc/assets.php:137
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:146
+msgid "Que esta época traga alegria, união e momentos especiais."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/inc/assets.php:138
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:147
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/hero.php:109
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/new_year/hero.php:70
+msgid "Fechar"
+msgstr ""
 #. translators: %s: occasion name.
 #: wp-content/themes/conexao-br-irlanda/inc/class-conexao-seasonal-occasion.php:240
 #, php-format
@@ -610,103 +624,103 @@ msgstr ""
 msgid "Toda %s"
 msgstr ""
 #. translators: %s is the parent menu item title.
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:140
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:149
 #, php-format
 msgid "Abrir submenu de %s"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:142
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:151
 msgid "Link copiado"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:144
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:153
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:443
 #: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:359
 #: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:479
 msgid "Filtrar"
 msgstr ""
 #. translators: %d is the number of active filters (exactly one).
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:146
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:155
 #, php-format
 msgid "%d filtro ativo"
 msgstr ""
 #. translators: %d is the number of active filters (two or more).
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:148
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:157
 #, php-format
 msgid "%d filtros ativos"
 msgstr ""
 #. translators: 1: current sponsor position, 2: total sponsors.
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:150
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:159
 #: wp-content/themes/conexao-br-irlanda/template-parts/featured-sponsors.php:84
 #, php-format
 msgid "Apoiador %1$d de %2$d"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:152
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:161
 msgid "Carregando..."
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:153
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:162
 msgid "Carregar mais"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:154
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:163
 msgid "Não foi possível carregar mais conteúdo."
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:155
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:164
 msgid "Não foi possível carregar mais conteúdo. Tente novamente."
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:156
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:165
 msgid "Tentar novamente"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:157
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:166
 msgid "Você chegou ao fim."
 msgstr ""
 #. translators: 1: number of newly loaded cards, 2: singular noun ("evento"/"curso").
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:159
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:168
 #, php-format
 msgid "Mais %1$d %2$s carregado."
 msgstr ""
 #. translators: 1: number of newly loaded cards, 2: plural noun ("eventos"/"cursos").
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:161
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:170
 #, php-format
 msgid "Mais %1$d %2$s carregados."
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:162
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:171
 msgid "evento"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:163
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:172
 msgid "eventos"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:164
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:173
 msgid "curso"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:165
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:174
 msgid "cursos"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:167
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:176
 msgid ""
 "Permita o acesso à sua localização para calcular a distância aproximada até "
 "as atrações."
 msgstr ""
 #. translators: %s is a formatted distance, e.g. "2,4 km" or "850 m".
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:169
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:178
 #, php-format
 msgid "%s de você"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:171
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:180
 msgid "Mostrar distância de mim"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:173
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:182
 msgid "Obtendo sua localização…"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:175
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:184
 msgid ""
 "Não foi possível obter sua localização. Você pode continuar explorando as "
 "atrações normalmente."
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:176
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:185
 msgid "Ordenado por proximidade"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:177
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:186
 msgid "Atrações ordenadas por proximidade."
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:298
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:307
 msgid "F j, Y"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php:37
@@ -1304,10 +1318,6 @@ msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/hero.php:109
 #: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/new_year/hero.php:70
 msgid "Close"
-msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/hero.php:109
-#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/new_year/hero.php:70
-msgid "Fechar"
 msgstr ""
 #. translators: preview-only trigger label.
 #: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/hero.php:116

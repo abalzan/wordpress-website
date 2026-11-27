@@ -1051,6 +1051,19 @@ bootstrap_step_start();
 				$pt_meta['_event_status'] = ! empty( $pair['hidden'] )
 				? (string) $pair['hidden']
 				: 'published';
+
+				/*
+				 * The event ends at the end of its own day (see the same note in
+				 * step 4). Without an explicit `_event_end_date`,
+				 * `Conexao_Event_Status::get_event_end_timestamp()` treats the
+				 * 19:00 START time as the end, so the importer's
+				 * `mark_expired_events()` sweep expires these fixtures and every
+				 * later REST/filter assertion sees a hidden record. The
+				 * deliberately PAST fixture keeps its own (past) end date, so it
+				 * stays hidden exactly as intended.
+				 */
+				$pt_meta['_event_end_date'] = (string) $pt_meta['_event_date'];
+
 				// `$date` is already a full `Y-m-d H:i:s` datetime (the dataset
 				// derives it that way), so appending a second time segment produced
 				// `... 10:00:00 00:00:00`, which WordPress silently truncated — so the
@@ -1551,11 +1564,38 @@ bootstrap_step_end( 'step 4b: named cross-language pairs' );
 	}
 
 	foreach ( conexao_ci_fixture_events() as $event ) {
+		/*
+		 * `_event_date` is contractually a DATE-ONLY `Y-m-d` value (the
+		 * recurrence evaluator validates exactly that shape and the importer's
+		 * write boundary rejects a datetime). The dataset carries a full
+		 * `Y-m-d H:i:s` because that same value is the record's PUBLICATION date
+		 * (`post_date`, passed below), so the date-only prefix is derived here
+		 * instead of persisting the datetime into a date-only field.
+		 */
+		$event_date = gmdate( 'Y-m-d', strtotime( $event['date'] ) );
+
 		$meta = array(
-			'_event_date'     => $event['date'],
+			'_event_date'     => $event_date,
 			'_event_time'     => $event['time'],
 			'_event_location' => $event['location'],
 			'_event_status'   => 'published',
+			/*
+			 * The event ENDS at the end of its own day.
+			 *
+			 * `Conexao_Event_Status::get_event_end_timestamp()` falls back to
+			 * `_event_date` + the START time when `_event_end_date` is empty, so
+			 * a today-dated fixture with a 06:00 start reads as "ended at 06:00"
+			 * — and the importer's `mark_expired_events()` sweep (which any
+			 * suite that runs an import triggers) then flips these fixtures to
+			 * `_event_status = expired`. Every later suite that asserts on them
+			 * (the Stage 4.1 REST matrix, the Stage 3.2 bilingual suite, the
+			 * filter suites) then sees hidden records. Declaring the end date
+			 * makes the fixture what it is meant to be — a one-day event still
+			 * live today — and the card's range rendering ignores an end equal
+			 * to the start (`$end_ts > $date_ts` is required), so nothing about
+			 * the presentation changes.
+			 */
+			'_event_end_date' => $event_date,
 		);
 		if ( ! empty( $event['recurrence'] ) ) {
 			$meta['_event_recurrence']       = $event['recurrence'];

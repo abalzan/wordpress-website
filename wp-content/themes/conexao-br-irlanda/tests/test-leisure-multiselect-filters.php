@@ -55,6 +55,22 @@ function ms_test_term( $name, $slug, $taxonomy ) {
 	return $slug;
 }
 
+/**
+ * Resolve an EXISTING, real county slug for a fixture.
+ *
+ * @param string $slug Canonical county slug.
+ * @return string The slug when that county term exists, else ''.
+ */
+function ms_real_county( $slug ) {
+	if ( ! taxonomy_exists( 'conexao_county' ) ) {
+		return '';
+	}
+
+	$existing = term_exists( $slug, 'conexao_county' );
+
+	return ( $existing && ! is_wp_error( $existing ) ) ? (string) $slug : '';
+}
+
 /** Create a temporary published leisure post with the given taxonomy slugs. */
 function ms_test_leisure( $title, $categories, $attributes, $county ) {
 	global $created_posts;
@@ -132,8 +148,12 @@ $c_natureza = ms_test_term( 'MS Natureza', 'ms-natureza', 'conexao_category' );
 $a_exterior = ms_test_term( 'MS Exterior', 'ms-exterior', 'conexao_leisure_attribute' );
 $a_familias = ms_test_term( 'MS Famílias', 'ms-familias', 'conexao_leisure_attribute' );
 $a_estac    = ms_test_term( 'MS Estacionamento', 'ms-estacionamento', 'conexao_leisure_attribute' );
-$co_cavan   = ms_test_term( 'MS Cavan', 'ms-cavan', 'conexao_county' );
-$co_dublin  = ms_test_term( 'MS Dublin', 'ms-dublin', 'conexao_county' );
+// REAL counties: `conexao_county` is a closed list of the 26 approved
+// counties (Conexao_Data_Model_Counties rejects any other term), so the
+// fixtures use the site's own Cavan and Dublin terms. They are NOT
+// registered for cleanup: this suite never deletes a shared term.
+$co_cavan   = ms_real_county( 'cavan' );
+$co_dublin  = ms_real_county( 'dublin' );
 
 $post_a = ms_test_leisure( 'A', array( $c_natureza ), array( $a_exterior ), $co_cavan );
 $post_b = ms_test_leisure( 'B', array( $c_cult ), array( $a_familias ), $co_cavan );
@@ -194,8 +214,8 @@ if ( ! $base ) {
 	$base = home_url( '/lazer/' );
 }
 
-$url = conexao_leisure_filter_url( array( 'county' => 'ms-cavan', 'categoria' => array( 'ms-natureza', 'ms-cultura' ), 'atributo' => array( 'ms-exterior', 'ms-familias' ) ), $base );
-assert_true( false !== strpos( $url, 'county=ms-cavan' ), 'URL keeps the county dimension' );
+$url = conexao_leisure_filter_url( array( 'county' => 'cavan', 'categoria' => array( 'ms-natureza', 'ms-cultura' ), 'atributo' => array( 'ms-exterior', 'ms-familias' ) ), $base );
+assert_true( false !== strpos( $url, 'county=cavan' ), 'URL keeps the county dimension' );
 assert_true( false !== strpos( $url, 'categoria=ms-natureza%2Cms-cultura' ) || false !== strpos( $url, 'categoria=ms-natureza,ms-cultura' ), 'URL joins multi-select slugs with commas' );
 assert_true( false !== strpos( $url, 'atributo=ms-exterior%2Cms-familias' ) || false !== strpos( $url, 'atributo=ms-exterior,ms-familias' ), 'URL keeps the attribute dimension' );
 assert_true( false === strpos( $url, 'pagina=' ), 'URL never carries a pagina param (filter change resets to page 1)' );
@@ -231,7 +251,7 @@ $q = ms_test_query( array( 'atributo' => 'ms-exterior,ms-familias' ) );
 assert_true( array( $post_a, $post_b ) === wp_list_pluck( $q->posts, 'ID' ), '?atributo=a,b is interpreted as a OR b' );
 
 // County + multi-select Tipo: AND between dimensions.
-$q = ms_test_query( array( 'county' => 'ms-cavan', 'categoria' => 'ms-natureza,ms-cultura' ) );
+$q = ms_test_query( array( 'county' => 'cavan', 'categoria' => 'ms-natureza,ms-cultura' ) );
 assert_true( array( $post_a, $post_b ) === wp_list_pluck( $q->posts, 'ID' ), 'county AND (categoria OR categoria)' );
 
 // Category + attributes: AND between dimensions.
@@ -239,7 +259,7 @@ $q = ms_test_query( array( 'categoria' => 'ms-natureza', 'atributo' => 'ms-exter
 assert_true( array( $post_a ) === wp_list_pluck( $q->posts, 'ID' ), 'categoria AND (atributo OR atributo)' );
 
 // All three dimensions.
-$q = ms_test_query( array( 'county' => 'ms-cavan', 'categoria' => 'ms-natureza,ms-cultura', 'atributo' => 'ms-exterior,ms-familias' ) );
+$q = ms_test_query( array( 'county' => 'cavan', 'categoria' => 'ms-natureza,ms-cultura', 'atributo' => 'ms-exterior,ms-familias' ) );
 assert_true( array( $post_a, $post_b ) === wp_list_pluck( $q->posts, 'ID' ), 'county AND (categoria OR ...) AND (atributo OR ...)' );
 
 // Invalid slugs: ignored safely within an OR list.
@@ -256,7 +276,7 @@ assert_true( array( $post_a, $post_b ) === wp_list_pluck( $q->posts, 'ID' ), 'qu
 // tax_query structure: AND relation, IN operator per multi-select dimension.
 // Stage 2: Polylang adds its own `language` group to every front-end query, so
 // the filter dimensions are asserted separately from the language group.
-$q = ms_test_query( array( 'county' => 'ms-cavan', 'categoria' => 'ms-natureza,ms-cultura', 'atributo' => 'ms-exterior,ms-familias' ) );
+$q = ms_test_query( array( 'county' => 'cavan', 'categoria' => 'ms-natureza,ms-cultura', 'atributo' => 'ms-exterior,ms-familias' ) );
 $tax_query = $q->get( 'tax_query' );
 assert_true( is_array( $tax_query ) && 'AND' === ( $tax_query['relation'] ?? '' ), 'tax_query uses relation AND between dimensions' );
 $groups = array_values( array_filter( $tax_query, 'is_array' ) );
@@ -301,7 +321,7 @@ test_section( 'Desktop markup: multi-select active states' );
 // State: county=cavan, categoria=natureza+cultura, atributo=exterior+familias
 // (with a duplicated slug to prove URL normalization).
 $html = ms_test_render_filters( array(
-	'county'    => 'ms-cavan',
+	'county'    => 'cavan',
 	'categoria' => 'ms-natureza,ms-cultura',
 	'atributo'  => 'ms-exterior,ms-familias,ms-exterior',
 ) );
@@ -326,16 +346,16 @@ assert_true( (bool) $natureza_toggle, 'selected Tipo option: aria-current="true"
 $plain = rawurldecode( html_entity_decode( $html, ENT_QUOTES | ENT_HTML5 ) );
 
 // Tipo reset (Todos): drops ONLY categoria, preserving county + deduped atributo.
-assert_true( (bool) preg_match( '/href="' . preg_quote( $base, '/' ) . '\?county=ms-cavan&atributo=ms-exterior,ms-familias"/', $plain ), 'Tipo reset (Todos) drops ONLY categoria, preserving county + atributo (deduped)' );
+assert_true( (bool) preg_match( '/href="' . preg_quote( $base, '/' ) . '\?county=cavan&atributo=ms-exterior,ms-familias"/', $plain ), 'Tipo reset (Todos) drops ONLY categoria, preserving county + atributo (deduped)' );
 
 // Toggle link of a selected category preserves county + atributo.
-assert_true( (bool) preg_match( '/href="[^"]*county=ms-cavan[^\"]*categoria=ms-cultura[^\"]*atributo=ms-exterior,ms-familias[^"]*"/', $plain ), 'clicking a selected Tipo option removes only that slug, preserving the rest' );
+assert_true( (bool) preg_match( '/href="[^"]*county=cavan[^\"]*categoria=ms-cultura[^\"]*atributo=ms-exterior,ms-familias[^"]*"/', $plain ), 'clicking a selected Tipo option removes only that slug, preserving the rest' );
 
 // "Todas" reset for Características.
-assert_true( (bool) preg_match( '/href="' . preg_quote( $base, '/' ) . '\?county=ms-cavan&categoria=ms-natureza,ms-cultura"/', $plain ), 'Características reset (Todas) drops ONLY atributo, preserving county + categoria' );
+assert_true( (bool) preg_match( '/href="' . preg_quote( $base, '/' ) . '\?county=cavan&categoria=ms-natureza,ms-cultura"/', $plain ), 'Características reset (Todas) drops ONLY atributo, preserving county + categoria' );
 
 // County dropdown preserves the multi-select dimensions.
-assert_true( (bool) preg_match( '/href="[^"]*county=ms-dublin[^\"]*categoria=ms-natureza,ms-cultura[^\"]*atributo=ms-exterior,ms-familias[^"]*"/', $plain ), 'switching Localização preserves categoria + atributo' );
+assert_true( (bool) preg_match( '/href="[^"]*county=dublin[^\"]*categoria=ms-natureza,ms-cultura[^\"]*atributo=ms-exterior,ms-familias[^"]*"/', $plain ), 'switching Localização preserves categoria + atributo' );
 
 assert_true( (bool) preg_match( '/href="' . preg_quote( $base, '/' ) . '\?categoria=ms-natureza,ms-cultura&atributo=ms-exterior,ms-familias"/', $plain )
 	|| (bool) preg_match( '/href="' . preg_quote( $base, '/' ) . '\?atributo=ms-exterior,ms-familias&categoria=ms-natureza,ms-cultura"/', $plain ), 'Localização reset (Todos) preserves categoria + atributo' );
@@ -372,7 +392,7 @@ if ( $tipo_region ) {
 test_section( 'Mobile markup: checkbox groups + section resets' );
 
 $html = ms_test_render_filters( array(
-	'county'    => 'ms-cavan',
+	'county'    => 'cavan',
 	'categoria' => 'ms-natureza,ms-cultura',
 	'atributo'  => 'ms-exterior',
 ) );

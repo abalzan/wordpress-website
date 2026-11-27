@@ -505,10 +505,17 @@ class Conexao_Eventbrite_Pacing {
 	/**
 	 * Wait the polite inter-request delay between two pages.
 	 *
+	 * @param float|null $now The instant the caller already read, so the
+	 *                        deadline decision uses the SAME clock read as the
+	 *                        walk's time-budget check. Passing it is what keeps
+	 *                        one page costing exactly one clock read: reading
+	 *                        the clock a second time here charged the walk
+	 *                        twice per page and halved the number of pages a
+	 *                        budget could confirm.
 	 * @return float Seconds requested.
 	 */
-	public function pace_page_request() {
-		return $this->sleep_for( $this->get_page_delay_seconds(), 'page_pacing' );
+	public function pace_page_request( $now = null ) {
+		return $this->sleep_for( $this->get_page_delay_seconds(), 'page_pacing', $now );
 	}
 
 	/**
@@ -548,11 +555,16 @@ class Conexao_Eventbrite_Pacing {
 	/**
 	 * Apply a delay, recording it and honouring an injected sleeper.
 	 *
-	 * @param float  $seconds Delay in seconds.
-	 * @param string $reason  Why the delay was applied (for assertions).
+	 * @param float      $seconds Delay in seconds.
+	 * @param string     $reason  Why the delay was applied (for assertions).
+	 * @param float|null $now     The instant to evaluate the deadline against.
+	 *                            When omitted the clock is read here; callers
+	 *                            that already read it pass it in so the
+	 *                            deadline decision does not consume a second
+	 *                            clock read.
 	 * @return float Seconds requested.
 	 */
-	protected function sleep_for( $seconds, $reason ) {
+	protected function sleep_for( $seconds, $reason, $now = null ) {
 		$seconds                   = (float) $seconds;
 		$this->wait_deferred       = false;
 		$this->last_wait_requested = $seconds;
@@ -567,9 +579,13 @@ class Conexao_Eventbrite_Pacing {
 			return 0.0;
 		}
 
-		if ( null !== $this->wait_deadline && ( $this->now() + $seconds ) > $this->wait_deadline ) {
-			$this->wait_deferred = true;
-			return 0.0;
+		if ( null !== $this->wait_deadline ) {
+			$decision_now = null === $now ? $this->now() : (float) $now;
+
+			if ( ( $decision_now + $seconds ) > $this->wait_deadline ) {
+				$this->wait_deferred = true;
+				return 0.0;
+			}
 		}
 
 		if ( null !== $this->sleeper ) {

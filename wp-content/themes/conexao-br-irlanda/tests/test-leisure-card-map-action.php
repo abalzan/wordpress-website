@@ -43,19 +43,31 @@ function card_render( $post_id ) {
 	return $html;
 }
 
-function map_test_county( $name, $slug ) {
-	global $created_terms;
+/**
+ * The term ID of an EXISTING, real county.
+ *
+ * `conexao_county` is a closed list of the Republic of Ireland's 26 counties
+ * (`Conexao_Data_Model_Counties` rejects every other term at pre_insert_term),
+ * so a fixture may not invent "Map Test County". The county is the site's own
+ * shared term and is deliberately NOT registered for cleanup: this suite must
+ * never delete one.
+ *
+ * @param string $slug Canonical county slug.
+ * @return int Term ID, or 0 when that county term does not exist.
+ */
+function map_test_county( $slug ) {
+	if ( ! taxonomy_exists( 'conexao_county' ) ) {
+		return 0;
+	}
+
 	$existing = term_exists( $slug, 'conexao_county' );
-	if ( $existing && ! is_wp_error( $existing ) ) {
-		$term = get_term( (int) ( is_array( $existing ) ? $existing['term_id'] : $existing ), 'conexao_county' );
-		return (int) $term->term_id;
+	if ( ! $existing || is_wp_error( $existing ) ) {
+		return 0;
 	}
-	$inserted = wp_insert_term( $name, 'conexao_county', array( 'slug' => $slug ) );
-	if ( is_wp_error( $inserted ) ) {
-		exit( 1 );
-	}
-	$created_terms[] = (int) $inserted['term_id'];
-	return (int) $inserted['term_id'];
+
+	$term = get_term( (int) ( is_array( $existing ) ? $existing['term_id'] : $existing ), 'conexao_county' );
+
+	return ( $term instanceof WP_Term ) ? (int) $term->term_id : 0;
 }
 
 function map_test_create_leisure( $title, $county_term_id = 0, $external = true, $extra_meta = array() ) {
@@ -88,7 +100,7 @@ function map_test_create_leisure( $title, $county_term_id = 0, $external = true,
 // Setup: a county term shared by the test records.
 // ---------------------------------------------------------------------------
 test_section( 'Setup' );
-$county_id = map_test_county( 'Map Test County', 'map-test-county' );
+$county_id = map_test_county( 'laois' );
 assert_true( $county_id > 0, 'county term available for test records' );
 
 // ---------------------------------------------------------------------------

@@ -70,6 +70,38 @@ if ( ! defined( 'WP_ADMIN' ) ) {
 $cleanup = new Conexao_Event_Cleanup();
 $runner  = new Conexao_Event_Cleanup_Run();
 
+/*
+ * ---------------------------------------------------------------------------
+ * Suite-wide candidate-scope isolation.
+ * ---------------------------------------------------------------------------
+ *
+ * The batch runner walks EVERY eligible event in the database, so without a
+ * scope restriction this suite also deletes records it did not create: the
+ * deterministic site seeds events (a past "expired" record and today-dated
+ * records whose only stated time is already behind the clock), and those are
+ * legitimately eligible for a destructive cleanup. Deleting them makes every
+ * LATER suite that reads those fixtures fail on missing records, and it makes
+ * this suite's own counts undeterministic.
+ *
+ * The fix is the ownership rule the runner already implements (design §2.1
+ * rule 5): `cleanup_scope = imported_only` restricts the candidate walk to
+ * records carrying `_event_imported = 1`. Every fixture this suite creates
+ * carries that marker, and the seeded site fixtures do not, so the walk sees
+ * exactly this suite's own records — which is what the suite's isolation
+ * contract above already promises.
+ *
+ * The setting is isolated in the per-process option store (snapshot + restore
+ * at shutdown), so it never leaks into another suite or into the shared
+ * database. Section 2 exercises the ownership rule itself and toggles the
+ * scope explicitly.
+ */
+test_options_isolate( array( Conexao_Import_Settings::OPTION_KEY ) );
+
+$cleanup_scoped_settings                   = Conexao_Import_Settings::all();
+$cleanup_scoped_settings['cleanup_scope']  = 'imported_only';
+Conexao_Import_Settings::update( $cleanup_scoped_settings );
+cleanup_reset_settings_cache();
+
 /**
  * Per-section record registry.
  *
@@ -362,6 +394,13 @@ assert_true(
 	$is_eligible_method->invoke( $runner, $manual_event ),
 	'manual event IS eligible when cleanup_scope = all'
 );
+
+// Restore the suite-wide isolation scope (see "Suite-wide candidate-scope
+// isolation" above). Leaving 'all' here would let the following sections' walks
+// reach the seeded site fixtures again.
+$settings['cleanup_scope'] = 'imported_only';
+Conexao_Import_Settings::update( $settings );
+cleanup_reset_settings_cache();
 
 cleanup_section_teardown();
 
@@ -893,7 +932,7 @@ foreach ( $delete_post_hooks as $hook ) {
 	}
 	$hook_name = is_array( $hook ) ? ( is_object( $hook[0] ) ? get_class( $hook[0] ) . '::' . $hook[1] : $hook[0] . '::' . $hook[1] ) : $hook;
 	assert_true(
-		in_array( $hook_name, $allowed_hooks, true ) || 0 === strpos( $hook_name, 'conexao_' ),
+		in_array( $hook_name, $allowed_hooks, true ) || 0 === stripos( $hook_name, 'conexao_' ),
 		'delete_post hook ' . $hook_name . ' is allowed (idempotent cache invalidator or core hook)'
 	);
 }
@@ -903,8 +942,20 @@ foreach ( $deleted_post_hooks as $hook ) {
 		continue;
 	}
 	$hook_name = is_array( $hook ) ? ( is_object( $hook[0] ) ? get_class( $hook[0] ) . '::' . $hook[1] : $hook[0] . '::' . $hook[1] ) : $hook;
+	/*
+	 * Plugin ownership is matched CASE-INSENSITIVELY.
+	 *
+	 * This plugin's procedural functions are `conexao_*` but its classes are
+	 * `Conexao_*` (WordPress class naming), so the callbacks it registers as
+	 * `Class::method` — e.g. `Conexao_Commemorative_Cache::on_deleted`, a
+	 * type-guarded, idempotent cache invalidator that returns immediately for
+	 * any non-commemorative post — were reported as foreign hooks by a
+	 * case-sensitive prefix test. The guard still rejects every hook that is
+	 * neither a known core hook nor owned by this plugin family; nothing is
+	 * added to the allowlist.
+	 */
 	assert_true(
-		in_array( $hook_name, $allowed_hooks, true ) || 0 === strpos( $hook_name, 'conexao_' ),
+		in_array( $hook_name, $allowed_hooks, true ) || 0 === stripos( $hook_name, 'conexao_' ),
 		'deleted_post hook ' . $hook_name . ' is allowed (idempotent cache invalidator or core hook)'
 	);
 }

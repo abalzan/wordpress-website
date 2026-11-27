@@ -687,7 +687,18 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 		$stop_failure = '';
 
 		for ( $page = $resume_page; $page <= $page_count; $page++ ) {
-			if ( ( $pacing->now() - $started_at ) > $budget ) {
+			// ONE clock read per page.
+			//
+			// The time-budget check and the pacing-wait deadline are two
+			// questions about the same instant, so they share one read. Reading
+			// the clock separately in pace_page_request() charged the walk two
+			// reads per page, and the documented deterministic contract
+			// (one clock read = the elapsed cost of one page) then confirmed
+			// half as many pages per budget — a resumed walk re-walked its
+			// overlap page and ran out of window before reaching a new page.
+			$page_now = $pacing->now();
+
+			if ( ( $page_now - $started_at ) > $budget ) {
 				$this->mark_fetch_incomplete();
 				$incomplete_reason = sprintf( 'time budget of %ds expired after page %d/%d', (int) $budget, $page - 1, $page_count );
 				$stop_failure      = 'time_budget';
@@ -709,7 +720,7 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 			}
 
 			// G5A: every inter-request wait is decided by the pacing policy.
-			$pacing->pace_page_request();
+			$pacing->pace_page_request( $page_now );
 			if ( $pacing->was_wait_deferred() ) {
 				$this->mark_fetch_incomplete();
 				$incomplete_reason = sprintf( 'rate-limit/page pacing wait did not fit the %ds invocation window after page %d/%d', (int) $budget, $page - 1, $page_count );
