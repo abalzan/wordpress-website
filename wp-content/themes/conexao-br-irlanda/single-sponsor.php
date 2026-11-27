@@ -98,8 +98,8 @@ if ( function_exists( 'conexao_b2_fallback_notice' ) ) {
 						}
 						$sponsor_hero_html .= ' sizes="(min-width: 769px) 360px, 92vw"';
 						if ( $sponsor_dimensions ) {
-							$sponsor_hero_html .= ' width="' . esc_attr( (int) $sponsor_dimensions[1] ) . '"'
-								. ' height="' . esc_attr( (int) $sponsor_dimensions[2] ) . '"';
+							$sponsor_hero_html .= ' width="' . esc_attr( (string) (int) $sponsor_dimensions[1] ) . '"'
+								. ' height="' . esc_attr( (string) (int) $sponsor_dimensions[2] ) . '"';
 						}
 						$sponsor_hero_html .= ' alt="' . esc_attr( $sponsor_alt ) . '" loading="eager" fetchpriority="high" decoding="async" />';
 					}
