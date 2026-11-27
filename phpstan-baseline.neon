@@ -25,50 +25,8 @@ parameters:
 			path: wp-content/plugins/conexao-admin-ux/includes/class-admin.php
 
 		-
-			message: '#^Parameter \#1 \$classname of function sanitize_html_class expects string, int\<0, max\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: wp-content/plugins/conexao-admin-ux/includes/class-editor.php
-
-		-
-			message: '#^Strict comparison using \=\=\= between ''mobile'' and ''_sponsor_desktop…''\|''_sponsor_mobile…'' will always evaluate to false\.$#'
-			identifier: identical.alwaysFalse
-			count: 1
-			path: wp-content/plugins/conexao-admin-ux/includes/class-editor.php
-
-		-
 			message: '#^Left side of && is always true\.$#'
 			identifier: booleanAnd.leftAlwaysTrue
-			count: 1
-			path: wp-content/plugins/conexao-admin-ux/includes/class-fields.php
-
-		-
-			message: '#^Parameter \#1 \$text of function esc_attr expects string, int given\.$#'
-			identifier: argument.type
-			count: 2
-			path: wp-content/plugins/conexao-admin-ux/includes/class-fields.php
-
-		-
-			message: '#^Parameter \#1 \$text of function esc_attr expects string, int\<0, max\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: wp-content/plugins/conexao-admin-ux/includes/class-fields.php
-
-		-
-			message: '#^Parameter \#2 \$callback of function array_filter expects \(callable\(string\)\: bool\)\|null, ''strlen'' given\.$#'
-			identifier: argument.type
-			count: 3
-			path: wp-content/plugins/conexao-admin-ux/includes/class-fields.php
-
-		-
-			message: '#^Static method Conexao_Admin_Ux_Fields\:\:is_event_recurrence_key\(\) is unused\.$#'
-			identifier: method.unused
-			count: 1
-			path: wp-content/plugins/conexao-admin-ux/includes/class-fields.php
-
-		-
-			message: '#^Strict comparison using \!\=\= between null and mixed will always evaluate to true\.$#'
-			identifier: notIdentical.alwaysTrue
 			count: 1
 			path: wp-content/plugins/conexao-admin-ux/includes/class-fields.php
 
@@ -145,18 +103,6 @@ parameters:
 			path: wp-content/plugins/conexao-admin-ux/includes/class-wikimedia-client.php
 
 		-
-			message: '#^Undefined variable\: \$file$#'
-			identifier: variable.undefined
-			count: 1
-			path: wp-content/plugins/conexao-admin-ux/includes/class-wikimedia-client.php
-
-		-
-			message: '#^Variable \$file in isset\(\) is never defined\.$#'
-			identifier: isset.variable
-			count: 1
-			path: wp-content/plugins/conexao-admin-ux/includes/class-wikimedia-client.php
-
-		-
 			message: '#^Call to function is_wp_error\(\) with int\<0, max\> will always evaluate to false\.$#'
 			identifier: function.impossibleType
 			count: 3
@@ -203,12 +149,6 @@ parameters:
 			identifier: function.alreadyNarrowedType
 			count: 1
 			path: wp-content/plugins/conexao-en-translation/includes/stage-config.php
-
-		-
-			message: '#^Parameter \#1 \$text of function esc_html expects string, int given\.$#'
-			identifier: argument.type
-			count: 4
-			path: wp-content/plugins/conexao-event-importer/includes/class-event-cleanup-admin.php
 
 		-
 			message: '#^Call to function is_array\(\) with array will always evaluate to true\.$#'
@@ -263,12 +203,6 @@ parameters:
 			identifier: empty.variable
 			count: 1
 			path: wp-content/plugins/conexao-event-importer/includes/class-event-image-handler.php
-
-		-
-			message: '#^Parameter \#1 \$text of function esc_html expects string, int given\.$#'
-			identifier: argument.type
-			count: 1
-			path: wp-content/plugins/conexao-event-importer/includes/class-event-image-sync-admin.php
 
 		-
 			message: '#^Call to function is_array\(\) with array\{term_id\: int\|string, term_taxonomy_id\: int\|string\} will always evaluate to true\.$#'
@@ -421,36 +355,6 @@ parameters:
 			path: wp-content/plugins/conexao-event-importer/includes/class-import-cli.php
 
 		-
-			message: '#^Call to static method add_command\(\) on an unknown class WP_CLI\.$#'
-			identifier: class.notFound
-			count: 1
-			path: wp-content/plugins/conexao-event-importer/includes/class-import-cli.php
-
-		-
-			message: '#^Call to static method error\(\) on an unknown class WP_CLI\.$#'
-			identifier: class.notFound
-			count: 3
-			path: wp-content/plugins/conexao-event-importer/includes/class-import-cli.php
-
-		-
-			message: '#^Call to static method log\(\) on an unknown class WP_CLI\.$#'
-			identifier: class.notFound
-			count: 11
-			path: wp-content/plugins/conexao-event-importer/includes/class-import-cli.php
-
-		-
-			message: '#^Call to static method success\(\) on an unknown class WP_CLI\.$#'
-			identifier: class.notFound
-			count: 4
-			path: wp-content/plugins/conexao-event-importer/includes/class-import-cli.php
-
-		-
-			message: '#^Call to static method warning\(\) on an unknown class WP_CLI\.$#'
-			identifier: class.notFound
-			count: 4
-			path: wp-content/plugins/conexao-event-importer/includes/class-import-cli.php
-
-		-
 			message: '#^Function WP_CLI\\Utils\\format_items not found\.$#'
 			identifier: function.notFound
 			count: 1
@@ -461,18 +365,6 @@ parameters:
 			identifier: function.alreadyNarrowedType
 			count: 3
 			path: wp-content/plugins/conexao-event-importer/includes/class-import-log.php
-
-		-
-			message: '#^Method Conexao_Import_Result\:\:get_run_id\(\) should return string but returns int\.$#'
-			identifier: return.type
-			count: 1
-			path: wp-content/plugins/conexao-event-importer/includes/class-import-result.php
-
-		-
-			message: '#^Property Conexao_Import_Result\:\:\$run_id \(int\) does not accept string\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: wp-content/plugins/conexao-event-importer/includes/class-import-result.php
 
 		-
 			message: '#^Call to function is_array\(\) with array will always evaluate to true\.$#'
@@ -691,12 +583,6 @@ parameters:
 			path: wp-content/plugins/conexao-translation-rollout/includes/class-conexao-translation-rollout-engine.php
 
 		-
-			message: '#^Parameter \#1 \$text of function esc_html expects string, int\<1, max\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: wp-content/themes/conexao-br-irlanda/front-page.php
-
-		-
 			message: '#^Parameter \#1 \$args of function wp_nav_menu expects array\{menu\?\: int\|string\|WP_Term, menu_class\?\: string, menu_id\?\: string, container\?\: string, container_class\?\: string, container_id\?\: string, container_aria_label\?\: string, fallback_cb\?\: \(callable\(\)\: mixed\)\|false, \.\.\.\}, array\{theme_location\: ''primary'', menu_class\: ''mobile\-menu'', container\: false, fallback_cb\: ''conexao_safe_nav…'', depth\: 3\} given\.$#'
 			identifier: argument.type
 			count: 1
@@ -743,12 +629,6 @@ parameters:
 			identifier: function.alreadyNarrowedType
 			count: 1
 			path: wp-content/themes/conexao-br-irlanda/inc/i18n.php
-
-		-
-			message: '#^Access to an undefined property PLL\:\:\$curlang\.$#'
-			identifier: property.notFound
-			count: 1
-			path: wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php
 
 		-
 			message: '#^Call to function is_array\(\) with array\<int, PLL_Language\|string\> will always evaluate to true\.$#'
@@ -919,22 +799,10 @@ parameters:
 			path: wp-content/themes/conexao-br-irlanda/inc/sponsors.php
 
 		-
-			message: '#^Parameter \#1 \$text of function esc_attr expects string, int given\.$#'
-			identifier: argument.type
-			count: 2
-			path: wp-content/themes/conexao-br-irlanda/inc/sponsors.php
-
-		-
 			message: '#^Call to function is_wp_error\(\) with WP_Term will always evaluate to false\.$#'
 			identifier: function.impossibleType
 			count: 1
 			path: wp-content/themes/conexao-br-irlanda/page-landing.php
-
-		-
-			message: '#^Parameter \#1 \$text of function esc_attr expects string, int given\.$#'
-			identifier: argument.type
-			count: 2
-			path: wp-content/themes/conexao-br-irlanda/single-sponsor.php
 
 		-
 			message: '#^If condition is always false\.$#'
@@ -1013,12 +881,6 @@ parameters:
 			identifier: function.impossibleType
 			count: 1
 			path: wp-content/themes/conexao-br-irlanda/template-parts/guide-filters.php
-
-		-
-			message: '#^Parameter \#1 \$text of function esc_html expects string, int given\.$#'
-			identifier: argument.type
-			count: 1
-			path: wp-content/themes/conexao-br-irlanda/template-parts/hero-events.php
 
 		-
 			message: '#^Call to function is_wp_error\(\) with array\<WP_Term\> will always evaluate to false\.$#'
