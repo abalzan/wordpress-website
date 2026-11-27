@@ -10,7 +10,9 @@
  *  - `[conexao_blog_categories]` renders category pill links including the
  *    "Todos" link and links to the native blog archive.
  *
- * Read-only. Creates temporary posts and terms, deletes them at the end.
+ * Creates temporary local test posts and terms, uses only fixtures owned by
+ * the test, and cleans up everything it creates. Does not modify production
+ * content or persistent site configuration.
  *
  * @package Conexao_Content
  */
@@ -20,7 +22,12 @@ require_once dirname( __DIR__, 4 ) . '/tests/bootstrap.php';
 
 $passed  = 0;
 $failed  = 0;
-$created = array();
+
+/** Temporary posts created by this suite (deleted at the end). */
+$cc_posts = array();
+
+/** Temporary terms created by this suite, keyed by term ID => taxonomy. */
+$cc_terms = array();
 
 test_title( 'Conexão Content: shortcodes' );
 
@@ -40,25 +47,63 @@ test_require(
 // Helpers
 // ---------------------------------------------------------------------------
 
+/**
+ * Create a temporary post and track it for cleanup.
+ *
+ * @param array $args wp_insert_post() arguments.
+ * @return int Post ID (0 on failure).
+ */
 function cc_create_post( array $args ) {
-	global $created;
+	global $cc_posts;
+
 	$post_id = wp_insert_post( $args );
 	if ( is_wp_error( $post_id ) || ! $post_id ) {
 		return 0;
 	}
-	$created[] = (int) $post_id;
+
+	$cc_posts[] = (int) $post_id;
 	return (int) $post_id;
 }
 
+/**
+ * Create a temporary term and track it for cleanup.
+ *
+ * Fails loudly when a term with the same slug already exists in the target
+ * taxonomy, so the test never silently reuses a pre-existing term.
+ *
+ * @param string $slug   Unique term slug.
+ * @param string $name   Term name.
+ * @param string $taxonomy Taxonomy name.
+ * @return int Term ID (0 on failure).
+ */
 function cc_create_term( $slug, $name, $taxonomy ) {
+	global $cc_terms;
+
 	if ( term_exists( $slug, $taxonomy ) ) {
-		return (int) term_exists( $slug, $taxonomy )['term_id'];
+		assert_fail(
+			"term '{$slug}' already exists in taxonomy '{$taxonomy}' — the test must not reuse a pre-existing term"
+		);
+		return 0;
 	}
+
 	$created_term = wp_insert_term( $name, $taxonomy, array( 'slug' => $slug ) );
 	if ( is_wp_error( $created_term ) ) {
 		return 0;
 	}
-	return (int) $created_term['term_id'];
+
+	$term_id = (int) $created_term['term_id'];
+	$cc_terms[ $term_id ] = $taxonomy;
+	return $term_id;
+}
+
+/**
+ * Generate a unique fixture slug to prevent collisions between runs.
+ *
+ * @param string $prefix Slug prefix.
+ * @return string Unique slug.
+ */
+function cc_unique_slug( $prefix ) {
+	return $prefix . '_' . strtolower( wp_generate_password( 8, false, false ) );
 }
 
 // ---------------------------------------------------------------------------
@@ -76,7 +121,8 @@ assert_equals( '', $html, 'an unknown category returns an empty grid (no stray m
 
 test_section( 'conexao_grid: renders matching posts' );
 
-$cat_id = cc_create_term( 'cc-test-categoria', 'Categoria Teste', 'conexao_category' );
+$cat_slug = cc_unique_slug( 'cc-test-categoria' );
+$cat_id = cc_create_term( $cat_slug, 'Categoria Teste', 'conexao_category' );
 assert_true( $cat_id > 0, 'a test category term was created' );
 
 $post_id = cc_create_post(
@@ -91,7 +137,7 @@ assert_true( $post_id > 0, 'a test guide post was created' );
 
 wp_set_post_terms( $post_id, array( $cat_id ), 'conexao_category' );
 
-$html = do_shortcode( '[conexao_grid categories="cc-test-categoria"]' );
+$html = do_shortcode( '[conexao_grid categories="' . $cat_slug . '"]' );
 assert_true( '' !== $html, 'the grid returns non-empty HTML for a matching category' );
 assert_contains( '[CC TEST] Guia de teste', $html, 'the grid card shows the post title' );
 assert_contains( 'conexao-card', $html, 'the grid uses the conexao-card wrapper' );
@@ -115,7 +161,7 @@ assert_true( $event_id > 0, 'a test event post was created' );
 update_post_meta( $event_id, '_event_status', 'expired' );
 wp_set_post_terms( $event_id, array( $cat_id ), 'conexao_category' );
 
-$html = do_shortcode( '[conexao_grid categories="cc-test-categoria"]' );
+$html = do_shortcode( '[conexao_grid categories="' . $cat_slug . '"]' );
 assert_not_contains( '[CC TEST] Evento oculto', $html, 'an expired event does not appear in the grid' );
 
 // ---------------------------------------------------------------------------
@@ -136,7 +182,7 @@ assert_true( $sponsor_id > 0, 'a test sponsor post was created' );
 update_post_meta( $sponsor_id, '_sponsor_link', 'https://example.ie/' );
 wp_set_post_terms( $sponsor_id, array( $cat_id ), 'conexao_category' );
 
-$html = do_shortcode( '[conexao_grid categories="cc-test-categoria"]' );
+$html = do_shortcode( '[conexao_grid categories="' . $cat_slug . '"]' );
 assert_contains( 'https://example.ie/', $html, 'the sponsor card links to its external URL' );
 assert_contains( 'target="_blank"', $html, 'the external link opens in a new tab' );
 assert_contains( 'rel="noopener noreferrer"', $html, 'the external link carries secure attributes' );
@@ -147,7 +193,8 @@ assert_contains( 'rel="noopener noreferrer"', $html, 'the external link carries 
 
 test_section( 'conexao_blog_categories: renders category pills' );
 
-$blog_cat_id = cc_create_term( 'cc-test-blog-cat', 'Categoria Blog', 'category' );
+$blog_cat_slug = cc_unique_slug( 'cc-test-blog-cat' );
+$blog_cat_id = cc_create_term( $blog_cat_slug, 'Categoria Blog', 'category' );
 assert_true( $blog_cat_id > 0, 'a test blog category was created' );
 
 $html = do_shortcode( '[conexao_blog_categories]' );
@@ -161,11 +208,19 @@ assert_contains( '/blog/', $html, 'the base blog URL is linked' );
 
 test_section( 'Cleanup' );
 
-foreach ( $created as $post_id ) {
+// Delete temporary posts before their associated terms, so term-to-post
+// relationships do not block term deletion.
+foreach ( $cc_posts as $post_id ) {
 	wp_delete_post( $post_id, true );
 }
 
-$leftover = get_posts(
+// Delete only terms created by this test. Never touch pre-existing terms.
+foreach ( $cc_terms as $term_id => $taxonomy ) {
+	wp_delete_term( $term_id, $taxonomy );
+}
+
+// Verify no temporary post remains.
+$leftover_posts = get_posts(
 	array(
 		'post_type'   => 'any',
 		'post_status' => 'any',
@@ -174,6 +229,15 @@ $leftover = get_posts(
 		'fields'      => 'ids',
 	)
 );
-assert_true( empty( $leftover ), 'no temporary post remains after the suite' );
+assert_true( empty( $leftover_posts ), 'no temporary post remains after the suite' );
+
+// Verify no temporary term remains.
+$leftover_terms = 0;
+foreach ( $cc_terms as $term_id => $taxonomy ) {
+	if ( term_exists( (int) $term_id, $taxonomy ) ) {
+		++$leftover_terms;
+	}
+}
+assert_equals( 0, $leftover_terms, 'no temporary term remains after the suite' );
 
 test_finish( 'conexao-content shortcodes' );

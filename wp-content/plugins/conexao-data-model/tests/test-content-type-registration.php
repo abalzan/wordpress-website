@@ -166,6 +166,48 @@ $counties = Conexao_Data_Model_Counties::all();
 
 assert_equals( 26, count( $counties ), 'the county master list has exactly 26 entries' );
 
+// Independent expected inventory: the 26 Republic of Ireland counties,
+// canonical slugs, taken from the production master list in
+// Conexao_Data_Model_Counties::COUNTIES. This is an independent assertion of
+// the complete inventory, not merely a count — a replacement of one valid
+// county with another would be detected here.
+$expected_counties = array(
+	'carlow'    => 'Carlow',
+	'cavan'     => 'Cavan',
+	'clare'     => 'Clare',
+	'cork'      => 'Cork',
+	'donegal'   => 'Donegal',
+	'dublin'    => 'Dublin',
+	'galway'    => 'Galway',
+	'kerry'     => 'Kerry',
+	'kildare'   => 'Kildare',
+	'kilkenny'  => 'Kilkenny',
+	'laois'     => 'Laois',
+	'leitrim'   => 'Leitrim',
+	'limerick'  => 'Limerick',
+	'longford'  => 'Longford',
+	'louth'     => 'Louth',
+	'mayo'      => 'Mayo',
+	'meath'     => 'Meath',
+	'monaghan'  => 'Monaghan',
+	'offaly'    => 'Offaly',
+	'roscommon' => 'Roscommon',
+	'sligo'     => 'Sligo',
+	'tipperary' => 'Tipperary',
+	'waterford' => 'Waterford',
+	'westmeath' => 'Westmeath',
+	'wexford'   => 'Wexford',
+	'wicklow'   => 'Wicklow',
+);
+
+$actual_counties = Conexao_Data_Model_Counties::all();
+
+assert_equals(
+	$expected_counties,
+	$actual_counties,
+	'the county master list matches the complete expected 26-county inventory exactly'
+);
+
 $northern_ireland = array( 'antrim', 'armagh', 'down', 'fermanagh', 'derry', 'tyrone' );
 foreach ( $northern_ireland as $ni_slug ) {
 	assert_false(

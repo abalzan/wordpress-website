@@ -57,8 +57,14 @@ No production code changes. No content, route, or English/Polylang changes.
 
 Add two new standard-compliant in-process suites following the existing
 `test-<area>-<behaviour>.php` convention, using `tests/bootstrap.php` and
-`tests/lib/assertions.php`. Each suite is read-only, creates its own
-fixtures, cleans up, and ends with `test_finish()`.
+`tests/lib/assertions.php`. Each suite ends with `test_finish()`.
+
+- `conexao-data-model/tests/test-content-type-registration.php` — read-only,
+  inspects existing WordPress registration and configuration, creates no posts
+  or terms.
+- `conexao-content/tests/test-shortcodes.php` — creates temporary local test
+  posts and terms with unique slugs, tracks every fixture, deletes posts before
+  terms, and verifies no fixture remains after cleanup.
 
 Options considered:
 - Add to an existing suite file: rejected — would mix concerns and make the diff less reviewable.
@@ -82,9 +88,11 @@ Options considered:
 
 ## 8. Content / data impact
 
-- Records created / updated / deleted: temporary posts/terms created and deleted within each suite run.
+- Records created / updated / deleted:
+  - `conexao-data-model` registration test: creates nothing, mutates nothing (read-only).
+  - `conexao-content` shortcode test: creates temporary local test posts and terms, deletes them at suite end.
 - Portable identifier strategy: N/A (no cross-environment identity used).
-- Does this write content? Yes, but only temporary fixtures inside test processes, cleaned up at suite end.
+- Does this write content? Yes — the shortcode test creates temporary fixtures inside its own process and cleans them up. The registration test writes nothing.
 - PT content changed? No.
 
 ## 9. Route / HTTP impact
@@ -129,7 +137,10 @@ Options considered:
 
 ## 14. Test plan
 
-- In-process suite(s) to add: `conexao-data-model/tests/test-content-type-registration.php`, `conexao-content/tests/test-shortcodes.php`.
+- In-process suite(s) to add:
+  - `conexao-data-model/tests/test-content-type-registration.php` — read-only, inspects existing WordPress registration and configuration, creates no posts or terms.
+  - `conexao-content/tests/test-shortcodes.php` — creates temporary local test posts and terms, uses only fixtures owned by the test, cleans up everything it creates.
+- Test isolation strategy: each suite creates its own fixtures with unique slugs, tracks every created post and term ID, deletes posts before terms, and verifies no fixture remains after cleanup.
 - Acceptance area / matrix rows: none.
 - Script contract impact: none.
 - Registry drift check: not applicable (`plugins.json` unchanged).
