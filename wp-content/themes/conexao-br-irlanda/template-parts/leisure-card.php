@@ -112,20 +112,20 @@ if ( $leisure_has_image ) :
 
 	<?php if ( $leisure_show_attribution ) : ?>
 	<div class="leisure-card-attribution">
-	<?php
-	$display_attr = $leisure_attribution;
-	if ( ! $display_attr && $leisure_author && $leisure_license ) {
-	$display_attr = sprintf( 'Foto: %s, %s, %s', $leisure_author, $leisure_license, $leisure_source_label ? $leisure_source_label : 'Wikimedia Commons' );
-	} elseif ( ! $display_attr && $leisure_author ) {
-	$display_attr = 'Foto: ' . $leisure_author;
-	}
-	echo esc_html( $display_attr );
-	?>
-	<?php if ( $leisure_src_url ) : ?>
-	<a href="<?php echo esc_url( $leisure_src_url ); ?>" class="leisure-card-attribution-link" target="_blank" rel="noopener noreferrer" aria-label="<?php esc_attr_e( 'Ver fonte da imagem', 'conexao-br-irlanda' ); ?>">
-	↗
-	</a>
-	<?php endif; ?>
+		<?php
+		$display_attr = $leisure_attribution;
+		if ( ! $display_attr && $leisure_author && $leisure_license ) {
+			$display_attr = sprintf( 'Foto: %s, %s, %s', $leisure_author, $leisure_license, $leisure_source_label ? $leisure_source_label : 'Wikimedia Commons' );
+		} elseif ( ! $display_attr && $leisure_author ) {
+			$display_attr = 'Foto: ' . $leisure_author;
+		}
+		echo esc_html( $display_attr );
+		?>
+		<?php if ( $leisure_src_url ) : ?>
+			<a href="<?php echo esc_url( $leisure_src_url ); ?>" class="leisure-card-attribution-link" target="_blank" rel="noopener noreferrer" aria-label="<?php esc_attr_e( 'Ver fonte da imagem', 'conexao-br-irlanda' ); ?>">
+				↗
+			</a>
+		<?php endif; ?>
 	</div>
 	<?php endif; ?>
 	</div>
@@ -192,15 +192,15 @@ $leisure_card_attr_priority = array(
 	'pet-friendly',
 );
 $leisure_card_attrs = array();
-foreach ( $leisure_card_attr_priority as $priority_slug ) {
-	if ( isset( $leisure_attr_names[ $priority_slug ] ) ) {
-		$leisure_card_attrs[ $priority_slug ] = $leisure_attr_names[ $priority_slug ];
+	foreach ( $leisure_card_attr_priority as $priority_slug ) {
+		if ( isset( $leisure_attr_names[ $priority_slug ] ) ) {
+			$leisure_card_attrs[ $priority_slug ] = $leisure_attr_names[ $priority_slug ];
+		}
+		if ( count( $leisure_card_attrs ) >= 4 ) {
+			break;
+		}
 	}
-	if ( count( $leisure_card_attrs ) >= 4 ) {
-		break;
-	}
-}
-?>
+	?>
 <?php if ( ! empty( $leisure_card_attrs ) ) : ?>
 <ul class="leisure-card-attrs">
 <?php foreach ( $leisure_card_attrs as $attr_name ) : ?>

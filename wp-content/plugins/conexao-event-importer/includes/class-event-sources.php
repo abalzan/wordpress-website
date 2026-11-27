@@ -468,15 +468,62 @@ class Conexao_Event_Sources {
 			'conexao-event-sources',
 			array( $this, 'render_sources_page' )
 		);
+	}
 
-		add_submenu_page(
-			'conexao-event-import',
-			__( 'Import History', 'conexao-event-importer' ),
-			__( 'Import History', 'conexao-event-importer' ),
-			'manage_options',
-			'conexao-import-history',
-			array( $this, 'render_history_page' )
-		);
+	/**
+	 * The URL an administrator visiting the RETIRED Import History URL should
+	 * be sent to, or '' when the request must not be redirected.
+	 *
+	 * The Import History screen is part of the dashboard since v1.10.0, so the
+	 * old `conexao-import-history` slug is no longer registered as a page — no
+	 * submenu, no callback, no hidden page. A bookmarked admin URL therefore
+	 * dies with WordPress's standard "you are not allowed to access this page"
+	 * refusal, which this redirect turns into a friendly hop to the one screen
+	 * that now owns the history.
+	 *
+	 * Deliberately a pure decision — capability + requested page slug → URL or
+	 * `''`, no output, no exit — so the regression suite can prove both
+	 * directions without having to fake an `exit`.
+	 *
+	 * @return string
+	 */
+	public function retired_history_redirect_url() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only routing for a GET that changes nothing.
+		$page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
+
+		if ( 'conexao-import-history' !== $page ) {
+			return '';
+		}
+
+		// Only the operator who could have read the old screen is redirected;
+		// anyone else keeps WordPress's own refusal.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return '';
+		}
+
+		return admin_url( 'admin.php?page=conexao-event-import' );
+	}
+
+	/**
+	 * Redirect the retired Import History URL to the dashboard.
+	 *
+	 * `wp-admin/admin.php` requires `menu.php` BEFORE `admin_init`, and
+	 * `menu.php` fires `admin_page_access_denied` immediately before it refuses
+	 * an unregistered admin page. That makes this hook the one lifecycle point
+	 * that runs for a retired `page=` slug, and `admin_init` too late to be
+	 * usable here.
+	 *
+	 * @return void
+	 */
+	public function maybe_redirect_retired_history_page() {
+		$target = $this->retired_history_redirect_url();
+
+		if ( '' === $target ) {
+			return;
+		}
+
+		wp_safe_redirect( $target );
+		exit;
 	}
 
 	/**
@@ -527,6 +574,8 @@ class Conexao_Event_Sources {
 
 			<?php $this->render_bulk_actions_controls( $sources ); ?>
 
+			<?php $this->render_continuation_diagnostics(); ?>
+
 			<?php $this->render_sources_table( $sources ); ?>
 			<script>
 			(function() {
@@ -561,6 +610,18 @@ class Conexao_Event_Sources {
 	}
 
 	/**
+	 * Render the read-only "Needs review" page (Stage 4).
+	 *
+	 * A read-only view over published event posts missing defined critical
+	 * fields. It never modifies a post, postmeta, taxonomy assignment, status
+	 * or source configuration. Capability-gated (`manage_options`), nonce-
+	 * protected where a nonce applies (this view is read-only GET, so no
+	 * nonce is required for the read itself; any future action would add
+	 * one), and all output is escaped.
+	 */
+
+
+	/**
 	 * Handle saving a source from the admin form.
 	 */
 	protected function handle_save_source() {
@@ -590,8 +651,10 @@ class Conexao_Event_Sources {
 			'url'    => $url,
 			'type'   => $source_type,
 			'status' => isset( $_POST['source_status'] ) ? 'active' : 'inactive',
-			// Taxonomy hints.
-			'county'           => isset( $_POST['source_county'] ) ? sanitize_text_field( wp_unslash( $_POST['source_county'] ) ) : '',
+			// Taxonomy hints. The county is validated against the ONE approved
+			// county list (LAYER 2): a free-text or numeric value can never be
+			// stored as a source county, so it can never be stamped onto events.
+			'county'           => self::sanitize_source_county( isset( $_POST['source_county'] ) ? wp_unslash( $_POST['source_county'] ) : '' ),
 			'category'         => isset( $_POST['source_category'] ) ? sanitize_text_field( wp_unslash( $_POST['source_category'] ) ) : '',
 		);
 
@@ -729,7 +792,10 @@ class Conexao_Event_Sources {
 		if ( 'failed' === $status ) {
 			$notice_type = 'error';
 			$title       = __( 'Import could not be completed', 'conexao-event-importer' );
-		} elseif ( 'partial' === $status ) {
+		} elseif ( 'rate_limited' === $status ) {
+			$notice_type = 'warning';
+			$title       = __( 'Import deferred by rate limiting', 'conexao-event-importer' );
+		} elseif ( in_array( $status, array( 'partial', 'completed_with_errors' ), true ) ) {
 			$notice_type = 'warning';
 			$title       = __( 'Import completed with errors', 'conexao-event-importer' );
 		} elseif ( 'warning' === $status ) {
@@ -778,6 +844,14 @@ class Conexao_Event_Sources {
 		if ( $failed > 0 ) {
 			$summary_parts[] = sprintf( /* translators: %d: count */ __( '%d failed', 'conexao-event-importer' ), $failed );
 		}
+		$source_skipped = isset( $result['source_skipped_count'] ) ? (int) $result['source_skipped_count'] : ( ! empty( $result['source_skipped'] ) ? 1 : 0 );
+		if ( $source_skipped > 0 ) {
+			$summary_parts[] = sprintf( /* translators: %d: source count */ __( '%d source(s) skipped/deferred', 'conexao-event-importer' ), $source_skipped );
+		}
+		$failed_source_count = isset( $result['total_failed_source_count'] ) ? (int) $result['total_failed_source_count'] : 0;
+		if ( $failed_source_count > 0 ) {
+			$summary_parts[] = sprintf( /* translators: %d: source count */ __( '%d source(s) failed', 'conexao-event-importer' ), $failed_source_count );
+		}
 		if ( empty( $summary_parts ) ) {
 			$summary_parts[] = __( 'No events found', 'conexao-event-importer' );
 		}
@@ -802,7 +876,7 @@ class Conexao_Event_Sources {
 			</p>
 			<p><?php echo esc_html( implode( ', ', $summary_parts ) ); ?></p>
 
-			<?php if ( 'failed' === $status && ! empty( $fatal_errors ) ) : ?>
+			<?php if ( in_array( $status, array( 'failed', 'rate_limited' ), true ) && ! empty( $fatal_errors ) ) : ?>
 				<p>
 					<?php foreach ( $fatal_errors as $fe ) : ?>
 						<strong><?php echo esc_html( $fe['message'] ); ?></strong>
@@ -856,8 +930,8 @@ class Conexao_Event_Sources {
 			<?php endif; ?>
 
 			<p style="margin-top:10px;">
-				<a class="button button-secondary" href="<?php echo esc_url( admin_url( 'admin.php?page=conexao-import-log' ) ); ?>">
-					<?php esc_html_e( 'View / Download Import Logs', 'conexao-event-importer' ); ?>
+				<a class="button button-secondary" href="<?php echo esc_url( admin_url( 'admin.php?page=conexao-event-import' ) ); ?>">
+					<?php esc_html_e( 'View Import History & Logs', 'conexao-event-importer' ); ?>
 				</a>
 			</p>
 		</div>
@@ -1024,20 +1098,18 @@ class Conexao_Event_Sources {
 
 		$target_status = ( 'enable' === $result['action'] ) ? 'active' : 'inactive';
 
+		$deleted_sources = array();
+		$changed         = false;
+
 		foreach ( $valid_ids as $source_id ) {
 			$source = $sources[ $source_id ];
 
 			if ( 'delete' === $result['action'] ) {
-				if ( $this->delete( $source_id ) ) {
-					Conexao_Import_Log::add(
-						$source_id,
-						'info',
-						sprintf( 'Event Source "%s" was bulk-deleted by %s.', $source['name'], wp_get_current_user()->user_login )
-					);
-					$result['updated'][] = $source_id;
-				} else {
-					$result['failed'][] = $source_id;
-				}
+				// Keep enough information to generate the deletion log message
+				// after the registry has been successfully persisted.
+				$deleted_sources[ $source_id ] = $source;
+				unset( $sources[ $source_id ] );
+				$changed = true;
 				continue;
 			}
 
@@ -1048,15 +1120,81 @@ class Conexao_Event_Sources {
 				continue;
 			}
 
-			// Explicitly set the requested status. Never toggle.
-			if ( $this->set_status( $source_id, $target_status ) ) {
-				$result['updated'][] = $source_id;
-			} else {
+			// Explicitly set the requested status. Never toggle. Preserve all
+			// other source metadata — only the status field changes.
+			$sources[ $source_id ]['status'] = $target_status;
+			$changed                         = true;
+		}
+
+		if ( ! $changed ) {
+			// No-op batch: nothing to persist, nothing to report as updated.
+			return $result;
+		}
+
+		// Persist the entire resulting registry in a single update_option()
+		// call. No per-source save(), set_status() or delete() inside the loop.
+		if ( ! $this->persist_sources( $sources ) ) {
+			// The write could not be verified as persisted: report every
+			// affected ID as failed and write no successful deletion logs.
+			foreach ( $valid_ids as $source_id ) {
 				$result['failed'][] = $source_id;
+			}
+			return $result;
+		}
+
+		// Persistence succeeded: report the changes now.
+		if ( 'delete' === $result['action'] ) {
+			foreach ( $deleted_sources as $source_id => $source ) {
+				Conexao_Import_Log::add(
+					$source_id,
+					'info',
+					sprintf( 'Event Source "%s" was bulk-deleted by %s.', $source['name'], wp_get_current_user()->user_login )
+				);
+				$result['updated'][] = $source_id;
+			}
+		} else {
+			foreach ( $valid_ids as $source_id ) {
+				if ( $target_status === $sources[ $source_id ]['status'] && ! in_array( $source_id, $result['skipped'], true ) ) {
+					$result['updated'][] = $source_id;
+				}
 			}
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Persist the complete source registry in a single update_option() call.
+	 *
+	 * Used by apply_bulk_action() so a bulk operation writes the option at
+	 * most once per batch instead of once per selected source.
+	 *
+	 * update_option() returns false both when the write genuinely fails and
+	 * when the stored value is already identical. Since this method is only
+	 * called when actual changes are planned, a false return is ambiguous: a
+	 * read-back verification distinguishes a failed write from a value that
+	 * happens to match what is already stored.
+	 *
+	 * @param array $sources Complete source registry to persist.
+	 * @return bool True when the registry was persisted (or already matches),
+	 *              false when the write could not be verified.
+	 */
+	protected function persist_sources( array $sources ) {
+		$written = update_option( self::OPTION_KEY, $sources, false );
+
+		if ( false !== $written ) {
+			return true;
+		}
+
+		// update_option() returns false when the value is unchanged as well as
+		// on a genuine failure. Since changes were planned, read back the
+		// stored value to confirm it matches what we intended to write.
+		$stored = get_option( self::OPTION_KEY, null );
+		if ( is_array( $stored ) && $stored === $sources ) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -1275,7 +1413,26 @@ class Conexao_Event_Sources {
 					<th><?php esc_html_e( 'Type', 'conexao-event-importer' ); ?></th>
 					<th><?php esc_html_e( 'Status', 'conexao-event-importer' ); ?></th>
 					<th><?php esc_html_e( 'Last Import', 'conexao-event-importer' ); ?></th>
-					<th><?php esc_html_e( 'Events Imported', 'conexao-event-importer' ); ?></th>
+					<th>
+						<?php
+						/*
+						 * Stage 3 (P12): the stored value is `created` from the
+						 * most recent run — a per-run creation count, NOT a
+						 * cumulative total. The old header said "Events Imported",
+						 * which reads as cumulative and therefore overstated a
+						 * source that imported 3 events last night as having
+						 * imported 3 events ever.
+						 *
+						 * Relabelled rather than redefined: the value, its
+						 * storage and every existing reader are unchanged, and
+						 * no historical value is reset. The per-run created,
+						 * updated and skipped counters stay distinct in Import
+						 * History.
+						 */
+						esc_html_e( 'Created (last run)', 'conexao-event-importer' );
+						?>
+						<span class="conexao-help" title="<?php echo esc_attr__( 'Events created by this source during its most recent run only. This is not a cumulative total.', 'conexao-event-importer' ); ?>">?</span>
+					</th>
 					<th><?php esc_html_e( 'Actions', 'conexao-event-importer' ); ?></th>
 				</tr>
 			</thead>
@@ -1312,7 +1469,21 @@ class Conexao_Event_Sources {
 						<td>
 							<?php if ( ! empty( $source['last_import'] ) ) : ?>
 								<?php echo esc_html( $source['last_import'] ); ?>
-								<?php if ( 'error' === $source['last_import_status'] && ! empty( $source['last_error'] ) ) : ?>
+								<?php if ( isset( $source['last_import_status'] ) && '' !== (string) $source['last_import_status'] ) : ?>
+									<br>
+									<span class="conexao-status-badge conexao-status-badge--<?php echo esc_attr( sanitize_html_class( (string) $source['last_import_status'] ) ); ?>">
+										<?php
+										/*
+										 * Stage 3 (P12): the status word is shown for
+										 * every outcome, not only for failures. A
+										 * rate-limited or incomplete run used to read
+										 * as a clean success here.
+										 */
+										echo esc_html( self::last_import_status_label( $source['last_import_status'] ) );
+										?>
+									</span>
+								<?php endif; ?>
+								<?php if ( ! empty( $source['last_error'] ) && in_array( (string) $source['last_import_status'], array( 'error', 'partial', 'rate_limited' ), true ) ) : ?>
 									<br><span class="conexao-source-error"><?php echo esc_html( $source['last_error'] ); ?></span>
 								<?php endif; ?>
 							<?php else : ?>
@@ -1360,6 +1531,31 @@ class Conexao_Event_Sources {
 		}
 		return $url;
 	}
+
+	/**
+	 * Validate a source county hint against the approved county master list.
+	 *
+	 * Returns the canonical county NAME (what the importer stamps on events) or
+	 * '' when the value is empty or not one of the 26 approved counties. A
+	 * numeric id, "Belfast", "Antrim" or any free text is therefore never
+	 * persisted as a source county.
+	 *
+	 * @param mixed $value Raw submitted value.
+	 * @return string Canonical county name, or ''.
+	 */
+	protected static function sanitize_source_county( $value ) {
+		if ( ! class_exists( 'Conexao_Data_Model_Counties' ) ) {
+			return '';
+		}
+
+		$value = is_scalar( $value ) ? sanitize_text_field( (string) $value ) : '';
+		if ( '' === $value ) {
+			return '';
+		}
+
+		return Conexao_Data_Model_Counties::canonical_name( $value );
+	}
+
 
 	/**
 	 * Truncate a URL for display.
@@ -1507,7 +1703,150 @@ class Conexao_Event_Sources {
 	}
 
 	/**
+	 * Operator-facing label for a source registry `last_import_status`.
+	 *
+	 * The registry stores a status word that now distinguishes outcomes
+	 * (Stage 3 / P12). Older records can only hold `success` or `error`, so
+	 * every legacy value still resolves.
+	 *
+	 * @param string $status Stored status.
+	 * @return string Translated label.
+	 */
+	public static function last_import_status_label( $status ) {
+		$status = strtolower( trim( (string) $status ) );
+
+		$labels = array(
+			''             => __( 'not run yet', 'conexao-event-importer' ),
+			'success'      => __( 'success', 'conexao-event-importer' ),
+			'warning'      => __( 'completed with warnings', 'conexao-event-importer' ),
+			'partial'      => __( 'incomplete', 'conexao-event-importer' ),
+			'rate_limited' => __( 'rate limited — incomplete', 'conexao-event-importer' ),
+			'error'        => __( 'failed', 'conexao-event-importer' ),
+		);
+
+		return isset( $labels[ $status ] ) ? $labels[ $status ] : $status;
+	}
+
+	/**
+	 * Operator-facing label for an Import History status word.
+	 *
+	 * ## Mapping to Stage 1's vocabulary (Stage 3 / P12)
+	 *
+	 * The stored status is unchanged; this only renders it in words that
+	 * distinguish the outcomes an operator must act on:
+	 *
+	 * | Stored          | Shown                        | Means                                        |
+	 * |-----------------|------------------------------|----------------------------------------------|
+	 * | completed       | completed                    | parent: every child produced a result        |
+	 * | completed_with_errors | completed with errors  | parent: at least one child warned            |
+	 * | success         | success                      | child: enumerated and imported cleanly        |
+	 * | warning         | completed with warnings      | child: finished, non-fatal caveat             |
+	 * | partial         | incomplete or partial        | child: did NOT finish, or some events failed  |
+	 * | rate_limited    | rate limited — incomplete    | the P1 breaker stopped planned work           |
+	 * | failed / error  | failed                       | fatal error                                   |
+	 * | queued          | queued                       | scheduled, not started                        |
+	 * | running         | running                      | in progress                                   |
+	 *
+	 * @param string $status Stored status.
+	 * @return string Translated label.
+	 */
+	public static function history_status_label( $status ) {
+		$status = strtolower( trim( (string) $status ) );
+
+		$labels = array(
+			'completed'             => __( 'completed', 'conexao-event-importer' ),
+			'completed_with_errors' => __( 'completed with errors', 'conexao-event-importer' ),
+			'success'               => __( 'success', 'conexao-event-importer' ),
+			'warning'               => __( 'completed with warnings', 'conexao-event-importer' ),
+			'partial'               => __( 'incomplete or partial', 'conexao-event-importer' ),
+			'rate_limited'          => __( 'rate limited — incomplete', 'conexao-event-importer' ),
+			'failed'                => __( 'failed', 'conexao-event-importer' ),
+			'error'                 => __( 'failed', 'conexao-event-importer' ),
+			'queued'                => __( 'queued', 'conexao-event-importer' ),
+			'running'               => __( 'running', 'conexao-event-importer' ),
+		);
+
+		return isset( $labels[ $status ] ) ? $labels[ $status ] : $status;
+	}
+
+	/**
+	 * The separate diagnostic line shown under an Import History status.
+	 *
+	 * Returns the enumerated stop condition when the row recorded one, and the
+	 * row's own message when the status alone would leave the operator guessing.
+	 * Empty when the status is self-explanatory.
+	 *
+	 * @param array $entry One Import History row.
+	 * @return string Plain text; the caller escapes it.
+	 */
+	public static function history_status_reason( array $entry ) {
+		$status = strtolower( trim( (string) ( isset( $entry['status'] ) ? $entry['status'] : '' ) ) );
+
+		$reasons = array(
+			'time_budget'            => __( 'time budget exhausted', 'conexao-event-importer' ),
+			'page_cap'               => __( 'page cap reached', 'conexao-event-importer' ),
+			'budget_exhausted'       => __( 'request budget exhausted', 'conexao-event-importer' ),
+			'rate_limited'           => __( 'rate-limit cooldown', 'conexao-event-importer' ),
+			'rate_limited_deferred'  => __( 'rate-limit cooldown deferred (Retry-After)', 'conexao-event-importer' ),
+			'fetch_failed'           => __( 'upstream fetch failure', 'conexao-event-importer' ),
+			'parse_failed'           => __( 'parsing failure', 'conexao-event-importer' ),
+			'incomplete_enumeration' => __( 'enumeration incomplete', 'conexao-event-importer' ),
+			'checkpoint_resume'      => __( 'resumed from checkpoint', 'conexao-event-importer' ),
+		);
+
+		$code = isset( $entry['incomplete_reason'] ) ? (string) $entry['incomplete_reason'] : '';
+
+		if ( '' !== $code && isset( $reasons[ $code ] ) ) {
+			return $reasons[ $code ];
+		}
+
+		if ( '' !== $code ) {
+			return $code;
+		}
+
+		// A rate-limited row always explains itself, even a pre-Stage-3 one.
+		if ( 'rate_limited' === $status ) {
+			return __( 'rate-limit cooldown', 'conexao-event-importer' );
+		}
+
+		if ( in_array( $status, array( 'partial', 'failed', 'error' ), true ) && ! empty( $entry['message'] ) ) {
+			return (string) $entry['message'];
+		}
+
+		return '';
+	}
+
+	/**
+	 * Whether a stored `last_import_status` represents a completed, clean run.
+	 *
+	 * Used by the dashboard's "Last successful import" figure: a rate-limited,
+	 * incomplete or failed run must not be presented as the last successful one.
+	 * Legacy values (`success`, `error`, empty) keep their old meaning.
+	 *
+	 * @param string $status Stored status.
+	 * @return bool
+	 */
+	public static function is_last_import_successful( $status ) {
+		$status = strtolower( trim( (string) $status ) );
+		return ! in_array( $status, array( 'error', 'partial', 'rate_limited', 'failed' ), true );
+	}
+
+	/**
 	 * Render the import dashboard page.
+	 *
+	 * The dashboard is deliberately about RUNNING and REVIEWING imports: the
+	 * last successful import, the full-import trigger, the export link and the
+	 * complete Import History with its per-run Logs. It shows NO source
+	 * overview — no source names, no active/inactive indicators and no
+	 * per-source error text. Source configuration and status live on the
+	 * dedicated Event Sources screen (`render_sources_page()`), which is the
+	 * one place an operator manages them; repeating a read-only copy here only
+	 * gave two places to read the same state and implied the dashboard could
+	 * act on it.
+	 *
+	 * `$sources` is still read, and still read through `get_all()`, because the
+	 * Import Summary's "Last successful import" is derived from it. Removing
+	 * the source list must not remove that calculation.
 	 */
 	public function render_import_dashboard() {
 		if ( ! current_user_can( 'manage_options' ) ) {
@@ -1531,7 +1870,7 @@ class Conexao_Event_Sources {
 						<?php
 						$last_success = '';
 						foreach ( $sources as $source ) {
-							if ( ! empty( $source['last_import'] ) && 'error' !== $source['last_import_status'] ) {
+							if ( ! empty( $source['last_import'] ) && self::is_last_import_successful( $source['last_import_status'] ) ) {
 								$last_success = $source['last_import'];
 								break;
 							}
@@ -1541,21 +1880,6 @@ class Conexao_Event_Sources {
 					</span>
 				</div>
 			</div>
-
-			<h2><?php esc_html_e( 'Sources', 'conexao-event-importer' ); ?></h2>
-			<ul class="conexao-source-list">
-				<?php foreach ( $sources as $source ) : ?>
-					<li>
-						<span class="conexao-source-indicator <?php echo 'active' === $source['status'] ? 'conexao-source-indicator--active' : 'conexao-source-indicator--inactive'; ?>">
-							<?php echo 'active' === $source['status'] ? '&#10003;' : '&#10007;'; ?>
-						</span>
-						<?php echo esc_html( $source['name'] ); ?>
-						<?php if ( 'error' === $source['last_import_status'] && ! empty( $source['last_error'] ) ) : ?>
-							<span class="conexao-source-error">(<?php echo esc_html( $source['last_error'] ); ?>)</span>
-						<?php endif; ?>
-					</li>
-				<?php endforeach; ?>
-			</ul>
 
 			<h2><?php esc_html_e( 'Run Import', 'conexao-event-importer' ); ?></h2>
 			<form method="post" data-conexao-import-form>
@@ -1571,89 +1895,50 @@ class Conexao_Event_Sources {
 				</a>
 			</p>
 
-			<?php $this->render_history_summary(); ?>
+			<?php $this->render_history_table( Conexao_Import_History::get_all() ); ?>
 		</div>
 		<?php
 	}
 
 	/**
-	 * Render a compact history summary on the dashboard.
+	 * Render the complete Import History table.
+	 *
+	 * This is the ONE renderer for import history, and the dashboard is the
+	 * one screen that shows it. The table is the 13-column one the retired
+	 * `conexao-import-history` page used to render — same columns, same cells,
+	 * same fallbacks for records written before the optional fields existed —
+	 * over the FULL retained history, never a 10-row slice of it. The cap that
+	 * bounds it lives in Conexao_Import_History::MAX_ENTRIES (100), applied
+	 * when a run is recorded, not when this page is rendered.
+	 *
+	 * The 14th column, **Logs**, is the run-level view of the diagnostic log:
+	 * each row opens the entries whose `run_id` equals that row's `run_id`, and
+	 * nothing else. It is the reason the separate Import Logs screen was retired
+	 * — an operator can now trace an error to the run that produced it without
+	 * leaving the history table.
+	 *
+	 * Public so the regression suite can drive the REAL renderer (including
+	 * records that predate `unchanged`, `skipped`, `complete`, `checkpoint`
+	 * and `cooldown`) instead of a copy of its logic — the same reason
+	 * history_progress_text() is public.
+	 *
+	 * @param array $history History entries, newest first.
+	 * @return void
 	 */
-	protected function render_history_summary() {
-		$history = Conexao_Import_History::get_all();
-		if ( empty( $history ) ) {
-			echo '<p>' . esc_html__( 'No imports yet.', 'conexao-event-importer' ) . '</p>';
-			return;
-		}
+	public function render_history_table( array $history ) {
+		$logs_index = $this->build_log_index();
 		?>
 		<h2><?php esc_html_e( 'Import History', 'conexao-event-importer' ); ?></h2>
-		<table class="widefat striped">
-			<thead>
-				<tr>
-					<th><?php esc_html_e( 'Time', 'conexao-event-importer' ); ?></th>
-					<th><?php esc_html_e( 'Source', 'conexao-event-importer' ); ?></th>
-					<th><?php esc_html_e( 'Found', 'conexao-event-importer' ); ?></th>
-					<th><?php esc_html_e( 'New', 'conexao-event-importer' ); ?></th>
-					<th><?php esc_html_e( 'Updated', 'conexao-event-importer' ); ?></th>
-					<th><?php esc_html_e( 'Unchanged', 'conexao-event-importer' ); ?></th>
-					<th><?php esc_html_e( 'Duplicates', 'conexao-event-importer' ); ?></th>
-					<th><?php esc_html_e( 'Skipped', 'conexao-event-importer' ); ?></th>
-					<th><?php esc_html_e( 'Errors', 'conexao-event-importer' ); ?></th>
-					<th><?php esc_html_e( 'Status', 'conexao-event-importer' ); ?></th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php foreach ( array_slice( $history, 0, 10 ) as $entry ) : ?>
-					<tr>
-						<td><?php echo esc_html( $entry['time'] ); ?></td>
-						<td><?php echo esc_html( $entry['source'] ); ?></td>
-						<td><?php echo esc_html( $entry['found'] ); ?></td>
-						<td><?php echo esc_html( $entry['new'] ); ?></td>
-						<td><?php echo esc_html( $entry['updated'] ); ?></td>
-						<td><?php echo esc_html( isset( $entry['unchanged'] ) ? $entry['unchanged'] : 0 ); ?></td>
-						<td><?php echo esc_html( $entry['duplicates'] ); ?></td>
-						<td><?php echo esc_html( isset( $entry['skipped'] ) ? $entry['skipped'] : 0 ); ?></td>
-						<td><?php echo esc_html( $entry['errors'] ); ?></td>
-						<td>
-							<span class="conexao-status-badge conexao-status-badge--<?php echo esc_attr( $entry['status'] ); ?>">
-								<?php echo esc_html( $entry['status'] ); ?>
-							</span>
-						</td>
-					</tr>
-				<?php endforeach; ?>
-			</tbody>
-		</table>
-		<?php
-	}
-
-	/**
-	 * Render the history page.
-	 */
-	public function render_history_page() {
-		if ( ! current_user_can( 'manage_options' ) ) {
-			return;
-		}
-		$history = Conexao_Import_History::get_all();
-		?>
-		<div class="wrap">
-			<h1><?php esc_html_e( 'Import History', 'conexao-event-importer' ); ?></h1>
-			<p class="description">
-				<?php
-				$logs_url = admin_url( 'admin.php?page=conexao-import-log' );
-				printf(
-					/* translators: %s: URL to the Import Logs page */
-					wp_kses(
-						__( 'For detailed import logs (including failures and API errors), see the <a href="%s">Import Logs</a> page.', 'conexao-event-importer' ),
-						array( 'a' => array( 'href' => array() ) )
-					),
-					esc_url( $logs_url )
-				);
-				?>
-			</p>
-			<?php if ( empty( $history ) ) : ?>
-				<p><?php esc_html_e( 'No imports yet.', 'conexao-event-importer' ); ?></p>
-			<?php else : ?>
-				<table class="widefat striped">
+		<p class="description">
+			<?php esc_html_e( 'Each run row opens the log entries recorded for that exact import. Use the log actions to download the full log or clear it.', 'conexao-event-importer' ); ?>
+		</p>
+		<?php $this->render_log_store_actions(); ?>
+		<?php $this->render_retention_state(); ?>
+		<?php if ( empty( $history ) ) : ?>
+			<p><?php esc_html_e( 'No imports yet.', 'conexao-event-importer' ); ?></p>
+		<?php else : ?>
+			<div class="conexao-import-history-scroll">
+				<table class="widefat striped conexao-import-history">
 					<thead>
 						<tr>
 							<th><?php esc_html_e( 'Time', 'conexao-event-importer' ); ?></th>
@@ -1663,12 +1948,13 @@ class Conexao_Event_Sources {
 							<th><?php esc_html_e( 'Updated', 'conexao-event-importer' ); ?></th>
 							<th><?php esc_html_e( 'Unchanged', 'conexao-event-importer' ); ?></th>
 							<th><?php esc_html_e( 'Duplicates', 'conexao-event-importer' ); ?></th>
-							<th><?php esc_html_e( 'Skipped', 'conexao-event-importer' ); ?></th>
+								<th><?php esc_html_e( 'Skipped', 'conexao-event-importer' ); ?></th>
 							<th><?php esc_html_e( 'Errors', 'conexao-event-importer' ); ?></th>
 							<th><?php esc_html_e( 'Status', 'conexao-event-importer' ); ?></th>
 							<th><?php esc_html_e( 'Listing', 'conexao-event-importer' ); ?></th>
 							<th><?php esc_html_e( 'Progress', 'conexao-event-importer' ); ?></th>
 							<th><?php esc_html_e( 'Cooldown', 'conexao-event-importer' ); ?></th>
+							<th><?php esc_html_e( 'Logs', 'conexao-event-importer' ); ?></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -1681,12 +1967,28 @@ class Conexao_Event_Sources {
 								<td><?php echo esc_html( $entry['updated'] ); ?></td>
 								<td><?php echo esc_html( isset( $entry['unchanged'] ) ? $entry['unchanged'] : 0 ); ?></td>
 								<td><?php echo esc_html( $entry['duplicates'] ); ?></td>
-								<td><?php echo esc_html( isset( $entry['skipped'] ) ? $entry['skipped'] : 0 ); ?></td>
+								<td>
+									<?php echo esc_html( isset( $entry['skipped'] ) ? $entry['skipped'] : 0 ); ?>
+									<?php if ( isset( $entry['source_skipped_count'] ) && (int) $entry['source_skipped_count'] > 0 ) : ?>
+										<br><small><?php echo esc_html( sprintf( __( '%d source(s) skipped/deferred', 'conexao-event-importer' ), (int) $entry['source_skipped_count'] ) ); ?></small>
+									<?php endif; ?>
+								</td>
 								<td><?php echo esc_html( $entry['errors'] ); ?></td>
 								<td>
 									<span class="conexao-status-badge conexao-status-badge--<?php echo esc_attr( $entry['status'] ); ?>">
-										<?php echo esc_html( $entry['status'] ); ?>
+										<?php echo esc_html( self::history_status_label( $entry['status'] ) ); ?>
 									</span>
+									<?php
+									/*
+									 * Stage 3 (P12): the reason a run did not
+									 * simply succeed travels with the status, so
+									 * "incomplete" never has to be guessed at.
+									 */
+									$entry_reason = self::history_status_reason( $entry );
+									if ( '' !== $entry_reason ) :
+										?>
+										<br><small class="conexao-history-status-reason"><?php echo esc_html( $entry_reason ); ?></small>
+									<?php endif; ?>
 								</td>
 								<td>
 									<?php
@@ -1733,12 +2035,15 @@ class Conexao_Event_Sources {
 									echo esc_html( $text );
 									?>
 								</td>
+								<td class="conexao-history-logs-cell">
+									<?php $this->render_history_logs_cell( $entry, $logs_index ); ?>
+								</td>
 							</tr>
 						<?php endforeach; ?>
 					</tbody>
 				</table>
-			<?php endif; ?>
-		</div>
+			</div>
+		<?php endif; ?>
 		<?php
 	}
 
@@ -1818,6 +2123,27 @@ class Conexao_Event_Sources {
 		$remain = (int) $cont['seconds_remaining'];
 
 		if ( 'running' === $phase ) {
+			/*
+			 * Stage 3 (P12): "a worker is running it now" must not be claimed
+			 * for a record that has not progressed for longer than the lock TTL.
+			 * The classifier is read-only; it reports, it does not recover.
+			 */
+			$diagnosis = Conexao_Import_Continuation::classify(
+				Conexao_Import_Continuation::get( $source )
+			);
+
+			if ( 'running_stale' === $diagnosis['class'] ) {
+				return $text . ' — ' . sprintf(
+					/* translators: %d: seconds since the last recorded progress */
+					__( 'NOT progressing — suspected abandoned (no progress for %ds); press Run to resume', 'conexao-event-importer' ),
+					(int) $diagnosis['age']
+				);
+			}
+
+			if ( 'running_indeterminate' === $diagnosis['class'] ) {
+				return $text . ' — ' . __( 'running, but no progress timestamp is recorded: needs inspection', 'conexao-event-importer' );
+			}
+
 			return $text . ' — ' . __( 'resuming — a worker is running it now', 'conexao-event-importer' );
 		}
 
@@ -1844,5 +2170,483 @@ class Conexao_Event_Sources {
 		}
 
 		return $text . ' — ' . __( 'NOT scheduled — no continuation exists', 'conexao-event-importer' );
+	}
+
+	/**
+	 * Build the run-ID → log-entries index used by the Logs column.
+	 *
+	 * One read of the log store per render, not one per history row: the table
+	 * can show 100 rows while the store retains 2,000 entries, so a per-row
+	 * get_for_run() would rescan the whole store 100 times. The index is built
+	 * once here and each row reads its own group out of it.
+	 *
+	 * @return array<string, array[]> Run ID => entries, newest first.
+	 */
+	protected function build_log_index() {
+		if ( ! class_exists( 'Conexao_Import_Log' ) ) {
+			return array();
+		}
+
+		return Conexao_Import_Log::index_entries_by_run( Conexao_Import_Log::get_all() );
+	}
+
+	/**
+	 * Render the read-only continuation diagnostics on the Event Sources screen.
+	 *
+	 * Stage 3 (P12). Operational detail belongs here (per-source health) and in
+	 * Import History (per-run), not on the main Import dashboard — this does not
+	 * add a sources overview to that dashboard.
+	 *
+	 * READ-ONLY: it renders state and never resets, retries, deletes or
+	 * reschedules a continuation. A stale record is reported for an operator to
+	 * inspect, which is deliberate: automatic recovery is not authorised.
+	 *
+	 * @return void
+	 */
+	protected function render_continuation_diagnostics() {
+		if ( ! class_exists( 'Conexao_Import_Continuation' ) ) {
+			return;
+		}
+
+		$rows   = Conexao_Import_Continuation::get_diagnostics();
+		$counts = Conexao_Import_Continuation::get_diagnostic_counts();
+
+		if ( empty( $rows ) ) {
+			return;
+		}
+
+		// Always show the records an operator must act on; bound the healthy
+		// ones so a large registry cannot dominate the page.
+		$must_show = array( 'running_stale', 'running_indeterminate', 'failed', 'exhausted' );
+		$limit     = 25;
+
+		$shown  = array();
+		$hidden = 0;
+		foreach ( $rows as $row ) {
+			if ( in_array( (string) $row['class'], $must_show, true ) || count( $shown ) < $limit ) {
+				$shown[ $row['source_id'] ] = $row;
+			} else {
+				++$hidden;
+			}
+		}
+		?>
+		<h2><?php esc_html_e( 'Continuation diagnostics', 'conexao-event-importer' ); ?></h2>
+		<p class="description">
+			<?php esc_html_e( 'Read-only view of scheduled and running continuations. These figures are informational: nothing here resets, retries, deletes or reschedules a continuation. Staleness is judged from the recorded last-progress time; a record with no usable timestamp is reported as needing inspection rather than declared stale.', 'conexao-event-importer' ); ?>
+		</p>
+		<p class="conexao-continuation-summary">
+			<?php
+			$labels = array(
+				'queued'                => __( 'queued', 'conexao-event-importer' ),
+				'deferred'              => __( 'deferred', 'conexao-event-importer' ),
+				'running'               => __( 'running', 'conexao-event-importer' ),
+				'running_stale'         => __( 'suspected stale', 'conexao-event-importer' ),
+				'running_indeterminate' => __( 'needs inspection', 'conexao-event-importer' ),
+				'exhausted'             => __( 'exhausted', 'conexao-event-importer' ),
+				'failed'                => __( 'failed', 'conexao-event-importer' ),
+			);
+			$parts = array();
+			foreach ( $counts as $class => $count ) {
+				$label   = isset( $labels[ $class ] ) ? $labels[ $class ] : $class;
+				$parts[] = sprintf( '%s: %d', $label, (int) $count );
+			}
+			echo esc_html( implode( ' · ', $parts ) );
+			?>
+		</p>
+		<table class="widefat striped conexao-continuation-diagnostics">
+			<thead>
+				<tr>
+					<th><?php esc_html_e( 'Source', 'conexao-event-importer' ); ?></th>
+					<th><?php esc_html_e( 'State', 'conexao-event-importer' ); ?></th>
+					<th><?php esc_html_e( 'Diagnosis', 'conexao-event-importer' ); ?></th>
+					<th><?php esc_html_e( 'Position', 'conexao-event-importer' ); ?></th>
+					<th><?php esc_html_e( 'Attempts', 'conexao-event-importer' ); ?></th>
+					<th><?php esc_html_e( 'Reason', 'conexao-event-importer' ); ?></th>
+					<th><?php esc_html_e( 'Run correlation', 'conexao-event-importer' ); ?></th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach ( $shown as $row ) : ?>
+					<tr>
+						<td><code><?php echo esc_html( $row['source_id'] ); ?></code></td>
+						<td><?php echo esc_html( $row['state'] . ( $row['running_without_run_at'] ? ' (run_at=0)' : '' ) ); ?></td>
+						<td>
+							<span class="conexao-continuation-class conexao-continuation-class--<?php echo esc_attr( sanitize_html_class( (string) $row['class'] ) ); ?>">
+								<?php echo esc_html( $row['label'] ); ?>
+							</span>
+						</td>
+						<td>
+							<?php
+							echo esc_html(
+								sprintf(
+									/* translators: 1: last confirmed page, 2: total pages */
+									__( 'page %1$d of %2$d', 'conexao-event-importer' ),
+									(int) $row['page'],
+									(int) $row['page_count']
+								)
+							);
+							?>
+						</td>
+						<td>
+							<?php
+							echo esc_html(
+								sprintf(
+									/* translators: 1: attempts, 2: consecutive no-progress attempts */
+									__( '%1$d (%2$d stalled)', 'conexao-event-importer' ),
+									(int) $row['attempts'],
+									(int) $row['stalled']
+								)
+							);
+							?>
+						</td>
+						<td><?php echo '' !== (string) $row['reason'] ? esc_html( $row['reason'] ) : '&mdash;'; ?></td>
+						<td>
+							<?php if ( $row['correlated'] ) : ?>
+								<small>
+									<?php if ( '' !== (string) $row['parent_run_group_id'] ) : ?>
+										group <code><?php echo esc_html( $row['parent_run_group_id'] ); ?></code>
+									<?php endif; ?>
+									<?php if ( '' !== (string) $row['source_run_id'] ) : ?>
+										<br>child <code><?php echo esc_html( $row['source_run_id'] ); ?></code>
+									<?php endif; ?>
+								</small>
+							<?php else : ?>
+								<span class="conexao-history-logs-empty"><?php esc_html_e( 'legacy — no run correlation recorded', 'conexao-event-importer' ); ?></span>
+							<?php endif; ?>
+						</td>
+					</tr>
+				<?php endforeach; ?>
+			</tbody>
+		</table>
+		<?php if ( $hidden > 0 ) : ?>
+			<p class="description">
+				<?php
+				echo esc_html(
+					sprintf(
+						/* translators: %d: number of additional healthy continuation records not shown */
+						__( '%d further queued/running continuation record(s) are healthy and not listed. Every stale, indeterminate, exhausted or failed record is always listed.', 'conexao-event-importer' ),
+						$hidden
+					)
+				);
+				?>
+			</p>
+		<?php endif; ?>
+		<?php
+	}
+
+	/**
+	 * Render the documented retention bound and any capacity pressure.
+	 *
+	 * Stage 3 (P13): the bound must be measurable and visible, not implied. It
+	 * is derived on render from the stored contents — there is no cached
+	 * counter to drift — and it states plainly when an active run has pushed the
+	 * store past its bound, which is the one case where the bound yields.
+	 *
+	 * @return void
+	 */
+	protected function render_retention_state() {
+		$history = class_exists( 'Conexao_Import_History' ) ? Conexao_Import_History::get_retention_state() : array();
+		$logs    = class_exists( 'Conexao_Import_Log' ) ? Conexao_Import_Log::get_retention_state() : array();
+
+		if ( empty( $history ) && empty( $logs ) ) {
+			return;
+		}
+		?>
+		<p class="conexao-retention-state description">
+			<?php
+			if ( ! empty( $history ) ) {
+				echo esc_html(
+					sprintf(
+						/* translators: 1: retained rows, 2: row bound, 3: completed groups, 4: group bound, 5: active groups */
+						__( 'History retention: %1$d of %2$d rows, %3$d of %4$d completed runs retained; %5$d active run(s) are protected from eviction.', 'conexao-event-importer' ),
+						(int) $history['total'],
+						(int) $history['max_entries'],
+						(int) $history['completed_groups'],
+						(int) $history['max_groups'],
+						(int) $history['active_groups']
+					)
+				);
+			}
+			?>
+			<?php
+			if ( ! empty( $logs ) ) {
+				echo ' ';
+				echo esc_html(
+					sprintf(
+						/* translators: 1: retained entries, 2: entry bound, 3: legacy entries, 4: groups */
+						__( 'Log retention: %1$d of %2$d entries across %4$d run group(s), %3$d legacy entr(y/ies) with no run correlation.', 'conexao-event-importer' ),
+						(int) $logs['total'],
+						(int) $logs['max_entries'],
+						(int) $logs['legacy_entries'],
+						(int) $logs['groups']
+					)
+				);
+			}
+			?>
+			<?php if ( ( ! empty( $history['pressure'] ) ) || ( ! empty( $logs['pressure'] ) ) ) : ?>
+				<br>
+				<strong class="conexao-retention-pressure">
+					<?php
+					echo esc_html(
+						sprintf(
+							/* translators: %d: number of entries over the bound */
+							__( 'Retention pressure: the active runs alone exceed the configured bound by %d entr(y/ies). Nothing belonging to an active run was discarded; finished runs will be evicted as they complete.', 'conexao-event-importer' ),
+							max( (int) ( isset( $history['over_by'] ) ? $history['over_by'] : 0 ), (int) ( isset( $logs['over_by'] ) ? $logs['over_by'] : 0 ) )
+						)
+					);
+					?>
+				</strong>
+			<?php endif; ?>
+		</p>
+		<?php
+	}
+
+	/**
+	 * Render the whole-log actions that used to live on the retired Import Logs
+	 * screen: download everything, and clear everything.
+	 *
+	 * Both reuse the existing protected admin-post handlers (capability check +
+	 * nonce + sanitisation) through Conexao_Import_Log_Admin, so retiring the
+	 * screen did not duplicate or weaken either action. Clear is destructive, so
+	 * it is deliberately NOT placed beside the per-row "View logs" control: it
+	 * sits here, above the table, behind an explicit confirmation.
+	 *
+	 * @return void
+	 */
+	protected function render_log_store_actions() {
+		if ( ! class_exists( 'Conexao_Import_Log_Admin' ) ) {
+			return;
+		}
+		?>
+		<p class="conexao-history-log-actions">
+			<a class="button button-secondary" href="<?php echo esc_url( Conexao_Import_Log_Admin::log_download_all_url() ); ?>">
+				<?php esc_html_e( 'Download Import Logs (.log)', 'conexao-event-importer' ); ?>
+			</a>
+			<a
+				class="button button-link-delete"
+				href="<?php echo esc_url( Conexao_Import_Log_Admin::clear_log_url() ); ?>"
+				data-conexao-confirm="<?php echo esc_attr__( 'This will permanently delete ALL Event Importer logs. This cannot be undone. Continue?', 'conexao-event-importer' ); ?>"
+			>
+				<?php esc_html_e( 'Clear Logs', 'conexao-event-importer' ); ?>
+			</a>
+		</p>
+		<?php
+	}
+
+	/**
+	 * Render one Import History row's Logs cell.
+	 *
+	 * The cell answers exactly one question: "what did THIS run log?" — so the
+	 * entries come from the row's own `run_id` and never from its source. A
+	 * source-wide fallback would mix messages from different runs into one row,
+	 * which is the confusion this column exists to remove.
+	 *
+	 * Three states, all honest:
+	 *   - a run with entries  → a <details> disclosure, "View logs (N)".
+	 *   - a run with none     → "No logs".
+	 *   - no usable run ID    → "Logs unavailable for this historical run".
+	 *
+	 * @param array $entry      One Import History entry.
+	 * @param array $logs_index Run ID => entries, from build_log_index().
+	 * @return void
+	 */
+	protected function render_history_logs_cell( array $entry, array $logs_index ) {
+		$run_id = isset( $entry['run_id'] ) ? trim( (string) $entry['run_id'] ) : '';
+
+		// A record written before run logging existed has no run to look up.
+		// Saying so is the only correct answer: the source-wide log is NOT this
+		// run's log, and a timestamp match would be a guess.
+		if ( '' === $run_id ) {
+			echo '<span class="conexao-history-logs-empty">' . esc_html__( 'Logs unavailable for this historical run', 'conexao-event-importer' ) . '</span>';
+			return;
+		}
+
+		$entries = Conexao_Import_Log::entries_for_run_index( $logs_index, $run_id );
+
+		if ( empty( $entries ) ) {
+			echo '<span class="conexao-history-logs-empty">' . esc_html__( 'No logs', 'conexao-event-importer' ) . '</span>';
+			return;
+		}
+
+		$run_entries = $entries;
+		$preview     = Conexao_Import_Log::preview( $run_entries, 50 );
+		$total       = (int) $preview['total'];
+		?>
+		<details class="conexao-history-logs">
+			<summary>
+				<?php
+				echo esc_html(
+					sprintf(
+						/* translators: %d: number of log entries recorded for this run */
+						_n(
+							'View logs (%d entry)',
+							'View logs (%d entries)',
+							$total,
+							'conexao-event-importer'
+						),
+						$total
+					)
+				);
+				?>
+			</summary>
+			<div class="conexao-history-logs-panel">
+				<ul class="conexao-history-log-list">
+					<?php foreach ( $preview['preview'] as $log_entry ) : ?>
+						<?php $this->render_history_log_entry( $log_entry ); ?>
+					<?php endforeach; ?>
+				</ul>
+				<?php
+				/*
+				 * Stage 3 (P13): the count shown and the count available are
+				 * ALWAYS disclosed, not only when the preview is truncated. A
+				 * bounded panel that silently looks complete is the defect this
+				 * line removes.
+				 */
+				?>
+				<p class="conexao-history-logs-more description">
+					<?php
+					if ( $preview['truncated'] ) {
+						echo esc_html(
+							sprintf(
+								/* translators: 1: number of entries shown, 2: total number of entries */
+								__( 'Preview: showing the newest %1$d of %2$d retained entries. This is a truncated view — download the full run to read all %2$d.', 'conexao-event-importer' ),
+								(int) $preview['shown'],
+								$total
+							)
+						);
+					} else {
+						echo esc_html(
+							sprintf(
+								/* translators: 1: number of entries shown, 2: total number of entries */
+								__( 'Showing all %1$d of %2$d retained entries for this run.', 'conexao-event-importer' ),
+								(int) $preview['shown'],
+								$total
+							)
+						);
+					}
+					?>
+				</p>
+				<p class="conexao-history-logs-download">
+					<a class="button button-small" href="<?php echo esc_url( Conexao_Import_Log_Admin::run_log_download_url( $run_id ) ); ?>">
+						<?php
+						echo esc_html(
+							$preview['truncated']
+								/* translators: %d: total number of retained entries */
+								? sprintf( __( 'Download the complete run (%d entries)', 'conexao-event-importer' ), $total )
+								: __( 'Download this run', 'conexao-event-importer' )
+						);
+						?>
+					</a>
+				</p>
+			</div>
+		</details>
+		<?php
+	}
+
+	/**
+	 * Render one structured log entry inside a run's Logs panel.
+	 *
+	 * Every value is escaped at output. The level is a word as well as a colour,
+	 * so the severity never depends on colour alone, and the message is a text
+	 * node rather than raw HTML — log content is data, never markup.
+	 *
+	 * @param array $log_entry Structured log entry.
+	 * @return void
+	 */
+	protected function render_history_log_entry( array $log_entry ) {
+		$level   = isset( $log_entry['level'] ) ? (string) $log_entry['level'] : 'info';
+		$time    = isset( $log_entry['time'] ) ? (string) $log_entry['time'] : '';
+		$message = isset( $log_entry['message'] ) ? (string) $log_entry['message'] : '';
+
+		$event_title = isset( $log_entry['event_title'] ) ? trim( (string) $log_entry['event_title'] ) : '';
+		$event_id    = isset( $log_entry['event_id'] ) ? trim( (string) $log_entry['event_id'] ) : '';
+		$http_status = isset( $log_entry['http_status'] ) ? (int) $log_entry['http_status'] : 0;
+		$context     = isset( $log_entry['context'] ) && is_array( $log_entry['context'] ) ? $log_entry['context'] : array();
+
+		// Only the context keys the on-screen view can actually explain. The
+		// store already drops sensitive keys; this is a second, display-side
+		// allowlist so a future stored key cannot leak into the panel.
+		$context_labels = array(
+			'url'               => __( 'URL', 'conexao-event-importer' ),
+			'source_url'        => __( 'Source URL', 'conexao-event-importer' ),
+			'attempt'           => __( 'Attempt', 'conexao-event-importer' ),
+			'post_id'           => __( 'Post ID', 'conexao-event-importer' ),
+			'page'              => __( 'Page', 'conexao-event-importer' ),
+			'reason'            => __( 'Reason', 'conexao-event-importer' ),
+			'reason_code'       => __( 'Reason code', 'conexao-event-importer' ),
+			'cooldown_seconds'  => __( 'Cooldown (s)', 'conexao-event-importer' ),
+			'retry_after'       => __( 'Retry after (s)', 'conexao-event-importer' ),
+			'rate_limit_hits'   => __( 'Rate-limit hits', 'conexao-event-importer' ),
+			'rate_limit_streak' => __( 'Rate-limit streak', 'conexao-event-importer' ),
+		);
+
+		$shown_context = array();
+		foreach ( $context_labels as $key => $label ) {
+			if ( ! isset( $context[ $key ] ) ) {
+				continue;
+			}
+
+			$value = $context[ $key ];
+
+			if ( ! is_scalar( $value ) || '' === (string) $value ) {
+				continue;
+			}
+
+			$shown_context[ $label ] = (string) $value;
+		}
+		?>
+		<li class="conexao-history-log-entry conexao-history-log-entry--<?php echo esc_attr( $level ); ?>">
+			<span class="conexao-history-log-meta">
+				<span class="conexao-history-log-level"><?php echo esc_html( strtoupper( $level ) ); ?></span>
+				<?php if ( '' !== $time ) : ?>
+					<span class="conexao-history-log-time"><?php echo esc_html( $time ); ?></span>
+				<?php endif; ?>
+				<?php if ( '' !== $event_title || '' !== $event_id ) : ?>
+					<span class="conexao-history-log-event">
+						<?php if ( '' !== $event_title ) : ?>
+							<?php echo esc_html( $event_title ); ?>
+						<?php endif; ?>
+						<?php if ( '' !== $event_id ) : ?>
+							<span class="conexao-history-log-event-id">
+								<?php
+								echo esc_html(
+									sprintf(
+										/* translators: %s: source event ID */
+										__( '(ID %s)', 'conexao-event-importer' ),
+										$event_id
+									)
+								);
+								?>
+							</span>
+						<?php endif; ?>
+					</span>
+				<?php endif; ?>
+				<?php if ( $http_status > 0 ) : ?>
+					<span class="conexao-history-log-http">
+						<?php
+						echo esc_html(
+							sprintf(
+								/* translators: %d: HTTP status code */
+								__( 'HTTP %d', 'conexao-event-importer' ),
+								$http_status
+							)
+						);
+						?>
+					</span>
+				<?php endif; ?>
+			</span>
+			<span class="conexao-history-log-message"><?php echo esc_html( $message ); ?></span>
+			<?php if ( ! empty( $shown_context ) ) : ?>
+				<span class="conexao-history-log-context">
+					<?php foreach ( $shown_context as $label => $value ) : ?>
+						<span class="conexao-history-log-context-item">
+							<span class="conexao-history-log-context-label"><?php echo esc_html( $label ); ?>:</span>
+							<span class="conexao-history-log-context-value"><?php echo esc_html( $value ); ?></span>
+						</span>
+					<?php endforeach; ?>
+				</span>
+			<?php endif; ?>
+		</li>
+		<?php
 	}
 }

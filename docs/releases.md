@@ -167,6 +167,54 @@ release and is recorded as such.
 
 ---
 
+## Component versioning policy
+
+**Semantic Versioning (SemVer)** is mandatory for every active plugin and the active theme.
+
+| Level | When to use | Example |
+|---|---|---|
+| **PATCH** (default) | Backward-compatible bug fixes, maintenance, styling changes, internal improvements | `1.2.3` → `1.2.4` |
+| **MINOR** | New backward-compatible functionality | `1.2.3` → `1.3.0` |
+| **MAJOR** | Backward-incompatible public API or contract changes | `1.2.3` → `2.0.0` |
+
+**Rules:**
+- Each component has its own independent version — no lockstep versioning.
+- Only increment a component when that component's source files have actually changed.
+- A PR affecting multiple components must increment each affected component independently.
+- One PR produces one version increment per affected component, regardless of commit count.
+- Documentation-only changes (`docs/`, `README.md`, `CHANGELOG.md`) and test-only changes (`tests/`) do not require version bumps.
+- Version bumps belong in the same PR as the code changes, before merging into `master`.
+
+**Authoritative version sources:**
+- Plugins: the `Version:` header in the file declared as `version_source` in `plugins.json`.
+- Theme: the `Version:` field in `wp-content/themes/conexao-br-irlanda/style.css`.
+
+**Version constants:** Where a component defines a PHP version constant (e.g., `CONEXAO_CONTENT_VERSION`, `CONEXAO_THEME_VERSION`), it must be kept synchronized with the authoritative header. The bump script handles this automatically.
+
+**Version bump command:**
+```bash
+# Dry-run preview
+python3 scripts/bump-component-version.py --component <slug> --level patch --dry-run
+
+# Apply bump (with confirmation)
+python3 scripts/bump-component-version.py --component <slug> --level patch
+
+# Bump multiple components
+python3 scripts/bump-component-version.py --component conexao-content --component conexao-event-runtime --level patch
+
+# List all components and current versions
+python3 scripts/bump-component-version.py --list-components
+```
+
+**CI validation:** On every PR targeting `master`, the `validate-version-bumps.py` script runs and enforces:
+- Valid single-step SemVer increment (patch/minor/major) for each changed component.
+- Version constants synchronized with headers.
+- No version bumps for components without source changes.
+- No version downgrades or invalid increments (e.g., `1.9.1` → `1.10.1` is invalid).
+- Retired plugins are never auto-bumped.
+
+---
+
 ## Deployment verification
 
 `scripts/verify-deploy.py` is read-only: GET requests only, no credentials, no

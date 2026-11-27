@@ -429,7 +429,8 @@ docker compose up -d                 # local WordPress must be running first
 
 ./scripts/run-tests.sh               # all layers
 ./scripts/run-tests.sh --only theme  # one component
-./scripts/run-tests.sh --scripts     # the Stage I script-contract gate only
+./scripts/run-tests.sh --scripts     # static script checks (no PHP/Docker/DB)
+./scripts/run-tests.sh --scripts-runtime  # explicit PHP-backed checks
 ./scripts/run-tests.sh --acceptance  # HTTP acceptance only
 ./scripts/run-tests.sh --list        # discovered suites + manual suites
 ```

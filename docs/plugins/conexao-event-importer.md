@@ -9,14 +9,14 @@
 | **Build** | yes |
 | **Compose mount** | yes |
 | **Dependencies** | `conexao-data-model`, `conexao-event-runtime` |
-| **Version** | 1.9.1 (authoritative source: `wp-content/plugins/conexao-event-importer/conexao-event-importer.php` header) |
+| **Version** | 1.10.1 (authoritative source: `wp-content/plugins/conexao-event-importer/conexao-event-importer.php` header) |
 | **Registry** | [`plugins.json`](../../plugins.json) |
 
 > **Local-only tooling.** Not a production steady-state dependency.
 <!-- END GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
 
 - **Path**: `wp-content/plugins/conexao-event-importer/`
-- **Version**: 1.7.1
+- **Version**: 1.10.0
 - **Requires Plugins**: `conexao-data-model`, `conexao-event-runtime`
 - **Purpose**: Local-only event import/export tooling. Fetches events from external sources (Laois Tourism, National Heritage Week, Eventbrite multi-county) into the **local** WordPress installation, downloads all images into the local Media Library, then exports the complete event data as JSON for import into the production WordPress.com site.
 - **Rollout tooling — keep available on production.** All production-critical event behavior (meta/taxonomy registration, `_event_status` public query gate, status admin UI) lives in the separate [Event Runtime](conexao-event-runtime.md) plugin, so this plugin is **not required for runtime event rendering**. However, during the multi-county Events Expansion it is part of the rollout workflow and **must not be deactivated, removed, replaced, or treated as unnecessary production code**. It stays **dormant unless explicitly invoked**: there is no cron, polling, background sync, or frontend fetching, and production never contacts external sources.
@@ -96,6 +96,8 @@ production-side fetching. Everything is manual/on-demand.
 - Export/import events as portable JSON with stable UUIDs and **embedded base64 image data**
 - Log all import activity with download/clear capabilities (2,000-entry cap,
   90-day retention — see [Import logging](#import-logging))
+- Inspect a run's log inline in the Import History table, matched by `run_id`
+  (see [Import History lives on the dashboard](#import-history-lives-on-the-dashboard-v1100))
 - Manual cleanup of expired events and their exclusively-owned images
 - Auto-expire published events once their end date/time passes — expiry
   marking runs at the end of each import run (no cron; see
@@ -104,12 +106,15 @@ production-side fetching. Everything is manual/on-demand.
 ## Import logging
 
 `Conexao_Import_Log` stores structured entries in the
-`conexao_event_import_log` option (autoload off):
+`conexao_event_import_log` option (autoload off). The option name is resolved
+through `Conexao_Import_Log::option_key()`, which returns that name in
+production and a per-process test row when the shared test harness is loaded
+(see [Test safety](#test-safety--diagnostics-tests-must-not-destroy-operator-history)):
 
 - **Cap**: 2,000 entries (newest first); older entries are dropped
   automatically once the cap is reached.
 - **Retention**: entries older than 90 days are pruned opportunistically when
-  the Import Logs admin screen is opened.
+  the Import History dashboard is rendered (the one screen that reads the log).
 - **Write behavior**: during an import run the engine wraps the run in
   `Conexao_Import_Log::begin_run()` / `end_run()`. Entries are buffered in
   memory and persisted with a small number of bounded read-merge writes
@@ -129,19 +134,21 @@ production-side fetching. Everything is manual/on-demand.
 |------|-------|---------|
 | `conexao-event-importer.php` | `Conexao_Event_Importer` | Main plugin, boot all components (local tooling only) |
 | `includes/class-event-sources.php` | `Conexao_Event_Sources` | Source CRUD, admin pages, manual import trigger |
+| `includes/class-conexao-event-date-contract.php` | `Conexao_Event_Date_Contract` | Date-only write contract for `_event_date` / `_event_end_date` (Stage 4) |
+| `includes/class-conexao-event-review-queue.php` | `Conexao_Event_Review_Queue` | Read-only "Needs review" queue over published events (Stage 4) |
 | `includes/class-event-normalizer.php` | `Conexao_Event_Normalizer` | Normalize raw event data |
 | `includes/class-event-date-filter.php` | `Conexao_Event_Date_Filter` | Past-event filter: compare normalized dates against site-timezone now |
 | `includes/class-event-location.php` | `Conexao_Event_Location` | Location normalization (county, town, venue) |
 | `includes/class-event-deduplicator.php` | `Conexao_Event_Deduplicator` | Find existing events by source_id, URL, or content |
 | `includes/class-event-importer.php` | `Conexao_Event_Importer_Engine` | Main import engine, upsert logic, dry-run support |
 | `includes/class-event-image-handler.php` | `Conexao_Event_Image_Handler` | Download/sideload external images + create attachments from embedded base64 data |
-| `includes/class-import-settings.php` | `Conexao_Import_Settings` | Settings storage (`cleanup_scope`) + admin page. **No Eventbrite API token** — the dead token setting was retired in G7 |
+| `includes/class-import-settings.php` | `Conexao_Import_Settings` | Settings storage (`cleanup_scope`). No admin page — the empty Settings screen was retired; `cleanup_scope` is read by Cleanup. **No Eventbrite API token** — the dead token setting was retired in G7 |
 | `includes/class-source-health.php` | `Conexao_Source_Health` | Informational per-source failure tracking (never auto-disables) |
 | `includes/class-source-fetch-exception.php` | `Conexao_Source_Fetch_Exception` | Structured transport/HTTP fetch failure |
 | `includes/class-import-cli.php` | `Conexao_Import_CLI` | WP-CLI commands (`wp conexao-events …`) |
 | `includes/class-import-result.php` | `Conexao_Import_Result` | Structured import result tracking |
-| `includes/class-import-log.php` | `Conexao_Import_Log` | Persistent log storage (run-buffered writes, 2,000-entry cap, 90-day retention) |
-| `includes/class-import-log-admin.php` | `Conexao_Import_Log_Admin` | Log admin UI, download, clear |
+| `includes/class-import-log.php` | `Conexao_Import_Log` | Persistent log storage (run-buffered writes, 2,000-entry cap, 90-day retention, run-index helper) |
+| `includes/class-import-log-admin.php` | `Conexao_Import_Log_Admin` | Protected log download/clear handlers, their URL builders, and the retired Import Logs screen's redirect |
 | `includes/class-import-history.php` | `Conexao_Import_History` | Import run history tracking |
 | `includes/class-event-export.php` | `Conexao_Event_Export` | JSON export with UUIDs + embedded base64 images |
 | `includes/class-event-import.php` | `Conexao_Event_Import` | JSON import with dedupe; creates attachments from embedded data |
@@ -568,7 +575,8 @@ Rules:
 Statistics are reported everywhere results are shown:
 `skipped=N (past=X, invalid_date=Y)` appears in the run summary log line, the
 WP-CLI report (`wp conexao-events import`), the admin result notice, and the
-history entry; per-event skip reasons appear in Import Logs.
+history entry; per-event skip reasons appear in the run's log (see
+[Logs in Import History](#logs-in-import-history)).
 
 ### Duplicate handling
 
@@ -989,6 +997,262 @@ the sources and the measurement still did **not** support a daily rate (see
 cadence remains **UNRESOLVED** and imports stay manual and on demand. Scheduling
 by intuition was refused rather than shipped, and it still is.
 
+## Stage 1 run coordination (P1, P2, P6)
+
+The importer now distinguishes one logical `Run All` from its per-source
+attempts. The parent has a stable `parent_run_group_id`; every attempted source
+has a unique `source_run_id`, and continuations carry the parent ID forward.
+Import History stores the parent and child rows together, with aggregate event
+counts, source-skipped and event-skipped counts, the full failed-source list,
+and an operator-facing summary. Repeated parent finalisation replaces the
+previous parent row for that group, so aggregation is idempotent.
+
+Parent lifecycle statuses are `queued`, `running`, `completed`,
+`completed_with_errors`, `partial`, `rate_limited`, and `failed`. The terminal
+precedence is failed, rate-limited, partial, completed-with-errors, completed.
+The historical `success` and `warning` child statuses remain valid for
+backwards compatibility; parent history uses the explicit lifecycle names and
+maps warning-only completion to `completed_with_errors` when a warning/error is
+present.
+
+### Eventbrite breaker and bounded waits
+
+The Eventbrite breaker is shared only inside one logical parent run. It is
+reset for a new manual or unrelated run, applies across Eventbrite source
+boundaries, and never blocks non-Eventbrite sources. Its in-memory structured
+state records the first source, rate-limit timestamp, retry timestamp, parsed
+`Retry-After` kind, unsupported-date classification, and skipped sources. An
+active breaker causes later Eventbrite sources to be recorded as
+`rate_limited`/skipped without another provider request.
+
+Delta-seconds and supported HTTP-date forms are parsed deterministically.
+Malformed or absent values use the bounded fallback ladder; a plausible but
+unsupported HTTP-date fails closed for the remainder of the logical run rather
+than guessing an earlier retry. The retry wait is separate from the outbound
+request budget. If it cannot fit the source invocation deadline, the source is
+marked incomplete and rate-limited/deferred, its checkpoint remains resumable,
+and no sleep is attempted beyond the invocation window.
+
+### Heritage Week listing eligibility
+
+Heritage Week listing cards are evaluated before detail enrichment. A card is
+skipped only when a reliable site-timezone end instant is definitely before
+now. Date-only today remains eligible; missing, invalid, ambiguous, and
+end-before-start ranges remain eligible for detail parsing. Detail outcomes
+are explicit: successful empty detail, invalid detail, and transport failure
+cannot be mistaken for one another. Pagination and the existing source/event
+mapping are unchanged.
+
+## Stage 2 — fetch contract, enrichment preservation and reconciliation pagination (P3, P4, P5, P10)
+
+Stage 2 closes four findings from the Event Importer audit. It does not change
+source identity, duplicate handling, retention or Event Runtime visibility.
+
+### P3 — explicit source-handler fetch contract
+
+A handler must **throw `Conexao_Source_Fetch_Exception`** when an upstream
+request fails. It may return an array (including an empty one) only when the
+listing was retrieved and parsed. A payload that was retrieved but cannot be
+parsed is reported as an **incomplete** enumeration, never as a complete empty
+one.
+
+| Outcome | Handler result | `is_fetch_complete()` |
+|---|---|---|
+| Transport error / non-200 | throws | n/a (run recorded `failed`) |
+| Retrieved, parsed, no events | `array()` | `true` |
+| Retrieved, unparsable / empty body / no feed configured | `array()` | `false` |
+
+Handlers fixed in Stage 2: **Mondello Park** (previously returned `[]` on a
+transport error *and* on a non-200), **Laois Tourism**, **IVVCC**, **Motorsport
+Ireland** and **iCalendar** (empty body / missing feed). Eventbrite and
+Heritage Week already conformed and were not changed.
+
+### P4 — completeness and reconciliation-safety gates
+
+`mark_missing_events()` runs only when `is_fetch_complete()` **and**
+`is_reconciliation_safe()` both return true. Both gates are also re-evaluated
+inside `mark_missing_events()` itself, so no caller can reach a candidate query
+or a status mutation with an incomplete or resumed enumeration.
+
+| Handler | Completeness | Reconciliation safety | Fail-open default correct? |
+|---|---|---|---|
+| Eventbrite | implemented (`mark_fetch_incomplete` on truncation, page failure, rate limit, upstream pagination cap) | implemented (`false` when the walk resumed from a checkpoint) | n/a (both implemented) |
+| Heritage Week | implemented (time budget, parse failure, blocked/looped forward link, later-page failure, page limit) | not implemented → fail-open `true` | yes — no checkpoint, no resume, single forward walk |
+| IVVCC | base class (default `true`; empty body now marks incomplete) | not implemented → `true` | yes — one page, no checkpoint |
+| Motorsport Ireland | base class (default `true`; empty body now marks incomplete) | not implemented → `true` | yes — one listing page, no checkpoint |
+| Mondello Park | base class (default `true`; empty/invalid payload marks incomplete) | not implemented → `true` | yes — one REST page, no checkpoint |
+| Laois Tourism | base class (default `true`; empty/unparsable listing marks incomplete) | not implemented → `true` | yes — one page, no checkpoint |
+| iCalendar | base class (default `true`; missing/empty feed marks incomplete) | not implemented → `true` | yes — one feed document, no checkpoint |
+
+No handler returns `true` unconditionally: every handler that can stop early
+marks the walk incomplete before returning, and the only handler that can
+resume (Eventbrite) implements the second gate.
+
+### P5 — partial enrichment state
+
+A detail-fetch handler declares, per field, whether the value was retrieved, is
+genuinely empty, is unavailable or was not evaluated:
+
+| State | Meaning | Write path |
+|---|---|---|
+| `populated` | retrieved with a value | write the incoming value |
+| `empty` | retrieved; the source contract declares the field legitimately empty | write the empty value (a genuine clear) |
+| `unavailable` | retrieval failed / value unknown | **preserve** the stored value |
+| `not_evaluated` | enrichment not attempted | **preserve** the stored value |
+
+State lives in the in-memory normalized payload (`enrichment`) only; no post
+meta key is added. A handler that declares nothing keeps the historical write
+path, which is what leaves Eventbrite unchanged. Fields covered: description,
+venue, address, location, organiser and banner.
+
+Heritage Week's documented emptiness contract is narrow: the description
+container (`div.text-block`) must be **present** for an empty value to count as
+a genuine clear. An absent element, an omitted JSON-LD `location`, an empty
+body, a failed request or an invalid HTML document all mean *unavailable*, so
+the stored value is preserved. The description participates in change detection
+only when a handler declares a description enrichment state.
+
+### P10 — paginated absence reconciliation
+
+`mark_missing_events()` no longer stops at 300 posts per source. It is ordered:
+
+1. the two P4 gates are evaluated first (a refused pass performs zero queries);
+2. candidates are enumerated read-only by **keyset pagination** on the unique
+   post ID (`ID > last_cursor`, `ORDER BY ID ASC`, `LIMIT 200`), so page
+   boundaries cannot skip or duplicate a candidate even when every other column
+   collides;
+3. only after the complete candidate set is in memory are absence-based status
+   changes applied, in batches of 50, revalidating each candidate as still
+   source-owned, still eligible and still in the import language immediately
+   before the write (a Polylang translation is never mutated).
+
+A failed, malformed or interrupted candidate page aborts the pass with zero
+absence-based mutations. Reconciliation is idempotent: an event already
+`source_not_found` is excluded from the candidate query, so a second pass in the
+same state writes nothing. The candidate filter, identity match (`_event_url`)
+and post-status scope are unchanged from the previous implementation.
+
+## Stage 3 — continuation correlation, truthful status, and group-aware retention (P12, P13)
+
+Stage 3 closes the remaining observability and retention findings. It changes no
+event status, no source identity, no Event Runtime visibility and no status
+vocabulary: every change is a mapping, diagnostic or retention change inside the
+existing model.
+
+### P12 — continuation lifecycle correlation
+
+Every continuation lifecycle log entry is traceable to its run. The continuation
+record persists four identifiers, and `Conexao_Import_Continuation::log()` merges
+them into each entry as structured context (retained by
+`Conexao_Import_Log::CORRELATION_CONTEXT_KEYS`):
+
+| Identifier | Meaning |
+|---|---|
+| `run_id` | the owning Import History row (the parent group for a child of a Run All, the standalone run otherwise) |
+| `source_run_id` | the child source attempt that created/last advanced the continuation |
+| `parent_run_group_id` | the logical Run All parent |
+| `continuation_id` | stable identifier for one continuation lifecycle |
+
+They survive scheduling, deferral, resume and clearing — a resume **never** mints
+a new id. Terminal entries written after the record is removed (`clear()`) are
+correlated against the removed record. Entries that predate Stage 3 have no ids
+and stay explicitly `legacy`; no historical id is invented.
+
+### P12 — status and diagnostics
+
+| Target outcome | Child status | Parent status |
+|---|---|---|
+| Success | `success` | `completed` |
+| Warning — non-fatal, walk **completed** | `warning` (`add_warning()`) | `completed_with_errors` / `completed` |
+| Partial | `partial` | `partial` |
+| Incomplete — walk did **not** finish | `partial` (`add_incomplete_enumeration()`), or `rate_limited` when the P1 breaker stopped planned work | `rate_limited` / `partial` |
+| Failed | `failed` | `failed` |
+
+**Warning ≠ incomplete.** An unfinished enumeration is never labelled `warning`.
+
+The actual stop condition is a separate field (`incomplete_reason`), rendered in
+Import History: `time_budget`, `page_cap`, `budget_exhausted`, `rate_limited`,
+`rate_limited_deferred`, `fetch_failed`, `parse_failed`, `checkpoint_resume`,
+`incomplete_enumeration`.
+
+The source registry now stores the real outcome rather than collapsing every
+non-failure to `success`:
+
+| Result | `last_import_status` |
+|---|---|
+| success | `success` |
+| warning | `warning` |
+| partial | `partial` |
+| rate_limited | `rate_limited` |
+| failed | `error` (unchanged legacy value) |
+
+`Conexao_Source_Health::record_incomplete()` stores an incomplete run without
+touching the failure counters, and the dashboard's **Last successful import**
+excludes `partial`/`rate_limited`/`failed`.
+
+### P12 — stuck and abandoned continuations
+
+`Conexao_Import_Continuation::classify()` (read-only) returns `queued`,
+`deferred`, `running`, `running_stale`, `running_indeterminate`, `exhausted` or
+`failed`.
+
+* `STALE_RUNNING_SECONDS = 3600` — 4 × `LOCK_TTL`; a held lock is never stale.
+* `state=running, run_at=0` is reported as a **fact**, not as a stall; whether it
+  is stale depends on the recorded `last_run_at`.
+* A record with no usable timestamp is `running_indeterminate` — **never**
+  declared stale.
+* The diagnostics reset, retry, reschedule and delete **nothing**.
+
+They are rendered in the **Event Sources** screen (Continuation diagnostics), and
+the Import History Progress cell refuses to say “a worker is running it now” for
+a stale record.
+
+### P12 — `events_imported`
+
+The field is the number of events **created by that source in its most recent
+run**. The Event Sources column is labelled **`Created (last run)`** with a
+tooltip saying it is not a cumulative total. The stored value, its readers and
+every historical value are unchanged; no migration exists.
+
+### P13 — logical-run-aware retention
+
+The two stores keep their existing option rows; nothing new is added.
+
+| Bound | Value | Rationale (measured) |
+|---|---|---|
+| `Conexao_Import_Log::MAX_ENTRIES` | **8,000** entries | one Run All ≈ 1,700–3,900 entries at the measured 468 B/entry and ~11 entries/run |
+| `Conexao_Import_History::MAX_ENTRIES` | **1,200** rows | one Run All ≈ 155 rows at 927 B/row |
+| `Conexao_Import_History::MAX_GROUPS` | **50** completed runs | keeps 50 standalone runs in full |
+
+* **Unit:** the whole logical group (Stage 1's run identity). A group is never
+  split — no orphan parent, no orphan child, and the start of a run is never lost
+  while its own later entries survive.
+* **Protection:** a group is evictable only when terminal — no `queued`/`running`
+  history row and no `scheduled`/`running` continuation. Active groups are never
+  evicted at any pressure.
+* **Order:** oldest completed group first, with a store-position tie-break so runs
+  written within the same second still order deterministically. The newest
+  completed group is never evicted to make room for itself.
+* **Legacy:** rows/entries with no run identity are evicted individually, last,
+  and never grouped into an invented run.
+* **Pressure:** if protected groups exceed the bound, nothing is discarded;
+  `get_retention_state()` reports `pressure` and `over_by` and Import History
+  prints it.
+* **Idempotent**, and applied inside the existing write paths, which is safe
+  because eligibility is state-derived.
+
+`prune_older_than_90_days()` remains **unwired** (it never had a caller); it was
+made group-safe so a future age prune cannot split a live run.
+
+### P13 — downloads and preview
+
+`Conexao_Import_Log::export_run( $group )` downloads the **full** retained logical
+run (parent + every child) in chronological order with a manifest header (group,
+entry count, sources, child run ids, legacy count, bound, pressure). It reuses the
+existing protected endpoint (`manage_options` + per-run nonce). The inline Logs
+panel stays bounded at 50 entries and **always** states the shown count, the total
+available, whether the view is truncated, and links the full download.
+
 ## Supported operating model (G12–G14)
 
 This is the final, measured operating model. It replaces guesswork with numbers
@@ -1314,8 +1578,6 @@ and re-arms the continuation.
 
 ## Diagnostics: Import History, Import Logs and run correlation
 
-## Diagnostics: Import History, Import Logs and run correlation
-
 - **Import History** (`conexao_event_import_history`, 100 rows) records
   **run-level** status per source: counts, `status`, a human-readable message,
   `fatal_errors`, `failed_events`, `run_id`, the `complete` flag, and (G9) a
@@ -1335,41 +1597,66 @@ and re-arms the continuation.
 - **Import Logs** (`conexao_event_import_log`, 2,000 entries) preserve
   **diagnostic** entries: per-page and per-source detail with HTTP status and
   URL context. These are the records an operator reads to explain a failed run.
+  They are read **inline in the Import History table** — see
+  [Logs in Import History](#logs-in-import-history). The separate Import Logs
+  screen is retired.
 - **Run correlation**: the engine publishes a run ID through the
   `conexao_event_importer_current_run_id` filter. Every Eventbrite, Heritage
   Week and source-health diagnostic entry passes it as `run_id`, so
-  `Conexao_Import_Log::get_for_run()` resolves a run's entries and an Import
-  History row links to the diagnostics that explain it. There is exactly one
-  correlation identifier; no second one is invented. Entries written outside a
-  run keep an empty `run_id` and remain readable.
+  `Conexao_Import_Log::get_for_run()` resolves a run's entries and the Import
+  History row opens exactly the diagnostics that explain it. There is exactly
+  one correlation identifier; no second one is invented. Entries written outside
+  a run keep an empty `run_id`, are never attributed to a historical run, and
+  remain readable in the whole-log download.
 
 ### Test safety — diagnostics tests must not destroy operator history
 
 `conexao_event_import_log`, `conexao_event_import_history`,
-`conexao_event_source_health` and `conexao_event_sources` are **operator state**,
-not test fixtures. A test that clears them destroys the record a maintainer
-needs, which is a defect in its own right.
+`conexao_event_cleanup_status` and `conexao_event_cleanup_history` are **operator
+state**, not test fixtures. A test that clears them destroys the record a
+maintainer needs, which is a defect in its own right.
 
-Diagnostic suites therefore use the shared harness helper
-`tests/lib/option-isolation.php`:
+Since Stage 0.5 the four stores have a **storage seam**. Each owning class
+exposes an accessor that every read and write goes through:
+
+| Class | Accessor | Production option | Per-process test prefix |
+|---|---|---|---|
+| `Conexao_Import_Log` | `option_key()` | `conexao_event_import_log` | `conexao_event_import_log__test__` |
+| `Conexao_Import_History` | `option_key()` | `conexao_event_import_history` | `conexao_event_import_history__test__` |
+| `Conexao_Event_Cleanup` | `status_option()` | `conexao_event_cleanup_status` | `conexao_event_cleanup_status__test__` |
+| `Conexao_Event_Cleanup` | `history_option()` | `conexao_event_cleanup_history` | `conexao_event_cleanup_history__test__` |
+
+- **Production** (neither harness marker defined) resolves the production name
+  exactly as before — one `defined()` check, no hook, no filter, same autoload
+  flag and same caps.
+- **A test process** resolves `PREFIX . p<pid>_<16 hex>`. The suffix is
+  established by `tests/bootstrap.php` **before** `wp-load.php`, because the
+  importer logs during plugin load (`wp_loaded` → `rearm_missing()`), and it is
+  removed at shutdown priority 999.
+- **Fail closed**: if `CONEXAO_TESTS_ROOT` or `CONEXAO_TEST_OPTION_SUFFIX` is
+  defined but the suffix is absent or malformed, the accessor throws a
+  `RuntimeException` instead of falling back to the production option. A test
+  suite never continues with production storage.
+
+Suites must not snapshot these four options any more. `test_options_isolate()`
+**refuses** them (snapshotting the production row and seeding it empty was the
+original defect), and `test_options_restore()` skips them. A suite that needs a
+value in one of them uses:
 
 ```php
-$restore = test_options_isolate( array( Conexao_Import_Log::OPTION_KEY ) );
-... exercise the code under test ...
-test_options_restore( $restore );
+test_options_write_test_store( 'import_log', $entries );     // validated write
+test_options_reset_test_store( array( 'cleanup_status' ) );   // validated delete
+test_require_operator_store_isolation();                      // secondary guard
 ```
 
-`test_options_isolate()` snapshots the current value (including "this option does
-not exist"), seeds an empty store, and registers a shutdown safety net so a
-suite that dies early still restores. `test_options_restore()` puts the snapshot
-back verbatim.
+The reset helper validates every requested key against a four-store allowlist
+before deleting anything, so a production key, an arbitrary option, another
+process's key or a mixed valid/invalid request deletes **nothing**.
 
 This is not theoretical. Before v1.7.2 `test-import-log.php` called
 `Conexao_Import_Log::clear()` against the live option and the canonical suite
-drove it 599 → 91 → 0. The same discipline also fixed
-`test-error-handling.php`, whose long-standing "History entry was added" failure
-was caused by `MAX_ENTRIES` saturating the real history so the count could not
-grow — an environment dependency, not a code defect.
+drove it 599 → 91 → 0. Snapshot/restore replaced that, but it could not survive
+abnormal termination or concurrent workers, which is why the seam exists.
 
 
 ## Event Meta (registered)
@@ -1590,15 +1877,192 @@ The local export JSON gained ONE additive per-event field, `"lang"`:
 Menu: Event Import (top-level menu, icon dashicons-calendar-alt)
 
 Submenus:
-- Dashboard — overview, **Import Events Now**, Export Events link, recent history
+- Event Import (dashboard) — last successful import, **Import Events Now**,
+  the Export Events link, and the **complete Import History table with per-run
+  Logs**. It shows no source overview: source configuration and status live on
+  the Event Sources screen below.
 - Event Sources — CRUD sources (incl. county, category), toggle, run single import
-- Import History — historical import runs
+- Needs Review — read-only queue of published events missing a featured image,
+  venue or county (Stage 4). Capability-gated (`manage_options`), read-only,
+  and paginated. The category field is omitted while P8 is deferred (no
+  approved vocabulary).
 - Export Events — JSON download (with embedded images)
 - Import Events — JSON upload/import (creates attachments from embedded data)
 - Image Sync — bulk sideload of remaining external banner images
 - Cleanup — manual trigger + status/history
-- Import Logs — view, download, clear logs
-- Settings — importer settings storage (there is nothing to save; no Eventbrite API token)
+There is no separate Import History submenu: `admin.php?page=conexao-import-history`
+was retired in v1.10.0 (see below). There is no separate Import Logs submenu
+either: `admin.php?page=conexao-import-log` was retired once run-level log
+inspection moved into the Import History table (see below).
+
+### Import History lives on the dashboard (v1.10.0)
+
+Import history used to be rendered twice — a compact 10-row summary on the
+dashboard and a complete table on a dedicated `conexao-import-history` screen.
+The two disagreed about how much history existed, so the operator had to know
+which screen was complete. v1.10.0 consolidates them:
+
+- `admin.php?page=conexao-event-import` is the **one** place history is shown.
+  Its sections are, in order: Event Import heading, Import Summary (last
+  successful import), Run Import, Export Events, **Import History**. It carries
+  no Sources section — see
+  [The dashboard is not a source overview](#the-dashboard-is-not-a-source-overview).
+- The history section is the complete table the dedicated page used to render:
+  the same 13 columns — Time, Source, Found, New, Updated, Unchanged,
+  Duplicates, Skipped, Errors, Status, **Listing**, **Progress**, **Cooldown** —
+  in the same order, with the same cells, plus the **Logs** column added later
+  (see [Logs in Import History](#logs-in-import-history)).
+- **The whole retained history is displayed**, not the latest 10 runs.
+  `Conexao_Import_History::MAX_ENTRIES` (100) is the only limit, and it is
+  applied when the run is recorded, not when the page is rendered.
+- There is exactly **one** renderer, `Conexao_Event_Sources::render_history_table()`.
+  The retired `render_history_summary()` (10-row slice) and `render_history_page()`
+  are gone, so the two views cannot drift again.
+- **Listing** is still the completeness signal (`complete` / `incomplete`, with a
+  missing historical `complete` treated as complete), **Progress** is still
+  `Conexao_Event_Sources::history_progress_text()` — the single function the
+  continuation regression suite also drives — and **Cooldown** is unchanged. A
+  checkpoint is never read as completeness, and the word "resumable" still
+  appears only when a continuation is actually scheduled.
+- An empty history still renders `No imports yet.`
+- The 14-column table sits in a horizontally scrollable wrapper
+  (`.conexao-import-history-scroll`), so narrow windows scroll the table instead
+  of widening the page. No column is hidden and no JavaScript is involved.
+
+**Retired route.** `conexao-import-history` is no longer registered: no submenu,
+no page callback and no hidden page. A direct visit to the old URL is redirected
+by `Conexao_Event_Sources::maybe_redirect_retired_history_page()`, hooked to
+`admin_page_access_denied` (the hook WordPress fires for an unregistered admin
+page immediately before it refuses it), to
+`admin.php?page=conexao-event-import` — for a user with `manage_options` only.
+Everyone else still gets WordPress's standard refusal.
+
+**What did NOT change.** History storage and recording are untouched:
+`conexao_event_import_history`, `MAX_ENTRIES = 100`, newest-first ordering,
+`record()`'s field shapes (`complete`, `cooldown`, `checkpoint`, the optional
+per-run extras) and every existing recorded row. This was a UI consolidation,
+not a data migration.
+
+### The dashboard is not a source overview
+
+The dashboard used to render a **Sources** section between the Import Summary
+and Run Import: a `conexao-source-list` of every source name, an active/inactive
+indicator per source, and each source's last error message. It was removed.
+
+It was a read-only copy of state the operator manages one screen away, so it
+gave two places to read the same fact and implied the dashboard could act on a
+source it could not. The dashboard is now purely about **running** an import,
+**exporting** events and **reviewing** what happened:
+
+| Section | What it does |
+|---|---|
+| Import Summary | The last successful import timestamp |
+| Run Import | **Import Events Now** — one full import across every active source |
+| Export Events | The JSON export download |
+| Import History | The complete 14-column table, with per-run Logs |
+
+**Source management is unchanged and still lives on its own screen:**
+`admin.php?page=conexao-event-sources` (the **Event Sources** submenu). That page
+keeps the full source table (name, feed URL, type, status, last import, events
+imported), the per-source Import Now / Edit / Enable-disable / Delete actions,
+the Add/Edit Source form with every configuration field and its validation, and
+the bulk controls (Select All, Deselect All, Enable Selected, Disable Selected,
+Delete Selected). Nothing about source configuration moved, was renamed or was
+retired.
+
+**What did NOT change.** `Conexao_Event_Sources::get_all()` is still read on
+every dashboard render, because the Import Summary's "Last successful import"
+is derived from it — removing the source list did not remove that calculation.
+The Run Import form is byte-for-byte the same request: the
+`conexao_event_sources` nonce, `conexao_source_action=run_import` and
+`source_id=all`, handled by `handle_run_import()` exactly as before, so the
+dashboard still imports across **all active sources** and never changes which
+sources are processed. Rendering the dashboard writes nothing: it does not touch
+`conexao_event_sources`, the import history or the log store, and it never starts
+an import.
+
+### Logs in Import History
+
+The separate **Import Logs** screen (`admin.php?page=conexao-import-log`) is
+retired. Its useful part — reading the diagnostics of one import — now lives in
+the Import History table, so an operator traces an error to the run that
+produced it without leaving the table and searching an unrelated stream.
+
+**The Logs column.** Every history row has a compact 14th column, **Logs**:
+
+| State | What the cell shows |
+|---|---|
+| The run has entries | A `<details>` disclosure: `View logs (12 entries)` |
+| The run has none | `No logs` |
+| The record has no usable `run_id` | `Logs unavailable for this historical run` |
+
+The disclosure is a native `<details>` / `<summary>`, so it is keyboard-operable
+and needs no JavaScript. Expanding it shows that run's entries newest first, each
+with its timestamp, level (`DEBUG` / `INFO` / `WARNING` / `ERROR`), message, and
+— when the entry carries them — event title, source event ID, HTTP status and a
+small allowlisted set of safe context keys (URL, attempt, page, reason, post ID,
+rate-limit counters). Severity is carried by a word as well as a colour, so it
+never depends on colour alone. Long messages and URLs wrap inside the cell
+instead of widening the table.
+
+**Run association is by `run_id`, never by source.** The engine publishes a run
+ID through the `conexao_event_importer_current_run_id` filter and every
+diagnostic entry written during a run carries it. The renderer groups the stored
+log by `run_id` **once per render** (`Conexao_Import_Log::index_entries_by_run()`)
+and each row reads its own group out of that index — so a 100-row table does not
+rescan the 2,000-entry store 100 times. A source-wide fallback is deliberately
+**not** implemented: two runs on the same source must never share a log view.
+
+**Older records.** A history row written before run logging existed has no
+`run_id`. It says so (`Logs unavailable for this historical run`) rather than
+borrowing another run's entries or guessing from a timestamp. Existing history
+rows are never rewritten to add a run ID.
+
+**Downloads.** Each expanded run offers **Download this run**, which reuses the
+existing protected `admin-post.php?action=conexao_download_run_log` handler
+(`manage_options` + per-run nonce + sanitised run ID + sanitised filename). No
+new download endpoint was introduced. The whole-log download
+(`conexao_download_log`) is offered above the table.
+
+**Clear Logs.** The retired screen's destructive action survives as a **Clear
+Logs** control above the history table, still pointing at the same protected
+`conexao_clear_log` handler (`manage_options` + nonce). It requires an explicit
+confirmation and is deliberately **not** placed beside the per-row View logs
+control, so it cannot be triggered while inspecting a run. After clearing, the
+operator lands back on the dashboard.
+
+**Retired route.** `conexao-import-log` is no longer registered: no submenu, no
+page callback and no hidden page. A bookmarked URL is redirected to
+`admin.php?page=conexao-event-import` by
+`Conexao_Import_Log_Admin::maybe_redirect_retired_log_page()`, hooked to
+`admin_page_access_denied`, for a user with `manage_options` only.
+
+**What did NOT change.** The logging system itself is untouched:
+`conexao_event_import_log`, `MAX_ENTRIES = 2000`, `BUFFER_FLUSH_AT = 250`, run
+buffering (`begin_run()` / `end_run()` / `flush()`), 90-day pruning, context
+sanitisation, `get_for_run()`, `format_entry_line()` / `format_entries()`,
+`export_run()` / `export_all()` and every protected download/clear handler. Only
+the second **screen** was retired.
+
+### Import Settings — retired (empty page)
+
+The Import Settings screen (`admin.php?page=conexao-import-settings`) is
+retired: no submenu, no page callback and no hidden page. It displayed
+explanatory text only ("Nothing to configure") and provided no useful controls.
+
+**Retired route.** `conexao-import-settings` is no longer registered: no
+submenu, no page callback and no hidden page. A direct visit to the old URL is
+redirected by `Conexao_Event_Sources::maybe_redirect_retired_settings_page()`,
+hooked to `admin_page_access_denied` (the hook WordPress fires for an
+unregistered admin page immediately before it refuses it), to
+`admin.php?page=conexao-event-import` — for a user with `manage_options` only.
+Everyone else still gets WordPress's standard refusal.
+
+**What did NOT change.** The underlying settings storage is untouched:
+`Conexao_Import_Settings` remains loaded, `conexao_event_importer_settings`
+is unchanged, `cleanup_scope` keeps its current value and `'all'` fallback,
+and `Conexao_Event_Cleanup` continues to read `cleanup_scope` exactly as
+before. Only the **screen** was retired.
 
 ### Event Sources — bulk actions and the selection controller
 
@@ -1607,9 +2071,9 @@ the per-row checkboxes:
 
 | Action | Effect |
 |---|---|
-| `enable` — Enable Selected | `set_status( $id, 'active' )` for every selected source |
-| `disable` — Disable Selected | `set_status( $id, 'inactive' )` for every selected source |
-| `delete` — Delete Selected | `delete( $id )`: the **configuration** only, never the imported events |
+| `enable` — Enable Selected | Sets `active` on every selected source in one registry write |
+| `disable` — Disable Selected | Sets `inactive` on every selected source in one registry write |
+| `delete` — Delete Selected | Removes every selected source configuration in one registry write; imported events are preserved |
 
 Semantics that must not be "optimised" away:
 
@@ -1621,11 +2085,47 @@ Semantics that must not be "optimised" away:
   counts appear separately in the redirect notice.
 - **An empty selection is an error, never "all sources".** The request is
   refused and no source is touched.
+- **One registry write per batch.** `apply_bulk_action()` loads the source
+  registry once, calculates every change in memory, and persists the resulting
+  registry with a single `update_option()` call — not one write per selected
+  source. A no-op batch (every source already in the requested state) performs
+  no write at all.
+- **Failure reporting.** If the single `update_option()` cannot be verified as
+  persisted, every affected source is reported as failed and no successful
+  deletion log is written.
 - **The core is testable.** `handle_bulk_action()` (capability + nonce +
   redirect) delegates to `apply_bulk_action( $action, $ids )`, which returns a
   result array and never redirects or exits. The regression suite drives that
   core directly and the handler itself in a child PHP process, because the
   handler terminates its process by design.
+
+### Bulk persistence — how it works
+
+`apply_bulk_action()` operates on the registry array rather than calling the
+individual update methods repeatedly:
+
+1. **Load** the registry once via `get_all()` (lazy defaults, migrations and
+   registry rules continue to run as before).
+2. **Validate and deduplicate** the submitted IDs against the registry.
+3. **Calculate all changes in memory** — status flips for enable/disable,
+   removals for delete — preserving every non-status field of each source.
+4. **Persist once** with `update_option( self::OPTION_KEY, $sources, false )`.
+   `save()`, `set_status()` and `delete()` are never called inside the
+   per-source loop.
+5. **Report results** only after the write is verified. A read-back check
+   distinguishes a genuine write failure from `update_option()` returning
+   `false` because the stored value already matches.
+
+Concurrency: a single `update_option()` does not make the operation
+transactionally safe against concurrent writers. Two bulk operations running at
+the same time can still overwrite each other's changes to unrelated source
+metadata. This is the same limitation as the previous per-source writes and is
+documented here rather than addressed with a new locking system.
+
+Deleting a source configuration removes only the source's entry from
+`conexao_event_sources`. Imported event posts, attachments, media and the
+`_event_status` / `_event_source` / `_event_source_id` post meta are never
+touched by a bulk delete.
 
 Security on the request: `manage_options`, the existing
 `conexao_event_sources_nonce`, `sanitize_text_field` on every ID, de-duplication
@@ -1741,4 +2241,4 @@ meta group deleted, so a withdrawn series can never leave an orphan rule.
 - `includes/class-event-export.php` / `includes/class-event-import.php` — the local→production transfer (UUIDs + embedded images)
 - `includes/class-event-sources.php` — source CRUD + dashboard
 
-_Last verified: 2026-11-09 by the plugin documentation audit_
+_Last verified: 2026-11-15 by Stage 1 run coordination, rate limiting and Heritage eligibility_

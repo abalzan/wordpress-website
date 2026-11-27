@@ -44,20 +44,68 @@ $passed        = 0;
 $failed        = 0;
 $created_posts = array();
 $created_terms = array();
+$GLOBALS['ph3c_cohort'] = array();
 
-/** @return int Term ID for a conexao_county term (created if missing). */
-function leisure_test_county( $name, $slug ) {
+/**
+ * The term ID of an EXISTING, real county.
+ *
+ * `conexao_county` is a closed list of the Republic of Ireland's 26 counties
+ * (`Conexao_Data_Model_Counties` rejects every other term at pre_insert_term),
+ * so a fixture may not invent "Teste Alfa (PH3C)". The county is the site's own
+ * shared term and is deliberately NOT registered for cleanup: this suite must
+ * never delete one.
+ *
+ * @param string $slug Canonical county slug.
+ * @return int Term ID, or 0 when that county term does not exist.
+ */
+function leisure_test_county( $slug ) {
+	if ( ! taxonomy_exists( 'conexao_county' ) ) {
+		return 0;
+	}
+
 	$existing = term_exists( $slug, 'conexao_county' );
-	if ( $existing && ! is_wp_error( $existing ) ) {
-		$term = get_term( (int) ( is_array( $existing ) ? $existing['term_id'] : $existing ), 'conexao_county' );
-		return (int) $term->term_id;
+	if ( ! $existing || is_wp_error( $existing ) ) {
+		return 0;
 	}
-	$inserted = wp_insert_term( $name, 'conexao_county', array( 'slug' => $slug ) );
-	if ( is_wp_error( $inserted ) ) {
-		exit( 1 );
-	}
-	$created_terms[] = (int) $inserted['term_id'];
-	return (int) $inserted['term_id'];
+
+	$term = get_term( (int) ( is_array( $existing ) ? $existing['term_id'] : $existing ), 'conexao_county' );
+
+	return ( $term instanceof WP_Term ) ? (int) $term->term_id : 0;
+}
+
+/**
+ * `conexao_leisure_related_events()` restricted to THIS SUITE'S cohort.
+ *
+ * The real counties are shared with the site's own content, so "at most three
+ * events, these three, in this order" is only a population-independent claim
+ * inside the fixture cohort. The product query is untouched: the restriction is
+ * a `pre_get_posts` filter at priority 999 that intersects its `post__in` (the
+ * runtime's upcoming-event list) with the suite's own event IDs — the same
+ * technique `test-stage41-rest-language.php` documents for its REST membership
+ * assertions. Every assertion below still proves the real county scoping, the
+ * 3-event cap, the ordering and the gates: the cohort contains a cross-county
+ * event, a past event and a hidden event that must all stay out.
+ *
+ * @param int $leisure_id Leisure record.
+ * @return array Related event posts.
+ */
+function leisure_test_related( $leisure_id ) {
+	$cohort = array_values( array_map( 'intval', array_filter( (array) $GLOBALS['ph3c_cohort'] ) ) );
+
+	$restrict = static function ( $query ) use ( $cohort ) {
+		$scheduled = array_map( 'intval', (array) $query->get( 'post__in' ) );
+
+		$query->set(
+			'post__in',
+			empty( $scheduled ) ? $cohort : array_values( array_intersect( $scheduled, $cohort ) )
+		);
+	};
+
+	add_action( 'pre_get_posts', $restrict, 999 );
+	$related = conexao_leisure_related_events( $leisure_id );
+	remove_action( 'pre_get_posts', $restrict, 999 );
+
+	return $related;
 }
 
 function leisure_test_create_leisure( $title, $county_term_id = 0, $internal = true, $extra_meta = array() ) {
@@ -116,6 +164,10 @@ function leisure_test_create_event( $title, $county_term_id, $meta = array() ) {
 		wp_set_object_terms( $post_id, array( (int) $county_term_id ), 'conexao_county' );
 	}
 	$created_posts[] = $post_id;
+
+	// Every fixture event joins the cohort the assertions are scoped to.
+	$GLOBALS['ph3c_cohort'][] = (int) $post_id;
+
 	return $post_id;
 }
 
@@ -142,9 +194,9 @@ if ( ! class_exists( 'Conexao_Event_Query' ) ) {
 Conexao_Event_Query::flush_cache();
 
 // Counties: A has events; ZETA has none; OMEGA used for cross-county events.
-$county_a     = leisure_test_county( 'Teste Alfa (PH3C)', 'ph3c-test-county-alfa' );
-$county_zeta  = leisure_test_county( 'Teste Zeta (PH3C)', 'ph3c-test-county-zeta' );
-$county_omega = leisure_test_county( 'Teste Omega (PH3C)', 'ph3c-test-county-omega' );
+$county_a     = leisure_test_county( 'laois' );
+$county_zeta  = leisure_test_county( 'leitrim' );
+$county_omega = leisure_test_county( 'cavan' );
 
 // ---------------------------------------------------------------------------
 // 1. Same-county upcoming events, runtime order, max 3, no duplicates
@@ -163,7 +215,7 @@ $ev_past = leisure_test_create_event( 'Alfa passado', $county_a, array( '_event_
 $ev_hidden = leisure_test_create_event( 'Alfa oculto', $county_a, array( '_event_date' => ph3c_day_offset( 3 ), '_event_status' => 'expired' ) );
 
 $leisure_a = leisure_test_create_leisure( 'Lazer Alfa', $county_a );
-$related   = conexao_leisure_related_events( $leisure_a );
+$related   = leisure_test_related( $leisure_a );
 
 $related_ids = wp_list_pluck( $related, 'ID' );
 
@@ -196,7 +248,7 @@ $weekly_recur = leisure_test_create_event( 'Alfa semanal', $county_a, array(
 	'_event_recurrence_end'   => ph3c_day_offset( 60 ),
 ) );
 
-$related_recur = conexao_leisure_related_events( $leisure_a );
+$related_recur = leisure_test_related( $leisure_a );
 $recur_ids     = wp_list_pluck( $related_recur, 'ID' );
 $count_recur   = count( array_keys( $recur_ids, $weekly_recur, true ) );
 
@@ -222,7 +274,7 @@ $multiday = leisure_test_create_event( 'Alfa multi-dia', $county_a, array(
 	'_event_end_date' => ph3c_day_offset( 1 ),
 ) );
 
-$related_multi = conexao_leisure_related_events( $leisure_a );
+$related_multi = leisure_test_related( $leisure_a );
 $multi_ids     = wp_list_pluck( $related_multi, 'ID' );
 
 assert_true( in_array( $multiday, $multi_ids, true ), 'includes the multi-day event active today' );
@@ -233,10 +285,10 @@ assert_true( in_array( $multiday, $multi_ids, true ), 'includes the multi-day ev
 test_section( 'No-Events States' );
 
 $leisure_no_county = leisure_test_create_leisure( 'Lazer sem condado', 0 );
-assert_true( array() === conexao_leisure_related_events( $leisure_no_county ), 'destination without a county returns empty' );
+assert_true( array() === leisure_test_related( $leisure_no_county ), 'destination without a county returns empty' );
 
 $leisure_zeta = leisure_test_create_leisure( 'Lazer Zeta', $county_zeta );
-assert_true( array() === conexao_leisure_related_events( $leisure_zeta ), 'county with no upcoming events returns empty' );
+assert_true( array() === leisure_test_related( $leisure_zeta ), 'county with no upcoming events returns empty' );
 
 // ---------------------------------------------------------------------------
 // 5. External destinations never surface events
@@ -244,7 +296,7 @@ assert_true( array() === conexao_leisure_related_events( $leisure_zeta ), 'count
 test_section( 'External Destinations' );
 
 $leisure_external = leisure_test_create_leisure( 'Lazer externo', $county_a, false );
-assert_true( array() === conexao_leisure_related_events( $leisure_external ), 'external (redirecting) record returns empty' );
+assert_true( array() === leisure_test_related( $leisure_external ), 'external (redirecting) record returns empty' );
 if ( function_exists( 'conexao_leisure_external_url' ) ) {
 	assert_true( (bool) conexao_leisure_external_url( $leisure_external ), 'test record classifies as external (setup sanity)' );
 }

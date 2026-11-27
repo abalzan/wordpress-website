@@ -1,0 +1,33 @@
+{
+    "label": "final-vs-pre-write",
+    "before_status_counts": {
+        "active": 154
+    },
+    "after_status_counts": {
+        "active": 136,
+        "inactive": 18
+    },
+    "global_hash_identical": true,
+    "named_sources": {
+        "eventbrite": "active",
+        "eventbrite_cavan": "active",
+        "eventbrite_laois": "active",
+        "heritage_week": "active"
+    },
+    "fixtures_after": {
+        "g2_cavan_probe": false,
+        "g4c_budget_probe": false
+    },
+    "gates": {
+        "target_manifest_records_missing": 0,
+        "target_records_not_inactive": 0,
+        "unauthorised_source_records_changed": 0,
+        "non_status_fields_changed_on_target_records": 0,
+        "source_records_created": 0,
+        "source_records_deleted": 0,
+        "total_registry_count_delta": 0,
+        "named_fixture_ids_created": 0
+    },
+    "gates_all_zero": true,
+    "result": "PASS"
+}

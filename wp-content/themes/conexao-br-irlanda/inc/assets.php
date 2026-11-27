@@ -79,6 +79,11 @@ function conexao_enqueue_scripts() {
 	}
 	wp_enqueue_script( 'conexao-main', CONEXAO_THEME_URI . '/assets/js/main.js', $main_deps, conexao_asset_version( 'assets/js/main.js' ), array( 'in_footer' => true, 'strategy' => 'defer' ) );
 
+	// Christmas Easter egg styles. Small and cached, and scoped to `.christmas-egg*`;
+	// the markup it styles ships hidden (aria-hidden="true" + display:none), so the
+	// inactive site renders and downloads nothing visible.
+	wp_enqueue_style( 'conexao-christmas-egg', CONEXAO_THEME_URI . '/assets/css/christmas-egg.css', array( 'conexao-main' ), conexao_asset_version( 'assets/css/christmas-egg.css' ) );
+
 	/*
 	 * Inject the localized UI strings for main.js (Stage 1 i18n foundation).
 	 * main.js reads `window.ConexaoI18n` and falls back to the Portuguese
@@ -109,6 +114,66 @@ function conexao_enqueue_scripts() {
 	}
 }
 add_action( 'wp_enqueue_scripts', 'conexao_enqueue_scripts' );
+
+/**
+ * Render the hidden Christmas Easter egg markup right after `<body>`.
+ *
+ * The egg is inert until a visitor types the trigger word (NATAL on the
+ * Portuguese site, CHRISTMAS on /en/): it renders with `aria-hidden="true"` and
+ * `display:none`, so the inactive site is byte-for-byte unaffected.
+ *
+ * The greeting, the message and the close label come from the theme's gettext
+ * catalogue — the same source main.js reads through `window.ConexaoI18n` — so
+ * the markup and the script can never disagree about the wording, and the
+ * English site gets English copy from the catalogue rather than from a second,
+ * hardcoded set of strings.
+ *
+ * Hooked to `wp_body_open` (emitted by header.php), so no template is changed.
+ *
+ * @return void
+ */
+function conexao_christmas_egg_markup() {
+	$title   = __( 'Feliz Natal!', 'conexao-br-irlanda' );
+	$message = __( 'Que esta época traga alegria, união e momentos especiais.', 'conexao-br-irlanda' );
+	$close   = __( 'Fechar', 'conexao-br-irlanda' );
+
+	/*
+	 * A fixed snowflake layout, not a randomised one.
+	 *
+	 * The flakes are decorative and purely visual, so their positions are
+	 * derived from the index: the markup is identical on every request, which
+	 * keeps the page cacheable and the rendered HTML deterministic. No
+	 * `wp_rand()` here.
+	 */
+	$flakes = '';
+	for ( $i = 0; $i < 20; $i++ ) {
+		$flakes .= sprintf(
+			'<span class="christmas-egg__flake" style="left:%d%%;top:%d%%;width:%dpx;height:%dpx;animation-duration:%ss;animation-delay:%ss"></span>',
+			( $i * 17 ) % 100,
+			( $i * 23 ) % 100,
+			4 + ( $i % 4 ) * 2,
+			4 + ( $i % 4 ) * 2,
+			6 + ( $i % 9 ),
+			$i % 10
+		);
+	}
+
+	printf(
+		'<div class="christmas-egg" id="christmas-egg" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="christmas-egg-title">'
+		. '<div class="christmas-egg__backdrop"></div>'
+		. '<div class="christmas-egg__snow" aria-hidden="true">%1$s</div>'
+		. '<article class="christmas-egg__card">'
+		. '<button type="button" class="christmas-egg__close" aria-label="%2$s">&times;</button>'
+		. '<h2 class="christmas-egg__title" id="christmas-egg-title">%3$s</h2>'
+		. '<p class="christmas-egg__message">%4$s</p>'
+		. '</article></div>',
+		$flakes, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- composed of integers only.
+		esc_attr( $close ),
+		esc_html( $title ),
+		esc_html( $message )
+	);
+}
+add_action( 'wp_body_open', 'conexao_christmas_egg_markup', 10 );
 
 /**
  * Add preconnect hints for Google Fonts in the head.

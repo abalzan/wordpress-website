@@ -1,0 +1,42 @@
+{
+    "stage": "event-importer-stage-0-probe-deactivation",
+    "generated_at_utc": "2026-11-14T20:34:05+00:00",
+    "branch": "event-import-improvements",
+    "head": "274fc10ab9c4bc4e26ee15ed077c80182e9e739a",
+    "source_of_ids": "docs/evidence/2026-11-14-stage-0-event-importer-probe-deactivation/01-preflight-registry-inventory.json",
+    "selection_rule": "anchored ^g1_probe_ in the live raw conexao_event_sources option; frozen literal allowlist (no wildcard at write time)",
+    "target_status": "inactive",
+    "count": 18,
+    "ids": [
+        "g1_probe_eventbrite_12a0be98",
+        "g1_probe_eventbrite_1d540378",
+        "g1_probe_eventbrite_217b99b8",
+        "g1_probe_eventbrite_255d8e5d",
+        "g1_probe_eventbrite_26089591",
+        "g1_probe_eventbrite_337a55a7",
+        "g1_probe_eventbrite_63e32fa4",
+        "g1_probe_eventbrite_9695905a",
+        "g1_probe_eventbrite_a7200d61",
+        "g1_probe_eventbrite_f513d699",
+        "g1_probe_heritage_week_0b81b474",
+        "g1_probe_heritage_week_1a8e51f2",
+        "g1_probe_heritage_week_3959e340",
+        "g1_probe_heritage_week_502e0f5d",
+        "g1_probe_heritage_week_5b8fe650",
+        "g1_probe_heritage_week_79452265",
+        "g1_probe_heritage_week_9f3deb1a",
+        "g1_probe_heritage_week_e38a7b47"
+    ],
+    "fixture_ids_excluded_by_design": [
+        "g2_cavan_probe",
+        "g4c_budget_probe"
+    ],
+    "fixture_ids_present_in_registry": {
+        "g2_cavan_probe": false,
+        "g4c_budget_probe": false
+    },
+    "each_id_exists_exactly_once_in_registry": true,
+    "fixture_ids_absent_from_manifest": true,
+    "registry_count_at_freeze": 154,
+    "registry_global_non_status_hash_at_freeze": "1075c8a8be8933922d511aae4b4905d5fb07625ee7598c0ea6abd67183591fda"
+}

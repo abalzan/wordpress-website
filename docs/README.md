@@ -214,6 +214,9 @@ To add, remove or re-classify a plugin: edit `plugins.json`, add its doc under
 | [reports/2026-10-27-halloween-mobile-experience-plan.md](reports/2026-10-27-halloween-mobile-experience-plan.md) | Plan for safe, occasional mobile Halloween appearances |
 | [reports/2026-10-27-halloween-mobile-experience-report.md](reports/2026-10-27-halloween-mobile-experience-report.md) | Implementation, timing, responsive browser evidence, tests, and limitations |
 | [reports/2026-11-02-lazer-location-services.md](reports/2026-11-02-lazer-location-services.md) | **Lazer location services** — leisure coordinate meta + validation + provenance + admin inventory column, visitor-activated browser geolocation on `/lazer/`, client-side Haversine distances, two read-only REST endpoints, nearest-first ordering with proximity-aware infinite scroll |
+| [reports/2026-11-14-stage-0-5-test-safety.md](reports/2026-11-14-stage-0-5-test-safety.md) | **Stage 0.5 — Event Importer test isolation.** The four operator stores (import log/history, cleanup status/history) get a fail-closed per-process storage seam, a suffix established before `wp-load.php`, a restrictive reset helper, guarded suites, removal of the destructive cleanup operations and a 14-check static gate with negative controls |
+| [reports/2026-11-15-stage-1-event-importer-run-coordination.md](reports/2026-11-15-stage-1-event-importer-run-coordination.md) | **Stage 1 — Event Importer run coordination.** Implements the shared Eventbrite breaker and bounded deferral, parent/child Run All history with idempotent aggregation, and Heritage Week pre-detail date eligibility; no provider requests or production writes |
+| [reports/2026-11-15-stage-2-event-importer-fetch-reconciliation.md](reports/2026-11-15-stage-2-event-importer-fetch-reconciliation.md) | **Stage 2 — Event Importer fetch contract, reconciliation safeguards, partial-enrichment protection and reconciliation pagination.** P4 verified every handler's completeness/safety gates; P3 made five handlers throw on upstream failure and report unparsable retrievals as incomplete; P5 added a per-field enrichment state with field-level preservation; P10 replaced the 300-post reconciliation with gate-first keyset pagination. `PASS WITH LIMITATION`: no verified read-only shared-database method, so no shared-database query or write was performed |
 
 ## Testing
 
@@ -222,7 +225,8 @@ gate and HTTP acceptance:
 
 ```bash
 ./scripts/run-tests.sh            # all layers
-./scripts/run-tests.sh --scripts   # script-contract gate only
+./scripts/run-tests.sh --scripts   # static script checks (no PHP/Docker/DB)
+./scripts/run-tests.sh --scripts-runtime  # explicit PHP-backed script checks
 ```
 
 The **model** — layers, suite classification, permanent fail-closed gates, the

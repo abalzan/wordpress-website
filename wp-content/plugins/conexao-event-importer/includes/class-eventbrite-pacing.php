@@ -136,6 +136,38 @@ class Conexao_Eventbrite_Pacing {
 	protected $clock = null;
 
 	/**
+	 * Absolute deadline for the current source invocation's time window.
+	 *
+	 * Waiting is deliberately bounded by this deadline, while the request budget
+	 * remains owned by Conexao_Request_Budget. A deferred wait is a resumable
+	 * rate-limit outcome, never a budget exhaustion.
+	 *
+	 * @var float|null
+	 */
+	protected $wait_deadline = null;
+
+	/**
+	 * Whether the last requested wait did not fit the deadline.
+	 *
+	 * @var bool
+	 */
+	protected $wait_deferred = false;
+
+	/**
+	 * Seconds requested by the last wait.
+	 *
+	 * @var float
+	 */
+	protected $last_wait_requested = 0.0;
+
+	/**
+	 * Seconds actually applied by the last wait.
+	 *
+	 * @var float
+	 */
+	protected $last_wait_applied = 0.0;
+
+	/**
 	 * Delays this instance applied, in order, with their reason.
 	 *
 	 * @var array[]
@@ -176,7 +208,7 @@ class Conexao_Eventbrite_Pacing {
 	 * @var bool
 	 */
 	protected $last_retry_after_capped = false;
-// -------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Run-scoped shared state.
 	//
 	// Static, in-memory, and reset by begin_run(). Exactly the same lifetime
@@ -204,6 +236,13 @@ class Conexao_Eventbrite_Pacing {
 	 * @var string[]
 	 */
 	protected static $run_skipped_sources = array();
+
+	/**
+	 * Structured state for the current logical Run All.
+	 *
+	 * @var array
+	 */
+	protected static $run_state = array();
 
 	/**
 	 * The one pacing policy instance for the current run.
@@ -249,7 +288,14 @@ class Conexao_Eventbrite_Pacing {
 	public static function begin_run() {
 		self::$run_rate_limited        = false;
 		self::$run_rate_limited_source = '';
-		self::$run_skipped_sources    = array();
+		self::$run_skipped_sources     = array();
+		self::$run_state               = array(
+			'rate_limited_at'             => 0,
+			'retry_at'                    => 0,
+			'retry_after_kind'            => '',
+			'retry_after_unsupported'     => false,
+			'active'                      => false,
+		);
 
 		self::set_shared( null );
 	}
@@ -292,6 +338,38 @@ class Conexao_Eventbrite_Pacing {
 			self::$run_rate_limited        = true;
 			self::$run_rate_limited_source = (string) $source_id;
 		}
+
+		self::$run_state['active']          = true;
+		self::$run_state['rate_limited_at'] = time();
+	}
+
+	/**
+	 * Record the logical run's retry window and its source-independent reason.
+	 *
+	 * @param float  $retry_at Timestamp at which the requested retry would fit.
+	 * @param string $kind     delta|http_date|fallback|unsupported.
+	 * @return void
+	 */
+	public static function record_run_retry_state( $retry_at, $kind ) {
+		self::$run_state['retry_at']         = max( 0, (int) $retry_at );
+		self::$run_state['retry_after_kind'] = sanitize_key( (string) $kind );
+		if ( 'unsupported' === $kind ) {
+			self::$run_state['retry_after_unsupported'] = true;
+			self::$run_state['active']                  = true;
+		}
+	}
+
+	/**
+	 * Return structured logical-run rate-limit state for history and tests.
+	 *
+	 * @return array
+	 */
+	public static function get_run_state() {
+		$state                    = self::$run_state;
+		$state['rate_limited']    = (bool) self::$run_rate_limited;
+		$state['first_source']    = (string) self::$run_rate_limited_source;
+		$state['skipped_sources'] = self::get_skipped_sources();
+		return $state;
 	}
 
 	/**
@@ -326,6 +404,40 @@ class Conexao_Eventbrite_Pacing {
 	 */
 	public function set_clock( $clock ) {
 		$this->clock = is_callable( $clock ) ? $clock : null;
+	}
+
+	/**
+	 * Set the end of the current source's execution window.
+	 *
+	 * @param float|null $deadline Absolute microtime-like timestamp.
+	 * @return void
+	 */
+	public function set_wait_deadline( $deadline ) {
+		$this->wait_deadline = null === $deadline ? null : (float) $deadline;
+		$this->wait_deferred = false;
+	}
+
+	/**
+	 * Whether the last requested wait was deferred to a later continuation.
+	 *
+	 * @return bool
+	 */
+	public function was_wait_deferred() {
+		return (bool) $this->wait_deferred;
+	}
+
+	/**
+	 * Wait diagnostics for the current source invocation.
+	 *
+	 * @return array
+	 */
+	public function get_wait_state() {
+		return array(
+			'deferred' => (bool) $this->wait_deferred,
+			'requested' => (float) $this->last_wait_requested,
+			'applied' => (float) $this->last_wait_applied,
+			'deadline' => null === $this->wait_deadline ? 0.0 : (float) $this->wait_deadline,
+		);
 	}
 
 	/**
@@ -367,7 +479,7 @@ class Conexao_Eventbrite_Pacing {
 	 */
 	public function get_cooldown_seconds( $retry_number, $retry_after = null ) {
 		$this->last_retry_after_present = ( null !== $retry_after );
-		$this->last_retry_after_capped   = false;
+		$this->last_retry_after_capped = false;
 
 		// A `Retry-After` is an explicit upstream instruction: honour it, but
 		// only after the hard cap, so Eventbrite cannot dictate our runtime.
@@ -393,10 +505,28 @@ class Conexao_Eventbrite_Pacing {
 	/**
 	 * Wait the polite inter-request delay between two pages.
 	 *
+	 * @param float|null $now The instant the caller already read, so the
+	 *                        deadline decision uses the SAME clock read as the
+	 *                        walk's time-budget check. Passing it is what keeps
+	 *                        one page costing exactly one clock read: reading
+	 *                        the clock a second time here charged the walk
+	 *                        twice per page and halved the number of pages a
+	 *                        budget could confirm.
 	 * @return float Seconds requested.
 	 */
-	public function pace_page_request() {
-		return $this->sleep_for( $this->get_page_delay_seconds(), 'page_pacing' );
+	public function pace_page_request( $now = null ) {
+		return $this->sleep_for( $this->get_page_delay_seconds(), 'page_pacing', $now );
+	}
+
+	/**
+	 * Apply an injectable, deadline-aware retry wait.
+	 *
+	 * @param float  $seconds Requested delay.
+	 * @param string $reason  Diagnostic reason.
+	 * @return float Seconds actually applied.
+	 */
+	public function wait( $seconds, $reason = 'retry_backoff' ) {
+		return $this->sleep_for( $seconds, $reason );
 	}
 
 	/**
@@ -425,12 +555,20 @@ class Conexao_Eventbrite_Pacing {
 	/**
 	 * Apply a delay, recording it and honouring an injected sleeper.
 	 *
-	 * @param float  $seconds Delay in seconds.
-	 * @param string $reason  Why the delay was applied (for assertions).
+	 * @param float      $seconds Delay in seconds.
+	 * @param string     $reason  Why the delay was applied (for assertions).
+	 * @param float|null $now     The instant to evaluate the deadline against.
+	 *                            When omitted the clock is read here; callers
+	 *                            that already read it pass it in so the
+	 *                            deadline decision does not consume a second
+	 *                            clock read.
 	 * @return float Seconds requested.
 	 */
-	protected function sleep_for( $seconds, $reason ) {
-		$seconds = (float) $seconds;
+	protected function sleep_for( $seconds, $reason, $now = null ) {
+		$seconds                   = (float) $seconds;
+		$this->wait_deferred       = false;
+		$this->last_wait_requested = $seconds;
+		$this->last_wait_applied   = 0.0;
 
 		$this->applied_delays[] = array(
 			'reason'  => (string) $reason,
@@ -441,12 +579,23 @@ class Conexao_Eventbrite_Pacing {
 			return 0.0;
 		}
 
+		if ( null !== $this->wait_deadline ) {
+			$decision_now = null === $now ? $this->now() : (float) $now;
+
+			if ( ( $decision_now + $seconds ) > $this->wait_deadline ) {
+				$this->wait_deferred = true;
+				return 0.0;
+			}
+		}
+
 		if ( null !== $this->sleeper ) {
 			call_user_func( $this->sleeper, $seconds );
+			$this->last_wait_applied = $seconds;
 			return $seconds;
 		}
 
 		sleep( (int) ceil( $seconds ) );
+		$this->last_wait_applied = $seconds;
 
 		return $seconds;
 	}
@@ -532,6 +681,7 @@ class Conexao_Eventbrite_Pacing {
 			'page_delay_seconds'       => $this->get_page_delay_seconds(),
 			'last_retry_after_present' => (bool) $this->last_retry_after_present,
 			'last_retry_after_capped'  => (bool) $this->last_retry_after_capped,
+			'wait'                     => $this->get_wait_state(),
 			'applied_delays'           => count( $this->applied_delays ),
 		);
 	}

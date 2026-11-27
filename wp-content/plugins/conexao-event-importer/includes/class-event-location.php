@@ -86,47 +86,24 @@ class Conexao_Event_Location {
 	);
 
 	/**
-	 * Known Irish counties for nationwide location derivation.
+	 * Approved counties for nationwide location derivation.
 	 *
-	 * Generalized from the original Laois-only behavior so nationwide
-	 * sources (e.g. IVVCC) resolve county terms without a second engine.
+	 * Sourced from the ONE master list in `conexao-data-model`
+	 * (`Conexao_Data_Model_Counties`): 26 Republic of Ireland counties only.
+	 * Northern Ireland counties are deliberately absent — an import must never
+	 * be able to introduce a county the site does not recognise, and a source
+	 * value of "Antrim" is now rejected by the county guard instead of
+	 * creating a 27th term.
 	 *
-	 * @var array Map of lowercase county key => canonical county name.
+	 * @return array<string, string> Lowercase county slug => canonical name.
 	 */
-	protected $known_counties = array(
-		'antrim'     => 'Antrim',
-		'armagh'     => 'Armagh',
-		'carlow'     => 'Carlow',
-		'cavan'      => 'Cavan',
-		'clare'      => 'Clare',
-		'cork'       => 'Cork',
-		'derry'      => 'Derry',
-		'donegal'    => 'Donegal',
-		'down'       => 'Down',
-		'dublin'     => 'Dublin',
-		'fermanagh'  => 'Fermanagh',
-		'galway'     => 'Galway',
-		'kerry'      => 'Kerry',
-		'kildare'    => 'Kildare',
-		'kilkenny'   => 'Kilkenny',
-		'laois'      => 'Laois',
-		'leitrim'    => 'Leitrim',
-		'limerick'   => 'Limerick',
-		'longford'   => 'Longford',
-		'louth'      => 'Louth',
-		'mayo'       => 'Mayo',
-		'meath'      => 'Meath',
-		'monaghan'   => 'Monaghan',
-		'offaly'     => 'Offaly',
-		'roscommon'  => 'Roscommon',
-		'sligo'      => 'Sligo',
-		'tipperary'  => 'Tipperary',
-		'tyrone'     => 'Tyrone',
-		'waterford'  => 'Waterford',
-		'westmeath'  => 'Westmeath',
-		'wexford'    => 'Wexford',
-		'wicklow'    => 'Wicklow',
-	);
+	protected function known_counties() {
+		if ( class_exists( 'Conexao_Data_Model_Counties' ) ) {
+			return Conexao_Data_Model_Counties::all();
+		}
+
+		return array();
+	}
 
 	/**
 	 * Nationwide town index (lowercase key => array( display, county )).
@@ -176,7 +153,7 @@ class Conexao_Event_Location {
 		$raw = trim( preg_replace( '/\s+/', ' ', (string) $raw_location ) );
 
 		// County detection: nationwide ("Co X" or bare county name).
-		foreach ( $this->known_counties as $key => $name ) {
+		foreach ( $this->known_counties() as $key => $name ) {
 			if ( preg_match( '/\bco\.?\s*' . preg_quote( $key, '/' ) . '\b/i', $raw ) || preg_match( '/\b' . preg_quote( $key, '/' ) . '\b/i', $raw ) ) {
 				$result['county'] = $name;
 				break;
@@ -210,11 +187,11 @@ class Conexao_Event_Location {
 		// ("Dublin", "Sligo Town") stays a venue label, matching the
 		// no-guess venue behavior of the original Laois-only logic.
 		$venue = $raw;
-		foreach ( $this->known_counties as $key => $name ) {
+		foreach ( $this->known_counties() as $key => $name ) {
 			$venue = preg_replace( '/\bco\.?\s*' . preg_quote( $key, '/' ) . '\b/i', '', $venue );
 		}
 		if ( '' !== $result['county'] ) {
-			$county_key = array_search( $result['county'], $this->known_counties, true );
+			$county_key = array_search( $result['county'], $this->known_counties(), true );
 			$venue      = preg_replace( '/,\s*' . preg_quote( (string) $county_key, '/' ) . '\s*$/i', '', $venue );
 		}
 		$venue = preg_replace( '/\b' . preg_quote( ( $result['town'] ? strtolower( $result['town'] ) : '' ), '/' ) . '\b/i', '', $venue );
@@ -228,7 +205,7 @@ class Conexao_Event_Location {
 		// still yield no venue, matching legacy behavior.
 		if ( '' === $venue ) {
 			$fallback = $raw;
-			foreach ( $this->known_counties as $key => $name ) {
+			foreach ( $this->known_counties() as $key => $name ) {
 				$fallback = preg_replace( '/\bco\.?\s*' . preg_quote( $key, '/' ) . '\b/i', '', $fallback );
 			}
 			$fallback = trim( preg_replace( '/\s*,\s*|\s+/', ' ', $fallback ) );
@@ -430,24 +407,33 @@ class Conexao_Event_Location {
 	/**
 	 * Ensure a county term exists in the conexao_county taxonomy.
 	 *
-	 * @param string $county_name County name.
-	 * @return int Term ID (0 on failure).
+	 * LAYER 2: the value is resolved against the ONE approved-county master
+	 * list first. Anything that is not one of the 26 Republic of Ireland
+	 * counties — a numeric identifier, "Belfast", "Antrim", a free-text place
+	 * name — returns 0 and creates nothing. That is the contract the importer
+	 * previously violated by inserting any string it was handed.
+	 *
+	 * @param string $county_name County name or slug.
+	 * @return int Term ID (0 when the value is not an approved county).
 	 */
 	public function ensure_county( $county_name ) {
-		if ( empty( $county_name ) ) {
+		if ( empty( $county_name ) || ! class_exists( 'Conexao_Data_Model_Counties' ) ) {
 			return 0;
 		}
 
-		$term = term_exists( $county_name, 'conexao_county' );
-		if ( $term ) {
-			return (int) $term['term_id'];
-		}
-
-		$new = wp_insert_term( $county_name, 'conexao_county' );
-		if ( is_wp_error( $new ) ) {
+		$slug = Conexao_Data_Model_Counties::normalize( $county_name );
+		if ( '' === $slug ) {
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				error_log(
+					sprintf(
+						'[conexao-county] importer rejected county "%s" (not on the 26-county master list)',
+						(string) $county_name
+					)
+				);
+			}
 			return 0;
 		}
 
-		return (int) $new['term_id'];
+		return Conexao_Data_Model_Counties::ensure_term( $slug );
 	}
 }

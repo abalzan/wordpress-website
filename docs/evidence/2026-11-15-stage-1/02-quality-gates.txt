@@ -1,0 +1,26 @@
+Stage 1 quality-gate evidence — 2026-11-15
+
+./scripts/lint.sh
+PASS: PHP syntax clean across 598 files; PHPCS baseline did not grow; PHPStan
+level 5 reported no errors.
+
+php scripts/generate-registry-docs.php --check
+registry OK: 11 plugins validated, 20 generated regions current (zero writes).
+
+./scripts/i18n-check.sh
+3 stale catalogues remain: conexao-br-irlanda, conexao-admin-ux,
+conexao-commemorative. The importer catalogue was regenerated with
+./scripts/i18n-make-pot.sh conexao-event-importer; the repository's git-time
+freshness gate still classifies one uncommitted source/catalogue relation as
+new until the change is committed.
+
+./scripts/run-tests.sh --scripts
+18 script-contract suites: 17 passed, 1 failed. The sole failure is the three
+known stale catalogue checks above; no Stage 1 script-contract failure was
+reported.
+
+python3 scripts/verify-permanent-gates.py
+Not used as a release result: the existing local HTTP server is bound to the
+shared wordpress database, so the WordPress-dependent gates fail closed before
+their intended isolated environment is selected. Its generated historical
+gate.json was restored and is not part of this change.

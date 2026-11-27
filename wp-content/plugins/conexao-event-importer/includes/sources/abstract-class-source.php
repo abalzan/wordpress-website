@@ -49,6 +49,59 @@ abstract class Conexao_Source_Base {
 	protected $fetched_event_count = 0;
 
 	/**
+	 * Maximum number of attempts per outbound request (1 initial + retries).
+	 *
+	 * Mirrors Conexao_Eventbrite_Client::MAX_RETRIES so no second, conflicting
+	 * retry policy exists across sources.
+	 *
+	 * @var int
+	 */
+	const HTTP_MAX_RETRIES = 3;
+
+	/**
+	 * Base delay (seconds) for exponential backoff between retries.
+	 * Attempt 1 -> 2s, attempt 2 -> 4s, attempt 3 -> 8s.
+	 *
+	 * @var int
+	 */
+	const HTTP_BASE_BACKOFF_SECONDS = 2;
+
+	/**
+	 * Minimum delay (seconds) between two outbound requests of the same walk.
+	 * Kept deliberately small so a source walk stays reasonably fast while
+	 * still reducing the chance of triggering provider rate limiting.
+	 *
+	 * @var int
+	 */
+	const HTTP_REQUEST_DELAY_SECONDS = 1;
+
+	/**
+	 * Hard cap (seconds) on any server-imposed Retry-After delay, so an
+	 * upstream can never force an unbounded sleep.
+	 *
+	 * @var int
+	 */
+	const HTTP_MAX_RETRY_AFTER_SECONDS = 60;
+
+	/**
+	 * Injectable sleeper for tests. A callable receiving the delay in
+	 * seconds, or null to sleep for real.
+	 *
+	 * @var callable|null
+	 */
+	protected $http_sleeper = null;
+
+	/**
+	 * Microtime of the last outbound request of this walk, used to enforce
+	 * the inter-request delay. A fresh handler instance is created per
+	 * source run (Conexao_Event_Importer_Engine::get_source_handler), so this
+	 * is effectively per-walk and needs no explicit reset.
+	 *
+	 * @var float
+	 */
+	protected $http_last_request_time = 0;
+
+	/**
 	 * Get the current import run ID, if a run is in progress.
 	 *
 	 * The engine publishes it through the existing
@@ -356,5 +409,281 @@ abstract class Conexao_Source_Base {
 		}
 
 		return rtrim( $base, '/' ) . '/' . ltrim( $url, '/' );
+	}
+
+	/**
+	 * Install an injectable sleeper (tests) or clear it (real sleep).
+	 *
+	 * @param callable|null $sleeper Receives the delay in seconds.
+	 * @return void
+	 */
+	public function set_http_sleeper( $sleeper ) {
+		$this->http_sleeper = is_callable( $sleeper ) ? $sleeper : null;
+	}
+
+	/**
+	 * Sleep for $seconds, honouring an injected sleeper when present.
+	 *
+	 * @param float $seconds Seconds to sleep.
+	 * @return void
+	 */
+	protected function sleep_for( $seconds ) {
+		$seconds = (float) $seconds;
+		if ( $seconds <= 0 ) {
+			return;
+		}
+		if ( null !== $this->http_sleeper ) {
+			call_user_func( $this->http_sleeper, $seconds );
+			return;
+		}
+		sleep( (int) ceil( $seconds ) );
+	}
+
+	/**
+	 * Whether an HTTP status code is a transient, retryable failure.
+	 *
+	 * 429 and 5xx are retried. 401/403/404/408 are not: retrying an
+	 * authorisation or not-found condition only sends more traffic.
+	 *
+	 * @param int $code HTTP status code.
+	 * @return bool
+	 */
+	public static function is_retryable_status( $code ) {
+		return in_array( (int) $code, array( 429, 500, 502, 503, 504 ), true );
+	}
+
+	/**
+	 * Parse a Retry-After header value into a delay in seconds.
+	 *
+	 * Accepts both forms: an integer delta-seconds (e.g. "7") or an HTTP date
+	 * (e.g. "Wed, 21 Oct 2015 07:28:00 GMT"). The result is capped at
+	 * HTTP_MAX_RETRY_AFTER_SECONDS so a server can never impose an unbounded
+	 * sleep. Returns null when the value is not usable, in which case the
+	 * caller falls back to exponential backoff.
+	 *
+	 * @param string $header Raw Retry-After header value.
+	 * @param int    $now    Reference time (unix seconds). Defaults to now.
+	 * @return float|null Delay in seconds, or null when unparseable.
+	 */
+	public static function parse_retry_after( $header, $now = 0 ) {
+		$header = trim( (string) $header );
+		if ( '' === $header ) {
+			return null;
+		}
+
+		$now = 0 === $now ? (int) time() : (int) $now;
+
+		// Delta-seconds form.
+		if ( preg_match( '/^\d+$/', $header ) ) {
+			return (float) min( (int) $header, self::HTTP_MAX_RETRY_AFTER_SECONDS );
+		}
+
+		// HTTP-date form.
+		$ts = strtotime( $header );
+		if ( false !== $ts ) {
+			$delay = (float) max( 0, $ts - $now );
+			return (float) min( $delay, self::HTTP_MAX_RETRY_AFTER_SECONDS );
+		}
+
+		return null;
+	}
+
+	/**
+	 * Exponential backoff delay (seconds) for a given attempt number.
+	 *
+	 * @param int $attempt 1-based attempt number.
+	 * @return float Seconds.
+	 */
+	protected function get_backoff_seconds( $attempt ) {
+		return (float) ( self::HTTP_BASE_BACKOFF_SECONDS * pow( 2, max( 0, (int) $attempt - 1 ) ) );
+	}
+
+	/**
+	 * Apply a backoff delay, honouring an injected sleeper.
+	 *
+	 * @param int         $attempt     Current attempt number (1-based).
+	 * @param float|null  $retry_after Parsed, already-capped Retry-After delay,
+	 *                                 or null to use exponential backoff.
+	 * @return bool Always true (symmetry with the client pacing API).
+	 */
+	protected function http_backoff( $attempt, $retry_after = null ) {
+		$seconds = null !== $retry_after ? (float) $retry_after : $this->get_backoff_seconds( $attempt );
+		$seconds = min( $seconds, (float) self::HTTP_MAX_RETRY_AFTER_SECONDS );
+		$this->sleep_for( $seconds );
+		return true;
+	}
+
+	/**
+	 * Apply the polite inter-request delay before an outbound request.
+	 *
+	 * Shared by the retrying listing fetch and the single-request detail fetch,
+	 * so "be polite between the requests of one walk" is decided in exactly one
+	 * place. `$this->http_last_request_time` is updated by every fetch path.
+	 *
+	 * @return void
+	 */
+	protected function respect_request_delay() {
+		if ( $this->http_last_request_time <= 0 ) {
+			return;
+		}
+
+		$elapsed = microtime( true ) - $this->http_last_request_time;
+		$delay   = (float) apply_filters(
+			'conexao_event_importer_http_request_delay_seconds',
+			self::HTTP_REQUEST_DELAY_SECONDS
+		);
+
+		if ( $elapsed < $delay ) {
+			$this->sleep_for( $delay - $elapsed );
+		}
+	}
+
+	/**
+	 * Polite, retry-aware HTML fetch.
+	 *
+	 * Like fetch_html(), but instead of failing on the first non-200 response
+	 * it retries retryable statuses (429, 500, 502, 503, 504) up to
+	 * HTTP_MAX_RETRIES, honouring Retry-After where present and applying
+	 * exponential backoff otherwise. An inter-request delay is applied between
+	 * requests of the same walk to reduce the chance of triggering provider
+	 * rate limiting.
+	 *
+	 * Every attempt is logged (url, attempt, http_status, duration,
+	 * content-type, a truncated body preview, retry_after) so operators can
+	 * see exactly what happened. No secrets are logged.
+	 *
+	 * @param string $url  URL to fetch.
+	 * @param array  $args wp_remote_get() arguments.
+	 * @return string HTML body on success.
+	 * @throws Conexao_Source_Fetch_Exception On transport failure or when all
+	 *                                         retries are exhausted.
+	 */
+	protected function fetch_html_polite( $url, $args = array() ) {
+		$default_args = array(
+			'timeout'    => 30,
+			'user-agent' => $this->get_http_user_agent(),
+		);
+		$args = array_merge( $default_args, $args );
+
+		$this->respect_request_delay();
+
+		$max_retries   = (int) apply_filters( 'conexao_event_importer_http_max_retries', self::HTTP_MAX_RETRIES );
+		$rate_limit_hits = 0;
+		$last_code     = 0;
+
+		for ( $attempt = 1; $attempt <= $max_retries; $attempt++ ) {
+			$started = microtime( true );
+			$response = $this->request_get( $url, $args );
+			$this->http_last_request_time = microtime( true );
+			$duration = (float) ( $this->http_last_request_time - $started );
+
+			if ( is_wp_error( $response ) ) {
+				Conexao_Import_Log::add(
+					$this->get_id(),
+					'error',
+					'Polite fetch transport failure.',
+					array(
+						'url'         => $url,
+						'attempt'     => $attempt,
+						'http_status' => 0,
+						'reason'      => 'transport_error',
+						'duration'    => $duration,
+						'run_id'      => $this->get_current_run_id(),
+					)
+				);
+				if ( $attempt >= $max_retries ) {
+					$message = 'Falha ao buscar URL: ' . $response->get_error_message();
+					throw new Conexao_Source_Fetch_Exception( $message, 0 );
+				}
+				$this->http_backoff( $attempt );
+				continue;
+			}
+
+			$code      = (int) wp_remote_retrieve_response_code( $response );
+			$last_code = $code;
+			$headers   = wp_remote_retrieve_headers( $response );
+			$content_type     = isset( $headers['content-type'] ) ? (string) $headers['content-type'] : '';
+			$retry_after_header = isset( $headers['retry-after'] ) ? (string) $headers['retry-after'] : '';
+			$retry_after = '' !== $retry_after_header
+				? self::parse_retry_after( $retry_after_header )
+				: null;
+
+			$body = wp_remote_retrieve_body( $response );
+			$body_preview = substr( strip_tags( (string) $body ), 0, 200 );
+
+			Conexao_Import_Log::add(
+				$this->get_id(),
+				'info',
+				sprintf( 'Polite fetch attempt %d for URL returned HTTP %d.', $attempt, $code ),
+				array(
+					'url'                 => $url,
+					'attempt'             => $attempt,
+					'http_status'         => $code,
+					'duration'            => $duration,
+					'content_type'        => $content_type,
+					'body_preview'        => $body_preview,
+					'retry_after'         => $retry_after_header,
+					'retry_after_present' => '' !== $retry_after_header ? '1' : '',
+					'rate_limit_hits'     => (string) $rate_limit_hits,
+					'run_id'              => $this->get_current_run_id(),
+				)
+			);
+
+			if ( 200 === $code ) {
+				return wp_remote_retrieve_body( $response );
+			}
+
+			// Not transient: stop and surface as a fetch failure.
+			if ( ! self::is_retryable_status( $code ) ) {
+				$message = 'Resposta HTTP ' . $code . ' ao buscar URL.';
+				throw new Conexao_Source_Fetch_Exception( $message, $code );
+			}
+
+			// Retryable (429 / 5xx).
+			++$rate_limit_hits;
+			if ( 429 === $code ) {
+				Conexao_Import_Log::add(
+					$this->get_id(),
+					'warning',
+					sprintf( 'HTTP 429 rate limited on attempt %d; backing off.', $attempt ),
+					array(
+						'url'                 => $url,
+						'attempt'             => $attempt,
+						'http_status'         => $code,
+						'rate_limit_hits'     => (string) $rate_limit_hits,
+						'retry_after'         => $retry_after_header,
+						'retry_after_present' => '' !== $retry_after_header ? '1' : '',
+						'run_id'              => $this->get_current_run_id(),
+					)
+				);
+			}
+
+			if ( $attempt >= $max_retries ) {
+				break;
+			}
+
+			$this->http_backoff( $attempt, $retry_after );
+		}
+
+		$message = 'Resposta HTTP ' . $last_code . ' ao buscar URL apos ' . (int) $max_retries . ' tentativas.';
+		throw new Conexao_Source_Fetch_Exception( $message, $last_code );
+	}
+
+	/**
+	 * Tolerant polite fetch: returns an empty string instead of throwing.
+	 *
+	 * Used for optional pages (pagination continuation, detail enrichment)
+	 * where a single failed request should not abort the whole source run.
+	 *
+	 * @param string $url  URL to fetch.
+	 * @param array  $args Optional extra wp_remote_get args.
+	 * @return string HTML body or empty string on failure.
+	 */
+	protected function fetch_html_polite_or_empty( $url, $args = array() ) {
+		try {
+			return $this->fetch_html_polite( $url, $args );
+		} catch ( Conexao_Source_Fetch_Exception $e ) {
+			return '';
+		}
 	}
 }

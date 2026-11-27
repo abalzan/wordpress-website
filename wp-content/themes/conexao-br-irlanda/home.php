@@ -42,7 +42,7 @@ get_header();
 		$categories            = get_categories( array( 'hide_empty' => true, 'orderby' => 'name' ) );
 		$current_blog_category = isset( $_GET['categoria'] ) ? sanitize_title( wp_unslash( $_GET['categoria'] ) ) : '';
 		if ( ! empty( $categories ) ) :
-		?>
+			?>
 		<nav class="events-filter-bar" aria-label="<?php esc_attr_e( 'Categorias do blog', 'conexao-br-irlanda' ); ?>">
 			<span class="events-filter-label"><?php esc_html_e( 'Categorias', 'conexao-br-irlanda' ); ?></span>
 			<a class="events-filter-link<?php echo '' === $current_blog_category ? ' is-active' : ''; ?>" href="<?php echo esc_url( conexao_blog_category_filter_url( '' ) ); ?>">

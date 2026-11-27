@@ -1,0 +1,31 @@
+# Step 1 — PHP syntax checks on every changed/created PHP file
+
+No syntax errors detected in scripts/test-event-cleanup.php
+No syntax errors detected in tests/bootstrap.php
+No syntax errors detected in tests/lib/option-isolation.php
+No syntax errors detected in wp-content/plugins/conexao-event-importer/includes/class-event-cleanup.php
+No syntax errors detected in wp-content/plugins/conexao-event-importer/includes/class-import-history.php
+No syntax errors detected in wp-content/plugins/conexao-event-importer/includes/class-import-log.php
+No syntax errors detected in wp-content/plugins/conexao-event-importer/tests/g10-convergence-experiment.php
+No syntax errors detected in wp-content/plugins/conexao-event-importer/tests/test-error-handling.php
+No syntax errors detected in wp-content/plugins/conexao-event-importer/tests/test-event-cleanup-purge.php
+No syntax errors detected in wp-content/plugins/conexao-event-importer/tests/test-eventbrite-api-contract.php
+No syntax errors detected in wp-content/plugins/conexao-event-importer/tests/test-eventbrite-checkpoint.php
+No syntax errors detected in wp-content/plugins/conexao-event-importer/tests/test-eventbrite-rate-limit.php
+No syntax errors detected in wp-content/plugins/conexao-event-importer/tests/test-eventbrite-source-expansion.php
+No syntax errors detected in wp-content/plugins/conexao-event-importer/tests/test-eventbrite-token-retirement.php
+No syntax errors detected in wp-content/plugins/conexao-event-importer/tests/test-import-continuation.php
+No syntax errors detected in wp-content/plugins/conexao-event-importer/tests/test-import-history-dashboard.php
+No syntax errors detected in wp-content/plugins/conexao-event-importer/tests/test-import-history-logs.php
+No syntax errors detected in wp-content/plugins/conexao-event-importer/tests/test-import-log-run-correlation.php
+No syntax errors detected in wp-content/plugins/conexao-event-importer/tests/test-import-log.php
+No syntax errors detected in wp-content/plugins/conexao-event-importer/tests/test-import-settings-retirement.php
+No syntax errors detected in wp-content/plugins/conexao-event-importer/tests/test-request-budget.php
+No syntax errors detected in wp-content/plugins/conexao-event-importer/tests/test-request-retry-policy.php
+No syntax errors detected in wp-content/plugins/conexao-event-importer/tests/test-request-reuse.php
+No syntax errors detected in wp-content/plugins/conexao-event-importer/tests/test-source-fetch-failure.php
+No syntax errors detected in wp-content/plugins/conexao-event-importer/tests/test-source-pagination-completeness.php
+No syntax errors detected in wp-content/plugins/conexao-event-importer/tests/test-operator-log-isolation.php
+
+# New files
+No syntax errors detected in wp-content/plugins/conexao-event-importer/tests/test-operator-log-isolation.php

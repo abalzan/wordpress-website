@@ -103,7 +103,7 @@ class Conexao_Source_Mondello_Park extends Conexao_Source_Base {
 	public function get_http_user_agent() {
 		return apply_filters(
 			'conexao_event_importer_http_user_agent',
-			'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'
+			'WordPress/' . get_bloginfo('version') . '; ' . get_bloginfo('url')
 		);
 	}
 
@@ -115,6 +115,7 @@ class Conexao_Source_Mondello_Park extends Conexao_Source_Base {
 	 * Fetch raw events from the Mondello Park REST endpoint.
 	 *
 	 * @return array[]
+	 * @throws Conexao_Source_Fetch_Exception When the REST listing cannot be fetched.
 	 */
 	public function fetch_events() {
 		$base_url = isset( $this->config['url'] ) && $this->config['url']
@@ -134,12 +135,27 @@ class Conexao_Source_Mondello_Park extends Conexao_Source_Base {
 		);
 
 		if ( is_wp_error( $response ) ) {
+			$error_code    = $response->get_error_code();
+			$error_message = $response->get_error_message();
+			$error_data    = $response->get_error_data();
+
 			Conexao_Import_Log::add(
 				$this->get_id(), 'error',
-				'Falha ao buscar REST da Mondello Park: ' . $response->get_error_message(),
-				array( 'url' => $base_url )
+				'Falha ao buscar REST da Mondello Park: ' . $error_message,
+				array(
+					'url'         => $base_url,
+					'error_code'  => $error_code,
+					'error_data'  => $error_data,
+				)
 			);
-			return array();
+
+			// Stage 2 / P3 — an unreachable listing is a FAILED fetch, never an
+			// empty one. The engine records a failed source instead of
+			// `found=0, status=success`, and no reconciliation can run on it.
+			throw new Conexao_Source_Fetch_Exception(
+				esc_html( 'Falha ao buscar REST da Mondello Park: ' . $error_message ),
+				0
+			);
 		}
 
 		$code = wp_remote_retrieve_response_code( $response );
@@ -149,16 +165,32 @@ class Conexao_Source_Mondello_Park extends Conexao_Source_Base {
 				'Resposta HTTP ' . $code . ' ao buscar REST da Mondello Park.',
 				array( 'url' => $base_url, 'http_status' => (int) $code )
 			);
-			return array();
+
+			throw new Conexao_Source_Fetch_Exception(
+				esc_html( 'Resposta HTTP ' . $code . ' ao buscar REST da Mondello Park.' ),
+				(int) $code
+			);
 		}
 
 		$body = wp_remote_retrieve_body( $response );
 		if ( empty( $body ) ) {
+			// Retrieved but empty: not an enumerable listing. Incomplete, so it
+			// is neither a complete empty import nor a reconciliation authority.
+			$this->mark_fetch_incomplete();
+
+			Conexao_Import_Log::add(
+				$this->get_id(), 'error',
+				'Resposta REST da Mondello Park veio vazia; a enumeração está incompleta.',
+				array( 'url' => $base_url )
+			);
+
 			return array();
 		}
 
 		$json = json_decode( $body, true );
 		if ( ! is_array( $json ) ) {
+			$this->mark_fetch_incomplete();
+
 			Conexao_Import_Log::add(
 				$this->get_id(), 'error',
 				'Resposta REST da Mondello Park não é JSON válido.',

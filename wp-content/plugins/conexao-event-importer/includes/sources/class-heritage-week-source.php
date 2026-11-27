@@ -46,6 +46,13 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 	protected $forward_link_blocked = false;
 
 	/**
+	 * Outcome of the most recent detail-page request.
+	 *
+	 * @var string
+	 */
+	protected $last_detail_fetch_status = 'not_requested';
+
+	/**
 	 * Get the source ID.
 	 *
 	 * Returns the configured source ID so each county source has an independent
@@ -146,7 +153,7 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 			// this failure is what produced `found=0, status=success` rows for
 			// 22 of 26 Heritage Week sources (Stage G1).
 			try {
-				$first_html = $this->fetch_html( $base_url );
+				$first_html = $this->fetch_html_polite( $base_url );
 			} catch ( Conexao_Source_Fetch_Exception $e ) {
 				throw new Conexao_Source_Fetch_Exception(
 					esc_html(
@@ -220,6 +227,19 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 							if ( empty( $event['title'] ) || empty( $event['url'] ) ) {
 								continue;
 							}
+							if ( $this->listing_event_is_definitely_past( $event ) ) {
+								Conexao_Import_Log::add(
+									$this->get_id(),
+									'info',
+									sprintf( 'Heritage Week listing event skipped before detail fetch: %s.', $event['title'] ),
+									array(
+										'reason'      => 'listing_date_definitely_past',
+										'reason_code' => 'listing_date_definitely_past',
+										'run_id'      => $this->get_current_run_id(),
+									)
+								);
+								continue;
+							}
 							$event    = $this->enrich_event( $event );
 							$events[] = $event;
 						} catch ( Exception $e ) {
@@ -275,7 +295,7 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 				++$page;
 				$page_url = $next;
 				$visited[ $this->normalize_pagination_url( $next ) ] = true;
-				$html = $this->fetch_html_or_empty( $page_url );
+				$html = $this->fetch_html_polite_or_empty( $page_url );
 
 				if ( ! $html ) {
 					// Later-page tolerance is preserved (keep what we already
@@ -319,6 +339,17 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 			$seen_ids[ $id ] = true;
 			$all_events[]    = $event;
 		}
+
+		Conexao_Import_Log::add(
+			$this->get_id(),
+			'info',
+			sprintf(
+				/* translators: %d: number of events discovered */
+				__( 'Heritage Week enumeration discovered %d event(s).', 'conexao-event-importer' ),
+				count( $all_events )
+			),
+			array( 'run_id' => $this->get_current_run_id() )
+		);
 
 		return $all_events;
 	}
@@ -528,6 +559,86 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 			$event['start_time'] = $times[0];
 			$event['end_time']   = $times[ count( $times ) - 1 ];
 		}
+	}
+
+	/**
+	 * Decide whether a listing event is definitely over before enrichment.
+	 *
+	 * A start date alone is never enough. Missing, malformed, ambiguous, and
+	 * conflicting ranges remain eligible for detail enrichment so the detail page
+	 * can repair the listing's incomplete date contract.
+	 *
+	 * @param array $event Listing event.
+	 * @return bool True only for a reliable end instant before now.
+	 */
+	protected function listing_event_is_definitely_past( $event ) {
+		$timezone = function_exists( 'wp_timezone' ) ? wp_timezone() : new DateTimeZone( 'Europe/Dublin' );
+		$now      = function_exists( 'current_datetime' ) ? current_datetime() : new DateTimeImmutable( 'now', $timezone );
+		$end_date = $this->parse_listing_date( isset( $event['end_date'] ) ? $event['end_date'] : '', $timezone );
+
+		if ( ! $end_date ) {
+			return false;
+		}
+
+		$start_date = $this->parse_listing_date( isset( $event['start_date'] ) ? $event['start_date'] : '', $timezone );
+		if ( isset( $event['start_date'] ) && '' !== trim( (string) $event['start_date'] ) && ! $start_date ) {
+			return false;
+		}
+		if ( $start_date && $end_date < $start_date ) {
+			return false;
+		}
+
+		$end = $end_date->setTime( 23, 59, 59 );
+		if ( ! empty( $event['end_time'] ) ) {
+			$time = $this->parse_listing_time( $event['end_time'], $timezone );
+			if ( ! $time ) {
+				return false;
+			}
+			$end = $end_date->setTime( (int) $time->format( 'H' ), (int) $time->format( 'i' ), 0 );
+		}
+
+		return $end < $now;
+	}
+
+	/**
+	 * Parse a listing date using strict site-local formats.
+	 *
+	 * @param string       $value    Date text.
+	 * @param DateTimeZone $timezone Site timezone.
+	 * @return DateTimeImmutable|null
+	 */
+	protected function parse_listing_date( $value, DateTimeZone $timezone ) {
+		$value = trim( (string) $value );
+		if ( '' === $value ) {
+			return null;
+		}
+		foreach ( array( '!j F Y', '!Y-m-d', '!d/m/Y' ) as $format ) {
+			$date = DateTimeImmutable::createFromFormat( $format, $value, $timezone );
+			$errors = DateTimeImmutable::getLastErrors();
+			if ( false !== $date && ( false === $errors || ( 0 === $errors['warning_count'] && 0 === $errors['error_count'] ) ) ) {
+				return $date;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Parse an optional listing end time.
+	 *
+	 * @param string       $value    Time text.
+	 * @param DateTimeZone $timezone Site timezone.
+	 * @return DateTimeImmutable|null
+	 */
+	protected function parse_listing_time( $value, DateTimeZone $timezone ) {
+		$value = trim( (string) $value );
+		foreach ( array( '!g:i a', '!g a', '!H:i', '!H' ) as $format ) {
+			$time = DateTimeImmutable::createFromFormat( $format, $value, $timezone );
+			$errors = DateTimeImmutable::getLastErrors();
+			if ( false !== $time && ( false === $errors || ( 0 === $errors['warning_count'] && 0 === $errors['error_count'] ) ) ) {
+				return $time;
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -762,21 +873,47 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 	 * @return array
 	 */
 	protected function enrich_event( $event ) {
+		/*
+		 * Stage 2 / P5 — per-field enrichment state.
+		 *
+		 * Everything this method can supply starts as `not_evaluated`, so any
+		 * early return below means "we did not learn these values", never
+		 * "the source says they are empty". The engine preserves the stored
+		 * value for every field in that state.
+		 */
+		$event['_enrichment'] = class_exists( 'Conexao_Event_Enrichment_State' )
+			? Conexao_Event_Enrichment_State::all_not_evaluated()
+			: array();
+
 		if ( empty( $event['url'] ) ) {
+			$event['detail_fetch_status'] = 'not_requested';
 			return $event;
 		}
 
 		$html = $this->fetch_detail_html( $event['url'] );
+		$event['detail_fetch_status'] = $this->last_detail_fetch_status;
 		if ( empty( $html ) ) {
+			// A transport/HTTP failure or an empty body tells us nothing about
+			// venue/description/address/location/organizer/image: the values
+			// are UNKNOWN, so they must not overwrite what is already stored.
+			$event['_enrichment'] = class_exists( 'Conexao_Event_Enrichment_State' )
+				? Conexao_Event_Enrichment_State::all_unavailable()
+				: array();
 			return $event;
 		}
 
 		$dom = $this->parse_html( $html );
 		if ( ! $dom ) {
+			$event['detail_fetch_status'] = 'invalid_html';
+			$event['_enrichment'] = class_exists( 'Conexao_Event_Enrichment_State' )
+				? Conexao_Event_Enrichment_State::all_unavailable()
+				: array();
 			return $event;
 		}
 
 		$xpath = new DOMXPath( $dom );
+
+		$enrichment = array();
 
 		// JSON-LD structured data: schema.org/Event.location is the strongest
 		// location representation on the detail page. Only Event.location is
@@ -784,16 +921,44 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 		// Values found here take precedence over the labelled details list.
 		$jsonld_location = ( new Conexao_Event_Jsonld_Location() )->extract( $html );
 		if ( ! empty( $jsonld_location['venue'] ) ) {
-			$event['venue'] = $jsonld_location['venue'];
+			$event['venue']            = $jsonld_location['venue'];
+			$enrichment['venue']       = Conexao_Event_Enrichment_State::POPULATED;
+		} else {
+			// No Event.location.name on the page. Omission is NOT proof that
+			// the event has no venue, so the stored value is preserved.
+			$enrichment['venue'] = Conexao_Event_Enrichment_State::UNAVAILABLE;
 		}
 		if ( ! empty( $jsonld_location['address'] ) ) {
-			$event['address'] = $jsonld_location['address'];
+			$event['address']          = $jsonld_location['address'];
+			$enrichment['address']     = Conexao_Event_Enrichment_State::POPULATED;
+		} else {
+			$enrichment['address'] = Conexao_Event_Enrichment_State::UNAVAILABLE;
 		}
 
-		// Description.
+		/*
+		 * Description.
+		 *
+		 * `div.text-block` is the documented description container on a
+		 * Heritage Week detail page. The source-specific contract used for
+		 * "genuine emptiness" is deliberately narrow:
+		 *
+		 *   - container present, text non-empty -> populated
+		 *   - container present, text EMPTY     -> genuinely empty (the page
+		 *     declares the description block and it is blank)
+		 *   - container ABSENT                  -> unavailable (parser drift or
+		 *     a page without that block is not evidence of a clear)
+		 */
 		$desc = $xpath->query( '//div[contains(concat(" ", normalize-space(@class), " "), " text-block ")]' );
 		if ( $desc && $desc->length > 0 ) {
-			$event['description'] = trim( preg_replace( '/\s+/', ' ', $desc->item( 0 )->textContent ) );
+			$desc_text = trim( preg_replace( '/\s+/', ' ', $desc->item( 0 )->textContent ) );
+
+			$event['description'] = $desc_text;
+
+			$enrichment['description'] = '' !== $desc_text
+				? Conexao_Event_Enrichment_State::POPULATED
+				: Conexao_Event_Enrichment_State::EMPTY_VALUE;
+		} else {
+			$enrichment['description'] = Conexao_Event_Enrichment_State::UNAVAILABLE;
 		}
 
 		// Full location details.
@@ -810,18 +975,25 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 		if ( ! empty( $loc_parts ) ) {
 			$event['location'] = implode( ', ', $loc_parts );
 		}
+		$enrichment['location'] = ! empty( $loc_parts )
+			? Conexao_Event_Enrichment_State::POPULATED
+			: Conexao_Event_Enrichment_State::UNAVAILABLE;
 
-		// Event type.
+		// Event type (not persisted, no state needed).
 		$type = $xpath->query( '//h3[contains(normalize-space(.), "Event Type")]/following-sibling::ul[1]//a' );
 		if ( $type && $type->length > 0 ) {
 			$event['event_type'] = trim( $type->item( 0 )->textContent );
 		}
 
 		// Organiser from "Further Information".
-		$org = $xpath->query( '//h3[contains(normalize-space(.), "Further Information")]/following-sibling::p[1]' );
-		if ( $org && $org->length > 0 ) {
-			$event['organizer'] = trim( $org->item( 0 )->textContent );
+		$org     = $xpath->query( '//h3[contains(normalize-space(.), "Further Information")]/following-sibling::p[1]' );
+		$org_val = ( $org && $org->length > 0 ) ? trim( $org->item( 0 )->textContent ) : '';
+		if ( '' !== $org_val ) {
+			$event['organizer'] = $org_val;
 		}
+		$enrichment['organizer'] = '' !== $org_val
+			? Conexao_Event_Enrichment_State::POPULATED
+			: Conexao_Event_Enrichment_State::UNAVAILABLE;
 
 		// Higher-resolution image from detail page.
 		// Collect all candidate URLs from the detail page and pick the best one.
@@ -876,6 +1048,16 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 			}
 		}
 
+		// The image can come from the listing card as well as the detail page,
+		// so it is "populated" whenever the event carries one after merging.
+		$enrichment['banner'] = ! empty( $event['image'] )
+			? Conexao_Event_Enrichment_State::POPULATED
+			: Conexao_Event_Enrichment_State::UNAVAILABLE;
+
+		$event['_enrichment'] = class_exists( 'Conexao_Event_Enrichment_State' )
+			? Conexao_Event_Enrichment_State::sanitize_map( $enrichment )
+			: array();
+
 		return $event;
 	}
 
@@ -886,6 +1068,34 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 	 * @return string HTML body or empty string on failure.
 	 */
 	protected function fetch_detail_html( $url ) {
+		/*
+		 * ONE request per detail page.
+		 *
+		 * A detail page is enrichment, not enumeration: a failure here leaves
+		 * the stored values untouched (see enrich_event()), and the listing
+		 * walk must not spend its invocation window retrying enrichment URLs.
+		 * Retrying a transport-level failure of the same detail page three
+		 * times turned one unreachable event into three outbound requests and
+		 * made the walk's per-event request count depend on which events
+		 * happened to be down. The retry/backoff contract lives in
+		 * fetch_html_polite() and still governs LISTING pages.
+		 *
+		 * The three outcomes are DISTINGUISHABLE, because they mean different
+		 * things to the operator:
+		 *
+		 *   failed  -> no usable response (transport error or non-200);
+		 *   empty   -> HTTP 200 with a blank body: a valid, empty answer;
+		 *   success -> HTTP 200 with a body to parse.
+		 *
+		 * A blank 200 body is NOT a transport failure, so it must never be
+		 * recorded as one.
+		 */
+		$this->last_detail_fetch_status = 'failed';
+
+		$this->respect_request_delay();
+
+		$started = microtime( true );
+
 		$response = $this->request_get(
 			$url,
 			array(
@@ -894,16 +1104,70 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 			)
 		);
 
+		$this->http_last_request_time = microtime( true );
+
+		$duration = (float) ( $this->http_last_request_time - $started );
+
 		if ( is_wp_error( $response ) ) {
+			Conexao_Import_Log::add(
+				$this->get_id(),
+				'error',
+				'Falha ao buscar a página de detalhe: ' . $response->get_error_message(),
+				array(
+					'url'                 => $url,
+					'http_status'         => 0,
+					'reason'              => 'transport_error',
+					'detail_fetch_status' => 'failed',
+					'duration'            => $duration,
+					'run_id'              => $this->get_current_run_id(),
+				)
+			);
 			return '';
 		}
 
-		$code = wp_remote_retrieve_response_code( $response );
+		$code = (int) wp_remote_retrieve_response_code( $response );
 		if ( 200 !== $code ) {
+			Conexao_Import_Log::add(
+				$this->get_id(),
+				'error',
+				'Resposta HTTP ' . $code . ' ao buscar a página de detalhe.',
+				array(
+					'url'                 => $url,
+					'http_status'         => $code,
+					'reason'              => 'http_error',
+					'detail_fetch_status' => 'failed',
+					'duration'            => $duration,
+					'run_id'              => $this->get_current_run_id(),
+				)
+			);
 			return '';
 		}
 
-		return wp_remote_retrieve_body( $response );
+		$body = (string) wp_remote_retrieve_body( $response );
+
+		if ( '' === trim( $body ) ) {
+			$this->last_detail_fetch_status = 'empty';
+
+			Conexao_Import_Log::add(
+				$this->get_id(),
+				'info',
+				'A página de detalhe respondeu 200 com um corpo vazio.',
+				array(
+					'url'                 => $url,
+					'http_status'         => $code,
+					'reason'              => 'empty_body',
+					'detail_fetch_status' => 'empty',
+					'duration'            => $duration,
+					'run_id'              => $this->get_current_run_id(),
+				)
+			);
+
+			return '';
+		}
+
+		$this->last_detail_fetch_status = 'success';
+
+		return $body;
 	}
 
 	/**

@@ -1,0 +1,18 @@
+{
+    "plan_count": 18,
+    "plan_equals_manifest": true,
+    "plan_unique_ids": 18,
+    "from_values": [
+        "active"
+    ],
+    "to_values": [
+        "inactive"
+    ],
+    "excluded_count": 136,
+    "excluded_intersect_manifest": 0,
+    "unchanged_count": 0,
+    "errors": 0,
+    "changed_in_dry_run": 0,
+    "mode": "dry-run",
+    "target": "http:\/\/localhost:8080"
+}

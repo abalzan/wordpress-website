@@ -178,6 +178,11 @@ function conexao_content_archive_query( $query ) {
 		}
 
 		// Town/city filter via ?cidade=slug.
+		// NOTE: The City (Cidade) filter has been removed from the visible UI as part
+		// of a UX experiment (see docs/reports/2026-11-25-remove-city-filter.md).
+		// This query handling is preserved for backward compatibility with existing
+		// bookmarked URLs and event detail pages. The UI no longer generates new
+		// cidade filter URLs.
 		$town = isset( $_GET['cidade'] ) ? sanitize_title( wp_unslash( $_GET['cidade'] ) ) : '';
 		if ( $town ) {
 			$town_term = get_term_by( 'slug', $town, 'conexao_town' );

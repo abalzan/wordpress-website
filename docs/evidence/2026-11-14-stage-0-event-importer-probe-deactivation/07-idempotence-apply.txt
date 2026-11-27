@@ -1,0 +1,13 @@
+[14-Nov-2026 20:35:04 UTC] PHP Notice:  $_SERVER['HTTP_HOST'] or $_SERVER['REQUEST_URI'] are required but not set. in /var/www/html/wp-content/plugins/polylang/src/functions.php on line 81
+script: set-event-source-status.php
+target: http://localhost:8080 (local, local)
+mode:   apply
+scope:  the conexao_event_sources registry option only, through the same Conexao_Event_Sources::set_status() the admin screen uses. No content write of any kind: no post, meta, taxonomy term, attachment or language relationship. Sources are never created, deleted or renamed.
+summary: status=inactive, selected=0, changed=0, unchanged=18, excluded=136, errors=0
+
+Notice: $_SERVER['HTTP_HOST'] or $_SERVER['REQUEST_URI'] are required but not set. in /var/www/html/wp-content/plugins/polylang/src/functions.php on line 81
+changed inactive
+  (nothing to change)
+unchanged: 18 already inactive
+not selected: not-in-ids=136
+exit=0

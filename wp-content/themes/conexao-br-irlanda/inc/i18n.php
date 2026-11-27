@@ -136,33 +136,42 @@ function conexao_og_locale(): string {
  */
 function conexao_js_i18n_strings(): array {
 	return array(
+		// The active UI language slug ('pt' / 'en'), resolved by the canonical
+		// conexao_current_language_slug() helper — never re-derived here. The
+		// Christmas Easter egg uses it to pick its trigger word (NATAL on the
+		// Portuguese site, CHRISTMAS on /en/).
+		'language'                     => conexao_current_language_slug(),
+		/* The Christmas Easter egg's localised greeting and close label. */
+		'christmasTitle'               => __( 'Feliz Natal!', 'conexao-br-irlanda' ),
+		'christmasMessage'             => __( 'Que esta época traga alegria, união e momentos especiais.', 'conexao-br-irlanda' ),
+		'christmasClose'               => __( 'Fechar', 'conexao-br-irlanda' ),
 		/* translators: %s is the parent menu item title. */
-		'submenuToggleTemplate'   => __( 'Abrir submenu de %s', 'conexao-br-irlanda' ),
+		'submenuToggleTemplate'        => __( 'Abrir submenu de %s', 'conexao-br-irlanda' ),
 		/* Copy-link button feedback. */
-		'linkCopied'              => __( 'Link copiado', 'conexao-br-irlanda' ),
+		'linkCopied'                   => __( 'Link copiado', 'conexao-br-irlanda' ),
 		/* Directory filter trigger (Lazer / Empregos / Eventos). */
-		'filterLabel'             => __( 'Filtrar', 'conexao-br-irlanda' ),
+		'filterLabel'                  => __( 'Filtrar', 'conexao-br-irlanda' ),
 		/* translators: %d is the number of active filters (exactly one). */
-		'filterCountOne'          => __( '%d filtro ativo', 'conexao-br-irlanda' ),
+		'filterCountOne'               => __( '%d filtro ativo', 'conexao-br-irlanda' ),
 		/* translators: %d is the number of active filters (two or more). */
-		'filterCountMany'         => __( '%d filtros ativos', 'conexao-br-irlanda' ),
+		'filterCountMany'              => __( '%d filtros ativos', 'conexao-br-irlanda' ),
 		/* translators: 1: current sponsor position, 2: total sponsors. */
-		'sponsorPositionTemplate' => __( 'Apoiador %1$d de %2$d', 'conexao-br-irlanda' ),
+		'sponsorPositionTemplate'      => __( 'Apoiador %1$d de %2$d', 'conexao-br-irlanda' ),
 		/* Infinite scroll / load-more status strings. */
-		'loading'                 => __( 'Carregando...', 'conexao-br-irlanda' ),
-		'loadMore'                => __( 'Carregar mais', 'conexao-br-irlanda' ),
-		'loadMoreFailed'          => __( 'Não foi possível carregar mais conteúdo.', 'conexao-br-irlanda' ),
-		'loadMoreFailedRetry'     => __( 'Não foi possível carregar mais conteúdo. Tente novamente.', 'conexao-br-irlanda' ),
-		'retry'                   => __( 'Tentar novamente', 'conexao-br-irlanda' ),
-		'reachedEnd'              => __( 'Você chegou ao fim.', 'conexao-br-irlanda' ),
+		'loading'                      => __( 'Carregando...', 'conexao-br-irlanda' ),
+		'loadMore'                     => __( 'Carregar mais', 'conexao-br-irlanda' ),
+		'loadMoreFailed'               => __( 'Não foi possível carregar mais conteúdo.', 'conexao-br-irlanda' ),
+		'loadMoreFailedRetry'          => __( 'Não foi possível carregar mais conteúdo. Tente novamente.', 'conexao-br-irlanda' ),
+		'retry'                        => __( 'Tentar novamente', 'conexao-br-irlanda' ),
+		'reachedEnd'                   => __( 'Você chegou ao fim.', 'conexao-br-irlanda' ),
 		/* translators: 1: number of newly loaded cards, 2: singular noun ("evento"/"curso"). */
-		'moreLoadedOneTemplate'   => __( 'Mais %1$d %2$s carregado.', 'conexao-br-irlanda' ),
+		'moreLoadedOneTemplate'        => __( 'Mais %1$d %2$s carregado.', 'conexao-br-irlanda' ),
 		/* translators: 1: number of newly loaded cards, 2: plural noun ("eventos"/"cursos"). */
-		'moreLoadedManyTemplate'  => __( 'Mais %1$d %2$s carregados.', 'conexao-br-irlanda' ),
-		'nounEvents'              => __( 'evento', 'conexao-br-irlanda' ),
-		'nounEventsPlural'        => __( 'eventos', 'conexao-br-irlanda' ),
-		'nounCourses'             => __( 'curso', 'conexao-br-irlanda' ),
-		'nounCoursesPlural'       => __( 'cursos', 'conexao-br-irlanda' ),
+		'moreLoadedManyTemplate'       => __( 'Mais %1$d %2$s carregados.', 'conexao-br-irlanda' ),
+		'nounEvents'                   => __( 'evento', 'conexao-br-irlanda' ),
+		'nounEventsPlural'             => __( 'eventos', 'conexao-br-irlanda' ),
+		'nounCourses'                  => __( 'curso', 'conexao-br-irlanda' ),
+		'nounCoursesPlural'            => __( 'cursos', 'conexao-br-irlanda' ),
 		/* Lazer location services (optional proximity ordering). */
 		'leisureLocationExplanation'   => __( 'Permita o acesso à sua localização para calcular a distância aproximada até as atrações.', 'conexao-br-irlanda' ),
 		/* translators: %s is a formatted distance, e.g. "2,4 km" or "850 m". */

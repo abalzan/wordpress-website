@@ -176,6 +176,76 @@ function bulk_purge_option_cache() {
 }
 
 /**
+ * Global counter for registry writes to `conexao_event_sources`.
+ *
+ * Used by Tests A-D to assert that a bulk operation performs exactly one
+ * `update_option()` call, not one per selected source.
+ *
+ * @var int
+ */
+$GLOBALS['conexao_bulk_update_count'] = 0;
+
+/**
+ * Reset the registry-write counter.
+ *
+ * @return void
+ */
+function bulk_reset_write_count() {
+	$GLOBALS['conexao_bulk_update_count'] = 0;
+}
+
+/**
+ * Read the registry-write counter.
+ *
+ * @return int
+ */
+function bulk_write_count() {
+	return (int) $GLOBALS['conexao_bulk_update_count'];
+}
+
+/**
+ * Instrument `update_option()` for `conexao_event_sources` so tests can count
+ * registry writes. Hooks the `pre_update_option_*` filter, which fires on
+ * every `update_option()` call for that key — including calls that are
+ * short-circuited by a failure simulation — so the count reflects the number
+ * of `update_option()` attempts, not just successful writes.
+ *
+ * @return void
+ */
+function bulk_instrument_option_writes() {
+	add_filter(
+		'pre_update_option_' . Conexao_Event_Sources::OPTION_KEY,
+		function ( $value ) {
+			$GLOBALS['conexao_bulk_update_count']++;
+			return $value;
+		}
+	);
+}
+
+/**
+ * Stop instrumenting `update_option()` for `conexao_event_sources`.
+ *
+ * @return void
+ */
+function bulk_uninstrument_option_writes() {
+	remove_all_filters( 'pre_update_option_' . Conexao_Event_Sources::OPTION_KEY );
+}
+
+/**
+ * Normalise the registry and reset the write counter so that lazy seeding or
+ * migration writes performed by get_all() do not distort the bulk-operation
+ * write count.
+ *
+ * @return array The normalised registry.
+ */
+function bulk_normalise_and_reset() {
+	$sources_mgr = new Conexao_Event_Sources();
+	$sources_mgr->get_all();
+	bulk_reset_write_count();
+	return $sources_mgr;
+}
+
+/**
  * Run the REAL handle_bulk_action() in a child PHP process.
  *
  * The handler terminates its process, so the only honest way to assert on it is
@@ -634,5 +704,248 @@ assert_true( false === strpos( $run['output'], 'HANDLER-RETURNED' ), 'authorised
 assert_true( 'active' === bulk_status( 'src_a' ), 'authorised handler enabled the selected source' );
 
 bulk_restore_sources( $original );
+
+// ---------------------------------------------------------------------------
+// Test A: Multi-source Enable Selected performs exactly one registry write.
+// ---------------------------------------------------------------------------
+test_section( 'Test A: Multi-source Enable Selected performs one registry write' );
+
+bulk_instrument_option_writes();
+$original = bulk_set_sources( bulk_registry( array(
+	'src_a' => 'active',
+	'src_b' => 'inactive',
+	'src_c' => 'inactive',
+	'src_d' => 'active',
+) ) );
+bulk_normalise_and_reset();
+
+$result = bulk_apply( 'enable', array( 'src_a', 'src_b', 'src_c', 'src_d' ) );
+
+assert_true( 'active' === bulk_status( 'src_a' ), 'src_a stays active' );
+assert_true( 'active' === bulk_status( 'src_b' ), 'src_b enabled' );
+assert_true( 'active' === bulk_status( 'src_c' ), 'src_c enabled' );
+assert_true( 'active' === bulk_status( 'src_d' ), 'src_d stays active' );
+assert_equals( array( 'src_a', 'src_d' ), $result['skipped'], 'already-active sources skipped' );
+assert_equals( array( 'src_b', 'src_c' ), $result['updated'], 'inactive sources enabled' );
+assert_true( array() === $result['failed'], 'nothing failed' );
+assert_true( 1 === bulk_write_count(), 'exactly one registry update for the batch' );
+
+// Unselected sources remain unchanged (none here, but the registry is intact).
+$registry = ( new Conexao_Event_Sources() )->get_all();
+assert_true( isset( $registry['src_a'] ) && isset( $registry['src_b'] ) && isset( $registry['src_c'] ) && isset( $registry['src_d'] ), 'all sources still present' );
+
+bulk_restore_sources( $original );
+bulk_uninstrument_option_writes();
+
+// ---------------------------------------------------------------------------
+// Test B: Multi-source Disable Selected performs exactly one registry write.
+// ---------------------------------------------------------------------------
+test_section( 'Test B: Multi-source Disable Selected performs one registry write' );
+
+bulk_instrument_option_writes();
+$original = bulk_set_sources( bulk_registry( array(
+	'src_a' => 'active',
+	'src_b' => 'inactive',
+	'src_c' => 'active',
+	'src_d' => 'inactive',
+) ) );
+bulk_normalise_and_reset();
+
+$result = bulk_apply( 'disable', array( 'src_a', 'src_b', 'src_c', 'src_d' ) );
+
+assert_true( 'inactive' === bulk_status( 'src_a' ), 'src_a disabled' );
+assert_true( 'inactive' === bulk_status( 'src_b' ), 'src_b stays inactive' );
+assert_true( 'inactive' === bulk_status( 'src_c' ), 'src_c disabled' );
+assert_true( 'inactive' === bulk_status( 'src_d' ), 'src_d stays inactive' );
+assert_equals( array( 'src_b', 'src_d' ), $result['skipped'], 'already-inactive sources skipped' );
+assert_equals( array( 'src_a', 'src_c' ), $result['updated'], 'active sources disabled' );
+assert_true( array() === $result['failed'], 'nothing failed' );
+assert_true( 1 === bulk_write_count(), 'exactly one registry update for the batch' );
+
+bulk_restore_sources( $original );
+bulk_uninstrument_option_writes();
+
+// ---------------------------------------------------------------------------
+// Test C: Multi-source Delete Selected performs exactly one registry write.
+// ---------------------------------------------------------------------------
+test_section( 'Test C: Multi-source Delete Selected performs one registry write' );
+
+bulk_instrument_option_writes();
+$original = bulk_set_sources( bulk_registry( array(
+	'src_a' => 'active',
+	'src_b' => 'inactive',
+	'src_c' => 'active',
+) ) );
+bulk_normalise_and_reset();
+
+// Create imported event fixtures that must survive the delete.
+$event_id_a = wp_insert_post(
+	array(
+		'post_type'   => 'event',
+		'post_status' => 'publish',
+		'post_title'  => 'Delete fixture A ' . wp_generate_password( 8, false ),
+	)
+);
+$event_id_b = wp_insert_post(
+	array(
+		'post_type'   => 'event',
+		'post_status' => 'publish',
+		'post_title'  => 'Delete fixture B ' . wp_generate_password( 8, false ),
+	)
+);
+assert_true( $event_id_a && ! is_wp_error( $event_id_a ), 'fixture event A created' );
+assert_true( $event_id_b && ! is_wp_error( $event_id_b ), 'fixture event B created' );
+update_post_meta( $event_id_a, '_event_source', 'src_a' );
+update_post_meta( $event_id_a, '_event_source_id', 'delete-fixture-a-' . $event_id_a );
+update_post_meta( $event_id_a, '_event_status', 'published' );
+update_post_meta( $event_id_b, '_event_source', 'src_b' );
+update_post_meta( $event_id_b, '_event_source_id', 'delete-fixture-b-' . $event_id_b );
+update_post_meta( $event_id_b, '_event_status', 'published' );
+
+$result = bulk_apply( 'delete', array( 'src_a', 'src_b' ) );
+
+assert_true( null === $sources_mgr->get( 'src_a' ), 'src_a removed' );
+assert_true( null === $sources_mgr->get( 'src_b' ), 'src_b removed' );
+assert_true( 'active' === bulk_status( 'src_c' ), 'unselected src_c untouched' );
+assert_true( 2 === count( $result['updated'] ), 'two sources reported deleted' );
+assert_true( array() === $result['failed'], 'nothing failed' );
+assert_true( 1 === bulk_write_count(), 'exactly one registry update for the batch' );
+
+// Imported event posts remain present.
+assert_true( get_post( $event_id_a ) !== null, 'event A post still exists' );
+assert_true( get_post( $event_id_b ) !== null, 'event B post still exists' );
+assert_true( 'src_a' === get_post_meta( $event_id_a, '_event_source', true ), 'event A still references deleted source' );
+assert_true( 'src_b' === get_post_meta( $event_id_b, '_event_source', true ), 'event B still references deleted source' );
+assert_true( 'published' === get_post_meta( $event_id_a, '_event_status', true ), '_event_status untouched on event A' );
+assert_true( 'published' === get_post_meta( $event_id_b, '_event_status', true ), '_event_status untouched on event B' );
+
+wp_delete_post( $event_id_a, true );
+wp_delete_post( $event_id_b, true );
+
+bulk_restore_sources( $original );
+bulk_uninstrument_option_writes();
+
+// ---------------------------------------------------------------------------
+// Test D: No-op batch performs no registry write.
+// ---------------------------------------------------------------------------
+test_section( 'Test D: No-op batch performs no registry write' );
+
+bulk_instrument_option_writes();
+$original = bulk_set_sources( bulk_registry( array(
+	'src_a' => 'active',
+	'src_b' => 'active',
+) ) );
+bulk_normalise_and_reset();
+
+$result = bulk_apply( 'enable', array( 'src_a', 'src_b' ) );
+
+assert_true( 2 === count( $result['skipped'] ), 'both sources skipped' );
+assert_true( array() === $result['updated'], 'nothing reported updated' );
+assert_true( array() === $result['failed'], 'nothing reported failed' );
+assert_true( 0 === bulk_write_count(), 'no registry update for a no-op batch' );
+
+bulk_restore_sources( $original );
+bulk_uninstrument_option_writes();
+
+// ---------------------------------------------------------------------------
+// Test E: Invalid and duplicate IDs.
+// ---------------------------------------------------------------------------
+test_section( 'Test E: Invalid and duplicate IDs in a mixed selection' );
+
+bulk_instrument_option_writes();
+$original = bulk_set_sources( bulk_registry( array(
+	'src_a' => 'inactive',
+	'src_b' => 'active',
+) ) );
+bulk_normalise_and_reset();
+
+$result = bulk_apply( 'enable', array( 'src_a', 'src_a', 'src_b', 'bogus_id', '' ) );
+
+// The empty string is filtered out during sanitisation, so 4 IDs reach
+// validation: src_a (x2), src_b, bogus_id.
+assert_true( 4 === $result['requested'], 'four IDs were submitted' );
+assert_true( 1 === $result['duplicates'], 'one duplicate was removed' );
+assert_equals( array( 'bogus_id' ), $result['invalid'], 'unknown ID reported invalid' );
+assert_equals( array( 'src_a' ), $result['updated'], 'only the inactive source enabled' );
+assert_equals( array( 'src_b' ), $result['skipped'], 'already-active source skipped' );
+assert_true( array() === $result['failed'], 'nothing failed' );
+assert_true( 1 === bulk_write_count(), 'exactly one registry update for the batch' );
+
+assert_true( 'active' === bulk_status( 'src_a' ), 'src_a enabled' );
+assert_true( 'active' === bulk_status( 'src_b' ), 'src_b stays active' );
+
+bulk_restore_sources( $original );
+bulk_uninstrument_option_writes();
+
+// ---------------------------------------------------------------------------
+// Test F: Failed persistence reports failures and writes no deletion logs.
+// ---------------------------------------------------------------------------
+test_section( 'Test F: Failed persistence reports failures accurately' );
+
+$original = bulk_set_sources( bulk_registry( array(
+	'src_a' => 'inactive',
+	'src_b' => 'active',
+) ) );
+bulk_normalise_and_reset();
+
+// Simulate a failed write by making update_option() think nothing changed.
+// Returning the current value from pre_update_option_ causes update_option()
+// to return false (no-op), which persist_sources() treats as an unverified
+// write and reports every affected ID as failed.
+$current_sources = get_option( Conexao_Event_Sources::OPTION_KEY, array() );
+add_filter(
+	'pre_update_option_' . Conexao_Event_Sources::OPTION_KEY,
+	function () use ( $current_sources ) {
+		return $current_sources;
+	}
+);
+
+$result = bulk_apply( 'enable', array( 'src_a', 'src_b' ) );
+
+// The write was rejected: nothing should be reported as updated.
+assert_true( array() === $result['updated'], 'nothing reported updated on failed write' );
+assert_equals( array( 'src_a', 'src_b' ), $result['failed'], 'both sources reported failed' );
+
+// Sources remain in their previous persisted state.
+assert_true( 'inactive' === bulk_status( 'src_a' ), 'src_a stays inactive' );
+assert_true( 'active' === bulk_status( 'src_b' ), 'src_b stays active' );
+
+remove_all_filters( 'pre_update_option_' . Conexao_Event_Sources::OPTION_KEY );
+
+bulk_restore_sources( $original );
+bulk_uninstrument_option_writes();
+
+// ---------------------------------------------------------------------------
+// Test G: Failed delete persistence writes no successful deletion logs.
+// ---------------------------------------------------------------------------
+test_section( 'Test G: Failed delete persistence writes no deletion logs' );
+
+$original = bulk_set_sources( bulk_registry( array(
+	'src_a' => 'active',
+	'src_b' => 'inactive',
+) ) );
+bulk_normalise_and_reset();
+
+$current_sources = get_option( Conexao_Event_Sources::OPTION_KEY, array() );
+add_filter(
+	'pre_update_option_' . Conexao_Event_Sources::OPTION_KEY,
+	function () use ( $current_sources ) {
+		return $current_sources;
+	}
+);
+
+$result = bulk_apply( 'delete', array( 'src_a', 'src_b' ) );
+
+assert_true( array() === $result['updated'], 'nothing reported updated on failed delete' );
+assert_equals( array( 'src_a', 'src_b' ), $result['failed'], 'both sources reported failed' );
+
+// Both sources remain in the registry.
+assert_true( isset( ( new Conexao_Event_Sources() )->get_all()['src_a'] ), 'src_a still present' );
+assert_true( isset( ( new Conexao_Event_Sources() )->get_all()['src_b'] ), 'src_b still present' );
+
+remove_all_filters( 'pre_update_option_' . Conexao_Event_Sources::OPTION_KEY );
+
+bulk_restore_sources( $original );
+bulk_uninstrument_option_writes();
 
 test_finish( 'bulk-actions' );

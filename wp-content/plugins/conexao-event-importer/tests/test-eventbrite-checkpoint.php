@@ -34,10 +34,10 @@ require_once dirname( __DIR__, 4 ) . '/tests/bootstrap.php';
 
 require_once WP_PLUGIN_DIR . '/conexao-event-importer/conexao-event-importer.php';
 
+test_require_operator_store_isolation();
+
 $restore_options = test_options_isolate(
 	array(
-		Conexao_Import_History::OPTION_KEY,
-		Conexao_Import_Log::OPTION_KEY,
 		Conexao_Event_Sources::OPTION_KEY,
 		'conexao_event_source_health',
 		Conexao_Source_Cooldown::OPTION_KEY,

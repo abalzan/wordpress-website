@@ -10,19 +10,19 @@ were clean. Stage 14 fixes the PHP boundary; this gate makes the fix permanent.
 
 ## What it asserts
 
-  1. CONFORMANCE - this scanner and the PHP runtime scanner agree, case for case,
-     on the canonical corpus in `tests/fixtures/secret-scan-corpus.json`. One file
-     describes the CASES; two runtimes enforce them; agreement is CHECKED, never
-     hand-maintained twice.
-  2. NEGATIVE - real secret shapes are REFUSED, not merely absent.
-  3. POSITIVE - ordinary content (digests, UUIDs, versions, URLs, source code,
+  1. NEGATIVE - real secret shapes are REFUSED, not merely absent.
+  2. POSITIVE - ordinary content (digests, UUIDs, versions, URLs, source code,
      authorization PROSE, test names) is not a false positive. A scanner that
      fires on everything is a scanner an operator switches off.
-  4. REDACTION - a finding reports category, location, reason and `redacted`, and
+  3. REDACTION - a finding reports category, location, reason and `redacted`, and
      never the value, a prefix, a suffix, a length or a hash.
-  5. ARTIFACTS - the SAME rules run over the source tree, the built production
+  4. ARTIFACTS - the SAME rules run over the source tree, the built production
      ZIPs, the release record and the generated evidence, so a secret committed
      anywhere is caught before it ships.
+
+The PHP implementation's corpus conformance is a separate explicit runtime
+gate (`verify-stage14-secret-scan-php.py`). It loads the real detector directly
+without WordPress, Docker or a database.
 
 ## The allowlist is narrow, explicit and documented
 
@@ -188,74 +188,6 @@ def finding(category: str, location: str) -> dict:
         "reason": f"a value at {location} matched the {category.replace('_', ' ')} rule; the value was redacted",
         "redacted": True,
     }
-
-
-def section_conformance(cases: list) -> None:
-    """This scanner and the PHP runtime scanner agree, case for case."""
-    print("\n-- 1. conformance on the canonical corpus --")
-    php = run_php_conformance(cases)
-
-    if php is None:
-        check(
-            False,
-            "the PHP runtime scanner could not be executed (no local WordPress); conformance is UNPROVEN, not assumed",
-        )
-        return
-
-    check(php["total"] == len(cases), f"the PHP scanner evaluated {php['total']} of {len(cases)} corpus cases")
-
-    for case_id, want, got in php["mismatches"]:
-        check(False, f"PHP/Python disagree on {case_id}: python={want} php={got}")
-
-    check(not php["mismatches"], f"PHP and Python agree on all {len(cases)} corpus cases")
-    print(f"  [ok] {php['total']} cases evaluated, {len(php['mismatches'])} mismatches")
-
-
-PHP_DRIVER = REPO_ROOT / "tests" / "stage14-conformance-driver.php"
-
-
-def run_php_conformance(cases: list):
-    """Run the PHP detector over the corpus inside the local WordPress container.
-
-    Returns None when no local WordPress is reachable, so the gate reports the
-    conformance case as unproven rather than passing on the Python side alone.
-    """
-    encoded = base64.b64encode(json.dumps(cases).encode()).decode()
-    PHP_DRIVER.write_text(
-        "<?php\n"
-        "require_once __DIR__ . '/bootstrap.php';\n"
-        "require_once CONEXAO_TESTS_WP_ROOT"
-        " . '/wp-content/plugins/conexao-translation-automation/conexao-translation-automation.php';\n"
-        "use Conexao_Translation_Automation_Result as Result;\n"
-        f"$cases = json_decode( base64_decode( '{encoded}' ), true );\n"
-        "$out = array( 'total' => 0, 'mismatches' => array() );\n"
-        "foreach ( $cases as $case ) {\n"
-        "  $f = Result::detect_secret( array( 'note' => $case['payload'] ) );\n"
-        "  $got = null === $f ? 'allow' : $f['category'];\n"
-        "  $want = 'detect' === $case['expect'] ? $case['category'] : 'allow';\n"
-        "  $out['total']++;\n"
-        "  if ( $got !== $want ) { $out['mismatches'][] = array( $case['id'], $want, $got ); }\n"
-        "}\n"
-        "echo json_encode( $out );\n",
-        encoding="utf-8",
-    )
-    try:
-        if subprocess.run(["docker", "compose", "version"], capture_output=True, check=False).returncode != 0:
-            return None
-        proc = subprocess.run(
-            [
-                "docker", "compose", "exec", "-T", "wordpress",
-                "php", "/var/www/html/tests/stage14-conformance-driver.php",
-            ],
-            cwd=str(REPO_ROOT), capture_output=True, text=True, check=False, timeout=300,
-        )
-        if proc.returncode != 0 or not proc.stdout.strip():
-            return None
-        return json.loads(proc.stdout.strip().splitlines()[-1])
-    except (OSError, ValueError, subprocess.SubprocessError):
-        return None
-    finally:
-        PHP_DRIVER.unlink(missing_ok=True)
 
 
 def section_negative_and_positive(cases: list) -> None:
@@ -594,7 +526,6 @@ def main() -> int:
         emit()
         return 1
 
-    section_conformance(cases)
     section_negative_and_positive(cases)
     section_redaction()
     section_containers()

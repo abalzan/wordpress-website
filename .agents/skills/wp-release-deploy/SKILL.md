@@ -49,6 +49,9 @@ by `scripts/verify-deploy.py`, which observes without mutating.
 | The single release-record implementation | `scripts/lib/release.py` |
 | Build/verify script flags and safety levels | `scripts/README.md` |
 | The release gate that must be green first | `docs/testing.md` |
+| Component versioning policy (SemVer, independent versions, bump rules) | `docs/engineering-standard.md` §11.1, `docs/releases.md` |
+| Version bump command | `scripts/bump-component-version.py` |
+| CI version validation | `scripts/validate-version-bumps.py` |
 
 **This skill declares no artifact list, version or activation order.** Those come
 from `plugins.json`, the component headers and the generated regions.
@@ -67,7 +70,15 @@ from `plugins.json`, the component headers and the generated regions.
 
 1. **Pass the gates first.** `./scripts/lint.sh` and `./scripts/run-tests.sh`
    must be green before an artifact is built. A release does not fix tests.
-2. **Build deterministically.**
+2. **Version bump (if not already done in the PR).** Each component with source
+   changes since the last release must have its version bumped per the SemVer
+   policy (§11.1 in engineering-standard.md). Use the bump command:
+   ```bash
+   python3 scripts/bump-component-version.py --component <slug> --level patch
+   ```
+   Verify constants are synchronized. Commit the version bumps in the same PR
+   as the code changes.
+3. **Build deterministically.**
    ```bash
    ./scripts/build-plugins-zip.sh     # ZIPs + the release manifest
    ./scripts/build-theme-zip.sh
@@ -75,40 +86,40 @@ from `plugins.json`, the component headers and the generated regions.
    Both source the single packager `scripts/lib/zip-build.sh`, which owns the
    exclusion rules (no test directories, fixture directories, `*.json` reports, OS junk) and the
    determinism guarantee. Never add a second packaging implementation.
-3. **Record the release.** `scripts/release-manifest.py --write` emits
+4. **Record the release.** `scripts/release-manifest.py --write` emits
    the manifest under `dist/`; `scripts/lib/release.py` is the one record
    implementation. It derives the allowlist from `plugins.json` (`build: true`,
    in load order, plus the theme), reads each version from its component header
    (versions are never duplicated into the registry), and refuses to package a
    `retired` rollout. `dist/` is git-ignored: **never commit a build artifact**.
-4. **Verify the artifacts.** `scripts/release-manifest.py --verify` re-hashes
+5. **Verify the artifacts.** `scripts/release-manifest.py --verify` re-hashes
    every artifact against the record; `--check` validates without writing. Prove
    reproducibility: two builds of the same tree are byte-identical.
-5. **Run the whole workflow locally.** `./scripts/verify-release.sh` executes
+6. **Run the whole workflow locally.** `./scripts/verify-release.sh` executes
    the seven-step end-to-end proof (registry gate → build → manifest →
    allowlist/hash → determinism → exclusion → HTTP verification) against the
    **local** site. This is the single command to run before relying on the
    machinery. It never uploads anything.
 
-6. **Deploy manually, in the documented order.** Production is WordPress.com:
+7. **Deploy manually, in the documented order.** Production is WordPress.com:
    there is **no SSH, no WP-CLI, no filesystem, no database access**. A human
    uploads the theme ZIP, then the plugin ZIPs in `plugins.json` order
    (platform plugins first), through wp-admin, and activates/deactivates to
    reach the steady state in `docs/deployment.md`. The tooling is
    build-and-verify only: it contains no upload, activation or mutating path.
-7. **Verify the deployment over HTTP.**
+8. **Verify the deployment over HTTP.**
    ```bash
    python3 scripts/verify-deploy.py --site https://conexaobr.ie
    ```
    GET-only, no credentials, and `--site` is **required with no default**. It
    runs the fixed smoke matrix: homepage, every archive, one single per CPT,
    `/en/` pairs, canonical, hreflang, sitemap and 404.
-8. **Record and tag.** Add a row to the release log in `docs/releases.md` with
+9. **Record and tag.** Add a row to the release log in `docs/releases.md` with
    versions, git SHA, verification result and the rollback note, using the tag
    convention there.
-9. **Rollback.** Follow `docs/releases.md` §Rollback: previous ZIPs, previous
-   plugin/theme state, re-verify over HTTP. Record what rollback does **not**
-   cover (content changes need their own reversal).
+10. **Rollback.** Follow `docs/releases.md` §Rollback: previous ZIPs, previous
+    plugin/theme state, re-verify over HTTP. Record what rollback does **not**
+    cover (content changes need their own reversal).
 
 ## Guardrails
 

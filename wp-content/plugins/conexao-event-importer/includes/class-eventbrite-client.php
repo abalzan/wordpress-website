@@ -269,7 +269,9 @@ class Conexao_Eventbrite_Client {
 						'run_id'      => apply_filters( 'conexao_event_importer_current_run_id', '' ),
 					)
 				);
-				$this->backoff( $attempt );
+				if ( ! $this->backoff( $attempt ) ) {
+					return '';
+				}
 				continue;
 			}
 
@@ -288,23 +290,56 @@ class Conexao_Eventbrite_Client {
 				// traffic without ever changing the outcome.
 				$this->last_failure_reason = 'http_error';
 
+				$context = array(
+					'url'         => $page_url,
+					'http_status' => (int) $code,
+					'reason'      => $this->last_failure_reason,
+					'run_id'      => apply_filters( 'conexao_event_importer_current_run_id', '' ),
+				);
+
+				// A 405 is this provider's WAF refusal code. Retain ONLY the
+				// bounded, allowlisted WAF action so the classification is
+				// provable from the log; never a cookie, token or body.
+				if ( 405 === (int) $code ) {
+					$waf_action = $this->get_waf_action( $response );
+
+					if ( '' !== $waf_action ) {
+						$context['waf_action'] = $waf_action;
+					}
+				}
+
 				Conexao_Import_Log::add(
 					$this->source_id,
 					'error',
 					$this->get_non_retryable_message( (int) $code, $page_url ),
+					$context
+				);
+				return '';
+			}
+
+			$retry_after_details = self::parse_retry_after_details(
+				wp_remote_retrieve_header( $response, 'retry-after' )
+			);
+			$retry_after         = $retry_after_details['delay'];
+
+			if ( $retry_after_details['unsupported'] ) {
+				$this->last_failure_reason = 'rate_limited';
+				Conexao_Eventbrite_Pacing::record_run_rate_limit( $this->source_id );
+				Conexao_Eventbrite_Pacing::record_run_retry_state( 0, 'unsupported' );
+				Conexao_Import_Log::add(
+					$this->source_id,
+					'error',
+					__( 'Eventbrite returned a Retry-After value in an unsupported HTTP-date format. The logical run is deferred without an earlier retry.', 'conexao-event-importer' ),
 					array(
 						'url'         => $page_url,
 						'http_status' => (int) $code,
-						'reason'      => $this->last_failure_reason,
+						'reason'      => 'rate_limited_deferred',
+						'retry_after' => wp_remote_retrieve_header( $response, 'retry-after' ),
 						'run_id'      => apply_filters( 'conexao_event_importer_current_run_id', '' ),
 					)
 				);
 				return '';
 			}
-
-			$retry_after = self::parse_retry_after(
-				wp_remote_retrieve_header( $response, 'retry-after' )
-			);
 
 			// ---- G5B: HTTP 429 is its own condition, not a generic 5xx. ----
 			if ( 429 === (int) $code ) {
@@ -316,6 +351,10 @@ class Conexao_Eventbrite_Client {
 				// from walking into the same wall. Measured, not assumed: after
 				// the first 429 all 24 remaining Eventbrite paths answered 429.
 				Conexao_Eventbrite_Pacing::record_run_rate_limit( $this->source_id );
+				Conexao_Eventbrite_Pacing::record_run_retry_state(
+					$this->pacing->now() + ( null !== $retry_after ? (int) ceil( $retry_after ) : (int) $this->pacing->get_cooldown_seconds( $attempt ) ),
+					$retry_after_details['kind']
+				);
 
 				$cooldown = $this->pacing->apply_rate_limit_cooldown( $attempt, $retry_after );
 
@@ -337,6 +376,7 @@ class Conexao_Eventbrite_Client {
 						'http_status'       => (int) $code,
 						'reason'            => 'rate_limited',
 						'retry_after'       => $retry_after,
+							'retry_after_kind'  => $retry_after_details['kind'],
 						'retry_after_present' => $this->pacing->last_retry_after_was_present(),
 						'retry_after_capped' => $this->pacing->last_retry_after_was_capped(),
 						'cooldown_seconds'  => $cooldown,
@@ -344,6 +384,11 @@ class Conexao_Eventbrite_Client {
 						'run_id'            => apply_filters( 'conexao_event_importer_current_run_id', '' ),
 					)
 				);
+
+				if ( $this->pacing->was_wait_deferred() ) {
+					$this->last_failure_reason = 'rate_limited_deferred';
+					return '';
+				}
 
 				continue;
 			}
@@ -378,7 +423,9 @@ class Conexao_Eventbrite_Client {
 				)
 			);
 
-			$this->backoff( $attempt, $retry_after );
+			if ( ! $this->backoff( $attempt, $retry_after ) ) {
+				return '';
+			}
 		}
 
 		// Exhausted. The message now states WHICH condition ended the page, so
@@ -514,6 +561,40 @@ class Conexao_Eventbrite_Client {
 	}
 
 	/**
+	 * Read and bound the `x-amzn-waf-action` response header for a 405.
+	 *
+	 * Returns a short, allowlisted token (e.g. 'captcha') or an empty string
+	 * when the header is absent or unrecognised. The value is sanitised and
+	 * length-limited; it is NEVER a cookie, token, session identifier or body.
+	 * This is the only response header the importer retains, and only on a 405.
+	 *
+	 * @param array|WP_Error $response HTTP response (as returned by wp_remote_get).
+	 * @return string Allowlisted action, or '' when absent/unrecognised.
+	 */
+	protected function get_waf_action( $response ) {
+		if ( ! is_array( $response ) ) {
+			return '';
+		}
+
+		$raw = (string) wp_remote_retrieve_header( $response, 'x-amzn-waf-action' );
+		$raw = sanitize_text_field( trim( $raw ) );
+
+		if ( '' === $raw ) {
+			return '';
+		}
+
+		$raw = substr( $raw, 0, self::WAF_ACTION_MAX_LENGTH );
+
+		foreach ( self::WAF_ACTION_ALLOWLIST as $allowed ) {
+			if ( 0 === strcasecmp( $raw, $allowed ) ) {
+				return $allowed;
+			}
+		}
+
+		return 'unknown';
+	}
+
+	/**
 	 * Build a page URL with the ?page=N parameter.
 	 *
 	 * @param string $base_url Base discovery URL.
@@ -554,6 +635,30 @@ class Conexao_Eventbrite_Client {
 	 * @var int[]
 	 */
 	const RETRYABLE_STATUSES = array( 429, 500, 502, 503, 504 );
+
+	/**
+	 * Strict allowlist of recognised `x-amzn-waf-action` values.
+	 *
+	 * A 405 is this provider's WAF refusal code (G1–G5). The WAF action header
+	 * is retained ONLY so the classification is provable from the log rather
+	 * than inferred from the code path. The value is matched case-insensitively
+	 * against this fixed allowlist; anything else is stored as 'unknown'. No
+	 * other header, no cookie, no token, no body is ever read or stored.
+	 *
+	 * @var string[]
+	 */
+	const WAF_ACTION_ALLOWLIST = array( 'captcha', 'challenge', 'block', 'allow' );
+
+	/**
+	 * Maximum length of a stored WAF action value.
+	 *
+	 * The allowlist values are all short; this is a defence-in-depth ceiling so
+	 * a hand-edited or unexpected header can never write a long string to the
+	 * log.
+	 *
+	 * @var int
+	 */
+	const WAF_ACTION_MAX_LENGTH = 32;
 
 	/**
 	 * Sleep abstraction, so tests observe the delay without waiting for it.
@@ -625,10 +730,27 @@ class Conexao_Eventbrite_Client {
 	 * @return float|null Seconds to wait, or null when the header is unusable.
 	 */
 	public static function parse_retry_after( $header, $now = 0 ) {
+		$details = self::parse_retry_after_details( $header, $now );
+
+		return $details['delay'];
+	}
+
+	/**
+	 * Parse Retry-After while distinguishing malformed from unsupported dates.
+	 *
+	 * Standard IMF-fixdate, RFC850 and asctime forms are accepted. A plausible
+	 * date that is not one of those forms fails closed so a logical Run All never
+	 * retries earlier using a guessed fallback.
+	 *
+	 * @param string $header Raw header value.
+	 * @param int    $now    Current unix timestamp.
+	 * @return array{delay:float|null,kind:string,unsupported:bool}
+	 */
+	public static function parse_retry_after_details( $header, $now = 0 ) {
 		$header = trim( (string) $header );
 
 		if ( '' === $header ) {
-			return null;
+			return array( 'delay' => null, 'kind' => 'fallback', 'unsupported' => false );
 		}
 
 		$now = $now > 0 ? (int) $now : time();
@@ -636,20 +758,36 @@ class Conexao_Eventbrite_Client {
 		// Form 1: delta-seconds.
 		if ( preg_match( '/^\d+$/', $header ) ) {
 			$seconds = (float) $header;
+			$kind    = 'delta';
 		} else {
-			// Form 2: HTTP-date.
-			$timestamp = strtotime( $header );
-			if ( false === $timestamp ) {
-				return null;
+			$timestamp = false;
+			foreach ( array( 'D, d M Y H:i:s T', 'l, d-M-y H:i:s T', 'D M j H:i:s Y' ) as $format ) {
+				$date = DateTimeImmutable::createFromFormat( $format, $header, new DateTimeZone( 'UTC' ) );
+				$errors = DateTimeImmutable::getLastErrors();
+				if ( false !== $date && ( false === $errors || ( 0 === $errors['warning_count'] && 0 === $errors['error_count'] ) ) ) {
+					$timestamp = $date->getTimestamp();
+					break;
+				}
 			}
+
+			if ( false === $timestamp ) {
+				$unsupported = (bool) preg_match( '/,|\b(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)\b|\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b/i', $header );
+				return array( 'delay' => null, 'kind' => $unsupported ? 'unsupported' : 'fallback', 'unsupported' => $unsupported );
+			}
+
 			$seconds = (float) ( $timestamp - $now );
+			$kind    = 'http_date';
 		}
 
 		if ( $seconds < 0 ) {
 			$seconds = 0.0;
 		}
 
-		return min( $seconds, (float) self::MAX_RETRY_AFTER_SECONDS );
+		return array(
+			'delay'       => min( $seconds, (float) self::MAX_RETRY_AFTER_SECONDS ),
+			'kind'        => $kind,
+			'unsupported' => false,
+		);
 	}
 
 	/**
@@ -677,12 +815,13 @@ class Conexao_Eventbrite_Client {
 	 * @param float|null $retry_after Parsed, already-capped Retry-After delay.
 	 */
 	protected function backoff( $attempt, $retry_after = null ) {
+		$seconds = null !== $retry_after ? $retry_after : $this->get_backoff_seconds( $attempt );
+		$this->pacing->wait( $seconds, 'retry_backoff' );
 		if ( null !== $retry_after ) {
-			$this->sleep_for( $retry_after );
-			return;
+			return ! $this->pacing->was_wait_deferred();
 		}
 
-		$this->sleep_for( $this->get_backoff_seconds( $attempt ) );
+		return ! $this->pacing->was_wait_deferred();
 	}
 
 	/**

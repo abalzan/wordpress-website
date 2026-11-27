@@ -2,14 +2,14 @@
 # This file is distributed under the GNU General Public License v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: conexao-br-irlanda 1.0.2\n"
+"Project-Id-Version: conexao-br-irlanda 1.0.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/theme/conexao-br-irlanda\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-06 10:59+0000\n"
+"POT-Creation-Date: 2026-11-26 22:41+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 
 
@@ -343,49 +343,37 @@ msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/setup.php:51
 msgid "Menu Principal"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/header.php:141
+#: wp-content/themes/conexao-br-irlanda/header.php:155
 msgid "Alternar tema claro/escuro"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/header.php:149
-msgid "Abrir pesquisa"
-msgstr ""
-#: wp-content/themes/conexao-br-irlanda/header.php:158
-#: wp-content/themes/conexao-br-irlanda/header.php:227
-#: wp-content/themes/conexao-br-irlanda/header.php:288
+#: wp-content/themes/conexao-br-irlanda/header.php:172
+#: wp-content/themes/conexao-br-irlanda/header.php:224
 #: wp-content/themes/conexao-br-irlanda/searchform.php:18
 msgid "Pesquisar"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/header.php:159
-#: wp-content/themes/conexao-br-irlanda/header.php:228
-#: wp-content/themes/conexao-br-irlanda/header.php:289
+#: wp-content/themes/conexao-br-irlanda/header.php:173
+#: wp-content/themes/conexao-br-irlanda/header.php:225
 msgid "Buscar no portal..."
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/header.php:160
-#: wp-content/themes/conexao-br-irlanda/header.php:229
-#: wp-content/themes/conexao-br-irlanda/header.php:290
+#: wp-content/themes/conexao-br-irlanda/header.php:174
+#: wp-content/themes/conexao-br-irlanda/header.php:226
 #: wp-content/themes/conexao-br-irlanda/searchform.php:25
 msgid "Buscar"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/header.php:169
 #: wp-content/themes/conexao-br-irlanda/header.php:183
-#: wp-content/themes/conexao-br-irlanda/header.php:189
-#: wp-content/themes/conexao-br-irlanda/header.php:264
+#: wp-content/themes/conexao-br-irlanda/header.php:197
+#: wp-content/themes/conexao-br-irlanda/header.php:203
+#: wp-content/themes/conexao-br-irlanda/header.php:261
 msgid "Anuncie Aqui"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/header.php:200
+#: wp-content/themes/conexao-br-irlanda/header.php:214
 msgid "Menu"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/header.php:201
+#: wp-content/themes/conexao-br-irlanda/header.php:215
 msgid "Fechar menu"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/header.php:234
+#: wp-content/themes/conexao-br-irlanda/header.php:231
 msgid "Menu Mobile"
-msgstr ""
-#: wp-content/themes/conexao-br-irlanda/header.php:286
-msgid "Pesquisar no site"
-msgstr ""
-#: wp-content/themes/conexao-br-irlanda/header.php:291
-msgid "Fechar pesquisa"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/home.php:28
 msgid "Artigos e Notícias"
@@ -405,13 +393,13 @@ msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/course-filters.php:53
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:366
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:553
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:309
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:475
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:285
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:427
 #: wp-content/themes/conexao-br-irlanda/template-parts/guide-filters.php:39
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:288
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:331
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:517
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:543
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:291
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:334
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:520
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:546
 msgid "Todos"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/home.php:112
@@ -430,7 +418,27 @@ msgid ""
 "Imagem da vaga: use uma imagem vertical, preferencialmente 1080 × 1920 px "
 "(formato Instagram Stories)."
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/commemorative-modules.php:199
+#: wp-content/themes/conexao-br-irlanda/inc/assets.php:136
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:145
+msgid "Feliz Natal!"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/inc/assets.php:137
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:146
+msgid "Que esta época traga alegria, união e momentos especiais."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/inc/assets.php:138
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:147
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/hero.php:109
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/new_year/hero.php:70
+msgid "Fechar"
+msgstr ""
+#. translators: %s: occasion name.
+#: wp-content/themes/conexao-br-irlanda/inc/class-conexao-seasonal-occasion.php:240
+#, php-format
+msgid "Seasonal Occasion: %s"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/inc/commemorative-modules.php:173
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:162
 msgid "Evento"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/commemorative-presentations.php:50
@@ -448,23 +456,23 @@ msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/commemorative-presentations.php:261
 msgid "Experiência de Natal"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/commemorative-presentations.php:338
+#: wp-content/themes/conexao-br-irlanda/inc/commemorative-presentations.php:344
 msgid "Experiência de Ano Novo"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/commemorative-presentations.php:348
+#: wp-content/themes/conexao-br-irlanda/inc/commemorative-presentations.php:419
 msgid "Experiência do Dia de São Patrício"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/commemorative-presentations.php:358
+#: wp-content/themes/conexao-br-irlanda/inc/commemorative-presentations.php:429
 msgid "Experiência do Dia dos Namorados"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/commemorative-presentations.php:368
+#: wp-content/themes/conexao-br-irlanda/inc/commemorative-presentations.php:439
 msgid "Experiência de Páscoa"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/commemorative-presentations.php:1085
+#: wp-content/themes/conexao-br-irlanda/inc/commemorative-presentations.php:1208
 msgid "Pré-visualização"
 msgstr ""
 #. translators: %s: event key.
-#: wp-content/themes/conexao-br-irlanda/inc/commemorative-presentations.php:1089
+#: wp-content/themes/conexao-br-irlanda/inc/commemorative-presentations.php:1212
 #, php-format
 msgid ""
 "Você está vendo uma pré-visualização privada do evento \"%s\". Esta página "
@@ -561,12 +569,10 @@ msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:328
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:505
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:531
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:207
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:270
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:425
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:454
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:376
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:563
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:229
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:400
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:379
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:566
 msgid "Todas"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/empregos-landing.php:133
@@ -618,103 +624,103 @@ msgstr ""
 msgid "Toda %s"
 msgstr ""
 #. translators: %s is the parent menu item title.
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:140
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:149
 #, php-format
 msgid "Abrir submenu de %s"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:142
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:151
 msgid "Link copiado"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:144
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:153
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:443
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:384
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:476
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:359
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:479
 msgid "Filtrar"
 msgstr ""
 #. translators: %d is the number of active filters (exactly one).
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:146
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:155
 #, php-format
 msgid "%d filtro ativo"
 msgstr ""
 #. translators: %d is the number of active filters (two or more).
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:148
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:157
 #, php-format
 msgid "%d filtros ativos"
 msgstr ""
 #. translators: 1: current sponsor position, 2: total sponsors.
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:150
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:159
 #: wp-content/themes/conexao-br-irlanda/template-parts/featured-sponsors.php:84
 #, php-format
 msgid "Apoiador %1$d de %2$d"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:152
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:161
 msgid "Carregando..."
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:153
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:162
 msgid "Carregar mais"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:154
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:163
 msgid "Não foi possível carregar mais conteúdo."
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:155
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:164
 msgid "Não foi possível carregar mais conteúdo. Tente novamente."
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:156
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:165
 msgid "Tentar novamente"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:157
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:166
 msgid "Você chegou ao fim."
 msgstr ""
 #. translators: 1: number of newly loaded cards, 2: singular noun ("evento"/"curso").
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:159
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:168
 #, php-format
 msgid "Mais %1$d %2$s carregado."
 msgstr ""
 #. translators: 1: number of newly loaded cards, 2: plural noun ("eventos"/"cursos").
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:161
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:170
 #, php-format
 msgid "Mais %1$d %2$s carregados."
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:162
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:171
 msgid "evento"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:163
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:172
 msgid "eventos"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:164
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:173
 msgid "curso"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:165
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:174
 msgid "cursos"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:167
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:176
 msgid ""
 "Permita o acesso à sua localização para calcular a distância aproximada até "
 "as atrações."
 msgstr ""
 #. translators: %s is a formatted distance, e.g. "2,4 km" or "850 m".
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:169
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:178
 #, php-format
 msgid "%s de você"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:171
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:180
 msgid "Mostrar distância de mim"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:173
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:182
 msgid "Obtendo sua localização…"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:175
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:184
 msgid ""
 "Não foi possível obter sua localização. Você pode continuar explorando as "
 "atrações normalmente."
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:176
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:185
 msgid "Ordenado por proximidade"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:177
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:186
 msgid "Atrações ordenadas por proximidade."
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:298
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:307
 msgid "F j, Y"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php:37
@@ -846,27 +852,23 @@ msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/navigation.php:116
 msgid "Contato"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/occasion.php:198
-#, php-format
-msgid "Seasonal Occasion: %s"
-msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/occasion.php:212
+#: wp-content/themes/conexao-br-irlanda/inc/occasion.php:36
 msgid "Christmas"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/occasion.php:222
+#: wp-content/themes/conexao-br-irlanda/inc/occasion.php:46
 #: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/halloween/hero.php:92
 msgid "Halloween"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/occasion.php:232
+#: wp-content/themes/conexao-br-irlanda/inc/occasion.php:56
 msgid "New Year"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/occasion.php:242
+#: wp-content/themes/conexao-br-irlanda/inc/occasion.php:66
 msgid "St. Patrick's Day"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/occasion.php:252
+#: wp-content/themes/conexao-br-irlanda/inc/occasion.php:76
 msgid "Valentine's Day"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/occasion.php:262
+#: wp-content/themes/conexao-br-irlanda/inc/occasion.php:86
 msgid "Easter"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/permit-employers.php:241
@@ -908,7 +910,7 @@ msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/permit-employers.php:270
 msgid "Cuidadores domiciliários (Home Carers)"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/queries.php:635
+#: wp-content/themes/conexao-br-irlanda/inc/queries.php:698
 msgid "Posts Relacionados"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/recruitment-agencies.php:143
@@ -916,6 +918,7 @@ msgstr ""
 msgid "Nacional"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/recruitment-agencies.php:155
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:96
 msgid "Irlanda"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/recruitment-agencies.php:155
@@ -1264,88 +1267,452 @@ msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/job-resources.php:40
 msgid "(abre em nova aba)"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/hero.php:29
-msgid "A Christmas that feels like home"
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/hero.php:73
+msgid "One Christmas, two skies"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/hero.php:29
-msgid "Um Natal com sabor de casa"
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/hero.php:73
+msgid "Um Natal, dois céus"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/hero.php:33
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/hero.php:78
 msgid ""
-"Concerts, markets and community gatherings across Ireland — plus the guides "
-"that make the season easier."
+"In Brazil the light stays late and the evening arrives slowly; in Ireland "
+"the dark comes early and the windows light up. In between, the same star — "
+"and the same wish to be close to the people who matter."
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/hero.php:34
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/hero.php:79
 msgid ""
-"Concertos, feiras e encontros da comunidade por toda a Irlanda — e os guias "
-"que deixam esta época mais simples."
+"No Brasil, a luz fica até tarde e a noite chega devagar; na Irlanda, "
+"escurece cedo e são as janelas que acendem. Entre os dois, a mesma estrela — "
+"e a mesma vontade de estar perto de quem importa."
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/hero.php:35
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/hero.php:96
+msgid "Explore both skies"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/hero.php:96
+msgid "Explorar os dois céus"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/hero.php:97
 msgid "See the Christmas calendar"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/hero.php:35
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/hero.php:97
 msgid "Ver a agenda de Natal"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/hero.php:51
-msgid "Natal"
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/hero.php:102
+msgid ""
+"One lit Christmas star above a summer beach in Brazil, on the left, and a "
+"snow-covered Irish village with warm windows and a castle on a hill, on the "
+"right."
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/hero.php:60
-msgid "Open the Christmas page"
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/hero.php:103
+msgid ""
+"Uma estrela de Natal acesa sobre uma praia de verão no Brasil, à esquerda, e "
+"uma vila irlandesa coberta de neve, com janelas iluminadas e um castelo no "
+"alto, à direita."
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/hero.php:60
-msgid "Abrir a página de Natal"
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/hero.php:105
+msgid "Christmas · Brazil and Ireland"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:35
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/hero.php:105
+msgid "Natal · Brasil e Irlanda"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/hero.php:109
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/new_year/hero.php:70
+msgid "Close"
+msgstr ""
+#. translators: preview-only trigger label.
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/hero.php:116
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/new_year/hero.php:172
+msgid "Open the welcome preview"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/hero.php:117
+msgid "Abrir a pré-visualização do boas-vindas"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:40
+msgid "Two skies, one star"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:40
+msgid "Dois céus, uma mesma estrela"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:42
+msgid ""
+"The same star appears on both sides of the Atlantic. Choose a sky to light "
+"up, and notice what changes — and what stays the same."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:43
+msgid ""
+"A mesma estrela aparece dos dois lados do Atlântico. Escolha um céu para "
+"acender e repare no que muda — e no que continua igual."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:53
+msgid "Brazil"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:54
+msgid "summer"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:55
+msgid "Summer, and the night takes its time"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:56
+msgid ""
+"December in Brazil is summer. The sun is slow to go down, the street stays "
+"busy, and the meal can happen on a balcony, in a back garden or on the "
+"pavement — fan on, ice in everything, somebody complaining about the heat."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:58
+msgid ""
+"Daylight becomes part of the decoration: the evening starts in the light."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:59
+msgid "The table usually spills out of the house."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:60
+msgid "People drop by after midnight — and stay."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:62
+msgid ""
+"This is one picture among many. Brazil is huge, and every household keeps "
+"Christmas its own way."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:65
+msgid "Ireland"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:66
+msgid "winter"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:67
+msgid "Winter, and the windows do the lighting"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:68
+msgid ""
+"December in Ireland is winter. The dark arrives in the middle of the "
+"afternoon, and that is when the light inside becomes a signal: a lit window, "
+"a fire, lights in the garden, a candle on the table."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:70
+msgid "The dark comes early, and it makes the light at home count for more."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:71
+msgid "The cold gathers everyone into the same room."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:72
+msgid "A walk at dusk, just to see the lights on your own street."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:74
+msgid ""
+"Not a rule either: some people spend Christmas far from family, some work "
+"that day, and some do not celebrate it at all."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:77
+msgid ""
+"What crosses both skies is not the weather. It is the gesture: someone "
+"thinks of you, and does something about it."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:78
+msgid ""
+"Illustration: the same star over a Brazilian summer evening and an Irish "
+"winter night."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:79
+msgid "Choose a sky"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:80
+msgid ""
+"A large Christmas star at the centre, with arcs of light reaching a "
+"Brazilian beach and city on the left and a snowy Irish hillside with a stone "
+"tower on the right."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:84
+msgid "Brasil"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:85
+msgid "verão"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:86
+msgid "Verão, e a noite custa a chegar"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:87
+msgid ""
+"Dezembro no Brasil é verão. O sol demora a cair, a rua continua cheia e a "
+"ceia pode acontecer na varanda, no quintal ou na calçada — ventilador "
+"ligado, gelo em tudo, alguém reclamando do calor."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:89
+msgid "A luz do dia entra na decoração: a noite começa claro."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:90
+msgid "A mesa costuma se espalhar para fora de casa."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:91
+msgid "As visitas chegam depois da meia-noite — e ficam."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:93
+msgid ""
+"Isto é um retrato entre muitos. O Brasil é grande, e cada casa guarda o seu "
+"jeito de fazer Natal."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:97
+msgid "inverno"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:98
+msgid "Inverno, e são as janelas que acendem"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:99
+msgid ""
+"Dezembro na Irlanda é inverno. Escurece no meio da tarde, e é aí que a luz "
+"de dentro vira sinal: janela acesa, lareira, luzinhas no jardim, uma vela na "
+"mesa."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:101
+msgid "A escuridão chega cedo, e faz a luz de casa valer mais."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:102
+msgid "O frio junta todo mundo no mesmo cômodo."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:103
+msgid "Um passeio no fim da tarde só para ver as luzes da sua rua."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:105
+msgid ""
+"Também não é regra: há quem passe o Natal longe da família, quem trabalhe "
+"nesse dia e quem não comemore."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:108
+msgid ""
+"O que atravessa os dois céus não é o clima. É o gesto: alguém pensa em você "
+"e faz alguma coisa a respeito."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:109
+msgid ""
+"Ilustração: a mesma estrela sobre um fim de tarde de verão no Brasil e uma "
+"noite de inverno na Irlanda."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:110
+msgid "Escolha um céu"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:111
+msgid ""
+"Uma grande estrela de Natal no centro, com arcos de luz que chegam a uma "
+"praia e a uma cidade brasileiras à esquerda e a uma encosta irlandesa "
+"coberta de neve, com uma torre de pedra, à direita."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:118
+msgid "The journey"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/journey.php:118
+msgid "A viagem"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:41
+msgid "What crosses both skies"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:42
+msgid ""
+"It is not the weather, not the time of day and not the same food. It is "
+"something else."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:45
+msgid "The table"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:46
+msgid "Eating together changes the day — in the heat or in the cold."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:49
+msgid "The visit"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:50
+msgid "Turning up, staying longer than agreed, hearing the same story again."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:53
+msgid "The reminder"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:54
+msgid "A card, a message, a dish that travels across the city."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:57
+msgid "The effort"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:58
+msgid "Taking the bus, the plane or the ocean to be near someone."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:61
+msgid ""
+"None of it is compulsory. Plenty of people spend this season working, alone, "
+"or simply differently — and that is Christmas too."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:62
+msgid "One star, two settings: the beach and the village, summer and winter."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:63
+msgid ""
+"An illustrated panorama: a beach and city skyline under a sunset sky on the "
+"left, a snow-covered stone village with a castle on the right, and a lit "
+"Christmas tree with gifts between them."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:66
+msgid "O que atravessa os dois céus"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:67
+msgid "Não é o clima, não é o horário e não é a mesma comida. É outra coisa."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:70
+msgid "A mesa"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:71
+msgid "Comer junto muda o dia — no calor ou no frio."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:74
+msgid "A visita"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:75
+msgid ""
+"Aparecer, ficar mais do que o combinado, ouvir a mesma história de novo."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:78
+msgid "A lembrança"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:79
+msgid "Um cartão, uma mensagem, um prato que atravessa a cidade."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:82
+msgid "O esforço"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:83
+msgid "Pegar o ônibus, o avião ou o oceano para estar perto de alguém."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:86
+msgid ""
+"Nada disso é obrigatório. Muita gente passa essa época trabalhando, sozinha "
+"ou simplesmente de outro jeito — e isso também é Natal."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:87
+msgid ""
+"Uma mesma estrela, dois cenários: a praia e a vila, o verão e o inverno."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:88
+msgid ""
+"Panorama ilustrado: uma praia e uma cidade sob o céu do pôr do sol à "
+"esquerda, uma vila de pedra coberta de neve com um castelo à direita, e uma "
+"árvore de Natal iluminada com presentes entre as duas."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:133
+msgid "Christmas calendar"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:134
+msgid ""
+"Concerts, markets and community gatherings at this time of year — all "
+"already published in the portal calendar."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:135
+msgid "A place for the solstice"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:136
+msgid ""
+"In the Irish winter the solstice has an address: the passage tomb at "
+"Newgrange, County Meath."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:137
+msgid "Looking after the winter"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:138
+msgid ""
+"Short days and little light affect many people. This guide explains what "
+"helps and where to look for support."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:139
+msgid "Winter reading"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:140
+msgid "Writing from our community for the longest nights of the year."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:141
+msgid "Useful guides for the holidays"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:142
+msgid ""
+"If you are travelling or hosting at this time of year, these guides answer "
+"the usual questions."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:143
+msgid "Place"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:144
+msgid "Guide"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:145
+msgid "Article"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:146
+msgid "Event"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:149
 msgid "Agenda de Natal"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:36
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:150
 msgid ""
 "Concertos, feiras e encontros da comunidade nesta época do ano, todos já "
 "publicados na agenda do portal."
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:46
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:151
 msgid "Um lugar para o solstício"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:47
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:152
 msgid ""
 "No inverno irlandês, o solstício tem um endereço: a passagem de Newgrange, "
 "no condado de Meath."
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:52
-msgid "Lugar"
-msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:62
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:153
 msgid "Cuidar do inverno"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:63
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:154
 msgid ""
 "Dias curtos e pouca luz afetam muita gente. Este guia explica o que fazer e "
 "onde procurar apoio."
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:68
-#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:110
-#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:115
-#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:120
-msgid "Guia"
-msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:78
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:155
 msgid "Leituras de inverno"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:79
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:156
 msgid "Textos da nossa comunidade para as noites mais longas do ano."
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:84
-#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:89
-#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:94
-msgid "Artigo"
-msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:104
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:157
 msgid "Guias úteis para as festas"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:105
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:158
 msgid ""
 "Se vai viajar ou receber visita nesta época, estes guias resolvem as dúvidas "
 "mais comuns."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:159
+msgid "Lugar"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:160
+msgid "Guia"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:161
+msgid "Artigo"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:279
+msgid "A light that outlasts December"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:280
+msgid ""
+"Whether Christmas is your celebration or not, December still carries "
+"meetings, rest and good food. The portal calendar keeps going after the "
+"holidays — and this page stays here."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:281
+msgid "See what is on this season"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:284
+msgid "Uma luz que continua depois de dezembro"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:285
+msgid ""
+"Se o Natal é a sua festa ou não, dezembro também traz encontro, descanso e "
+"comida boa. A agenda do portal continua viva depois das festas — e esta "
+"página fica aqui."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/christmas/landing.php:286
+msgid "Ver o que acontece nesta época"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/halloween/hero.php:29
 msgid "Happy Halloween!"
@@ -1375,6 +1742,69 @@ msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/halloween/hero.php:37
 msgid "Fechar mensagem de Halloween"
 msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/new_year/hero.php:36
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/new_year/landing.php:47
+msgid "Two countries, one new beginning"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/new_year/hero.php:36
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/new_year/landing.php:47
+msgid "Dois países, um novo começo"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/new_year/hero.php:41
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/new_year/landing.php:42
+msgid ""
+"Two countries, two cultures, one shared celebration. May the New Year bring "
+"new opportunities, meaningful connections, happiness, and prosperity to our "
+"Brazilian and Irish communities."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/new_year/hero.php:42
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/new_year/landing.php:43
+msgid ""
+"Dois países, duas culturas, uma celebração compartilhada. Que o Ano Novo "
+"traga novas oportunidades, conexões significativas, felicidade e "
+"prosperidade às nossas comunidades brasileira e irlandesa."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/new_year/hero.php:59
+msgid "See the New Year page"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/new_year/hero.php:59
+msgid "Ver a página de Ano Novo"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/new_year/hero.php:60
+msgid "See the events calendar"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/new_year/hero.php:60
+msgid "Ver a agenda de eventos"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/new_year/hero.php:65
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/new_year/landing.php:34
+msgid ""
+"New Year celebration: fireworks over a shared night sky above Rio de Janeiro "
+"and Dublin, with champagne glasses and festive ribbons in the foreground."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/new_year/hero.php:66
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/new_year/landing.php:35
+msgid ""
+"Celebração de Ano Novo: fogos de artifício sobre um céu noturno "
+"compartilhado acima do Rio de Janeiro e de Dublin, com taças de champanhe e "
+"fitas festivas ao primeiro plano."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/new_year/hero.php:68
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/new_year/landing.php:45
+msgid "New Year · Brazil and Ireland"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/new_year/hero.php:68
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/new_year/landing.php:45
+msgid "Ano Novo · Brasil e Irlanda"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/new_year/landing.php:38
+msgid ""
+"One sky, two cities: Rio de Janeiro and Dublin welcome the New Year together."
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/template-parts/commemorative/new_year/landing.php:39
+msgid ""
+"Um céu, duas cidades: o Rio de Janeiro e Dublin recebem o Ano Novo juntos."
+msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/content-none.php:3
 msgid "Nada encontrado"
 msgstr ""
@@ -1402,8 +1832,8 @@ msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/content-none.php:29
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:414
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:580
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:354
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:442
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:329
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:445
 msgid "Limpar filtros"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/content-none.php:32
@@ -1514,8 +1944,8 @@ msgstr ""
 msgid "Nenhuma localização encontrada."
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:384
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:327
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:399
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:303
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:402
 msgid "Filtros ativos:"
 msgstr ""
 #. translators: %s: county name.
@@ -1525,12 +1955,11 @@ msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:394
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:400
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:406
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:334
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:340
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:346
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:407
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:421
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:433
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:310
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:321
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:410
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:424
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:436
 #, php-format
 msgid "Remover filtro: %s"
 msgstr ""
@@ -1543,32 +1972,32 @@ msgstr[0] ""
 msgstr[1] ""
 #. translators: %s: number of active filters.
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:434
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:375
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:467
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:350
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:470
 #, php-format
 msgid "Filtrar (%s filtros ativos)"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:453
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:394
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:486
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:369
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:489
 msgid "Filtros"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:454
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:395
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:487
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:370
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:490
 msgid "Fechar filtros"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:541
 msgid "Nenhuma localização encontrada"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:567
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:489
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:578
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:441
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:581
 msgid "Limpar"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:568
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:490
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:579
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:442
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:582
 msgid "Mostrar resultados"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:578
@@ -1622,72 +2051,54 @@ msgstr ""
 msgid "Saiba mais"
 msgstr ""
 #. translators: %s: filter group name.
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:137
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:222
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:157
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:225
 #, php-format
 msgid "Filtrar por %s"
 msgstr ""
 #. translators: 1: filter group name, 2: selected option name.
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:143
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:163
 #, php-format
 msgid "Filtrar por %1$s. Filtro ativo: %2$s"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:180
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:185
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:201
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:413
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:168
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:505
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:202
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:207
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:223
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:388
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:171
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:508
 msgid "County"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:197
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:198
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:419
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:420
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:280
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:281
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:511
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:512
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:219
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:220
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:394
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:395
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:283
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:284
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:514
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:515
 msgid "Procurar county"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:231
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:299
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:250
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:302
 msgid "Nenhum county encontrado."
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:246
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:251
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:265
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:442
-msgid "Cidade"
-msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:261
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:262
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:448
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:449
-msgid "Procurar cidade"
-msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:281
-msgid "Nenhuma cidade encontrada."
-msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:296
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:301
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:306
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:471
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:272
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:277
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:282
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:423
 msgid "Categoria"
 msgstr ""
 #. translators: %s: number of events.
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:362
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:337
 #, php-format
 msgid "%s evento encontrado"
 msgid_plural "%s eventos encontrados"
 msgstr[0] ""
 msgstr[1] ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:435
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:528
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:410
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:531
 msgid "Nenhum county encontrado"
-msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php:464
-msgid "Nenhuma cidade encontrada"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/featured-sponsors.php:70
 msgid "Apoiadores em destaque"
@@ -1744,43 +2155,43 @@ msgstr ""
 msgid "Ver no mapa"
 msgstr ""
 #. translators: %s: number of selected filter options.
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:189
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:192
 #, php-format
 msgid "%s selecionados"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:194
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:238
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:328
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:535
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:197
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:241
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:331
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:538
 msgid "Tipo"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:195
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:239
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:373
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:557
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:198
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:242
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:376
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:560
 msgid "Características"
 msgstr ""
 #. translators: %s: selected county name.
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:204
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:207
 #, php-format
 msgid "Filtrar por County. Filtro ativo: %s"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:207
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:210
 msgid "Filtrar por County"
 msgstr ""
 #. translators: 1: filter group name, 2: comma-separated list of selected option names.
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:232
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:235
 #, php-format
 msgid "Filtrar por %1$s. Filtros ativos: %2$s"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:253
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:256
 msgid "Encontre o que fazer"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:283
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:286
 msgid "Condado"
 msgstr ""
 #. translators: %s: number of results.
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:452
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php:455
 #, php-format
 msgid "%s opção encontrada"
 msgid_plural "%s opções encontradas"
@@ -1894,5 +2305,5 @@ msgstr ""
 
 #. Version of the theme
 #: wp-content/themes/conexao-br-irlanda/style.css:1
-msgid "1.0.2"
+msgid "1.0.3"
 msgstr ""

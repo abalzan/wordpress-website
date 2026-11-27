@@ -1,0 +1,12 @@
+{
+  "stage": "event-importer-stage-0-probe-deactivation",
+  "gate": "exactly 20 distinct existing source configurations: 18 ^g1_probe_ IDs plus g2_cavan_probe and g4c_budget_probe",
+  "expected": 20,
+  "actual": 18,
+  "missing_ids": [
+    "g2_cavan_probe",
+    "g4c_budget_probe"
+  ],
+  "status": "BLOCKED",
+  "writes_performed": 0
+}

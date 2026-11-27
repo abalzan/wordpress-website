@@ -2029,3 +2029,21 @@ msgstr "Ordered by proximity"
 #: wp-content/themes/conexao-br-irlanda/inc/i18n.php
 msgid "Atrações ordenadas por proximidade."
 msgstr "Attractions ordered by proximity."
+
+# Christmas Easter egg (inc/assets.php markup + inc/i18n.php JS payload). The
+# greeting, message and close label are the same msgids in both places, so the
+# rendered dialog and the script can never disagree about the wording.
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php
+#: wp-content/themes/conexao-br-irlanda/inc/assets.php
+msgid "Feliz Natal!"
+msgstr "Merry Christmas!"
+
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php
+#: wp-content/themes/conexao-br-irlanda/inc/assets.php
+msgid "Que esta época traga alegria, união e momentos especiais."
+msgstr "Wishing you joy, connection, and special moments this Christmas."
+
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php
+#: wp-content/themes/conexao-br-irlanda/inc/assets.php
+msgid "Fechar"
+msgstr "Close"

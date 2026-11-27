@@ -1,0 +1,154 @@
+/* ============================================
+   Conexão BR Irlanda — Christmas Easter egg
+   Hidden until activated by a secret key sequence
+   (NATAL on Portuguese pages, CHRISTMAS on English pages).
+   Scoped to .christmas-egg*; zero effect on the
+   inactive site. ============================================ */
+
+.christmas-egg {
+	position: fixed;
+	inset: 0;
+	z-index: 10000;
+	display: none;
+	pointer-events: none;
+}
+
+.christmas-egg--active {
+	display: block;
+}
+
+.christmas-egg__backdrop {
+	position: absolute;
+	inset: 0;
+	background: radial-gradient(
+		circle at 50% 40%,
+		rgba(14, 107, 58, 0.07) 0%,
+		transparent 65%
+	);
+	pointer-events: none;
+}
+
+.christmas-egg__snow {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	overflow: hidden;
+}
+
+.christmas-egg__flake {
+	position: absolute;
+	background: #ffffff;
+	border-radius: 50%;
+	pointer-events: none;
+	animation: christmas-fall linear infinite;
+}
+
+.christmas-egg__card {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: min(92vw, 420px);
+	max-height: 85vh;
+	overflow-y: auto;
+	padding: var(--space-6) var(--space-5);
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-lg);
+	background: var(--color-surface);
+	color: var(--color-text);
+	box-shadow: var(--shadow-lg);
+	text-align: center;
+	pointer-events: auto;
+	opacity: 0;
+	transform: translate(-50%, -50%) scale(0.96);
+	transition: opacity var(--transition-fast) ease, transform var(--transition-fast) ease;
+}
+
+.christmas-egg--active .christmas-egg__card {
+	opacity: 1;
+	transform: translate(-50%, -50%) scale(1);
+}
+
+.christmas-egg__title {
+	font-family: var(--font-display);
+	font-size: var(--text-2xl);
+	font-weight: 700;
+	color: var(--color-text);
+	letter-spacing: -0.01em;
+	margin: 0 0 var(--space-2);
+}
+
+.christmas-egg__message {
+	font-size: var(--text-base);
+	color: var(--color-text-secondary);
+	line-height: 1.5;
+	margin: 0 0 var(--space-5);
+}
+
+.christmas-egg__close {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-full);
+	background: var(--color-surface);
+	color: var(--color-text);
+	font-size: var(--text-lg);
+	line-height: 1;
+	cursor: pointer;
+	transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.christmas-egg__close:hover {
+	border-color: var(--color-primary);
+	color: var(--color-primary);
+}
+
+.christmas-egg__close:focus-visible {
+	outline: var(--focus-ring);
+	outline-offset: var(--focus-offset);
+}
+
+@keyframes christmas-fall {
+	0% {
+		transform: translateY(-14%) rotate(0deg);
+		opacity: 0;
+	}
+	10% {
+		opacity: 0.7;
+	}
+	90% {
+		opacity: 0.7;
+	}
+	100% {
+		transform: translateY(108%) rotate(30deg);
+		opacity: 0;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.christmas-egg__flake {
+		animation: none !important;
+		transform: none !important;
+		opacity: 0.35 !important;
+	}
+	.christmas-egg__card,
+	.christmas-egg__close {
+		transition: none !important;
+	}
+	.christmas-egg--active .christmas-egg__card {
+		opacity: 1 !important;
+		transform: translate(-50%, -50%) scale(1) !important;
+	}
+}
+
+@media (max-width: 768px) {
+	.christmas-egg__card {
+		width: min(88vw, 340px);
+		padding: var(--space-5) var(--space-4);
+	}
+	.christmas-egg__title {
+		font-size: var(--text-xl);
+	}
+}

@@ -18,6 +18,23 @@ defined( 'ABSPATH' ) || exit;
 
 class Conexao_Event_Importer_Engine {
 
+	/**
+	 * Bounded page size for the absence-reconciliation candidate enumeration.
+	 *
+	 * Stage 2 / P10. Reconciliation is keyset-paginated instead of asking for
+	 * one arbitrary slice: 200 IDs per page is cheap, keeps the request count
+	 * proportional, and never becomes a single unbounded query.
+	 */
+	const RECONCILIATION_PAGE_SIZE = 200;
+
+	/**
+	 * Absence-based status changes applied per batch after enumeration.
+	 *
+	 * Enumeration and mutation are separate phases; this bounds the mutation
+	 * work per batch without affecting the completeness of the candidate set.
+	 */
+	const RECONCILIATION_BATCH_SIZE = 50;
+
 	/** @var Conexao_Event_Sources */
 	protected $sources;
 
@@ -33,8 +50,11 @@ class Conexao_Event_Importer_Engine {
 	/** @var Conexao_Event_Image_Handler */
 	protected $image_handler;
 
-	/** @var string Current import run ID (set per run_source call). */
+	/** @var string Stable parent run-group ID for the logical operation. */
 	protected $current_run_id = '';
+
+	/** @var string Unique child ID for the currently executing source attempt. */
+	protected $current_source_run_id = '';
 
 	/**
 	 * Constructor.
@@ -57,6 +77,7 @@ class Conexao_Event_Importer_Engine {
 
 		// Expose the current import run ID for structured log correlation.
 		add_filter( 'conexao_event_importer_current_run_id', array( $this, 'get_current_run_id' ) );
+		add_filter( 'conexao_event_importer_current_source_run_id', array( $this, 'get_current_source_run_id' ) );
 	}
 
 	/**
@@ -66,6 +87,15 @@ class Conexao_Event_Importer_Engine {
 	 */
 	public function get_current_run_id() {
 		return $this->current_run_id;
+	}
+
+	/**
+	 * Get the unique child source-run ID for structured history.
+	 *
+	 * @return string
+	 */
+	public function get_current_source_run_id() {
+		return $this->current_source_run_id;
 	}
 
 	/**
@@ -79,11 +109,15 @@ class Conexao_Event_Importer_Engine {
 	 * - `Conexao_Request_Budget::begin_run()` zeroes the outbound request
 	 *   counter and re-arms the ceiling.
 	 *
-	 * Called at the start of every `run_source()` and `run_all()`.
+	 * Called once for a logical run, and again for each child only for the
+	 * request budget/reuse scope. Eventbrite pacing is intentionally reset only
+	 * at the logical parent boundary.
+	 *
+	 * @param bool $new_logical_run Whether to reset the shared Eventbrite state.
 	 *
 	 * @return void
 	 */
-	protected function begin_run_scope() {
+	protected function begin_run_scope( $new_logical_run = true ) {
 		Conexao_Request_Reuse::begin_run();
 		Conexao_Request_Budget::begin_run();
 
@@ -91,7 +125,9 @@ class Conexao_Event_Importer_Engine {
 		// request budget and the reuse store. A new run therefore always starts
 		// able to try Eventbrite again, while sources later in THIS run honour
 		// the cooldown already paid for by an earlier one.
-		Conexao_Eventbrite_Pacing::begin_run();
+		if ( $new_logical_run ) {
+			Conexao_Eventbrite_Pacing::begin_run();
+		}
 	}
 
 	/**
@@ -171,7 +207,9 @@ class Conexao_Event_Importer_Engine {
 		$dry_run = ! empty( $args['dry_run'] );
 
 		// Start a fresh run ID for the combined run.
-		$this->current_run_id = 'all-' . (string) microtime( true );
+		$this->current_run_id        = 'all-' . (string) microtime( true );
+		$this->current_source_run_id = '';
+		$this->begin_run_scope( true );
 
 		$combined = array(
 			'found'                => 0,
@@ -190,6 +228,12 @@ class Conexao_Event_Importer_Engine {
 			'status'               => 'success',
 			'sources'              => array(),
 			'dry_run'              => $dry_run,
+			'parent_run_group_id'  => $this->current_run_id,
+			'failed_sources'       => array(),
+			'total_failed_source_count' => 0,
+			'event_skipped_count'  => 0,
+			'source_skipped_count' => 0,
+			'aggregate_error_count' => 0,
 		);
 
 		$active_sources = $this->sources->get_active();
@@ -215,21 +259,41 @@ class Conexao_Event_Importer_Engine {
 			return $combined;
 		}
 
+		Conexao_Import_History::record_parent(
+			$this->current_run_id,
+			$combined,
+			'running',
+			__( 'Run All is running.', 'conexao-event-importer' ),
+			array( 'planned_source_count' => count( $active_sources ) )
+		);
+
 		foreach ( $active_sources as $source ) {
-			$result = $this->run_source( $source['id'], $dry_run );
+			$result = $this->run_source(
+				$source['id'],
+				$dry_run,
+				array( 'parent_run_group_id' => $this->current_run_id )
+			);
 
 			// Aggregate counters.
-			$combined['found']                += isset( $result['found'] ) ? (int) $result['found'] : 0;
-			$combined['created']              += isset( $result['created'] ) ? (int) $result['created'] : 0;
-			$combined['new']                  += isset( $result['new'] ) ? (int) $result['new'] : 0;
-			$combined['updated']              += isset( $result['updated'] ) ? (int) $result['updated'] : 0;
-			$combined['unchanged']            += isset( $result['unchanged'] ) ? (int) $result['unchanged'] : 0;
-			$combined['duplicates']           += isset( $result['duplicates'] ) ? (int) $result['duplicates'] : 0;
-			$combined['skipped']              += isset( $result['skipped'] ) ? (int) $result['skipped'] : 0;
-			$combined['skipped_past']         += isset( $result['skipped_past'] ) ? (int) $result['skipped_past'] : 0;
-			$combined['skipped_invalid_date'] += isset( $result['skipped_invalid_date'] ) ? (int) $result['skipped_invalid_date'] : 0;
-			$combined['failed']               += isset( $result['failed'] ) ? (int) $result['failed'] : 0;
-			$combined['errors']               += isset( $result['errors'] ) ? (int) $result['errors'] : 0;
+			$combined['found']                 += isset( $result['found'] ) ? (int) $result['found'] : 0;
+			$combined['created']               += isset( $result['created'] ) ? (int) $result['created'] : 0;
+			$combined['new']                   += isset( $result['new'] ) ? (int) $result['new'] : 0;
+			$combined['updated']               += isset( $result['updated'] ) ? (int) $result['updated'] : 0;
+			$combined['unchanged']             += isset( $result['unchanged'] ) ? (int) $result['unchanged'] : 0;
+			$combined['duplicates']            += isset( $result['duplicates'] ) ? (int) $result['duplicates'] : 0;
+			$combined['skipped']               += isset( $result['skipped'] ) ? (int) $result['skipped'] : 0;
+			$combined['skipped_past']           += isset( $result['skipped_past'] ) ? (int) $result['skipped_past'] : 0;
+			$combined['skipped_invalid_date']  += isset( $result['skipped_invalid_date'] ) ? (int) $result['skipped_invalid_date'] : 0;
+			$combined['failed']                += isset( $result['failed'] ) ? (int) $result['failed'] : 0;
+			$combined['errors']                += isset( $result['errors'] ) ? (int) $result['errors'] : 0;
+			$combined['aggregate_error_count'] += isset( $result['errors'] ) ? (int) $result['errors'] : 0;
+			$combined['event_skipped_count']   += isset( $result['skipped'] ) ? (int) $result['skipped'] : 0;
+			if ( ! empty( $result['source_skipped'] ) ) {
+				++$combined['source_skipped_count'];
+			}
+			if ( 'failed' === (string) ( isset( $result['status'] ) ? $result['status'] : '' ) ) {
+				$combined['failed_sources'][] = (string) $source['id'];
+			}
 
 			// Merge fatal errors.
 			if ( ! empty( $result['fatal_errors'] ) && is_array( $result['fatal_errors'] ) ) {
@@ -253,42 +317,96 @@ class Conexao_Event_Importer_Engine {
 					$combined['address_audit'][ $audit_key ] = ( isset( $combined['address_audit'][ $audit_key ] ) ? $combined['address_audit'][ $audit_key ] : 0 ) + (int) $audit_count;
 				}
 			}
-
-			// Derive combined status.
-			if ( 'failed' === $result['status'] ) {
-				if ( 'failed' !== $combined['status'] ) {
-					$combined['status'] = 'failed';
-				}
-			} elseif ( 'partial' === $result['status'] ) {
-				if ( 'success' === $combined['status'] ) {
-					$combined['status'] = 'partial';
-				}
-			} elseif ( 'warning' === $result['status'] ) {
-				if ( 'success' === $combined['status'] ) {
-					$combined['status'] = 'warning';
-				}
-			}
 		}
 
-		// Mark past events as expired.
-		Conexao_Event_Status::mark_expired_events();
+		$combined['total_failed_source_count'] = count( $combined['failed_sources'] );
+		$combined['status']                   = $this->aggregate_parent_status( $combined['sources'] );
 
-		// Record a combined history entry when more than one source ran.
-		if ( count( $combined['sources'] ) > 1 ) {
-			Conexao_Import_History::record(
-				'all',
-				$combined,
-				$combined['status'],
-				'',
-				array(
-					'run_id'        => $this->current_run_id,
-					'fatal_errors'  => $combined['fatal_errors'],
-					'failed_events' => self::extract_failed_events( $combined['event_results'] ),
-				)
-			);
+		// Mark past events as expired only for a real import.
+		if ( ! $dry_run ) {
+			Conexao_Event_Status::mark_expired_events();
 		}
+
+		Conexao_Import_History::record_parent(
+			$this->current_run_id,
+			$combined,
+			$combined['status'],
+			$this->build_parent_summary_message( $combined ),
+			array(
+				'planned_source_count' => count( $active_sources ),
+				'child_run_ids'        => array_map(
+					function ( $child ) {
+						return isset( $child['source_run_id'] ) ? $child['source_run_id'] : '';
+					},
+					$combined['sources']
+				),
+				'fatal_errors'         => $combined['fatal_errors'],
+				'failed_events'        => self::extract_failed_events( $combined['event_results'] ),
+				'failed_sources'       => $combined['failed_sources'],
+				'source_skipped_count' => $combined['source_skipped_count'],
+				'event_skipped_count'  => $combined['event_skipped_count'],
+				'aggregate_error_count' => $combined['aggregate_error_count'],
+			)
+		);
 
 		return $combined;
+	}
+
+	/**
+	 * Resolve the parent status using the documented terminal precedence.
+	 *
+	 * @param array $children Child source results keyed by source ID.
+	 * @return string
+	 */
+	protected function aggregate_parent_status( $children ) {
+		$has_failed  = false;
+		$has_rate    = false;
+		$has_partial = false;
+		$has_warning = false;
+
+		foreach ( (array) $children as $child ) {
+			$status      = isset( $child['status'] ) ? (string) $child['status'] : '';
+			$has_failed  = $has_failed || 'failed' === $status;
+			$has_rate    = $has_rate || 'rate_limited' === $status;
+			$has_partial = $has_partial || 'partial' === $status;
+			$has_warning = $has_warning || ( in_array( $status, array( 'warning', 'success' ), true ) && ( 'warning' === $status || ! empty( $child['fatal_errors'] ) ) );
+		}
+
+		if ( $has_failed ) {
+			return 'failed';
+		}
+		if ( $has_rate || Conexao_Eventbrite_Pacing::is_rate_limited() ) {
+			return 'rate_limited';
+		}
+		if ( $has_partial ) {
+			return 'partial';
+		}
+		if ( $has_warning ) {
+			return 'completed_with_errors';
+		}
+
+		return 'completed';
+	}
+
+	/**
+	 * Build the compact parent message shown in admin history.
+	 *
+	 * @param array $combined Combined result.
+	 * @return string
+	 */
+	protected function build_parent_summary_message( $combined ) {
+		return sprintf(
+			/* translators: 1: source count, 2: created, 3: updated, 4: unchanged, 5: event skipped, 6: failed events, 7: failed sources, 8: source skipped */
+			__( 'Run All: %1$d source(s), %2$d created, %3$d updated, %4$d unchanged, %5$d event(s) skipped, %6$d event error(s), %7$d failed source(s), %8$d source(s) skipped/deferred.', 'conexao-event-importer' ),
+			count( $combined['sources'] ),
+			(int) $combined['created'],
+			(int) $combined['updated'],
+			(int) $combined['unchanged'],
+			(int) $combined['event_skipped_count'],
+			(int) $combined['aggregate_error_count'],
+			(int) $combined['total_failed_source_count'],
+			(int) $combined['source_skipped_count']
+		);
 	}
 
 	/**
@@ -310,25 +428,90 @@ class Conexao_Event_Importer_Engine {
 	 * @param string $source_id Source slug.
 	 * @param bool   $dry_run   When true, fetch/normalize/classify without
 	 *                          writing anything to the database.
+	 * @param array  $context   Internal parent/continuation correlation context.
 	 * @return array Stats for this source.
 	 */
-	public function run_source( $source_id, $dry_run = false ) {
+	public function run_source( $source_id, $dry_run = false, $context = array() ) {
 		Conexao_Import_Log::begin_run();
+		$is_child = ! empty( $context['parent_run_group_id'] );
+		if ( ! $is_child ) {
+			$this->current_run_id = ! empty( $context['parent_run_group_id'] )
+				? (string) $context['parent_run_group_id']
+				: 'source-' . wp_generate_uuid4();
+		} else {
+			$this->current_run_id = (string) $context['parent_run_group_id'];
+		}
+		$this->current_source_run_id = 'source-' . wp_generate_uuid4();
 
-		// Each source enumeration is one run scope: a fresh response-reuse
+		// Per-source execution lock: prevent duplicate concurrent imports for
+		// the same source (a manual "Import Now", a scheduled continuation, or
+		// two overlapping runs must not hammer the same upstream at once).
+		// Taken atomically via add_option(); released in the finally block
+		// below. Dry runs make no requests, so they take no lock.
+		$lock_acquired = false;
+		if ( ! $dry_run && class_exists( 'Conexao_Import_Continuation' ) ) {
+			if ( Conexao_Import_Continuation::is_locked_by_this_process( $source_id ) ) {
+				// Re-entrant: an outer caller (a continuation worker) already
+				// owns the lock. Do not acquire or release it here — that is
+				// the outer caller's responsibility.
+				$lock_acquired = false;
+			} elseif ( Conexao_Import_Continuation::acquire_lock( $source_id ) ) {
+				$lock_acquired = true;
+			} else {
+				Conexao_Import_Log::add(
+					$source_id,
+					'warning',
+					__( 'Another import for this source is already running; this run was skipped to avoid duplicate requests.', 'conexao-event-importer' ),
+					array( 'run_id' => $this->current_run_id )
+				);
+				return array(
+					'found'              => 0,
+					'new'              => 0,
+					'created'          => 0,
+					'updated'          => 0,
+					'unchanged'        => 0,
+					'duplicates'       => 0,
+					'skipped'          => 0,
+					'errors'           => 0,
+					'failed'           => 0,
+					'status'           => 'rate_limited',
+					'source_skipped'   => true,
+					// Machine-readable cause displayed by Import History.
+					'source_skip_reason' => 'concurrent_import_in_progress',
+					'fatal_errors'     => array(),
+					'complete'         => true,
+					'event_results'    => array(),
+					'run_id'           => $this->current_run_id,
+					'parent_run_group_id' => $this->current_run_id,
+					'source_run_id'    => $this->current_source_run_id,
+				);
+			}
+		}
+
+		// Each source enumeration gets a fresh response-reuse
 		// store and a fresh outbound request budget. run_all() delegates to
 		// this method per source, so a combined run gives every source its own
 		// bounded budget rather than letting one source consume the whole run's
 		// capacity.
-		$this->begin_run_scope();
+		$this->begin_run_scope( ! $is_child );
 
 		$stats = null;
 
 		try {
 			$stats = $this->run_source_unbuffered( $source_id, $dry_run );
+			$stats['run_id']               = $this->current_run_id;
+			$stats['parent_run_group_id'] = $this->current_run_id;
+			$stats['source_run_id']       = $this->current_source_run_id;
+			$stats['rate_limit_state']    = Conexao_Eventbrite_Pacing::get_run_state();
 
 			return $stats;
 		} finally {
+			// Release the per-source execution lock if this run owns it, so a
+			// later run (manual or continuation) can proceed immediately.
+			if ( $lock_acquired && class_exists( 'Conexao_Import_Continuation' ) ) {
+				Conexao_Import_Continuation::release_lock( $source_id );
+			}
+
 			/*
 			 * G18 — the continuation is reconciled for every REAL run, and
 			 * never for a dry run (a classification pass must not create or
@@ -346,7 +529,29 @@ class Conexao_Event_Importer_Engine {
 			 * nothing.
 			 */
 			if ( ! $dry_run ) {
-				Conexao_Import_Continuation::reconcile( $source_id, is_array( $stats ) ? $stats : array() );
+				/*
+				 * Stage 3 (P12): the correlation context is built from the
+				 * engine, not from `$stats`. `$stats` is null on every early
+				 * return — a cooldown skip, a fetch failure, a handler that
+				 * threw — and those are exactly the runs that leave a
+				 * continuation behind. Passing the IDs unconditionally is what
+				 * makes the scheduled continuation resolvable to the child run
+				 * that produced it instead of to nothing at all.
+				 */
+				$continuation_context = array(
+					'run_id'              => $this->current_run_id,
+					'source_run_id'       => $this->current_source_run_id,
+					'parent_run_group_id' => $this->current_run_id,
+				);
+
+				if ( is_array( $stats ) ) {
+					$continuation_context = array_merge( $stats, $continuation_context );
+				}
+
+				Conexao_Import_Continuation::reconcile( $source_id, $continuation_context );
+			}
+			if ( $is_child && ! $dry_run ) {
+				Conexao_Import_History::refresh_parent( $this->current_run_id );
 			}
 
 			$this->log_request_scope_summary( $source_id );
@@ -362,9 +567,6 @@ class Conexao_Event_Importer_Engine {
 	 * @return array Stats for this source.
 	 */
 	protected function run_source_unbuffered( $source_id, $dry_run = false ) {
-		// Start a fresh run ID for log correlation.
-		$this->current_run_id = (string) microtime( true );
-
 		$source = $this->sources->get( $source_id );
 		if ( ! $source ) {
 			return array(
@@ -508,7 +710,7 @@ class Conexao_Event_Importer_Engine {
 					// A source that failed before enumeration is by definition
 					// NOT a complete listing; never record it as one.
 					'complete'      => $result->is_enumeration_incomplete() ? false : true,
-					'checkpoint'    => self::checkpoint_state_for( $source_id ),
+				'checkpoint'    => self::checkpoint_state_for( $source_id ),
 				)
 			);
 			return $result->get_stats();
@@ -534,8 +736,15 @@ class Conexao_Event_Importer_Engine {
 					'http_status' => $e->get_http_status(),
 				)
 			);
-			$result->add_fatal_error( $message, $e->getMessage() );
-			$result->add_incomplete_enumeration( $message );
+			$is_rate_limited   = 429 === (int) $e->get_http_status()
+				|| ( 'eventbrite' === (string) ( isset( $source['type'] ) ? $source['type'] : '' ) && Conexao_Eventbrite_Pacing::is_rate_limited() );
+			$is_source_skipped = $is_rate_limited && 0 === strpos( (string) $e->getMessage(), 'Not attempted:' );
+			if ( $is_rate_limited ) {
+				$result->mark_rate_limited( $message, $is_source_skipped );
+			} else {
+				$result->add_fatal_error( $message, $e->getMessage() );
+				$result->add_incomplete_enumeration( $message );
+			}
 			// G9: a throttled or unreachable upstream earns a bounded, source-level
 			// cooldown so the next run does not immediately re-send doomed requests.
 			$this->record_throttle_cooldown( $source_id, $e->get_http_status() );
@@ -864,12 +1073,19 @@ class Conexao_Event_Importer_Engine {
 		$resumed_subset = $fetch_complete && ! $reconciliation_safe;
 
 		if ( $fetch_complete && $reconciliation_safe ) {
-			$this->mark_missing_events( $source_id, $raw_events );
+			$this->mark_missing_events( $source_id, $raw_events, $handler );
 		} else {
 			$this->mark_fetch_incomplete_in_result( $result, $source_id );
 
 			if ( $resumed_subset ) {
-				$result->add_incomplete_enumeration(
+				/*
+				 * Stage 3 (P12) status distinction: this walk DID reach its
+				 * final page — the enumeration is complete, only the already
+				 * confirmed pages were not re-requested. That is a non-fatal
+				 * caveat on a finished walk, so it stays `warning` and must not
+				 * be recorded as an incomplete enumeration.
+				 */
+				$result->add_warning(
 					sprintf(
 						/* translators: %s: source name */
 						__( '%s was enumerated to its final page but resumed from a stored checkpoint, so the already-confirmed pages were not re-requested. Events from those pages were left untouched (not marked source_not_found).', 'conexao-event-importer' ),
@@ -1141,9 +1357,27 @@ class Conexao_Event_Importer_Engine {
 	protected function update_source_stats_after_run( $source_id, Conexao_Import_Result $result ) {
 		$status = $result->get_status();
 
-		// Map the new statuses to the legacy two-state (success|error) used in
-		// the sources option, while keeping the richer status in the history.
-		$legacy_status = ( 'failed' === $status ) ? 'error' : 'success';
+		/*
+		 * Stage 3 (P12) — the registry status must not claim success for a run
+		 * that did not succeed. Before Stage 3 everything except `failed` was
+		 * written as `success`, so a rate-limited source and a time-budget
+		 * truncated source both read as a clean success on the Event Sources
+		 * screen.
+		 *
+		 * The map is explicit and every value is a status word the engine
+		 * already uses. `error` keeps its pre-Stage-3 meaning for `failed`, and
+		 * the existing readers (`'error' === $last_import_status`) keep working
+		 * unchanged for it.
+		 */
+		$status_map = array(
+			'success'      => 'success',
+			'warning'      => 'warning',
+			'partial'      => 'partial',
+			'rate_limited' => 'rate_limited',
+			'failed'       => 'error',
+		);
+
+		$legacy_status = isset( $status_map[ $status ] ) ? $status_map[ $status ] : 'success';
 
 		$stats = array(
 			'last_import'        => current_time( 'mysql' ),
@@ -1165,14 +1399,25 @@ class Conexao_Event_Importer_Engine {
 				);
 			}
 		} elseif ( 'partial' === $status ) {
-			$stats['last_import_status'] = 'success'; // Partial is still a completed run.
-			$stats['last_error']         = sprintf(
-				/* translators: %d: number of failed events */
-				__( '%d event(s) failed but the rest were imported.', 'conexao-event-importer' ),
-				$result->get_counts()['failed']
-			);
+			// `partial` replaced the two branches Stage 3 removed: an incomplete
+			// enumeration and per-event failures now share one status, so the
+			// message names whichever applies rather than assuming.
+			if ( $result->is_enumeration_incomplete() ) {
+				$stats['last_error'] = $this->incomplete_reason_text( $result );
+			} else {
+				$stats['last_error'] = sprintf(
+					/* translators: %d: number of failed events */
+					__( '%d event(s) failed but the rest were imported.', 'conexao-event-importer' ),
+					$result->get_counts()['failed']
+				);
+			}
+		} elseif ( 'rate_limited' === $status ) {
+			$stats['last_error'] = $result->get_incomplete_enumeration_note();
+			if ( '' === trim( (string) $stats['last_error'] ) ) {
+				$stats['last_error'] = __( 'Rate limited by the provider; the source was not fully enumerated.', 'conexao-event-importer' );
+			}
 		} elseif ( 'warning' === $status ) {
-			$stats['last_import_status'] = 'success';
+			$stats['last_error'] = '';
 		}
 
 		$this->sources->update_import_stats( $source_id, $stats );
@@ -1183,10 +1428,53 @@ class Conexao_Event_Importer_Engine {
 			if ( 'failed' === $status ) {
 				$reason = ! empty( $stats['last_error'] ) ? $stats['last_error'] : __( 'Unknown import failure.', 'conexao-event-importer' );
 				Conexao_Source_Health::record_failure( $source_id, $reason );
-			} else {
+			} elseif ( 'success' === $status || 'warning' === $status ) {
 				Conexao_Source_Health::record_success( $source_id );
+			} else {
+				/*
+				 * Stage 3 (P12): an incomplete or rate-limited run is neither a
+				 * success (it would reset the failure streak and stamp
+				 * `last_success`, claiming work that did not happen) nor a
+				 * failure (it increments a failure count the provider, not the
+				 * source, caused). It is recorded as incomplete.
+				 */
+				Conexao_Source_Health::record_incomplete(
+					$source_id,
+					(string) $status,
+					! empty( $stats['last_error'] ) ? (string) $stats['last_error'] : ''
+				);
 			}
 		}
+	}
+
+	/**
+	 * Operator-facing text for an incomplete enumeration's actual cause.
+	 *
+	 * @param Conexao_Import_Result $result Run result.
+	 * @return string
+	 */
+	protected function incomplete_reason_text( Conexao_Import_Result $result ) {
+		$note   = trim( (string) $result->get_incomplete_enumeration_note() );
+		$reason = (string) $result->get_incomplete_enumeration_reason();
+
+		if ( '' === $reason ) {
+			return $note;
+		}
+
+		$labels = array(
+			'time_budget'        => __( 'time budget exhausted', 'conexao-event-importer' ),
+			'page_cap'           => __( 'page cap reached', 'conexao-event-importer' ),
+			'budget_exhausted'   => __( 'request budget exhausted', 'conexao-event-importer' ),
+			'rate_limited'       => __( 'rate-limit cooldown', 'conexao-event-importer' ),
+			'rate_limited_deferred' => __( 'rate-limit cooldown deferred (Retry-After)', 'conexao-event-importer' ),
+			'fetch_failed'       => __( 'upstream fetch failure', 'conexao-event-importer' ),
+			'parse_failed'       => __( 'parsing failure', 'conexao-event-importer' ),
+			'incomplete_enumeration' => __( 'enumeration incomplete', 'conexao-event-importer' ),
+		);
+
+		$label = isset( $labels[ $reason ] ) ? $labels[ $reason ] : $reason;
+
+		return '' !== $note ? $label . ' — ' . $note : $label;
 	}
 
 	/**
@@ -1345,6 +1633,108 @@ class Conexao_Event_Importer_Engine {
 	}
 
 	/**
+	 * Apply per-field partial-enrichment preservation to an update (Stage 2 / P5).
+	 *
+	 * A handler that enriches from a detail page declares, per field, whether
+	 * the value was retrieved (`populated`), is genuinely empty (`empty`),
+	 * could not be retrieved (`unavailable`) or was never attempted
+	 * (`not_evaluated`). For the last two the stored value WINS: the incoming
+	 * value is replaced by what is already stored, so a failed detail request
+	 * can never erase a good description, venue, address, location, organiser
+	 * or banner image.
+	 *
+	 * Preservation is FIELD-LEVEL: a partial enrichment that failed to fetch
+	 * the description but retrieved the venue preserves the description and
+	 * writes the venue in the same run.
+	 *
+	 * Handlers that declare nothing keep the historical behaviour exactly: an
+	 * absent field is treated as legacy/unspecified and written as before.
+	 * This is why Eventbrite and the listing-only sources are unaffected.
+	 *
+	 * @param array $normalized Normalized event data.
+	 * @param int   $post_id    Existing post ID.
+	 * @return array Normalized data with preserved fields restored.
+	 */
+	protected function apply_enrichment_preservation( $normalized, $post_id ) {
+		if ( empty( $normalized['enrichment'] ) || ! is_array( $normalized['enrichment'] )
+			|| ! class_exists( 'Conexao_Event_Enrichment_State' ) ) {
+			return $normalized;
+		}
+
+		$states = $normalized['enrichment'];
+
+		// normalized field => [ normalized key to write, stored source ].
+		$map = array(
+			'description' => array( 'description', 'content' ),
+			'venue'       => array( 'venue', '_event_venue' ),
+			'address'     => array( 'address', '_event_address' ),
+			'location'    => array( 'event_location', '_event_location' ),
+			'organizer'   => array( 'organizer', '_event_organizer' ),
+			'banner'      => array( 'banner', '_event_banner' ),
+		);
+
+		$preserved = array();
+
+		// `_event_location` is DERIVED from venue/town/county. It is only
+		// preserved when the venue is preserved too; otherwise a corrected
+		// venue would be paired with a stale location label.
+		$venue_preserved = Conexao_Event_Enrichment_State::should_preserve( $states, 'venue' );
+
+		foreach ( $map as $field => $target ) {
+			if ( ! Conexao_Event_Enrichment_State::should_preserve( $states, $field ) ) {
+				continue;
+			}
+
+			if ( 'location' === $field && ! $venue_preserved ) {
+				continue;
+			}
+
+			$stored = 'content' === $target[1]
+				? (string) get_post_field( 'post_content', $post_id )
+				: (string) get_post_meta( $post_id, $target[1], true );
+
+			$normalized[ $target[0] ] = $stored;
+
+			if ( 'location' === $field ) {
+				// _event_location is written from the event_location field.
+				$normalized['event_location'] = $stored;
+			}
+
+			if ( 'address' === $field ) {
+				// A preserved address is not "missing"; keep the audit honest.
+				$normalized['address_status'] = '' !== $stored ? 'found' : 'missing';
+			}
+
+			$preserved[] = $field;
+		}
+
+		if ( empty( $preserved ) ) {
+			return $normalized;
+		}
+
+		$normalized['_preserved_fields'] = $preserved;
+
+		Conexao_Import_Log::add(
+			isset( $normalized['source'] ) ? (string) $normalized['source'] : '',
+			'info',
+			sprintf(
+				/* translators: 1: event title, 2: comma-separated field names */
+				__( 'Partial enrichment for "%1$s": could not retrieve %2$s, so the stored value(s) were preserved.', 'conexao-event-importer' ),
+				isset( $normalized['title'] ) ? (string) $normalized['title'] : '',
+				implode( ', ', $preserved )
+			),
+			array(
+				'run_id'           => $this->current_run_id,
+				'post_id'          => (int) $post_id,
+				'event_title'      => isset( $normalized['title'] ) ? (string) $normalized['title'] : '',
+				'preserved_fields' => $preserved,
+			)
+		);
+
+		return $normalized;
+	}
+
+	/**
 	 * Create or update an event in the database.
 	 *
 	 * @param array $normalized   Normalized event data.
@@ -1393,6 +1783,16 @@ class Conexao_Event_Importer_Engine {
 		if ( $existing_id ) {
 			$post_id = $existing_id;
 
+			/*
+			 * Stage 2 / P5 — field-level partial-enrichment preservation.
+			 *
+			 * Runs BEFORE change detection and BEFORE any write, so a field a
+			 * failed detail fetch could not supply is compared and written
+			 * with its stored value instead of with an empty incoming value.
+			 * For sources that declare no enrichment state this is a no-op.
+			 */
+			$normalized = $this->apply_enrichment_preservation( $normalized, $post_id );
+
 			// Check if the event data has actually changed.
 			// IMPORTANT: read the raw stored post_title (get_post_field)
 			// instead of get_the_title(), which applies the the_title
@@ -1402,13 +1802,31 @@ class Conexao_Event_Importer_Engine {
 			// event whose title contains " - " or "&" classify as
 			// "updated" on every import run (perpetual update churn),
 			// found during the Stage C2 idempotency re-run.
-			$existing_title  = (string) get_post_field( 'post_title', $post_id );
-			$existing_date   = get_post_meta( $post_id, '_event_date', true );
-			$existing_time   = get_post_meta( $post_id, '_event_start_time', true );
-			$existing_url    = get_post_meta( $post_id, '_event_url', true );
-			$existing_venue  = get_post_meta( $post_id, '_event_venue', true );
-			$existing_org    = get_post_meta( $post_id, '_event_organizer', true );
-			$existing_banner = get_post_meta( $post_id, '_event_banner', true );
+			$existing_title   = (string) get_post_field( 'post_title', $post_id );
+			$existing_content = (string) get_post_field( 'post_content', $post_id );
+			$existing_date    = get_post_meta( $post_id, '_event_date', true );
+			$existing_time    = get_post_meta( $post_id, '_event_start_time', true );
+			$existing_url     = get_post_meta( $post_id, '_event_url', true );
+			$existing_venue   = get_post_meta( $post_id, '_event_venue', true );
+			$existing_org     = get_post_meta( $post_id, '_event_organizer', true );
+			$existing_banner  = get_post_meta( $post_id, '_event_banner', true );
+
+			/*
+			 * Stage 2 / P5 — description participation in change detection.
+			 *
+			 * The stored description has never participated in change
+			 * detection, so a corrected or cleared description at the source
+			 * was silently ignored unless another field also changed. That is
+			 * exactly the case P5 must handle: a SUCCESSFUL enrichment that
+			 * corrects (or genuinely clears) the description has to reach the
+			 * record.
+			 *
+			 * It participates only for handlers that DECLARE a description
+			 * enrichment state. Eventbrite and every listing-only source
+			 * declare nothing, so their change detection is untouched.
+			 */
+			$description_declared = isset( $normalized['enrichment']['description'] );
+			$description_matches  = ! $description_declared || $existing_content === (string) $normalized['description'];
 
 			/*
 			 * Recurrence participates in change detection.
@@ -1452,7 +1870,8 @@ class Conexao_Event_Importer_Engine {
 				$existing_org === $normalized['organizer'] &&
 				$existing_banner === $normalized['banner'] &&
 				$existing_address === $resolved_address &&
-				$existing_recurrence === $incoming_recurrence
+				$existing_recurrence === $incoming_recurrence &&
+				$description_matches
 			);
 
 			if ( $is_unchanged ) {
@@ -1916,6 +2335,22 @@ class Conexao_Event_Importer_Engine {
 			'_event_last_checked' => current_time( 'mysql' ),
 		);
 
+		/*
+		 * Stage 4 — date-only write contract.
+		 *
+		 * `_event_date` and `_event_end_date` are contractually date-only
+		 * `Y-m-d`. The normalizer can only emit that shape, so this guard is a
+		 * no-op for every engine write; it exists so a future writer or a
+		 * hand-built payload can never silently persist a datetime-shaped
+		 * value. A datetime-shaped value is deterministically reduced to its
+		 * leading `Y-m-d` segment; a malformed value is left for the
+		 * normalizer's own validation to reject upstream (never persisted as a
+		 * datetime). This is a write-path guard, not a read-time migration.
+		 */
+		foreach ( array( '_event_date', '_event_end_date' ) as $date_key ) {
+			$meta[ $date_key ] = Conexao_Event_Date_Contract::date_only( $meta[ $date_key ] );
+		}
+
 		foreach ( $meta as $key => $value ) {
 			update_post_meta( $post_id, $key, $value );
 		}
@@ -2192,23 +2627,90 @@ class Conexao_Event_Importer_Engine {
 			'conexao-event-importer'
 		);
 
-		$result->add_incomplete_enumeration( $message );
+		/*
+		 * Stage 3 (P12): carry the actual stop condition through to the result.
+		 * The checkpoint already records it (`time_budget`, `page_cap`,
+		 * `budget_exhausted`, `rate_limited`, `fetch_failed`, ...); repeating it
+		 * here is what lets Import History and the Event Sources screen explain
+		 * WHY the walk stopped instead of only that it did.
+		 */
+		$checkpoint = self::checkpoint_state_for( $source_id );
+		$reason     = isset( $checkpoint['last_failure'] ) ? (string) $checkpoint['last_failure'] : '';
+
+		$result->add_incomplete_enumeration( $message, '' !== $reason ? $reason : 'incomplete_enumeration' );
 
 		Conexao_Import_Log::add(
 			$source_id,
 			'warning',
 			$message,
-			array( 'run_id' => $this->current_run_id )
+			array(
+				'run_id'      => $this->current_run_id,
+				'source_run_id' => $this->current_source_run_id,
+				'parent_run_group_id' => $this->current_run_id,
+				'reason_code' => '' !== $reason ? $reason : 'incomplete_enumeration',
+			)
 		);
 	}
 
 	/**
 	 * Mark events from a source that are no longer present as "Source Not Found".
 	 *
-	 * @param string $source_id   Source slug.
-	 * @param array  $raw_events  Raw events fetched this run.
+	 * ## Stage 2 / P10 — paginated, gate-first reconciliation
+	 *
+	 * The previous implementation evaluated at most 300 posts per source, so a
+	 * source with more events (Dublin, Cork) was only ever partially
+	 * reconciled: events beyond the first 300 were never checked for absence.
+	 *
+	 * This implementation is deliberately ordered:
+	 *
+	 *  1. The two P4 gates are evaluated FIRST (again — the call site already
+	 *     evaluated them). An incomplete enumeration or a resumed subset
+	 *     therefore performs ZERO candidate queries and ZERO mutations. The
+	 *     second evaluation is defence in depth: it makes "gates before any
+	 *     reconciliation query" a structural property of this method rather
+	 *     than a property of its caller.
+	 *  2. Candidate enumeration is READ-ONLY and keyset-paginated by the unique
+	 *     post ID (`ID > last_id`, `ORDER BY ID ASC`, bounded page size). Every
+	 *     page must succeed; a failed, malformed or non-advancing page aborts
+	 *     the whole pass with no mutation at all.
+	 *  3. Only after the COMPLETE candidate set is in memory are absence-based
+	 *     status changes applied, in bounded batches, with each candidate
+	 *     revalidated as still source-owned and still eligible immediately
+	 *     before its status is written.
+	 *
+	 * The candidate set is a list of integer post IDs only (no post objects),
+	 * so its memory cost is bounded by the number of source-owned events.
+	 *
+	 * Reconciliation is idempotent: an event already `source_not_found` is
+	 * excluded from the candidate query, so re-running in the same state
+	 * produces the same statuses and no new writes.
+	 *
+	 * Identity rules are untouched (P11): an event is still matched to the run
+	 * by `_event_url`, exactly as before.
+	 *
+	 * @param string      $source_id  Source slug.
+	 * @param array       $raw_events Raw events fetched this run.
+	 * @param object|null $handler    Handler that produced the enumeration.
+	 * @return int Number of events marked source_not_found.
 	 */
-	protected function mark_missing_events( $source_id, $raw_events ) {
+	protected function mark_missing_events( $source_id, $raw_events, $handler = null ) {
+		/*
+		 * P4 gate — re-evaluated here so no caller can reach the candidate
+		 * queries (or a mutation) with an incomplete or resumed enumeration.
+		 * `null` means "the caller already evaluated the gates".
+		 */
+		if ( null !== $handler
+			&& ( ! $this->is_handler_fetch_complete( $handler ) || ! $this->is_handler_reconciliation_safe( $handler ) ) ) {
+			Conexao_Import_Log::add(
+				$source_id,
+				'warning',
+				__( 'Absence-based reconciliation refused before any candidate query: the source enumeration is incomplete or resumed from a checkpoint. No event was marked source_not_found.', 'conexao-event-importer' ),
+				array( 'run_id' => $this->current_run_id )
+			);
+
+			return 0;
+		}
+
 		// Canonical source identity — the raw events carry the handler's
 		// declared source key (see run_source); fall back to the config ID.
 		$canonical_source = '';
@@ -2225,43 +2727,216 @@ class Conexao_Event_Importer_Engine {
 		$current_urls = array();
 		foreach ( $raw_events as $raw ) {
 			if ( ! empty( $raw['url'] ) ) {
-				$current_urls[] = $raw['url'];
+				$current_urls[ (string) $raw['url'] ] = true;
 			}
 		}
 
 		if ( empty( $current_urls ) ) {
-			return;
+			return 0;
 		}
 
-		$query = new WP_Query(
-			array(
-				'post_type'              => 'event',
-				'posts_per_page'         => 300,
-				'fields'                 => 'ids',
-				'no_found_rows'          => true,
-				'update_post_meta_cache' => false,
-				'update_post_term_cache' => false,
-				'meta_query'             => array(
-					'relation' => 'AND',
-					array(
-						'key'   => '_event_source',
-						'value' => $canonical_source,
-					),
-					array(
-						'key'     => '_event_status',
-						'compare' => 'NOT IN',
-						'value'   => array( 'rejected', 'source_not_found' ),
-					),
-				),
-			)
-		);
+		// Phase 1 — enumerate the COMPLETE candidate set. Read-only.
+		$candidates = $this->enumerate_source_owned_event_ids( $canonical_source );
 
-		foreach ( $query->posts as $post_id ) {
-			$stored_url = get_post_meta( $post_id, '_event_url', true );
-			if ( $stored_url && ! in_array( $stored_url, $current_urls, true ) ) {
-				// Event disappeared from the source. Hide it, don't delete.
-				Conexao_Event_Status::set_status( $post_id, Conexao_Event_Status::SOURCE_NOT_FOUND );
+		if ( null === $candidates ) {
+			Conexao_Import_Log::add(
+				$source_id,
+				'warning',
+				__( 'Absence-based reconciliation was aborted: the candidate list could not be enumerated completely. No event was marked source_not_found.', 'conexao-event-importer' ),
+				array(
+					'reason'      => 'candidate_enumeration_failed',
+					'reason_code' => 'candidate_enumeration_failed',
+					'run_id'      => $this->current_run_id,
+				)
+			);
+
+			return 0;
+		}
+
+		// Phase 2 — apply absence in bounded batches, revalidating each candidate.
+		$marked = 0;
+
+		foreach ( array_chunk( $candidates, self::RECONCILIATION_BATCH_SIZE ) as $batch ) {
+			foreach ( $batch as $candidate_id ) {
+				$post_id = (int) $candidate_id;
+
+				// Revalidate immediately before the write: still an event, still
+				// owned by this source, still eligible (not rejected, not already
+				// source_not_found). A concurrent change skips the candidate.
+				if ( ! $this->is_reconciliation_candidate_eligible( $post_id, $canonical_source ) ) {
+					continue;
+				}
+
+				$stored_url = (string) get_post_meta( $post_id, '_event_url', true );
+
+				if ( '' !== $stored_url && ! isset( $current_urls[ $stored_url ] ) ) {
+					// Event disappeared from the source. Hide it, don't delete.
+					Conexao_Event_Status::set_status( $post_id, Conexao_Event_Status::SOURCE_NOT_FOUND );
+					++$marked;
+				}
 			}
 		}
+
+		return $marked;
+	}
+
+	/**
+	 * Enumerate every source-owned candidate post ID for one reconciliation pass.
+	 *
+	 * Keyset pagination on the unique post ID: `ID > $last_id`, `ORDER BY ID
+	 * ASC`, bounded `LIMIT`. The cursor advances only from the last ID actually
+	 * returned, so page boundaries cannot skip or duplicate a candidate — even
+	 * when every other column (URL, dates, titles) collides.
+	 *
+	 * The filter set is the same set the previous `WP_Query` used:
+	 *  - `post_type = 'event'`;
+	 *  - the post statuses `WP_Query` defaults to in this request context
+	 *    (`publish`, plus `private` for a reader allowed to read private posts);
+	 *  - `_event_source` equals the canonical source (an INNER meta join, like
+	 *    the old `meta_query` entry);
+	 *  - `_event_status` present and NOT IN (rejected, source_not_found) — an
+	 *    INNER meta join, which is what `NOT IN` produced before, so events
+	 *    without a status meta row stay out of reconciliation exactly as they did.
+	 *
+	 * @param string $canonical_source Canonical `_event_source` value.
+	 * @return int[]|null Candidate IDs in ascending order, or null on failure.
+	 */
+	protected function enumerate_source_owned_event_ids( $canonical_source ) {
+		global $wpdb;
+
+		$excluded_statuses = array(
+			Conexao_Event_Status::REJECTED,
+			Conexao_Event_Status::SOURCE_NOT_FOUND,
+		);
+
+		// WP_Query's default post-status scope for this request context. The
+		// list is always passed as two placeholders; a reader without private
+		// access simply passes `publish` twice.
+		$post_statuses = array( 'publish', 'publish' );
+		if ( is_user_logged_in() && current_user_can( 'read_private_posts' ) ) {
+			$post_statuses[1] = 'private';
+		}
+
+		$page_size = self::RECONCILIATION_PAGE_SIZE;
+		$last_id   = 0;
+		$ids       = array();
+
+		while ( true ) {
+			$sql = $wpdb->prepare(
+				"SELECT p.ID
+				 FROM {$wpdb->posts} p
+				 INNER JOIN {$wpdb->postmeta} src
+				         ON src.post_id = p.ID AND src.meta_key = '_event_source' AND src.meta_value = %s
+				 INNER JOIN {$wpdb->postmeta} st
+				         ON st.post_id = p.ID AND st.meta_key = '_event_status'
+				 WHERE p.post_type = 'event'
+				   AND p.ID > %d
+				   AND p.post_status IN (%s, %s)
+				   AND st.meta_value NOT IN (%s, %s)
+				 ORDER BY p.ID ASC
+				 LIMIT %d",
+				$canonical_source,
+				$last_id,
+				$post_statuses[0],
+				$post_statuses[1],
+				$excluded_statuses[0],
+				$excluded_statuses[1],
+				$page_size
+			);
+
+			if ( ! is_string( $sql ) || '' === $sql ) {
+				return null;
+			}
+
+			$wpdb->last_error = '';
+
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $sql is the output of $wpdb->prepare() on the line above and carries no unescaped input.
+			$rows = $wpdb->get_col( $sql );
+
+			// @phpstan-ignore-next-line notIdentical.alwaysFalse -- wpdb::$last_error is declared as a string but is populated at runtime when a query fails.
+			if ( '' !== (string) $wpdb->last_error || ! is_array( $rows ) ) {
+				return null;
+			}
+
+			if ( empty( $rows ) ) {
+				break;
+			}
+
+			$page = array();
+
+			foreach ( $rows as $row ) {
+				$id = (int) $row;
+
+				// A page must be strictly ascending and must advance the cursor;
+				// anything else is a malformed page, so the pass aborts with zero
+				// mutations rather than reconciling a partial candidate set.
+				if ( $id <= 0 || $id <= $last_id ) {
+					return null;
+				}
+
+				$page[] = $id;
+			}
+
+			foreach ( $page as $id ) {
+				$ids[]   = $id;
+				$last_id = $id;
+			}
+
+			if ( count( $page ) < $page_size ) {
+				break;
+			}
+		}
+
+		return $ids;
+	}
+
+	/**
+	 * Whether a candidate may still receive an absence-based status change.
+	 *
+	 * Re-read immediately before the write so a concurrent edit (source
+	 * changed, event deleted, status changed) cancels the mutation instead of
+	 * being overwritten by a stale candidate list.
+	 *
+	 * @param int    $post_id          Candidate post ID.
+	 * @param string $canonical_source Canonical `_event_source` value.
+	 * @return bool
+	 */
+	protected function is_reconciliation_candidate_eligible( $post_id, $canonical_source ) {
+		if ( $post_id <= 0 || 'event' !== get_post_type( $post_id ) ) {
+			return false;
+		}
+
+		$stored_source = (string) get_post_meta( $post_id, '_event_source', true );
+
+		if ( $stored_source !== (string) $canonical_source ) {
+			return false;
+		}
+
+		$status = Conexao_Event_Status::get_status( $post_id );
+
+		if ( in_array( $status, array( Conexao_Event_Status::REJECTED, Conexao_Event_Status::SOURCE_NOT_FOUND ), true ) ) {
+			return false;
+		}
+
+		/*
+		 * Stage 2 / P5+P10 — never mutate a translated record.
+		 *
+		 * A Polylang translation is a separate post carrying a copy of the
+		 * same identity meta, so it can appear in the candidate set. The
+		 * importer's own language guard already refuses to WRITE to a
+		 * translation; reconciliation applies the same guard before changing a
+		 * STATUS, so an English translation can never be flipped to
+		 * source_not_found by a Portuguese import run.
+		 *
+		 * The guard is a no-op when Polylang is inactive or the record has no
+		 * language, so single-language installs are unaffected.
+		 */
+		if ( class_exists( 'Conexao_Event_Importer_Language_Guard' )
+			&& ! Conexao_Event_Importer_Language_Guard::is_import_target( $post_id ) ) {
+			return false;
+		}
+
+		return true;
 	}
 }
+

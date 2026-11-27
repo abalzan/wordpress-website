@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Conexão BR Irlanda Data Model
  * Description: Content types, shared taxonomies, and editorial fields for the Conexão BR Irlanda portal.
- * Version: 1.7.0
+ * Version: 1.8.0
  * Text Domain: conexao-data-model
  *
  * @package Conexao_BR_Irlanda_Data_Model
@@ -13,6 +13,7 @@ defined( 'ABSPATH' ) || exit;
 define( 'CONEXAO_DATA_MODEL_FILE', __FILE__ );
 define( 'CONEXAO_DATA_MODEL_DIR', plugin_dir_path( __FILE__ ) );
 
+require_once CONEXAO_DATA_MODEL_DIR . 'includes/class-counties.php';
 require_once CONEXAO_DATA_MODEL_DIR . 'includes/class-relationships.php';
 require_once CONEXAO_DATA_MODEL_DIR . 'includes/class-meta.php';
 require_once CONEXAO_DATA_MODEL_DIR . 'includes/class-contacts.php';
@@ -21,7 +22,7 @@ require_once CONEXAO_DATA_MODEL_DIR . 'includes/class-conexao-data-model-commemo
 
 final class Conexao_Data_Model {
 
-	const VERSION = '1.7.0';
+	const VERSION = '1.8.0';
 
 	/** @var Conexao_Data_Model|null */
 	private static $instance = null;
@@ -35,6 +36,10 @@ final class Conexao_Data_Model {
 	}
 
 	private function __construct() {
+		// County vocabulary guards (master list + write validation). Registered
+		// at load, not on init: seeding, imports, REST and activation must all
+		// run inside the guard.
+		Conexao_Data_Model_Counties::register_guards();
 		add_action( 'init', array( $this, 'register_content_types' ), 0 );
 		add_action( 'init', array( $this, 'register_taxonomies' ), 0 );
 		add_action( 'init', array( $this, 'register_provider_meta' ), 0 );

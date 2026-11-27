@@ -36,6 +36,8 @@ require_once dirname( __DIR__, 4 ) . '/tests/bootstrap.php';
 
 require_once WP_PLUGIN_DIR . '/conexao-event-importer/conexao-event-importer.php';
 
+test_require_operator_store_isolation();
+
 $passed = 0;
 $failed = 0;
 
@@ -43,8 +45,6 @@ $failed = 0;
 // import can never pollute or destroy the maintainer's diagnostics.
 $restore_options = test_options_isolate(
 	array(
-		Conexao_Import_History::OPTION_KEY,
-		Conexao_Import_Log::OPTION_KEY,
 		// G18: run_source() now schedules a continuation when a source is left
 		// resumable, so the scheduler's state is another option the engine
 		// writes. It must be isolated here like every other one: otherwise a
@@ -242,17 +242,30 @@ assert_true( 0 === count( $result['fatal_errors'] ), 'Control: no fatal errors o
 test_section( 'G1 matrix: every first-page failure mode becomes a failed history' );
 
 /**
- * Run one matrix case and assert it produced a FAILED history row.
+ * Run one matrix case and assert it produced a NON-SUCCESS outcome.
  *
- * @param string $label       Human label for the case.
- * @param mixed  $response    Response definition for the double.
- * @param string $source_type eventbrite|heritage_week.
- * @param string $url         Discovery URL.
- * @param array  $extra       Extra source config.
- * @param int    $expect_code Expected HTTP status recorded in the exception.
+ * ## Stage 3: the 429 case follows the documented Stage 1 contract
+ *
+ * Until Stage 3 this helper asserted `failed` for every case, including
+ * `HTTP 429`. That expectation encodes the PRE-Stage-1 contract. Stage 1's P1
+ * changed a 429 into `rate_limited` plus a bounded cooldown, and it is that
+ * behaviour the engine documents and the parent aggregation depends on.
+ *
+ * The helper therefore takes the expected status. Non-429 transport failures
+ * must still be `failed` with recorded failure evidence; a 429 must be
+ * `rate_limited`, must NOT claim a complete enumeration, must record the
+ * rate-limit cause, and must still NOT be a false "found=0 success" row.
+ *
+ * @param string $label            Human label for the case.
+ * @param mixed  $response         Response definition for the double.
+ * @param string $source_type      eventbrite|heritage_week.
+ * @param string $url              Discovery URL.
+ * @param array  $extra            Extra source config.
+ * @param int    $expect_code      Expected HTTP status recorded in the exception.
+ * @param string $expected_status  Documented expected status.
  * @return void
  */
-function g1_assert_failed_source( $label, $response, $source_type, $url, $extra = array(), $expect_code = 0 ) {
+function g1_assert_failed_source( $label, $response, $source_type, $url, $extra = array(), $expect_code = 0, $expected_status = 'failed' ) {
 	$source_id = g1_register_source( $source_type, $url, $extra );
 
 	g1_install_http_double( array( $url => $response ) );
@@ -265,15 +278,22 @@ function g1_assert_failed_source( $label, $response, $source_type, $url, $extra 
 		$label . ': status is not success (got "' . $result['status'] . '")'
 	);
 	assert_true(
-		'failed' === $result['status'],
-		$label . ': status is failed (got "' . $result['status'] . '")'
+		$expected_status === $result['status'],
+		$label . ': status is ' . $expected_status . ' (got "' . $result['status'] . '")'
 	);
 
-	// Failure evidence, not just a label.
-	assert_true(
-		count( $result['fatal_errors'] ) > 0,
-		$label . ': fatal_errors > 0 (failure evidence recorded)'
-	);
+	if ( 'failed' === $expected_status ) {
+		// Failure evidence, not just a label.
+		assert_true(
+			count( $result['fatal_errors'] ) > 0,
+			$label . ': fatal_errors > 0 (failure evidence recorded)'
+		);
+	} else {
+		// rate_limited is an INCOMPLETE enumeration with a cause, not a fatal
+		// error: the source was not fully enumerated and the reason is recorded.
+		assert_equals( false, $result['complete'], $label . ': the enumeration is NOT reported as complete' );
+		assert_equals( 'rate_limited', $result['incomplete_reason'], $label . ': the rate-limit cause is recorded as a separate diagnostic field' );
+	}
 
 	// The specific anti-defect assertion: it must NOT be a false
 	// "found=0 success" row.
@@ -286,17 +306,33 @@ function g1_assert_failed_source( $label, $response, $source_type, $url, $extra 
 	// And the durable record must agree.
 	$history = Conexao_Import_History::get_for_source( $source_id, 1 );
 	assert_true(
-		! empty( $history ) && 'failed' === $history[0]['status'],
-		$label . ': the persisted history row is status=failed'
-	);
-	assert_true(
-		! empty( $history ) && ! empty( $history[0]['fatal_errors'] ),
-		$label . ': the persisted history row carries fatal_errors'
+		! empty( $history ) && $expected_status === $history[0]['status'],
+		$label . ': the persisted history row is status=' . $expected_status
 	);
 
-	if ( 0 !== $expect_code ) {
+	if ( 'failed' === $expected_status ) {
 		assert_true(
-			! empty( $result['fatal_errors'] ),
+			! empty( $history ) && ! empty( $history[0]['fatal_errors'] ),
+			$label . ': the persisted history row carries fatal_errors'
+		);
+	} else {
+		assert_true(
+			! empty( $history ) && false === (bool) $history[0]['complete'],
+			$label . ': the persisted history row records an incomplete enumeration'
+		);
+		assert_true(
+			! empty( $history ) && 'rate_limited' === (string) ( isset( $history[0]['incomplete_reason'] ) ? $history[0]['incomplete_reason'] : '' ),
+			$label . ': the persisted history row carries the rate-limit cause'
+		);
+	}
+
+	if ( 0 !== $expect_code ) {
+		$evidence = 'failed' === $expected_status
+			? ! empty( $result['fatal_errors'] )
+			: ( ! empty( $result['source_skip_reason'] ) || ( isset( $result['message'] ) && '' !== (string) $result['message'] ) || ! empty( $result['incomplete_reason'] ) );
+
+		assert_true(
+			$evidence,
 			$label . ': HTTP ' . $expect_code . ' is surfaced as failure evidence'
 		);
 	}
@@ -307,7 +343,7 @@ function g1_assert_failed_source( $label, $response, $source_type, $url, $extra 
 g1_assert_failed_source( 'Eventbrite first page 401', array( 'code' => 401 ), 'eventbrite', $eb_url, $eb_cfg, 401 );
 g1_assert_failed_source( 'Eventbrite first page 403', array( 'code' => 403 ), 'eventbrite', $eb_url, $eb_cfg, 403 );
 g1_assert_failed_source( 'Eventbrite first page 408', array( 'code' => 408 ), 'eventbrite', $eb_url, $eb_cfg, 408 );
-g1_assert_failed_source( 'Eventbrite first page 429', array( 'code' => 429 ), 'eventbrite', $eb_url, $eb_cfg, 429 );
+g1_assert_failed_source( 'Eventbrite first page 429', array( 'code' => 429 ), 'eventbrite', $eb_url, $eb_cfg, 429, 'rate_limited' );
 g1_assert_failed_source( 'Eventbrite first page 500', array( 'code' => 500 ), 'eventbrite', $eb_url, $eb_cfg, 500 );
 g1_assert_failed_source( 'Eventbrite first page 502', array( 'code' => 502 ), 'eventbrite', $eb_url, $eb_cfg, 502 );
 g1_assert_failed_source( 'Eventbrite first page 503', array( 'code' => 503 ), 'eventbrite', $eb_url, $eb_cfg, 503 );
@@ -321,7 +357,7 @@ $hw_cfg = array( 'hw_where' => array( 'g1 probe county' ), 'county' => 'Laois' )
 g1_assert_failed_source( 'Heritage Week first page 401', array( 'code' => 401 ), 'heritage_week', 'https://www.heritageweek.ie/event-listings', $hw_cfg, 401 );
 g1_assert_failed_source( 'Heritage Week first page 403', array( 'code' => 403 ), 'heritage_week', 'https://www.heritageweek.ie/event-listings', $hw_cfg, 403 );
 g1_assert_failed_source( 'Heritage Week first page 408', array( 'code' => 408 ), 'heritage_week', 'https://www.heritageweek.ie/event-listings', $hw_cfg, 408 );
-g1_assert_failed_source( 'Heritage Week first page 429', array( 'code' => 429 ), 'heritage_week', 'https://www.heritageweek.ie/event-listings', $hw_cfg, 429 );
+g1_assert_failed_source( 'Heritage Week first page 429', array( 'code' => 429 ), 'heritage_week', 'https://www.heritageweek.ie/event-listings', $hw_cfg, 429, 'rate_limited' );
 g1_assert_failed_source( 'Heritage Week first page 500', array( 'code' => 500 ), 'heritage_week', 'https://www.heritageweek.ie/event-listings', $hw_cfg, 500 );
 g1_assert_failed_source( 'Heritage Week first page 502', array( 'code' => 502 ), 'heritage_week', 'https://www.heritageweek.ie/event-listings', $hw_cfg, 502 );
 g1_assert_failed_source( 'Heritage Week first page 503', array( 'code' => 503 ), 'heritage_week', 'https://www.heritageweek.ie/event-listings', $hw_cfg, 503 );

@@ -21,7 +21,7 @@ standard wins.
 | Layer | What it proves | Where it lives | How it runs |
 |---|---|---|---|
 | **In-process PHP** | Functions, queries, policies, taxonomies, language logic, metadata and cache logic against a **real** WordPress | `wp-content/<kind>/<component>/tests/test-<area>-<behaviour>.php` | one PHP process per suite |
-| **Script contract** (Stage I) | The `scripts/` estate obeys its contract: shared bootstrap/REST use, no hard-coded production target, no credentials, catalogue completeness, no stale renamed paths | `tests/scripts/verify-*.py` | one Python process per suite; static, no WordPress, no network |
+| **Script contract** (Stage I) | The `scripts/` estate obeys its contract: shared bootstrap/REST use, no hard-coded production target, no credentials, catalogue completeness, no stale renamed paths | `tests/scripts/verify-*.py` | static Python checks by default; PHP-backed checks are an explicit separate mode |
 | **HTTP acceptance** | What a real request returns: status, redirects, canonical, hreflang, sitemap, filters | `tests/acceptance/verify-<area>-http.py` + `tests/acceptance/matrices/*.json` | one Python process per suite |
 
 ### The release suites (Stage J)
@@ -58,7 +58,7 @@ same conventions, no special runner, no hand-maintained list.
 | Language-scoped caching | (a) **static**: a `token_get_all` scan of production source finds no unscoped `conexao_*` transient/object-cache key; (b) **runtime**: PT and EN keys differ, an EN read never returns the PT value, and `conexao_flush_language_cache()` clears every language variant. | `verify-cache-key-scoping.py`, `test-cache-language-scoping.php` | Script contract + in-process PHP |
 | Legacy EN→PT redirect precedence | A legacy EN path keeps its **301** to the **PT** destination even when a newly created EN page has the same slug, and the legacy table still runs before Polylang's canonical. The conflicting page is created and deleted inside the suite. | `test-redirect-precedence.php` | In-process PHP |
 | Documentation drift | Orchestrates the Stage G/I/K gates (it does not reimplement them) and owns the §9.2 rules: `_Last verified:` markers on the living reference set, no root-level report/evidence file, `AGENTS.md` stays orientation, the authoritative sources still exist. | `verify-documentation-drift.py` | Script contract |
-| i18n catalogue freshness | A `.pot` is never older than the PHP defining its strings. Signal: **git commit time**, not mtime (a fresh clone gives every file the checkout time, so mtime cannot express this rule). | `verify-i18n-freshness.py`, `scripts/i18n-check.sh` | Script contract |
+| i18n catalogue freshness | A `.pot` is never older than the PHP defining its strings. Clean checkouts use **git commit time**; CI fetches full history and shallow history fails closed. Modified worktree files use mtime only to compare uncommitted local edits. | `verify-i18n-freshness.py`, `scripts/i18n-check.sh` | Script contract |
 
 #### The commemorative gates (r10 Stages 4–6)
 
@@ -152,8 +152,10 @@ Each gate separates **pre-existing debt** from a **new regression**:
 - `new > 0` means **you** introduced a violation. `new = 0` with `failed > 0`
   means the repository already had the debt and Stage L merely made it visible.
 
-Evidence lands in `docs/evidence/2026-09-26-stage-l/gate.json`, generated from
-real execution output by `scripts/verify-permanent-gates.py` — never hand-edited.
+Evidence lands in `docs/evidence/<date>-stage-l/gate.json`, generated in a
+date-stamped directory from real execution output by
+`scripts/verify-permanent-gates.py` — never hand-edited or written over an
+earlier run's evidence.
 
 `./scripts/verify-release.sh` runs the whole release workflow end to end locally
 (registry gate → build → manifest → allowlist/hash verification → determinism →
@@ -181,22 +183,73 @@ verdict.
 | Command | What it does |
 |---|---|
 | `./scripts/run-tests.sh` | all three layers |
-| `./scripts/run-tests.sh --scripts` | the script-contract gate only (static; needs no stack) |
-| `./scripts/run-tests.sh --acceptance` | HTTP acceptance layer only |
-| `./scripts/run-tests.sh --php` | in-process PHP layer only |
+| `./scripts/run-tests.sh --scripts` | static script-contract checks only; no PHP, Docker, WordPress, HTTP or database client |
+| `./scripts/run-tests.sh --scripts-static` | same as `--scripts` |
+| `./scripts/run-tests.sh --scripts-runtime` | explicitly selected PHP-backed script checks; requires PHP CLI, but does not bootstrap WordPress or connect to a database |
+| `CONEXAO_TEST_DB_NAME=conexao_stage05_test_abc123 ./scripts/run-tests.sh --scripts-wordpress` | WordPress-dependent script checks; requires the isolated test database |
+| `CONEXAO_TEST_DB_NAME=conexao_stage05_test_abc123 ./scripts/run-tests.sh --acceptance` | HTTP acceptance layer only; server DB must match the isolated test DB |
+| `CONEXAO_TEST_DB_NAME=conexao_stage05_test_abc123 ./scripts/run-tests.sh --php` | in-process PHP layer only, against the explicitly selected isolated database |
 | `./scripts/run-tests.sh --only theme` | only the theme's maintained suites |
 | `./scripts/run-tests.sh --only conexao-event-runtime` | only that plugin's suites |
 | `./scripts/run-tests.sh --list` | discovered suites, manual suites, components |
 | `./scripts/run-tests.sh --help` | usage |
 
+### Isolated database for WordPress-dependent tests
+
+The runner never creates, clones, or chooses a test database implicitly.
+Before a WordPress-dependent suite runs, it requires `CONEXAO_TEST_DB_NAME`,
+checks that the configured WordPress process will use that same
+`WORDPRESS_DB_NAME`, and performs a raw `mysqli` identity preflight. Outside
+ephemeral CI, the test database must also be distinct from the shared local
+WordPress database. The shared `tests/bootstrap.php` repeats the preflight
+before `wp-load.php`, verifies the local `wp-config.php` reads
+`WORDPRESS_DB_NAME`, and confirms WordPress connected to the expected database.
+
+The CI workflow explicitly prepares its environment with
+`.github/scripts/isolated-test-database.sh`: it creates a per-run schema and
+restricted per-run account, clones the initialized CI WordPress database into
+that schema, verifies the account cannot access the shared schema, and
+restarts the CI WordPress service against the clone. The local test
+administrator and committed synthetic fixtures are then built in the clone,
+before any application tests run. The generated credentials are kept in
+mode-0600 files and are removed with the isolated account/schema after the run;
+the original CI schema is not used by application tests. The helper is CI-only
+and does not change the runner's rule that local test databases must be
+prepared deliberately.
+
+For local work, create and verify a dedicated database clone, neutralize only
+inherited importer continuation queue/lock/cron state in that clone before its
+first WordPress bootstrap, then pass its database name explicitly:
+
+```bash
+CONEXAO_TEST_DB_NAME=conexao_stage05_test_abc123 ./scripts/run-tests.sh --php
+```
+
+These safeguards do not make a shared database safe for tests: missing,
+unreachable, or mismatched database identity fails closed. The selected test
+database must differ from the original shared WordPress database, including in
+CI.
+
+The HTTP acceptance runner applies the same contract before its first request:
+it compares the configured server container's `WORDPRESS_DB_NAME` with
+`CONEXAO_TEST_DB_NAME` and performs the raw database preflight. A mismatch,
+missing identity or unavailable local Docker environment blocks the layer
+without sending HTTP requests. `--only <component>` also filters acceptance
+suites; a component-only run does not fall through to every HTTP matrix.
+Consequently, a local clone can be used only when the HTTP server itself is
+configured to use that clone. The runner does not restart or reconfigure the
+shared local WordPress service.
+
 ### Script-contract suites build their own artifacts
 
-The script-contract layer is static and needs no WordPress, but two of its
-suites must inspect **built** release artifacts:
+The static script-contract layer needs no PHP or Docker. PHP-backed checks are
+selected separately with `--scripts-runtime`; they do not load WordPress or
+connect to a database. The Stage 14 and release suites inspect **built**
+artifacts:
 
 | Suite | Where it gets them |
 |---|---|
-| `tests/scripts/verify-stage14-secret-scan.py` | runs `scripts/build-plugins-zip.sh` **and** `scripts/build-theme-zip.sh` into a temporary directory it removes, and scans the 9 plugin ZIPs, the theme ZIP and the emitted release record |
+| `tests/scripts/verify-stage14-secret-scan.py` | runs `scripts/build-plugins-zip.sh` **and** `scripts/build-theme-zip.sh` into a temporary directory it removes, and scans the 10 plugin ZIPs, the theme ZIP and the emitted release record; it is in `--scripts-runtime` because the packagers require PHP CLI |
 | `scripts/verify-commissioning-readiness.py` (driven by `verify-stage13-commissioning-readiness.py`) | its own double build; the plugin header versions are compared against the release record **that build emits** |
 
 Both deliberately do **not** read the git-ignored `dist/`. `dist/` is untracked
@@ -399,6 +452,65 @@ The migrated suites already followed this (they delete their fixtures at the
 end). Running the suite twice in a row must give the same result — that is the
 repeatability gate, and it is checked.
 
+### Operator stores are redirected, not snapshotted
+
+Four options are **operator state**, not fixtures: `conexao_event_import_log`,
+`conexao_event_import_history`, `conexao_event_cleanup_status` and
+`conexao_event_cleanup_history`. Snapshot/restore cannot protect them: it empties
+the live row for the duration of the suite and cannot survive a fatal, a
+timeout or two workers.
+
+Since Stage 0.5 the owning classes expose accessors (`option_key()`,
+`status_option()`, `history_option()`) and every read/write goes through them.
+`tests/bootstrap.php` establishes `CONEXAO_TEST_OPTION_SUFFIX`
+(`p<pid>_<16 hex>`) **before** `wp-load.php`, so the stores resolve
+`PREFIX . suffix` for that process only. The suffix is removed from a
+pre-defined environment (a child may not inherit the parent's store), and an
+accessor that cannot resolve a valid suffix **throws** instead of falling back to
+production.
+
+| Rule | Detail |
+|---|---|
+| Never isolate a redirected store | `test_options_isolate()` refuses the four production keys, their test-prefixed keys and any of their constants; `test_options_restore()` skips them |
+| Seed through the writer | `test_options_write_test_store( 'import_log', $value )` resolves and validates the key first |
+| Delete through the reset helper | `test_options_reset_test_store( array( 'cleanup_status' ) )` validates every request, then deletes; one rejected entry means zero deletions |
+| Call the guard | `test_require_operator_store_isolation()` at the top of every store-touching suite (secondary safeguard after the bootstrap) |
+| Children isolate themselves | child code requires `tests/bootstrap.php`; the suffix is never passed through an argument or the environment |
+
+The cleaner runs on `shutdown` at priority 999 (after the log store's own flush
+at priority 5) and deletes only this process's four test keys, derived from the
+accessors.
+
+### Orphaned test rows
+
+A `SIGKILL`ed process cannot run a shutdown handler, so a
+`…__test__p<digits>_<hex16>` row can survive. That is a storage-hygiene issue,
+never a safety one: the dashboard and every accessor resolve the current
+process's key, so an orphan is unreadable, and no code path can mistake it for an
+operator option.
+
+Sweep them explicitly, one row at a time, from the list the acceptance suite
+prints (section I):
+
+```bash
+docker compose exec wordpress wp --allow-root option delete \
+  'conexao_event_import_log__test__p1234_0123456789abcdef'
+```
+
+Never a wildcard, never a script that deletes by prefix pattern — the static gate
+fails on `DELETE … LIKE` against `wp_options`, and the reset helper rejects any
+key that is not this process's own.
+
+### The staging gate
+
+`tests/scripts/verify-operator-log-isolation.py` is a static suite (no
+WordPress, no Docker, no database) discovered by the script-contract layer. It
+checks the fourteen structural properties — production names, prefixes,
+fail-closed accessors, bootstrap ordering, guard placement, child-process
+bootstrap use, reset-helper safeguards, no production `delete_option()`, no
+global cleanup, no production marker definitions, no wildcard cleanup, cleaner
+key derivation and the `SERIAL` classification of every store-touching suite.
+
 
 
 ---
@@ -406,6 +518,12 @@ repeatability gate, and it is checked.
 ## HTTP acceptance layer
 
 Maintained request-visible coverage lives in `tests/acceptance/`.
+
+The runner refuses to issue requests until it has verified that the local
+WordPress service is connected to the explicitly selected isolated test
+database. The CI acceptance job uses its ephemeral WordPress/database stack;
+local acceptance against a clone requires a separately configured server
+pointing at that clone.
 
 ```
 tests/acceptance/
@@ -516,12 +634,13 @@ python3 tests/browser/verify-import-continuation-browser.py --negative-control
 
 It seeds a suite-owned probe source whose URL is a **local static fixture**, so
 the whole path runs over real HTTP with no external traffic, opens the real
-Import History page in Chromium and reads the Progress cell, and then **closes
-the browser**. Everything after that is a plain HTTP request with no browser,
-no tab, no JavaScript and no AJAX: nothing runs before the cooldown expires, the
-continuation executes when it does, the walk advances, and the final state is
-read by opening the browser once more. It creates only `g18_probe_*` sources and
-deletes them, and every event they created, at the end.
+Event Import dashboard in Chromium and reads the Progress cell of the Import
+History table there, and then **closes the browser**. Everything after that is a
+plain HTTP request with no browser, no tab, no JavaScript and no AJAX: nothing
+runs before the cooldown expires, the continuation executes when it does, the
+walk advances, and the final state is read by opening the browser once more. It
+creates only `g18_probe_*` sources and deletes them, and every event they created,
+at the end.
 
 `--negative-control` breaks the arming, and the cell must stop promising
 `resumable` — it reads
@@ -538,7 +657,19 @@ contracts **are** blocking: the multi-file UI contract lives in
 `wp-content/plugins/conexao-event-importer/tests/test-multi-file-import-ui.php`
 and the continuation contract in
 `wp-content/plugins/conexao-event-importer/tests/test-import-continuation.php`,
-both inside the in-process layer.
+both inside the in-process layer. The dashboard side of that same screen — the
+full retained Import History table, its 13 columns and the retirement of the
+old `conexao-import-history` page — is
+`wp-content/plugins/conexao-event-importer/tests/test-import-history-dashboard.php`,
+also in the in-process layer.
+
+The Stage 1 coordination contract is covered by
+`wp-content/plugins/conexao-event-importer/tests/test-stage1-run-coordination.php`.
+It is a serial, browserless suite and must run against the disposable test
+database selected by `CONEXAO_TEST_DB_NAME`; its provider responses are fully
+mocked. It covers the logical Eventbrite breaker, Retry-After parsing and
+invocation-window deferral, parent/child history aggregation and idempotence,
+and the Heritage Week pre-detail eligibility gate.
 
 One operational note: a browser proof and the test suite must not run
 **concurrently**. They share a data foundation, and a suite that drives its own
@@ -891,3 +1022,5 @@ test-plugin-separation.php requires deliberate plugin-activation change.
 *Counting method: suites classified as MANUAL in `scripts/run-tests.sh --list`, excluding the section header line.*
 
 _Last verified: 2026-11-11 by CI optimization and PHP suite classification update_
+
+_Last verified: 2026-11-26 by isolated CI database setup, credential handoff and Stage L gate verification_

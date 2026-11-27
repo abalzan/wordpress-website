@@ -90,7 +90,15 @@ $phoenix_pt       = get_posts( array( 'post_type' => 'leisure', 'name' => 'phoen
 assert_true( in_array( (int) $phoenix_pt[0], array_map( 'intval', $replaced_leisure ), true ), 'the PT phoenix-park master is in the replacement set (its EN translation exists)' );
 
 $replaced_sponsor = conexao_b2_translation_replaced_pt_ids( array( 'sponsor' ) );
-$cafe             = get_posts( array( 'post_type' => 'sponsor', 'name' => 'cafe-brasil-dublin', 'post_status' => 'any', 'fields' => 'ids', 'lang' => '' ) );
+// An UNTRANSLATED sponsor stays a B2 fallback record. The fixture is the
+// deterministic site's own synthetic sponsor (`apoiador-ci-sintetico-alfa` from
+// scripts/data/ci-fixture-events.php): it is created by the fixture dataset and
+// deliberately has no EN translation. The retired pilot seeder used to create
+// `cafe-brasil-dublin`, which no longer exists on the deterministic site, so the
+// assertion was reading an absent record (`$cafe[0]`) instead of testing the
+// B2 rule it describes.
+$cafe = get_posts( array( 'post_type' => 'sponsor', 'name' => 'apoiador-ci-sintetico-alfa', 'post_status' => 'any', 'fields' => 'ids', 'lang' => '' ) );
+assert_true( ! empty( $cafe ), 'the untranslated sponsor fixture exists' );
 assert_true( ! in_array( (int) $cafe[0], array_map( 'intval', $replaced_sponsor ), true ), 'an untranslated sponsor is NOT in the replacement set (stays a B2 fallback record)' );
 
 $replaced_event = conexao_b2_translation_replaced_pt_ids( array( 'event' ) );

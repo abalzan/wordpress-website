@@ -188,7 +188,7 @@ function conexao_event_display_date( $event_id ) {
 		$next = Conexao_Event_Query::next_occurrence_date( (int) $event_id );
 		if ( $next ) {
 			$date = $next;
-			}
+		}
 	}
 
 	return $date;

@@ -1,0 +1,48 @@
+{
+  "stage": "event-importer-stage-0-probe-deactivation",
+  "timestamp": "2026-11-14",
+  "mode": "read-only-preflight",
+  "source": "local WordPress option conexao_event_sources",
+  "command": "docker compose exec -T wordpress php wp-cli.phar eval <read-only get_option inventory> --allow-root",
+  "registry_count": 154,
+  "required": {
+    "g1_prefix": "^g1_probe_",
+    "g1_count": 18,
+    "named_ids": [
+      "g2_cavan_probe",
+      "g4c_budget_probe"
+    ],
+    "distinct_existing_manifest_count": 20
+  },
+  "observed": {
+    "g1_probe_ids": [
+      "g1_probe_eventbrite_12a0be98",
+      "g1_probe_eventbrite_1d540378",
+      "g1_probe_eventbrite_217b99b8",
+      "g1_probe_eventbrite_255d8e5d",
+      "g1_probe_eventbrite_26089591",
+      "g1_probe_eventbrite_337a55a7",
+      "g1_probe_eventbrite_63e32fa4",
+      "g1_probe_eventbrite_9695905a",
+      "g1_probe_eventbrite_a7200d61",
+      "g1_probe_eventbrite_f513d699",
+      "g1_probe_heritage_week_0b81b474",
+      "g1_probe_heritage_week_1a8e51f2",
+      "g1_probe_heritage_week_3959e340",
+      "g1_probe_heritage_week_502e0f5d",
+      "g1_probe_heritage_week_5b8fe650",
+      "g1_probe_heritage_week_79452265",
+      "g1_probe_heritage_week_9f3deb1a",
+      "g1_probe_heritage_week_e38a7b47"
+    ],
+    "g1_probe_count": 18,
+    "named_id_exists": {
+      "g2_cavan_probe": false,
+      "g4c_budget_probe": false
+    },
+    "distinct_existing_manifest_count": 18
+  },
+  "result": "failed-closed",
+  "writes_performed": 0,
+  "next_action": "Do not deactivate the 18 G1 sources alone. Obtain an explicit corrected scope or restore the two missing source configurations before rerunning the preflight."
+}

@@ -57,6 +57,22 @@ function lls_test_term( $name, $slug, $taxonomy ) {
 }
 
 /**
+ * Resolve an EXISTING, real county slug for a fixture.
+ *
+ * @param string $slug Canonical county slug.
+ * @return string The slug when that county term exists, else ''.
+ */
+function lls_real_county( $slug ) {
+	if ( ! taxonomy_exists( 'conexao_county' ) ) {
+		return '';
+	}
+
+	$existing = term_exists( $slug, 'conexao_county' );
+
+	return ( $existing && ! is_wp_error( $existing ) ) ? (string) $slug : '';
+}
+
+/**
  * Create a temporary post.
  *
  * @param array $args wp_insert_post args.
@@ -362,7 +378,11 @@ assert_equals( array(), $errors, 'a valid coordinate pair produces no validation
 // ---------------------------------------------------------------------------
 test_section( 'REST: coordinate dataset endpoint' );
 
-$county_slug = lls_test_term( 'Location Test County', 'lls-test-county', 'conexao_county' );
+// REAL county: `conexao_county` is a closed list of the 26 approved counties
+// (Conexao_Data_Model_Counties rejects any other term), so the fixture uses the
+// site's own Laois term. It is NOT registered for cleanup: this suite never
+// deletes a shared term.
+$county_slug = lls_real_county( 'laois' );
 $cat_slug    = lls_test_term( 'Location Test Category', 'lls-test-category', 'conexao_category' );
 $attr_slug   = lls_test_term( 'Location Test Attribute', 'lls-test-attribute', 'conexao_leisure_attribute' );
 

@@ -46,14 +46,32 @@ class Conexao_Import_Result {
 	protected $incomplete_enumeration_note = '';
 
 	/**
+	 * Machine-readable cause of the incomplete enumeration.
+	 *
+	 * Kept separate from the human note so Import History and source health can
+	 * say WHY the walk stopped (rate-limit cooldown, request budget, time
+	 * budget, page cap, upstream fetch failure, checkpoint resume) without
+	 * parsing prose. Empty means "incomplete, cause not classified".
+	 *
+	 * @var string
+	 */
+	protected $incomplete_enumeration_reason = '';
+
+	/**
 	 * Whether the source listing was only partially enumerated.
 	 *
 	 * @var bool
 	 */
 	protected $incomplete_enumeration = false;
 
-	/** @var string Overall run status: success|warning|partial|failed */
+	/** @var string Overall run status: success|warning|partial|rate_limited|failed */
 	protected $status = 'success';
+
+	/** @var bool Whether this source was skipped without an outbound request. */
+	protected $source_skipped = false;
+
+	/** @var string Why the source was skipped or deferred. */
+	protected $source_skip_reason = '';
 
 	/** @var int Unique run ID (microtime). */
 	protected $run_id;
@@ -249,20 +267,66 @@ class Conexao_Import_Result {
 	 * Record that the source listing was only partially enumerated.
 	 *
 	 * This is NOT a failure: every event the walk did fetch is still imported.
-	 * It is a truthfulness signal — the run must not present a truncated
-	 * result as a complete one, and it must not mark absent events as
-	 * source_not_found (see mark_missing_events()).
+	 * It is a truthfulness signal — the run must not present a truncated result
+	 * as a complete one, and it must not mark absent events as source_not_found
+	 * (see mark_missing_events()).
 	 *
-	 * Upgrades a success to a warning; never downgrades a partial/failed run.
+	 * ## Stage 3 (P12): incomplete is `partial`, never `warning`
 	 *
-	 * @param string $message Human-readable explanation.
+	 * Before Stage 3 this only ran `maybe_warn()`, so a source that stopped at
+	 * page 13 of 49 because its time budget ran out was recorded as `warning` —
+	 * the same status a completed run with one skipped event received. The
+	 * operator could not tell "finished, with a caveat" from "did not finish".
+	 *
+	 * An incomplete enumeration now sets `partial`: the walk did not retrieve
+	 * the intended event set. It never downgrades a `failed` or `rate_limited`
+	 * run, because those carry a stronger, more specific meaning that the parent
+	 * aggregation depends on.
+	 *
+	 * A genuinely non-fatal caveat on a COMPLETED walk is `add_warning()`.
+	 *
+	 * @param string $message     Human-readable explanation.
+	 * @param string $reason_code Machine-readable cause (time_budget, page_cap,
+	 *                            request_budget, ...). Empty leaves any cause
+	 *                            already recorded.
 	 */
-	public function add_incomplete_enumeration( $message = '' ) {
+	public function add_incomplete_enumeration( $message = '', $reason_code = '' ) {
 		$this->incomplete_enumeration = true;
 		if ( '' !== trim( (string) $message ) ) {
 			$this->incomplete_enumeration_note = (string) $message;
 		}
+		if ( '' !== trim( (string) $reason_code ) ) {
+			$this->incomplete_enumeration_reason = sanitize_key( (string) $reason_code );
+		}
+		if ( in_array( $this->status, array( 'success', 'warning' ), true ) ) {
+			$this->status = 'partial';
+		}
+	}
+
+	/**
+	 * Record a non-fatal caveat on a run that DID finish its enumeration.
+	 *
+	 * The distinction from `add_incomplete_enumeration()` is the whole point of
+	 * Stage 3's status model: a completed walk with a caveat is `warning`, a
+	 * walk that stopped early is `partial`. Never downgrades partial, rate
+	 * limited or failed.
+	 *
+	 * @param string $message Human-readable caveat.
+	 */
+	public function add_warning( $message = '' ) {
+		if ( '' !== trim( (string) $message ) ) {
+			$this->incomplete_enumeration_note = (string) $message;
+		}
 		$this->maybe_warn();
+	}
+
+	/**
+	 * The machine-readable cause of an incomplete enumeration.
+	 *
+	 * @return string
+	 */
+	public function get_incomplete_enumeration_reason() {
+		return (string) $this->incomplete_enumeration_reason;
 	}
 
 	/**
@@ -298,6 +362,33 @@ class Conexao_Import_Result {
 	}
 
 	/**
+	 * Record a rate-limited or deferred source without misclassifying it as a
+	 * completed empty source or a request-budget failure.
+	 *
+	 * Stage 3 (P12): the rate-limit outcome also records a machine-readable
+	 * cause, so Import History and the Event Sources screen can say
+	 * "rate-limit cooldown" instead of only "rate_limited". The value stays in
+	 * the vocabulary the client already emits (`rate_limited`,
+	 * `rate_limited_deferred`), so no new status word is introduced.
+	 *
+	 * @param string $message     Human-readable reason.
+	 * @param bool   $skipped     Whether no request was sent for this source.
+	 * @param string $reason_code Machine-readable cause; defaults to
+	 *                            `rate_limited`.
+	 * @return void
+	 */
+	public function mark_rate_limited( $message = '', $skipped = false, $reason_code = 'rate_limited' ) {
+		$this->status         = 'rate_limited';
+		$this->incomplete_enumeration = true;
+		$this->source_skipped = (bool) $skipped;
+		$this->source_skip_reason = (string) $message;
+		$this->incomplete_enumeration_reason = sanitize_key( '' !== trim( (string) $reason_code ) ? $reason_code : 'rate_limited' );
+		if ( '' !== trim( (string) $message ) ) {
+			$this->incomplete_enumeration_note = (string) $message;
+		}
+	}
+
+	/**
 	 * Check whether the run had a fatal/global error.
 	 *
 	 * @return bool
@@ -309,7 +400,23 @@ class Conexao_Import_Result {
 	/**
 	 * Get the overall run status.
 	 *
-	 * @return string success|warning|partial|failed
+	 * ## Vocabulary (Stage 3 / P12 — verified against Stage 1, not replaced)
+	 *
+	 *   success        — enumerated and imported without a recorded issue
+	 *   warning        — COMPLETED enumeration with a non-fatal caveat (a
+	 *                    skipped past event, an enrichment failure, a resumed
+	 *                    subset whose pages were already confirmed)
+	 *   partial        — did NOT complete the intended work: an incomplete
+	 *                    enumeration, or per-event failures, or both. Never a
+	 *                    `warning`, because the retrieval itself fell short.
+	 *   rate_limited   — the shared Eventbrite breaker (P1) stopped planned work
+	 *   failed         — a fatal error prevented the source importing at all
+	 *
+	 * Parent aggregation (`Conexao_Event_Importer_Engine::aggregate_parent_status()`)
+	 * maps these to `failed > rate_limited > partial > completed_with_errors >
+	 * completed` and is unchanged by Stage 3.
+	 *
+	 * @return string success|warning|partial|rate_limited|failed
 	 */
 	public function get_status() {
 		return $this->status;
@@ -385,7 +492,13 @@ class Conexao_Import_Result {
 				// Truthfulness flag: false means the returned event list is a
 				// SUBSET of the real source listing, not the whole thing.
 				'complete'      => $this->incomplete_enumeration ? false : true,
-				'event_results' => $this->events,
+				// Stage 3 (P12): WHY it is incomplete, as a stable code, so the
+				// reader never has to infer the cause from the status word or
+				// parse the message.
+				'incomplete_reason' => $this->incomplete_enumeration_reason,
+				'event_results'   => $this->events,
+				'source_skipped'  => $this->source_skipped,
+				'source_skip_reason' => $this->source_skip_reason,
 			)
 		);
 	}

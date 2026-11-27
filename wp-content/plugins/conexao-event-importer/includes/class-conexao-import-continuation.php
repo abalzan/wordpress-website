@@ -229,6 +229,21 @@ class Conexao_Import_Continuation {
 	protected static $runner = null;
 
 	/**
+	 * Source IDs whose execution lock THIS process currently holds.
+	 *
+	 * The persisted lock (`add_option`) is the cross-process guard, but it is
+	 * not re-entrant: a continuation acquires the lock and then calls
+	 * `run_source()`, which itself wants the same lock. This in-memory set
+	 * makes `acquire_lock()` re-entrant within one process, so a continuation
+	 * (or any outer owner) never deadlocks against the import engine's own
+	 * guard, while a genuinely concurrent process still loses the atomic
+	 * `add_option` race and is refused.
+	 *
+	 * @var array<string,bool>
+	 */
+	protected static $process_locks = array();
+
+	/**
 	 * The stored record shape with defaults applied.
 	 *
 	 * @return array
@@ -247,6 +262,9 @@ class Conexao_Import_Continuation {
 			'page_count'     => 0,
 			'reason'         => '',
 			'run_id'         => '',
+			'source_run_id'  => '',
+			'parent_run_group_id' => '',
+			'continuation_id' => '',
 			'message'        => '',
 		);
 	}
@@ -450,7 +468,12 @@ class Conexao_Import_Continuation {
 			return;
 		}
 
-		$plugin->importer->run_source( $source_id );
+		$record  = self::get( $source_id );
+		$context = array();
+		if ( ! empty( $record['parent_run_group_id'] ) ) {
+			$context['parent_run_group_id'] = (string) $record['parent_run_group_id'];
+		}
+		$plugin->importer->run_source( $source_id, false, $context );
 	}
 
 	/**
@@ -554,18 +577,86 @@ class Conexao_Import_Continuation {
 	/**
 	 * Write one continuation lifecycle entry to the import log.
 	 *
+	 * Stage 3 (P12): every lifecycle entry is correlated to the source, the
+	 * child source run and the logical Run All parent it belongs to. The
+	 * identifiers come from the persisted record — never from the current
+	 * request — so an entry written during a resume still names the run that
+	 * scheduled the continuation.
+	 *
 	 * @param string $source_id Source slug.
 	 * @param string $level     info|warning|error.
 	 * @param string $message   Human-readable message.
-	 * @param array  $context   Structured context.
+	 * @param array  $context   Structured context (correlation is merged in).
+	 * @param array  $record    Record to correlate against. Empty means the
+	 *                          currently stored record; a caller that has just
+	 *                          removed the record (clear()) passes the removed
+	 *                          one, so the entry is not left uncorrelated.
 	 * @return void
 	 */
-	protected static function log( $source_id, $level, $message, array $context = array() ) {
+	protected static function log( $source_id, $level, $message, array $context = array(), array $record = array() ) {
 		if ( ! class_exists( 'Conexao_Import_Log' ) ) {
 			return;
 		}
 
-		Conexao_Import_Log::add( $source_id, $level, $message, $context );
+		if ( empty( $record ) ) {
+			$record = self::get( $source_id );
+		}
+
+		Conexao_Import_Log::add(
+			$source_id,
+			$level,
+			$message,
+			array_merge( self::correlation_context( $record ), $context )
+		);
+	}
+
+	/**
+	 * The canonical correlation context for one continuation record.
+	 *
+	 * Keys are the ones `Conexao_Import_Log::CORRELATION_CONTEXT_KEYS` retains.
+	 * `run_id` is the history row's run ID (the parent group for a child of a
+	 * Run All, the standalone run otherwise), so the entry lands under the right
+	 * Import History row; `source_run_id` is the child source run that created
+	 * or last advanced the continuation; `parent_run_group_id` is the logical
+	 * Run All parent.
+	 *
+	 * @param array $record Continuation record.
+	 * @return array
+	 */
+	public static function correlation_context( array $record ) {
+		$record = wp_parse_args( $record, self::defaults() );
+
+		$context = array(
+			'parent_run_group_id' => (string) $record['parent_run_group_id'],
+			'source_run_id'       => (string) $record['source_run_id'],
+			'continuation_id'     => (string) $record['continuation_id'],
+			'state'               => (string) $record['state'],
+			'attempts'            => (int) $record['attempts'],
+			'stalled'             => (int) $record['stalled'],
+			'last_page'           => (int) $record['last_page'],
+			'page_count'          => (int) $record['page_count'],
+		);
+
+		// The log's first-class run ID: the owning history row. When the record
+		// predates Stage 3 it may hold nothing, in which case the caller's own
+		// `run_id` (or the current engine filter) wins rather than an invented
+		// value.
+		if ( '' !== (string) $record['run_id'] ) {
+			$context['run_id'] = (string) $record['run_id'];
+		} elseif ( ! empty( $record['parent_run_group_id'] ) ) {
+			$context['run_id'] = (string) $record['parent_run_group_id'];
+		}
+
+		if ( (int) $record['run_at'] > 0 ) {
+			$context['run_at'] = (int) $record['run_at'];
+		}
+
+		return array_filter(
+			$context,
+			static function ( $value ) {
+				return '' !== (string) $value;
+			}
+		);
 	}
 
 	/**
@@ -616,6 +707,15 @@ class Conexao_Import_Continuation {
 				'reason'       => (string) $existing['reason'],
 				'last_run_at'  => (int) $existing['last_run_at'],
 				'run_id'       => (string) $existing['run_id'],
+				'source_run_id' => (string) $existing['source_run_id'],
+				'parent_run_group_id' => (string) $existing['parent_run_group_id'],
+				'continuation_id' => '' !== (string) $existing['continuation_id']
+					? (string) $existing['continuation_id']
+					// One stable identifier for this continuation lifecycle, so
+					// every entry from schedule to completion names the same
+					// thing. A cleared-and-recreated continuation legitimately
+					// gets a new one: it IS a new lifecycle.
+					: 'cont-' . wp_generate_uuid4(),
 			)
 		);
 
@@ -649,6 +749,8 @@ class Conexao_Import_Continuation {
 				array(
 					'reason'      => 'continuation_scheduling_failed',
 					'reason_code' => 'continuation_scheduling_failed',
+					'lifecycle'   => 'failed',
+					'cause'       => 'scheduling_failed',
 					'run_id'      => (string) $record['run_id'],
 				)
 			);
@@ -671,6 +773,7 @@ class Conexao_Import_Continuation {
 			array(
 				'reason'           => 'continuation_scheduled',
 				'reason_code'      => 'continuation_scheduled',
+				'lifecycle'        => 'scheduled',
 				'run_at'           => $run_at,
 				'cooldown_seconds' => $run_at - $now,
 				'attempts'         => (int) $record['attempts'],
@@ -693,8 +796,11 @@ class Conexao_Import_Continuation {
 	 * @return bool True when a record was removed.
 	 */
 	public static function clear( $source_id, $reason = '' ) {
-		$all = self::get_all();
-		$had = isset( $all[ $source_id ] );
+		$all     = self::get_all();
+		$had     = isset( $all[ $source_id ] );
+		$removed = $had && is_array( $all[ $source_id ] )
+			? wp_parse_args( $all[ $source_id ], self::defaults() )
+			: array();
 
 		if ( $had ) {
 			unset( $all[ $source_id ] );
@@ -711,7 +817,11 @@ class Conexao_Import_Continuation {
 				array(
 					'reason'      => '' !== $reason ? $reason : 'not_resumable',
 					'reason_code' => '' !== $reason ? $reason : 'not_resumable',
-				)
+					'lifecycle'   => 'cleared',
+				),
+				// The record is already gone: correlate against the one that was
+				// removed, so this terminal entry still names its run.
+				$removed
 			);
 		}
 
@@ -733,8 +843,6 @@ class Conexao_Import_Continuation {
 	 *                     the stall is terminal, false when nothing is owed.
 	 */
 	public static function reconcile( $source_id, array $stats = array() ) {
-		unset( $stats );
-
 		$record  = self::get( $source_id );
 		$knows   = class_exists( 'Conexao_Source_Enumeration_Checkpoint' );
 		$check   = $knows ? Conexao_Source_Enumeration_Checkpoint::get( $source_id ) : array();
@@ -780,6 +888,20 @@ class Conexao_Import_Continuation {
 				'last_page'  => $page,
 				'page_count' => $page_count,
 				'reason'     => isset( $check['last_failure'] ) ? (string) $check['last_failure'] : '',
+				// Stage 3 (P12): the run that produced this continuation is the
+				// run whose child row owns it. Persisting both IDs is what makes
+				// every later lifecycle entry — including one written by a
+				// different request during the resume — resolvable to the same
+				// child run and the same logical Run All parent.
+				'run_id'     => ! empty( $stats['run_id'] )
+					? (string) $stats['run_id']
+					: (string) $record['run_id'],
+				'source_run_id' => ! empty( $stats['source_run_id'] )
+					? (string) $stats['source_run_id']
+					: (string) $record['source_run_id'],
+				'parent_run_group_id' => ! empty( $stats['parent_run_group_id'] )
+					? (string) $stats['parent_run_group_id']
+					: (string) $record['parent_run_group_id'],
 			)
 		);
 
@@ -833,6 +955,7 @@ class Conexao_Import_Continuation {
 			array(
 				'reason'      => 'continuation_exhausted',
 				'reason_code' => 'continuation_exhausted',
+				'lifecycle'   => 'exhausted',
 				'cause'       => (string) $cause,
 				'attempts'    => (int) $record['attempts'],
 				'stalled'     => (int) $record['stalled'],
@@ -904,6 +1027,7 @@ class Conexao_Import_Continuation {
 					array(
 						'reason'      => 'continuation_started',
 						'reason_code' => 'continuation_started',
+						'lifecycle'   => 'started',
 						'attempts'    => (int) $record['attempts'],
 						'run_id'      => (string) $record['run_id'],
 					)
@@ -925,6 +1049,9 @@ class Conexao_Import_Continuation {
 					array(
 						'reason'      => 'continuation_exception',
 						'reason_code' => 'continuation_exception',
+						'lifecycle'   => 'failed',
+						'cause'       => 'exception',
+						'run_id'      => (string) $record['run_id'],
 					)
 				);
 			} finally {
@@ -996,6 +1123,8 @@ class Conexao_Import_Continuation {
 					array(
 						'reason'      => 'continuation_rearmed',
 						'reason_code' => 'continuation_rearmed',
+						'lifecycle'   => 'rearmed',
+						'run_id'      => (string) $record['run_id'],
 					)
 				);
 			}
@@ -1018,10 +1147,18 @@ class Conexao_Import_Continuation {
 	 * @return bool True when this caller now owns the lock.
 	 */
 	public static function acquire_lock( $source_id ) {
+		// Re-entrant within one process: an outer owner (a continuation) that
+		// already holds the lock may let run_source() proceed without having to
+		// win the persisted lock a second time.
+		if ( isset( self::$process_locks[ $source_id ] ) ) {
+			return true;
+		}
+
 		$key = self::lock_key( $source_id );
 		$now = self::now();
 
 		if ( add_option( $key, (string) $now, '', false ) ) {
+			self::$process_locks[ $source_id ] = true;
 			return true;
 		}
 
@@ -1031,11 +1168,26 @@ class Conexao_Import_Continuation {
 		// source forever, so a lock older than LOCK_TTL is taken over.
 		if ( $held > 0 && ( $now - $held ) > self::LOCK_TTL ) {
 			update_option( $key, (string) $now, false );
+			self::$process_locks[ $source_id ] = true;
 
 			return true;
 		}
 
 		return false;
+	}
+
+	/**
+	 * Whether THIS process currently holds a source's execution lock.
+	 *
+	 * Used by the import engine's own guard so a continuation that already owns
+	 * the lock does not try to acquire it twice. It says nothing about another
+	 * process's lock (that is `is_locked()`).
+	 *
+	 * @param string $source_id Source slug.
+	 * @return bool
+	 */
+	public static function is_locked_by_this_process( $source_id ) {
+		return isset( self::$process_locks[ $source_id ] );
 	}
 
 	/**
@@ -1045,6 +1197,7 @@ class Conexao_Import_Continuation {
 	 * @return void
 	 */
 	public static function release_lock( $source_id ) {
+		unset( self::$process_locks[ $source_id ] );
 		delete_option( self::lock_key( $source_id ) );
 	}
 
@@ -1120,6 +1273,241 @@ class Conexao_Import_Continuation {
 			'message'           => (string) $record['message'],
 			'locked'            => $locking,
 		);
+	}
+
+	/**
+	 * How long a `running` record may go without progress before it is
+	 * surfaced as suspected-stale (seconds).
+	 *
+	 * ## Why 3,600 seconds
+	 *
+	 * The evidence available, not a round number:
+	 *
+	 *   * the per-source lock (`LOCK_TTL`) self-heals after 900 s, so a live
+	 *     process cannot legitimately hold a source longer than that;
+	 *   * a single run is bounded by the Eventbrite time budget and the in-walk
+	 *     ladder, both well under 15 minutes;
+	 *   * `run_due()` stamps `last_run_at` immediately before it calls the
+	 *     runner, so `now - last_run_at` is a real progress signal.
+	 *
+	 * 3,600 s is 4× the lock TTL. A record older than that cannot correspond to
+	 * a live worker and is reported as suspected-stale — never reset, retried or
+	 * deleted, because the diagnostic must not act.
+	 *
+	 * @var int
+	 */
+	const STALE_RUNNING_SECONDS = 3600;
+
+	/**
+	 * Classify one continuation record for operator diagnostics.
+	 *
+	 * READ-ONLY: this never writes, saves, arms, disarms, resets or retries.
+	 * The classes are:
+	 *
+	 *   none                  — no continuation exists for the source
+	 *   queued                — scheduled, next attempt in the future
+	 *   deferred              — scheduled, attempt time already elapsed (the
+	 *                           trigger has not fired yet)
+	 *   running               — running, last progress within the stale window
+	 *   running_stale         — running, no progress for longer than
+	 *                           STALE_RUNNING_SECONDS: suspected abandoned
+	 *   running_indeterminate — running, and no timestamp can date the attempt
+	 *   exhausted             — terminal; the stall is real and visible
+	 *   failed                — terminal; the continuation could not be armed
+	 *
+	 * `running_without_run_at` is reported as a FACT alongside the class for the
+	 * historical `state=running, run_at=0` shape. On its own it is not evidence
+	 * of a stall: `run_due()` sets exactly that shape while the worker holds the
+	 * source. It becomes a stall only when the timestamp says so, and when the
+	 * timestamp is missing the class is `running_indeterminate` — not stale.
+	 *
+	 * @param array    $record Record with defaults applied.
+	 * @param int|null $now    Injectable clock (defaults to self::now()).
+	 * @return array{class:string,label:string,stale:bool,indeterminate:bool,running_without_run_at:bool,age:int,lock_held:bool}
+	 */
+	public static function classify( array $record, $now = null ) {
+		$record = wp_parse_args( $record, self::defaults() );
+		$now    = ( null === $now ) ? self::now() : (int) $now;
+
+		$state  = (string) $record['state'];
+		$run_at = (int) $record['run_at'];
+
+		$result = array(
+			'class'                  => 'none',
+			'label'                  => '',
+			'stale'                  => false,
+			'indeterminate'          => false,
+			'running_without_run_at' => false,
+			'age'                    => 0,
+			'lock_held'              => false,
+		);
+
+		if ( '' === $state ) {
+			$result['label'] = __( 'no continuation', 'conexao-event-importer' );
+			return $result;
+		}
+
+		if ( self::STATE_SCHEDULED === $state ) {
+			if ( $run_at > $now ) {
+				$result['class'] = 'queued';
+				$result['label'] = sprintf(
+					/* translators: %d: seconds until the next attempt */
+					__( 'queued — next attempt in ~%ds', 'conexao-event-importer' ),
+					$run_at - $now
+				);
+			} else {
+				$result['class'] = 'deferred';
+				$result['age']   = max( 0, $now - $run_at );
+				$result['label'] = __( 'deferred — due, waiting for the trigger', 'conexao-event-importer' );
+			}
+			return $result;
+		}
+
+		if ( self::STATE_EXHAUSTED === $state ) {
+			$result['class'] = 'exhausted';
+			$result['label'] = __( 'exhausted — stopped, no further automatic attempt', 'conexao-event-importer' );
+			return $result;
+		}
+
+		if ( self::STATE_FAILED === $state ) {
+			$result['class'] = 'failed';
+			$result['label'] = __( 'failed — the continuation could not be armed', 'conexao-event-importer' );
+			return $result;
+		}
+
+		if ( self::STATE_RUNNING !== $state ) {
+			$result['label'] = __( 'unknown state', 'conexao-event-importer' );
+			return $result;
+		}
+
+		$result['class']                  = 'running';
+		$result['running_without_run_at'] = ( 0 === $run_at );
+		$result['lock_held']              = self::is_locked( (string) $record['source_id'] );
+
+		$last = (int) $record['last_run_at'];
+
+		if ( $last <= 0 ) {
+			// No timestamp can date this attempt. Guessing "stale" from an absent
+			// timestamp is exactly the mistake this class exists to avoid, so say
+			// so instead.
+			$result['class']         = 'running_indeterminate';
+			$result['indeterminate'] = true;
+			$result['label']         = __( 'running — no timestamp, needs inspection', 'conexao-event-importer' );
+			return $result;
+		}
+
+		$result['age'] = max( 0, $now - $last );
+
+		if ( $result['age'] > self::STALE_RUNNING_SECONDS && ! $result['lock_held'] ) {
+			$result['class'] = 'running_stale';
+			$result['stale'] = true;
+			$result['label'] = sprintf(
+				/* translators: %d: seconds since the last recorded progress */
+				__( 'running but no progress for %ds — suspected abandoned', 'conexao-event-importer' ),
+				(int) $result['age']
+			);
+			return $result;
+		}
+
+		$result['label'] = sprintf(
+			/* translators: %d: seconds since the last recorded progress */
+			__( 'running — last progress %ds ago', 'conexao-event-importer' ),
+			(int) $result['age']
+		);
+
+		return $result;
+	}
+
+	/**
+	 * Read-only diagnostics for every continuation record.
+	 *
+	 * Never writes. Each row carries the correlation identifiers the record
+	 * holds (legitimately empty on a pre-Stage-3 record), the position, the
+	 * reason and the classification.
+	 *
+	 * @param string $source_id Optional single source.
+	 * @return array[] source_id => diagnostic row.
+	 */
+	public static function get_diagnostics( $source_id = '' ) {
+		$now     = self::now();
+		$all     = self::get_all();
+		$targets = ( '' !== (string) $source_id ) ? array( (string) $source_id ) : array_keys( $all );
+		$rows    = array();
+
+		foreach ( $targets as $id ) {
+			$record = self::get( $id );
+
+			if ( '' === (string) $record['state'] ) {
+				continue;
+			}
+
+			$rows[ $id ] = array_merge(
+				self::classify( $record, $now ),
+				array(
+					'source_id'           => (string) $id,
+					'state'               => (string) $record['state'],
+					'run_id'              => (string) $record['run_id'],
+					'source_run_id'       => (string) $record['source_run_id'],
+					'parent_run_group_id' => (string) $record['parent_run_group_id'],
+					'continuation_id'     => (string) $record['continuation_id'],
+					'page'                => (int) $record['last_page'],
+					'page_count'          => (int) $record['page_count'],
+					'attempts'            => (int) $record['attempts'],
+					'stalled'             => (int) $record['stalled'],
+					'reason'              => (string) $record['reason'],
+					'run_at'              => (int) $record['run_at'],
+					'last_run_at'         => (int) $record['last_run_at'],
+					'scheduled_at'        => (int) $record['scheduled_at'],
+					'correlated'          => ( '' !== (string) $record['run_id'] || '' !== (string) $record['parent_run_group_id'] ),
+				)
+			);
+		}
+
+		return $rows;
+	}
+
+	/**
+	 * Count the diagnostics by class, for a one-line operator summary.
+	 *
+	 * @return array<string,int>
+	 */
+	public static function get_diagnostic_counts() {
+		$counts = array();
+		foreach ( self::get_diagnostics() as $row ) {
+			$class            = (string) $row['class'];
+			$counts[ $class ] = isset( $counts[ $class ] ) ? (int) $counts[ $class ] + 1 : 1;
+		}
+		ksort( $counts );
+		return $counts;
+	}
+
+	/**
+	 * Groups whose continuation is still live, for retention protection.
+	 *
+	 * A scheduled or running continuation means work is still owed for that
+	 * logical run, so its history and logs must not be evicted.
+	 *
+	 * @return string[] Bare group IDs.
+	 */
+	public static function get_active_group_ids() {
+		$groups = array();
+
+		foreach ( self::get_all() as $record ) {
+			if ( ! is_array( $record ) ) {
+				continue;
+			}
+			$state = isset( $record['state'] ) ? (string) $record['state'] : '';
+			if ( self::STATE_SCHEDULED !== $state && self::STATE_RUNNING !== $state ) {
+				continue;
+			}
+			foreach ( array( 'parent_run_group_id', 'run_id' ) as $key ) {
+				if ( ! empty( $record[ $key ] ) ) {
+					$groups[] = (string) $record[ $key ];
+				}
+			}
+		}
+
+		return array_values( array_unique( $groups ) );
 	}
 
 	/**

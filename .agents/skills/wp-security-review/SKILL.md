@@ -114,7 +114,8 @@ Pair it with `wp-add-admin-screen` (nonce/capability surface) and
 
 ```bash
 ./scripts/lint.sh                                 # PHPCS (WordPress standards) + PHPStan
-./scripts/run-tests.sh --scripts                  # credential/target contract gate
+./scripts/run-tests.sh --scripts                  # static credential/target checks
+./scripts/run-tests.sh --scripts-runtime          # PHP-backed secret-scan and related gates
 php -l <changed file>                             # syntax
 ```
 

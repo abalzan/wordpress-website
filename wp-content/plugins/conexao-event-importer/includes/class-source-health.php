@@ -112,6 +112,38 @@ class Conexao_Source_Health {
 	}
 
 	/**
+	 * Record an incomplete or rate-limited run for a source.
+	 *
+	 * Stage 3 (P12). An incomplete enumeration is neither a success nor a
+	 * failure:
+	 *
+	 *   * recording it as a success would reset `consecutive_failures` and stamp
+	 *     `last_success`, claiming a complete import that did not happen;
+	 *   * recording it as a failure would blame the source for a provider
+	 *     cooldown or a truncated walk, and would silently drive the failure
+	 *     streak that an operator reads as "this source is broken".
+	 *
+	 * So the counters are left alone and the outcome is recorded separately.
+	 *
+	 * @param string $source_id Source slug.
+	 * @param string $status    Result status (partial|rate_limited).
+	 * @param string $reason    Human-readable reason, if any.
+	 * @return void
+	 */
+	public static function record_incomplete( $source_id, $status = 'partial', $reason = '' ) {
+		$health   = self::get_all();
+		$existing = isset( $health[ $source_id ] ) && is_array( $health[ $source_id ] ) ? $health[ $source_id ] : array();
+
+		$existing['consecutive_failures']   = isset( $existing['consecutive_failures'] ) ? (int) $existing['consecutive_failures'] : 0;
+		$existing['last_incomplete']        = current_time( 'mysql' );
+		$existing['last_incomplete_status'] = sanitize_key( (string) $status );
+		$existing['last_incomplete_reason'] = sanitize_text_field( (string) $reason );
+
+		$health[ $source_id ] = $existing;
+		update_option( self::OPTION_KEY, $health, false );
+	}
+
+	/**
 	 * Clear the health record for a source.
 	 *
 	 * @param string $source_id Source slug.

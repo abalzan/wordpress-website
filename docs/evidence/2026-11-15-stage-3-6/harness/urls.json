@@ -1,0 +1,10 @@
+{
+  "offaly":    { "source_ids": ["eventbrite_offaly"],    "url": "https://www.eventbrite.ie/d/ireland--offaly/all-events/" },
+  "meath":     { "source_ids": ["eventbrite_meath"],     "url": "https://www.eventbrite.ie/d/ireland--meath/all-events/" },
+  "laois":     { "source_ids": ["eventbrite_laois"],     "url": "https://www.eventbrite.ie/d/ireland--laois/all-events/" },
+  "mayo":      { "source_ids": ["eventbrite_mayo"],      "url": "https://www.eventbrite.ie/d/ireland--mayo/all-events/" },
+  "kerry":     { "source_ids": ["eventbrite_kerry"],     "url": "https://www.eventbrite.ie/d/ireland--kerry/all-events/" },
+  "westmeath": { "source_ids": ["eventbrite_westmeath"], "url": "https://www.eventbrite.ie/d/ireland--westmeath/all-events/" },
+  "clare":     { "source_ids": ["eventbrite_clare"],     "url": "https://www.eventbrite.ie/d/ireland--clare/all-events/" },
+  "leitrim":   { "source_ids": ["eventbrite_leitrim"],   "url": "https://www.eventbrite.ie/d/ireland--leitrim/all-events/" }
+}

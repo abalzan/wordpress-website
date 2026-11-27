@@ -310,9 +310,9 @@
 	}
 
 	/**
-	 * The ambient decoration: the same star as a small, decorative image.
+	 * The ambient decoration factory: creates a random Christmas decoration.
 	 *
-	 * @returns {Element|null} A node for the shared scheduler, or null without an asset.
+	 * @returns {Element|null} A node for the shared scheduler, or null without assets.
 	 */
 	function createStarDecoration() {
 		if (!win || !win.document) {
@@ -320,21 +320,42 @@
 		}
 
 		var marker = win.document.querySelector('.ce-christmas-ambient-marker');
-		var asset = marker ? attr(marker, 'data-ce-star-asset') : '';
-
-		if (!asset) {
+		if (!marker) {
 			return null;
 		}
 
+		// Available decoration types with their asset data attributes and CSS classes
+		var decorations = [
+			{ type: 'star', assetAttr: 'data-ce-star-asset', className: 'ce-ambient-decoration', width: 60, height: 75 },
+			{ type: 'snowflake', assetAttr: 'data-ce-snowflake-asset', className: 'ce-ambient-decoration--snowflake', width: 32, height: 32 },
+			{ type: 'holly', assetAttr: 'data-ce-holly-asset', className: 'ce-ambient-decoration--holly', width: 36, height: 36 },
+			{ type: 'bell', assetAttr: 'data-ce-bell-asset', className: 'ce-ambient-decoration--bell', width: 36, height: 44 },
+			{ type: 'gift', assetAttr: 'data-ce-gift-asset', className: 'ce-ambient-decoration--gift', width: 40, height: 40 }
+		];
+
+		// Filter to only decorations that have assets available
+		var available = decorations.filter(function(d) {
+			return marker.getAttribute(d.assetAttr);
+		});
+
+		if (!available.length) {
+			return null;
+		}
+
+		// Pick a random decoration
+		var decoration = available[Math.floor(Math.random() * available.length)];
+		var asset = marker.getAttribute(decoration.assetAttr);
+
 		var node = win.document.createElement('span');
+		node.className = decoration.className;
 		var image = win.document.createElement('img');
 
 		image.src = asset;
 		image.alt = '';
 		image.setAttribute('aria-hidden', 'true');
 		image.setAttribute('draggable', 'false');
-		image.width = 60;
-		image.height = 75;
+		image.width = decoration.width;
+		image.height = decoration.height;
 		node.appendChild(image);
 
 		// Bounded, non-obstructive placement: near an edge, never centred, never over
@@ -344,7 +365,7 @@
 
 		node.style[edge] = (2 + Math.random() * 6).toFixed(2) + '%';
 		node.style.top = top.toFixed(2) + '%';
-		node.style.width = (44 + Math.random() * 26).toFixed(0) + 'px';
+		node.style.width = decoration.width + 'px';
 
 		return node;
 	}
@@ -1140,6 +1161,7 @@ function createCtaSparkle(doc, view) {
 		}
 	}
 
+
 	/**
 	 * Boot every Christmas micro-animation controller once per page.
 	 * Idempotent: a repeated boot adds no second listener or observer.
@@ -1158,6 +1180,113 @@ function createCtaSparkle(doc, view) {
 		}
 		createCtaSparkle(doc, view).attach();
 		createContentReveal({ document: doc, window: view });
+	}
+
+	/**
+	 * Enhance every homepage welcome rendered on this page.
+	 *
+	 * There is at most one: the placement is homepage-only and the dispatcher renders
+	 * a single package. Auto-open is decided HERE and only here — a dismissal already
+	 * recorded for this tab session leaves the public welcome closed with nothing
+	 * inline, while every other eligible view (the signed private preview included)
+	 * opens the modal exactly once; the preview close never touches the dismissal
+	 * key, so reloading the preview shows the popup again.
+	 *
+	 * @param {Object} scope Optional window-like object (the runtime tests inject one).
+	 * @returns {Array} The controllers that were created.
+	 */
+	function bootWelcome(scope) {
+		var view = scope || win;
+
+		if (!view || !view.document || typeof view.document.querySelectorAll !== 'function') {
+			return [];
+		}
+
+		var roots = toArray(view.document.querySelectorAll(WELCOME_SELECTOR));
+		var controllers = [];
+
+		for (var index = 0; index < roots.length; index++) {
+			var controller = createWelcome(roots[index], {
+				document: view.document,
+				window: view,
+				storage: welcomeStorage(view)
+			});
+
+			if (!controller) {
+				continue;
+			}
+
+			controllers.push(controller);
+
+			if (!controller.isPreview() && controller.isDismissed()) {
+				// A dismissal in THIS tab session suppresses the public welcome and
+				// leaves nothing inline: no band, no reserved height, no residue.
+				controller.setState('dismissed');
+			} else {
+				// Every other eligible view opens the modal exactly once — the
+				// signed private preview included, so an editor inspects the exact
+				// visitor experience without clicking anything. The preview close
+				// never writes the dismissal key (see `close()`), so reloading the
+				// preview shows the popup again.
+				controller.open();
+			}
+		}
+
+		// A repeated boot finds every root already claimed and yields no new
+		// controller; keep the first controller alive instead of clobbering it.
+		if (controllers.length) {
+			welcome = controllers[0];
+		}
+
+		return controllers;
+	}
+
+	function boot() {
+		if (!win || !win.document) {
+			return;
+		}
+
+		function start() {
+			// The welcome goes first: it is the only part of this package that must
+			// happen before the visitor can interact with the page, and nothing later
+			// may stop it from claiming the welcome.
+			bootWelcome();
+			bootJourneys();
+			bootAmbient();
+			bootMicroAnimations();
+		}
+
+		if ('loading' === win.document.readyState) {
+			win.document.addEventListener('DOMContentLoaded', start);
+		} else {
+			start();
+		}
+	}
+
+	/**
+	 * Boot every Christmas micro-animation controller once per page.
+	 * Idempotent: a repeated boot adds no second listener or observer.
+	 */
+	function bootMicroAnimations(scope) {
+		var view = scope || win;
+		if (!view || !view.document) {
+			return;
+		}
+		var doc = view.document;
+		if (doc.documentElement && typeof doc.documentElement.setAttribute === 'function') {
+			if ('1' === doc.documentElement.getAttribute(MICRO_CLAIMED)) {
+				return;
+			}
+			doc.documentElement.setAttribute(MICRO_CLAIMED, '1');
+		}
+		createCtaSparkle(doc, view).attach();
+		createContentReveal({ document: doc, window: view });
+		// Ambient scheduler is started by the shared framework via bootAmbient().
+		//
+		// Nothing here is timer-driven. The package's motion is CSS-driven, so
+		// the script schedules no interval and no timeout: the welcome is a
+		// one-shot modal, and a timer would be exactly the hidden workaround the
+		// session-scoped presentation contract forbids.
 	}
 
 	/**

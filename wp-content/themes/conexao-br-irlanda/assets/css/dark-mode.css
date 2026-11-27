@@ -306,50 +306,20 @@
   color: var(--conexao-white);
 }
 
-/* Mobile search overlay */
-[data-theme="dark"] .mobile-search-overlay {
-  background: rgba(7, 59, 47, 0.6);
-}
-
-[data-theme="dark"] .mobile-search-overlay-content {
-  background: var(--color-surface);
-}
-
-[data-theme="dark"] .mobile-search-field {
-  background: var(--color-surface-muted);
-  border-color: var(--color-border);
-  color: var(--color-text);
-}
-
-[data-theme="dark"] .mobile-search-field::placeholder {
-  color: var(--color-text-muted);
-}
-
-[data-theme="dark"] .mobile-search-field:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 4px rgba(46, 158, 99, 0.15);
-}
-
-[data-theme="dark"] .mobile-search-close {
-  color: var(--color-text-secondary);
-}
-
-[data-theme="dark"] .mobile-search-close:hover {
-  background: var(--color-surface-muted);
-  color: var(--color-text);
-}
-
 [data-theme="dark"] .mobile-menu-toggle .hamburger-line {
   background: var(--color-text);
 }
 
-[data-theme="dark"] .mobile-search-toggle {
-  color: var(--color-text);
-}
-
-[data-theme="dark"] .mobile-search-toggle:hover {
-  background: var(--color-surface-muted);
-  color: var(--color-primary);
+/* ===== 3b. HEADER LANGUAGE SWITCHER (dark contrast) =====
+   The active PT/EN pill uses --color-primary (#3ab875) with white text, which
+   is only 2.53:1 in dark mode — a WCAG AA failure. Deepen the active pill to
+   the dark theme's own --conexao-cta-bg (#287443), already documented as the
+   AA-safe white-on-green surface (5.72:1). Scoped to the header instances
+   (.header-actions) so the drawer instance keeps the shared colours. */
+[data-theme="dark"] .header-actions .language-switcher--mobile .language-switcher-item.is-current,
+[data-theme="dark"] .header-actions .language-switcher--desktop .language-switcher-item.is-current {
+  background-color: var(--conexao-cta-bg);
+  color: var(--conexao-white);
 }
 
 /* ===== 4. THEME TOGGLE ===== */

@@ -1,0 +1,84 @@
+CHANGED	133818	publish	2026-11-08 20:18:08	2026-11-15 14:01:17	hermitage-green-3	Hermitage Green
+  BEFORE	133818	publish	2026-11-08 20:18:08	2026-11-13 08:29:34	hermitage-green-3	Hermitage Green
+CHANGED	136014	publish	2026-11-09 01:20:37	2026-11-15 14:08:10	festival-of-politics-haughey-a-terrible-beauty	Festival of Politics: Haughey: A Terrible Beauty
+  BEFORE	136014	publish	2026-11-09 01:20:37	2026-11-14 14:40:30	festival-of-politics-haughey-a-terrible-beauty	Festival of Politics: Haughey: A Terrible Beauty
+CHANGED	136036	publish	2026-11-09 01:21:12	2026-11-15 14:08:30	festival-of-politics-half-time-the-us-midterms	Festival of Politics: Half Time: The US Midterms
+  BEFORE	136036	publish	2026-11-09 01:21:12	2026-11-13 11:20:09	festival-of-politics-half-time-the-us-midterms	Festival of Politics: Half Time: The US Midterms
+CHANGED	136732	publish	2026-11-09 08:06:37	2026-11-14 21:42:38	nathan-carter-live-in-the-hotel-kilkenny	Nathan Carter Live in the Hotel Kilkenny
+  BEFORE	136732	publish	2026-11-09 08:06:37	2026-11-14 20:13:51	nathan-carter-live-in-the-hotel-kilkenny	Nathan Carter Live in the Hotel Kilkenny
+CHANGED	137810	publish	2026-11-09 20:39:17	2026-11-14 21:42:41	susan-connolly-reading-room	Susan Connolly: Reading Room
+  BEFORE	137810	publish	2026-11-09 20:39:17	2026-11-09 20:39:17	susan-connolly-reading-room	Susan Connolly: Reading Room
+NEW	170981	publish	2026-11-14 21:34:29	2026-11-14 21:34:29	lgbt-young-adults-group	LGBT+ Young Adults Group
+NEW	170982	publish	2026-11-14 21:42:39	2026-11-14 21:42:39	winter-cafe	Winter Café
+NEW	170983	publish	2026-11-14 21:42:40	2026-11-14 21:42:40	lgbt-youth-group	LGBT+ Youth Group
+NEW	170985	publish	2026-11-14 21:42:42	2026-11-14 21:42:42	lgbt-awareness-training-outcomers-dundalk	LGBT+ Awareness Training Outcomers Dundalk
+NEW	170986	publish	2026-11-14 21:42:43	2026-11-14 21:42:43	christmas-around-the-world-2026	Christmas Around the World 2026
+NEW	170988	publish	2026-11-14 21:42:45	2026-11-14 21:42:45	norah-mcguinness-pioneer-official-opening	Norah McGuinness: Pioneer - Official Opening
+NEW	170990	publish	2026-11-14 21:49:09	2026-11-14 21:49:09	coppers-saturdays-free-entry-before-1130pm	COPPERS SATURDAYS - FREE ENTRY BEFORE 11:30PM
+NEW	170992	publish	2026-11-14 21:49:10	2026-11-14 21:49:10	sierra-leone-film-night	Sierra Leone Film NIght
+NEW	170994	publish	2026-11-14 21:49:12	2026-11-14 21:49:12	johnny-candon-guests-930pm	Johnny Candon + Guests. 9:30pm
+NEW	170995	publish	2026-11-14 21:49:13	2026-11-14 21:49:13	sax-appeal-at-nolita	Sax Appeal at NoLIta
+NEW	170997	publish	2026-11-14 21:49:15	2026-11-14 21:49:15	saturday-night-dj-party	Saturday Night DJ Party
+NEW	170999	publish	2026-11-14 21:49:17	2026-11-14 21:49:17	black-door-nights	Black Door Nights
+NEW	171001	publish	2026-11-14 21:49:19	2026-11-14 21:49:19	karaoke-dublin	Karaoke Dublin
+NEW	171003	publish	2026-11-15 07:42:51	2026-11-15 14:01:19	power-up-your-mind-open-to-public-baile-bhuirne	Power Up Your Mind (OPEN TO PUBLIC) Baile Bhúirne
+NEW	171004	publish	2026-11-15 07:42:53	2026-11-15 07:42:53	mamma-mia-the-live-experience-bantry	Mamma Mia  - The Live Experience / BANTRY
+NEW	171006	publish	2026-11-15 07:42:54	2026-11-15 07:42:54	mamma-mia-the-live-experience-tullamore	Mamma Mia  - The Live Experience / TULLAMORE
+NEW	171007	publish	2026-11-15 07:45:29	2026-11-15 07:45:29	free-heartfulness-guided-relaxation-and-meditation-in-moville-donegal	Free - Heartfulness Guided Relaxation and Meditation in Moville, Donegal
+NEW	171008	publish	2026-11-15 07:45:30	2026-11-15 07:45:30	maynooth-under-the-spotlight	Maynooth Under the Spotlight
+NEW	171011	publish	2026-11-15 14:08:02	2026-11-15 14:08:02	tuesdays-flannerys-17-11-26	TUESDAYS @ FLANNERY'S 17/11/26
+NEW	171013	publish	2026-11-15 14:08:05	2026-11-15 14:08:05	lets-dance-christmas-party-2	Let's Dance Christmas Party
+NEW	171014	publish	2026-11-15 14:08:06	2026-11-15 14:08:06	don-toliver-the-afterparty-dublins-hiphop-party-16th-nov	Don Toliver: The AfterParty [Dublin's HipHop Party] 16th Nov
+NEW	171016	publish	2026-11-15 14:08:11	2026-11-15 14:08:11	the-international-comedy-club-fridays-7-30pm	The International Comedy Club Fridays 7 30pm
+NEW	171018	publish	2026-11-15 14:08:13	2026-11-15 14:08:13	the-snug-3	The Snug
+NEW	171019	publish	2026-11-15 14:08:15	2026-11-15 14:08:15	pottery-painting-experience-evenings	Pottery Painting Experience | Evenings
+NEW	171021	publish	2026-11-15 14:08:17	2026-11-15 14:08:17	table-booking-for-saturday-2	Table booking for  Saturday
+NEW	171022	publish	2026-11-15 14:08:19	2026-11-15 14:08:19	crash-course-on-ireland-irish-history-and-culture-explained-over-a-pint	Crash Course on Ireland: Irish History and Culture explained over a pint
+NEW	171024	publish	2026-11-15 14:08:21	2026-11-15 14:08:21	friday-night-kirtan-soulful-musical-meditation	Friday Night Kirtan: Soulful Musical Meditation
+NEW	171026	publish	2026-11-15 14:08:24	2026-11-15 14:08:24	wind-down-yoga-and-sound-bath	Wind down yoga and sound bath
+NEW	171028	publish	2026-11-15 14:08:26	2026-11-15 14:08:26	saturday-drop-in-training	Saturday Drop in training
+NEW	171030	publish	2026-11-15 14:08:28	2026-11-15 14:08:28	tuesday-night-life-drawing-flux-studios-d2	Tuesday Night Life Drawing @ FLUX Studios D2
+NEW	171032	publish	2026-11-15 14:08:31	2026-11-15 14:08:31	friday-evening-life-drawing-untaught-life-class	Friday Evening Life Drawing  - untaught life class
+NEW	171034	publish	2026-11-15 14:08:33	2026-11-15 14:08:33	goddess-circle-intimate-cacao-ceremony-for-women-%c2%b7-7-places-en-de	Goddess Circle — intimate cacao ceremony for women · 7 places (EN/DE)
+NEW	171036	publish	2026-11-15 14:08:35	2026-11-15 14:08:35	emerging-irish-wine-tasting	Emerging Irish Wine Tasting
+NEW	171038	publish	2026-11-15 14:08:38	2026-11-15 14:08:38	underground-comedy-club-2	Underground Comedy Club
+NEW	171039	publish	2026-11-15 14:08:39	2026-11-15 14:08:39	the-international-comedy-club-saturdays-9-30pm-2	The International Comedy Club Saturdays 9 30pm
+NEW	171040	publish	2026-11-15 14:08:40	2026-11-15 14:08:40	in-stitches-comedy-club-thursdays-peadar-kearneys	In Stitches Comedy  Club - Thursdays @Peadar Kearney's.
+NEW	171042	publish	2026-11-15 14:08:42	2026-11-15 14:08:42	autumn-daily-guided-tours	Autumn Daily Guided Tours
+NEW	171044	publish	2026-11-15 14:08:44	2026-11-15 14:08:44	new-members-balkan-folk-dances-in-dublin-fridays	New members - Balkan folk dances in Dublin - Fridays
+NEW	171046	publish	2026-11-15 14:08:46	2026-11-15 14:08:46	yoga-flow	Yoga Flow
+NEW	171048	publish	2026-11-15 14:08:49	2026-11-15 14:08:49	plant-collectors-exploration-and-empire-2	Plant Collectors: Exploration and Empire
+NEW	171049	publish	2026-11-15 14:08:50	2026-11-15 14:08:50	drop-in-life-drawing-in-the-united-arts-club	Drop in Life Drawing in the United Arts Club
+NEW	171051	publish	2026-11-15 14:08:52	2026-11-15 14:08:52	the-weekend-reset-bhagavad-gita-soulful-conversation	The Weekend Reset: Bhagavad Gita & Soulful Conversation
+NEW	171053	publish	2026-11-15 14:08:54	2026-11-15 14:08:54	dbs-charity-poker-night	DBS Charity Poker Night
+NEW	171055	publish	2026-11-15 14:08:57	2026-11-15 14:08:57	drag-brunch-at-the-bernard-shaw-2	Drag Brunch at The Bernard Shaw
+NEW	171056	publish	2026-11-15 14:08:57	2026-11-15 14:08:57	christmas-speed-dating-dublin-ages-30-45-drink-included	Christmas Speed Dating Dublin Ages 30-45 (Drink Included)!
+NEW	171058	publish	2026-11-15 14:08:59	2026-11-15 14:08:59	paint-your-own-christmas-decorations-a-festive-workshop-in-dublin	Paint Your Own Christmas Decorations — A Festive Workshop in Dublin
+NEW	171060	publish	2026-11-15 14:09:01	2026-11-15 14:09:01	speed-dating-dublin-25-35-drink-included-limited-tickets	Speed Dating Dublin | 25-35 (Drink Included) LIMITED TICKETS!
+NEW	171062	publish	2026-11-15 14:09:03	2026-11-15 14:09:03	in-stitches-comedy-club-mondays	In Stitches Comedy Club Monday's
+NEW	171064	publish	2026-11-15 14:09:05	2026-11-15 14:09:05	festival-of-politics-sacred-cows-climate-change	Festival of Politics: Sacred Cows: Climate Change
+NEW	171066	publish	2026-11-15 14:09:07	2026-11-15 14:09:07	your-ai-business-partner-automating-sales-growth	Your AI Business Partner: Automating Sales & Growth
+NEW	171068	publish	2026-11-15 14:09:09	2026-11-15 14:09:09	speed-friending-dublin	Speed Friending Dublin
+NEW	171070	publish	2026-11-15 14:09:11	2026-11-15 14:09:11	beginners-irish-social-setdancing-classes-in-the-cobblestone-pub-3	Beginners Irish Social (Set)Dancing Classes in The Cobblestone Pub
+NEW	171071	publish	2026-11-15 14:09:12	2026-11-15 14:09:12	every-sunday-salsa-bachata-classes-social-in-lost-lane-2-rooms	Every Sunday Salsa & Bachata Classes & Social in Lost Lane - 2 ROOMS
+NEW	171073	publish	2026-11-15 14:09:13	2026-11-15 14:09:13	neon-painting-tree-of-life	Neon Painting: Tree of Life
+NEW	171074	publish	2026-11-15 14:09:14	2026-11-15 14:09:14	migrar-nos-cambia-por-dentro	Migrar nos cambia por dentro
+NEW	171076	publish	2026-11-15 14:09:16	2026-11-15 14:09:16	yoga-in-aid-of-palestine	Yoga in aid of Palestine
+NEW	171078	publish	2026-11-15 14:09:17	2026-11-15 14:09:17	fingal-women-try-tennis	Fingal Women Try Tennis
+NEW	171080	publish	2026-11-15 14:09:19	2026-11-15 14:09:19	skint-lost-lane-99c-tickets	SKINT @ Lost Lane - 99c Tickets
+NEW	171082	publish	2026-11-15 14:09:20	2026-11-15 14:09:20	le-beaujolais-nouveau-est-arrivee	Le Beaujolais Nouveau est arrivée!
+NEW	171084	publish	2026-11-15 14:09:23	2026-11-15 14:09:23	glam-girls-glam-girls-are-back-at-kavanaghs-friday-november-20th	Glam girls. GLAM GIRLS ARE BACK AT KAVANAGHS!    FRIDAY, NOVEMBER 20TH
+NEW	171086	publish	2026-11-15 14:09:25	2026-11-15 14:09:25	festival-of-politics-whos-minding-the-machines-ai-media-the-public	Festival of Politics: Who's Minding the Machines? AI, Media & the Public
+NEW	171088	publish	2026-11-15 14:09:27	2026-11-15 14:09:27	crochet-a-scarf-with-premium-irish-wool	Crochet a scarf with premium Irish wool
+NEW	171090	publish	2026-11-15 14:09:29	2026-11-15 14:09:29	every-friday-salsa-bachata-classes-social-in-rathmines	Every Friday Salsa & Bachata Classes & Social in Rathmines.
+NEW	171092	publish	2026-11-15 14:09:30	2026-11-15 14:09:30	little-bird-charity-book-club-in-support-of-hometree-fundraising-campaign	Little bird Charity book club in support of HOMETREE  Fundraising campaign
+NEW	171093	publish	2026-11-15 14:09:31	2026-11-15 14:09:31	introducing-joyces-dublin-a-literary-walking-tour	Introducing Joyce's Dublin: A Literary Walking Tour
+NEW	171095	publish	2026-11-15 14:09:33	2026-11-15 14:09:33	molloys-christmas-fair-in-aid-of-sensory-fun-with-friends	Molloys Christmas Fair - In aid of Sensory Fun with Friends
+NEW	171097	publish	2026-11-15 14:09:36	2026-11-15 14:09:36	antics-e2-50-vodkas-free-entry-until-11-30pm-soho-mondays	ANTICS - €2.50 Vodkas - Free Entry Until 11.30pm - Soho Mondays
+NEW	171099	publish	2026-11-15 14:09:37	2026-11-15 14:09:37	tai-chi-classes-in-dalkey	Tai Chi Classes in Dalkey
+NEW	171101	publish	2026-11-15 14:09:39	2026-11-15 14:09:39	beginner-archery-course-vip-slots-arktor-academy-dublin-3-2	Beginner Archery Course  Vip Slots | Arktor Academy Dublin 3
+NEW	171102	publish	2026-11-15 14:09:40	2026-11-15 14:09:40	zumba-class-with-ma-saturdays	Zumba Class with MA- Saturdays!
+NEW	171104	publish	2026-11-15 14:09:41	2026-11-15 14:09:41	curate-your-night-dublin-foodies-new-friends	Curate Your Night: Dublin | Foodies + New Friends
+NEW	171106	publish	2026-11-15 14:09:43	2026-11-15 14:09:43	dance-social-workshops	Dance Social Workshops
+NEW	171108	publish	2026-11-15 14:10:55	2026-11-15 14:10:55	adventure-walk-in-dorlindon-forest-family-friendly	Adventure Walk in Dorlindon Forest - Family Friendly
+NEW	171110	publish	2026-11-15 14:10:57	2026-11-15 14:10:57	wellness-reset-at-russborough-house-2	Wellness Reset at Russborough House

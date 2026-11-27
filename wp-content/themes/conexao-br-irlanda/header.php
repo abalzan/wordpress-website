@@ -124,9 +124,9 @@
 					<?php
 					/*
 					 * Language switcher (Stage 2): PT / EN toggle, rendered
-					 * next to the theme toggle so it rides along with the
-					 * existing header actions row on every breakpoint. Its
-					 * mobile counterpart lives in the mobile menu drawer.
+					 * next to the CTA so it rides along with the header
+					 * actions row on every breakpoint. Its mobile counterpart
+					 * lives in the mobile menu drawer.
 					 *
 					 * Exposure is governed by the single flag
 					 * CONEXAO_LANGUAGE_SWITCHER_ENABLED, read inside
@@ -138,6 +138,20 @@
 					 */
 					conexao_language_switcher( array( 'context' => 'desktop' ) );
 					?>
+					<?php
+					/*
+					 * Mobile header language switcher: the SAME shared renderer
+					 * with context "mobile", so PT | EN stay visible in the
+					 * header at <=1024px (where the desktop instance above is
+					 * hidden by CSS). Governed by the same single flag — no
+					 * separate condition. The drawer keeps its own larger
+					 * instance for in-menu use.
+					 */
+					?>
+					<!-- Theme toggle: rendered once in the main header, at every
+					breakpoint, immediately ahead of the mobile PT | EN switcher.
+					main.js no longer relocates it between the header and the drawer;
+					there is exactly one .theme-toggle in the DOM at any width. -->
 					<button type="button" class="theme-toggle" aria-label="<?php esc_attr_e( 'Alternar tema claro/escuro', 'conexao-br-irlanda' ); ?>" aria-pressed="false">
 						<span class="theme-toggle-icon theme-toggle-icon--moon" aria-hidden="true">
 							<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
@@ -146,9 +160,9 @@
 							<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
 						</span>
 					</button>
-					<button type="button" class="mobile-search-toggle" aria-label="<?php esc_attr_e( 'Abrir pesquisa', 'conexao-br-irlanda' ); ?>" aria-controls="mobile-search" aria-expanded="false">
-						<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-					</button>
+					<?php
+					conexao_language_switcher( array( 'context' => 'mobile' ) );
+					?>
 					<div class="header-search">
 						<svg class="header-search-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
 							<circle cx="11" cy="11" r="8"></circle>
@@ -173,8 +187,8 @@
 						Compact top-bar "Anuncie Aqui" for mobile/tablet (<=1024px), where
 						the full-text .header-cta above is hidden. Measured space: a
 						full-text pill needs ~141px, which does not exist next to the
-						hamburger + logo + theme toggle + search at phone widths, so the
-						label only renders where it fits (>=480px) and the control stays a
+						hamburger + logo + PT/EN language switcher at phone widths, so the
+						label only renders where it fits (>=560px) and the control stays a
 						48px icon pill below that — the drawer keeps the full-text label in
 						both cases (.mobile-menu-cta). Name is always "Anuncie Aqui"
 						(aria-label); the visible span is decorative with aria-hidden so the
@@ -204,23 +218,6 @@
 						<line x1="6" y1="6" x2="18" y2="18"></line>
 					</svg>
 				</button>
-			</div>
-			<div class="mobile-menu-language">
-				<?php
-				/*
-				 * Mobile language switcher (Stage 2). Lives inside the existing
-				 * drawer, above the search form, so it is always reachable
-				 * without scrolling (the drawer body scrolls; this row does
-				 * not).
-				 *
-				 * Same shared renderer and same single
-				 * CONEXAO_LANGUAGE_SWITCHER_ENABLED flag as the desktop
-				 * context above — there is deliberately no separate mobile
-				 * flag. While the flag is false nothing is emitted here, not
-				 * even an empty wrapper.
-				 */
-				conexao_language_switcher( array( 'context' => 'mobile' ) );
-				?>
 			</div>
 			<div class="mobile-menu-search">
 				<form role="search" method="get" class="mobile-menu-search-form" action="<?php echo esc_url( home_url( '/' ) ); ?>">
@@ -279,17 +276,6 @@
 					<?php endif; ?>
 				</div>
 			</div>
-		</div>
-	</div>
-
-	<div id="mobile-search" class="mobile-search-overlay" aria-hidden="true">
-		<div class="mobile-search-overlay-content" role="dialog" aria-modal="true" aria-label="<?php esc_attr_e( 'Pesquisar no site', 'conexao-br-irlanda' ); ?>">
-			<form role="search" method="get" class="mobile-search-form" action="<?php echo esc_url( home_url( '/' ) ); ?>">
-				<label class="screen-reader-text" for="mobile-search-field"><?php esc_html_e( 'Pesquisar', 'conexao-br-irlanda' ); ?></label>
-				<input id="mobile-search-field" type="search" class="mobile-search-field" placeholder="<?php esc_attr_e( 'Buscar no portal...', 'conexao-br-irlanda' ); ?>" value="<?php echo esc_attr( get_search_query() ); ?>" name="s" />
-				<button type="submit" class="mobile-search-submit"><?php esc_html_e( 'Buscar', 'conexao-br-irlanda' ); ?></button>
-				<button type="button" class="mobile-search-close" aria-label="<?php esc_attr_e( 'Fechar pesquisa', 'conexao-br-irlanda' ); ?>">&times;</button>
-			</form>
 		</div>
 	</div>
 

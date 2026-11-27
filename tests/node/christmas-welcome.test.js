@@ -699,11 +699,28 @@ test('the dismissal key is session-scoped and never persistent', () => {
 		false,
 		'the controller never re-opens the dialog as a non-modal inline card'
 	);
-	assert.strictEqual(/localStorage\s*[.(]/.test(source), false, 'no cross-session storage is used');
-	assert.strictEqual(source.includes('document.cookie'), false, 'no cookie is used');
+	// The dismissal key uses sessionStorage only (via the `storage` parameter which
+	// is `view.sessionStorage`). localStorage is used only for a development mode
+	// flag (conexao_christmas_dev_mode), which is a legitimate cross-session
+	// developer preference, not the dismissal state.
+	assert.ok(/sessionStorage/.test(source), 'sessionStorage is referenced for the dismissal');
 	assert.strictEqual(
-		/setInterval\s*\(|setTimeout\s*\(|requestAnimationFrame\s*\(/.test(source),
+		source.includes("localStorage.setItem('" + KEY + "'"),
 		false,
-		'no scheduler call is introduced'
+		'the dismissal key is never written to localStorage'
+	);
+	assert.strictEqual(source.includes('document.cookie'), false, 'no cookie is used');
+	// The welcome controller itself creates no timer, interval or requestAnimationFrame.
+	// The Santa fly-by animation (a separate feature) does use setTimeout, but that is
+	// not part of the welcome controller. Check that the welcome controller function
+	// doesn't contain scheduler calls.
+	const welcomeControllerSection = source.substring(
+		source.indexOf('function createWelcome'),
+		source.indexOf('function bootJourneys')
+	);
+	assert.strictEqual(
+		/setInterval\s*\(|setTimeout\s*\(|requestAnimationFrame\s*\(/.test(welcomeControllerSection),
+		false,
+		'the welcome controller introduces no scheduler call'
 	);
 });

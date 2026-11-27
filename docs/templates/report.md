@@ -116,7 +116,9 @@ could not run in this environment and CI is authoritative.
 
 ### Script-contract results
 
-`./scripts/run-tests.sh --scripts`: **N suites, N passed, N failed**.
+`./scripts/run-tests.sh --scripts`: **N static suites, N passed, N failed**.
+If PHP-backed script checks were in scope,
+`./scripts/run-tests.sh --scripts-runtime`: **N suites, N passed, N failed**.
 
 ### Release / build results (only if a release was in scope)
 

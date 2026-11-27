@@ -14,8 +14,9 @@ open at all**.
   Phase 0  seed a probe source (never a real county source) whose URL points at
            a static fixture served by the local stack, so the whole path runs
            over real HTTP with **no external traffic and no API abuse**.
-  Phase 1  log in to wp-admin, open Import History in a real browser, and read
-           the Progress cell. The page is then **closed**.
+  Phase 1  log in to wp-admin, open the Event Import dashboard in a real browser,
+           and read the Progress cell of its Import History table. The page is
+           then **closed**.
   Phase 2  with no browser at all, issue plain HTTP requests. Before the
            cooldown expires: nothing runs. After it expires: the continuation
            executes server-side.
@@ -254,7 +255,14 @@ def advance_past_cooldown(source: str) -> None:
 
 
 def read_progress_cell_in_browser() -> str:
-    """Open Import History in a REAL browser, read the Progress cell, and close it.
+    """Open the Event Import dashboard in a REAL browser, read the Progress cell
+    of its Import History table, and close the browser.
+
+    Import History used to live on its own `conexao-import-history` page. It is
+    now a section of the Event Import dashboard, so the probe reads THAT table —
+    and it selects the table by the class the production renderer emits, so a
+    dashboard that silently stopped showing history fails instead of passing on
+    some other row's text.
 
     The browser is closed before returning, so every assertion made after this
     point runs with no browser at all and therefore cannot depend on one.
@@ -286,9 +294,68 @@ def read_progress_cell_in_browser() -> str:
             )
             raise SystemExit(2)
 
-        page.goto(f"{BASE}/wp-admin/admin.php?page=conexao-import-history", wait_until="load")
+        page.goto(f"{BASE}/wp-admin/admin.php?page=conexao-event-import", wait_until="load")
 
-        row = page.locator("tr", has=page.locator("td", has_text="g18_probe_cork")).first
+        # The dashboard is a RUN/REVIEW screen: no source overview. Source
+        # management lives on the Event Sources screen, so a re-added Sources
+        # section is a regression, not a cosmetic difference.
+        headings = [text.strip() for text in page.locator("h2").all_inner_texts()]
+        check("Sources" not in headings, f"the dashboard renders no Sources section (got {headings})")
+        check(
+            page.locator("ul.conexao-source-list").count() == 0,
+            "the dashboard renders no conexao-source-list markup",
+        )
+        check(
+            page.locator(".conexao-source-indicator").count() == 0,
+            "the dashboard renders no active/inactive source indicator",
+        )
+        check(
+            page.locator(".conexao-source-error").count() == 0,
+            "the dashboard renders no per-source error message",
+        )
+
+        # What the dashboard IS still there for.
+        check(
+            page.get_by_role("heading", name="Event Import").count() >= 1,
+            "the Event Import heading is still rendered",
+        )
+        check(
+            page.locator(".conexao-import-stat-label", has_text="Last successful import").count() >= 1,
+            "the Last successful import summary is still rendered",
+        )
+        check(
+            page.locator('input[name="conexao_source_action"][value="run_import"]').count() == 1,
+            "the Run Import form is still rendered",
+        )
+        check(
+            page.locator('input[name="source_id"][value="all"]').count() == 1,
+            "the Run Import form still targets all sources",
+        )
+        check(
+            page.locator('a[href*="page=conexao-event-export"]').count() >= 1,
+            "the Export Events button is still rendered",
+        )
+
+        table = page.locator("table.conexao-import-history")
+        check(table.count() == 1, "the Event Import dashboard renders one Import History table")
+
+        if table.count() != 1:
+            browser.close()
+            return ""
+
+        check(
+            "page=conexao-event-import" in page.url,
+            "the history table is read from the Event Import dashboard itself",
+        )
+
+        headers = [text.strip() for text in table.first.locator("thead th").all_inner_texts()]
+        check(len(headers) == 14, f"the dashboard table has the full 14 columns (got {len(headers)})")
+        check(
+            headers[-4:] == ["Listing", "Progress", "Cooldown", "Logs"],
+            f"Listing, Progress, Cooldown and Logs are present and last (got {headers[-4:]})",
+        )
+
+        row = table.first.locator("tr", has=page.locator("td", has_text="g18_probe_cork")).first
         cell = row.locator("td").nth(11).inner_text().strip()
 
         browser.close()
@@ -378,7 +445,7 @@ def main() -> int:
     check(armed("g18_probe_cork") > 0, "a WordPress event is armed for it")
     check(started["phase"] == "cooling", f"the phase is cooling (got {started['phase']})")
 
-    print("\nPhase 1 - Import History in a real browser (Chromium)")
+    print("\nPhase 1 - the Event Import dashboard in a real browser (Chromium)")
     cell = read_progress_cell_in_browser()
     print(f"  Progress cell: {cell}")
 
@@ -467,8 +534,8 @@ def finish(before_cp: dict) -> int:
     final_cell = read_progress_cell_in_browser()
     print(f"  Progress cell: {final_cell}")
 
-    check("complete" in final_cell, "Import History reports the finished enumeration as complete")
-    check("resumable" not in final_cell, "Import History no longer claims resumable")
+    check("complete" in final_cell, "the dashboard's Import History table reports the finished enumeration as complete")
+    check("resumable" not in final_cell, "the dashboard's Import History table no longer claims resumable")
 
     print("\nPhase 7 - cleanup")
     cleanup()

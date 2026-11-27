@@ -55,6 +55,8 @@ REPO_ROOT = os.environ.get("CONEXAO_REPO_ROOT") or os.path.abspath(
 )
 
 THEME_TESTS = os.path.join("wp-content", "themes", "conexao-br-irlanda", "tests")
+TEST_DB_SECRET_FILE = os.path.join(REPO_ROOT, ".conexao-test.env")
+CONTAINER_TEST_DB_SECRET_FILE = "/var/www/html/scripts/.conexao-test.env"
 
 # The six permanent gate domains of engineering standard §6.3 plus §9.3, and
 # where each one is executed from. The PHP gates are discovered by the default
@@ -177,7 +179,9 @@ def php_command() -> list[str]:
 
     Mirrors what scripts/run-tests.sh does, so the aggregate and the default
     runner agree on where PHP runs: inside the Compose WordPress container when
-    Docker is available, otherwise on the host.
+    Docker is available, otherwise on the host.     The generated database identity is non-secret and is forwarded explicitly.
+    The restricted password is read only by the container-side test launcher
+    from the protected credential file; it never appears in Docker arguments.
 
     Returns the command PREFIX; the suite path is appended to it.
     """
@@ -185,8 +189,71 @@ def php_command() -> list[str]:
         return ["php"]
     if subprocess.run(["docker", "compose", "version"], cwd=REPO_ROOT,
                       capture_output=True, check=False).returncode == 0:
-        return ["docker", "compose", "exec", "-T", "wordpress", "php"]
+        command = ["docker", "compose", "exec", "-T"]
+        for name in (
+            "CONEXAO_TEST_DB_NAME",
+            "CONEXAO_TEST_DB_USER",
+            "CONEXAO_TEST_SHARED_DB_NAME",
+            "GITHUB_ACTIONS",
+        ):
+            value = os.environ.get(name)
+            if value is not None:
+                command.extend(["-e", f"{name}={value}"])
+        command.extend([
+            "-e", f"CONEXAO_TEST_DB_ENV_FILE={CONTAINER_TEST_DB_SECRET_FILE}",
+            "wordpress",
+            "bash", "/var/www/html/scripts/conexao-test-exec.sh", "php",
+        ])
+        return command
     return ["php"]
+
+
+def prepare_test_secret() -> bool:
+    """Copy the protected host credential file for container-side PHP gates."""
+    if php_command() == ["php"] or not any(spec["kind"] == "php" for spec in GATES):
+        return False
+
+    try:
+        mode = os.stat(TEST_DB_SECRET_FILE).st_mode & 0o777
+    except OSError as error:
+        raise RuntimeError("the isolated test credential file is unavailable") from error
+    if mode != 0o600:
+        raise RuntimeError("the isolated test credential file must have mode 0600")
+
+    copied = subprocess.run(
+        ["docker", "compose", "cp", TEST_DB_SECRET_FILE,
+         f"wordpress:{CONTAINER_TEST_DB_SECRET_FILE}"],
+        cwd=REPO_ROOT, capture_output=True, check=False,
+    )
+    if copied.returncode != 0:
+        if not remove_test_secret():
+            raise RuntimeError(
+                "credential copy failed and its partial container copy could not be removed"
+            )
+        raise RuntimeError("could not copy the isolated test credential file into WordPress")
+
+    restricted = subprocess.run(
+        ["docker", "compose", "exec", "-T", "wordpress", "chmod", "600",
+         CONTAINER_TEST_DB_SECRET_FILE],
+        cwd=REPO_ROOT, capture_output=True, check=False,
+    )
+    if restricted.returncode != 0:
+        if not remove_test_secret():
+            raise RuntimeError(
+                "container credential permissions failed and the file could not be removed"
+            )
+        raise RuntimeError("could not restrict the container-side test credential file")
+    return True
+
+
+def remove_test_secret() -> bool:
+    """Remove the temporary container copy after the PHP gates complete."""
+    removed = subprocess.run(
+        ["docker", "compose", "exec", "-T", "wordpress", "rm", "-f",
+         CONTAINER_TEST_DB_SECRET_FILE],
+        cwd=REPO_ROOT, capture_output=True, check=False,
+    )
+    return removed.returncode == 0
 
 
 def repo_sha() -> str:
@@ -286,7 +353,19 @@ def main() -> int:
     print(f"   sha:        {repo_sha()}")
     print()
 
-    records = [run_gate(spec) for spec in GATES]
+    secret_copied = False
+    cleanup_failed = False
+    try:
+        secret_copied = prepare_test_secret()
+        records = [run_gate(spec) for spec in GATES]
+    except RuntimeError as error:
+        print(f"Stage L setup failed: {error}", file=sys.stderr)
+        return 1
+    finally:
+        if secret_copied and not remove_test_secret():
+            print("Stage L cleanup failed: could not remove the container-side test credential file",
+                  file=sys.stderr)
+            cleanup_failed = True
 
     total_passed = sum(r["passed"] for r in records)
     total_failed = sum(r["failed"] for r in records)
@@ -311,7 +390,7 @@ def main() -> int:
                 print(f"          {entry.strip()}")
 
     # Overall status: ANY failing or blocked gate makes the aggregate fail.
-    overall = "fail" if (gates_failed or gates_blocked) else "pass"
+    overall = "fail" if (gates_failed or gates_blocked or cleanup_failed) else "pass"
 
     print()
     print("----------------------------------------")
@@ -337,8 +416,9 @@ def main() -> int:
         "total_blocked": gates_blocked,
     }
 
+    evidence_date = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
     out_path = args.out or os.path.join(
-        REPO_ROOT, "docs", "evidence", "2026-09-26-stage-l", "gate.json"
+        REPO_ROOT, "docs", "evidence", f"{evidence_date}-stage-l", "gate.json"
     )
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as handle:

@@ -147,8 +147,8 @@ script-contract layer needs no stack and always runs; the in-process and
 acceptance layers need the local site.
 ```bash
 ./scripts/run-tests.sh                     # ALL tests, one aggregate exit code
-./scripts/run-tests.sh --scripts           # script-contract gates only (no stack)
-./scripts/run-tests.sh --acceptance        # HTTP acceptance only (needs local stack)
+./scripts/run-tests.sh --scripts           # static script-contract gates (no PHP/Docker/DB)
+CONEXAO_TEST_DB_NAME=conexao_test_abc123 ./scripts/run-tests.sh --php  # isolated DB required
 ./scripts/lint.sh                          # PHP syntax + PHPCS + PHPStan
 php scripts/generate-registry-docs.php --check   # registry drift gate (0 writes)
 python3 scripts/verify-permanent-gates.py # Stage L permanent invariants -> gate.json

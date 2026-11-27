@@ -32,6 +32,83 @@ class Conexao_Event_Cleanup {
 	const HISTORY_OPTION = 'conexao_event_cleanup_history';
 
 	/**
+	 * Prefix of the per-process test store for the status row.
+	 *
+	 * Only used when the shared test harness is loaded (`CONEXAO_TESTS_ROOT`)
+	 * and has established a per-process suffix. Never equal to `STATUS_OPTION`.
+	 *
+	 * @var string
+	 */
+	const STATUS_TEST_OPTION_PREFIX = 'conexao_event_cleanup_status__test__';
+
+	/**
+	 * Prefix of the per-process test store for the history row.
+	 *
+	 * @var string
+	 */
+	const HISTORY_TEST_OPTION_PREFIX = 'conexao_event_cleanup_history__test__';
+
+	/**
+	 * Resolve the option name the cleanup status is read from and written to.
+	 *
+	 * Production (no test harness loaded) resolves `STATUS_OPTION` exactly as
+	 * before; a test process resolves its own per-process row. A harness marker
+	 * without a valid suffix THROWS rather than falling back to the operator's
+	 * row.
+	 *
+	 * @throws RuntimeException When the harness is loaded without a valid suffix.
+	 * @return string Option name.
+	 */
+	public static function status_option() {
+		if ( ! defined( 'CONEXAO_TESTS_ROOT' ) && ! defined( 'CONEXAO_TEST_OPTION_SUFFIX' ) ) {
+			return self::STATUS_OPTION;
+		}
+
+		$suffix = self::test_option_suffix();
+
+		if ( '' === $suffix ) {
+			throw new RuntimeException( 'conexao: operator-store isolation was not established for the cleanup status store.' );
+		}
+
+		return self::STATUS_TEST_OPTION_PREFIX . $suffix;
+	}
+
+	/**
+	 * Resolve the option name the cleanup history is read from and written to.
+	 *
+	 * @throws RuntimeException When the harness is loaded without a valid suffix.
+	 * @return string Option name.
+	 */
+	public static function history_option() {
+		if ( ! defined( 'CONEXAO_TESTS_ROOT' ) && ! defined( 'CONEXAO_TEST_OPTION_SUFFIX' ) ) {
+			return self::HISTORY_OPTION;
+		}
+
+		$suffix = self::test_option_suffix();
+
+		if ( '' === $suffix ) {
+			throw new RuntimeException( 'conexao: operator-store isolation was not established for the cleanup history store.' );
+		}
+
+		return self::HISTORY_TEST_OPTION_PREFIX . $suffix;
+	}
+
+	/**
+	 * Validated per-process test suffix, or '' when absent/malformed.
+	 *
+	 * @return string
+	 */
+	protected static function test_option_suffix() {
+		if ( ! defined( 'CONEXAO_TEST_OPTION_SUFFIX' ) ) {
+			return '';
+		}
+
+		$suffix = strtolower( (string) CONEXAO_TEST_OPTION_SUFFIX );
+
+		return preg_match( '/^p[1-9][0-9]{0,9}_[a-f0-9]{16}$/', $suffix ) ? $suffix : '';
+	}
+
+	/**
 	 * Meta key on attachments recording the original external source URL.
 	 *
 	 * This is the reliable relationship identifier used to determine which
@@ -533,7 +610,7 @@ class Conexao_Event_Cleanup {
 	 * @param array $result Cleanup result.
 	 */
 	protected function save_status( $result ) {
-		update_option( self::STATUS_OPTION, $result, false );
+		update_option( self::status_option(), $result, false );
 	}
 
 	/**
@@ -542,7 +619,7 @@ class Conexao_Event_Cleanup {
 	 * @return array
 	 */
 	public function get_status() {
-		$status = get_option( self::STATUS_OPTION, array() );
+		$status = get_option( self::status_option(), array() );
 		return is_array( $status ) ? $status : array();
 	}
 
@@ -569,7 +646,7 @@ class Conexao_Event_Cleanup {
 		// Keep the last 50 runs.
 		$history = array_slice( $history, 0, 50 );
 
-		update_option( self::HISTORY_OPTION, $history, false );
+		update_option( self::history_option(), $history, false );
 	}
 
 	/**
@@ -578,7 +655,7 @@ class Conexao_Event_Cleanup {
 	 * @return array
 	 */
 	public function get_history() {
-		$history = get_option( self::HISTORY_OPTION, array() );
+		$history = get_option( self::history_option(), array() );
 		return is_array( $history ) ? $history : array();
 	}
 }

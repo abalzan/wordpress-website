@@ -934,5 +934,35 @@
 		}
 	}
 
+	/**
+	 * Require an explicit confirmation before a destructive log action runs.
+	 *
+	 * The Clear Logs control is a plain link to the protected admin-post
+	 * handler, so the confirmation has to live here: the handler itself only
+	 * checks capability and nonce, and must stay usable without JavaScript.
+	 * Progressive enhancement — with JS off the link still reaches the same
+	 * protected endpoint.
+	 */
+	function initLogConfirmations() {
+		var controls = document.querySelectorAll( '[data-conexao-confirm]' );
+
+		Array.prototype.forEach.call( controls, function ( control ) {
+			control.addEventListener( 'click', function ( event ) {
+				if ( ! window.confirm( control.getAttribute( 'data-conexao-confirm' ) || '' ) ) {
+					event.preventDefault();
+				}
+			} );
+		} );
+	}
+
+	function initLogActions() {
+		if ( 'loading' === document.readyState ) {
+			document.addEventListener( 'DOMContentLoaded', initLogConfirmations );
+		} else {
+			initLogConfirmations();
+		}
+	}
+
 	initBulkSelection();
+	initLogActions();
 })();

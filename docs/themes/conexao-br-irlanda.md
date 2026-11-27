@@ -794,21 +794,23 @@ English.
 | Item | Value |
 |---|---|
 | Constant | `CONEXAO_LANGUAGE_SWITCHER_ENABLED` (defined in `functions.php`, guarded by `! defined()` so `wp-config.php` can override) |
-| Shipped default | `false` |
+| Shipped default | `true` |
 | Reader helper | `conexao_is_language_switcher_enabled()` — `inc/i18n/switcher.php` |
 | Visibility condition | The single `if ( ! conexao_is_language_switcher_enabled() ) { return; }` inside `conexao_language_switcher()` |
 | Call sites | `header.php` desktop (`context => desktop`) and mobile drawer (`context => mobile`) — both go through that one shared renderer, so there is deliberately **no** separate desktop/mobile flag |
 | Gate | `tests/test-language-switcher-flag.php` (permanent gate, runs in `./scripts/run-tests.sh`) |
 
-The switcher is **intentionally disabled during EN validation.**
+The switcher is **enabled by default**.
 
-**To re-enable:** change `CONEXAO_LANGUAGE_SWITCHER_ENABLED` from `false` to
-`true` in `functions.php`. That single value is the whole re-enable action — no
-template, Polylang, routing, redirect, content or database change is required.
-The switcher's data layer (`conexao_language_switcher_data()` and
-`conexao_language_switch_url()`) is deliberately left intact while disabled, so
-the pre-existing markup — PT current-language indicator, EN link, EN
-destination, `hreflang`, `lang` and the ARIA attributes — returns unchanged.
+**To disable:** change `CONEXAO_LANGUAGE_SWITCHER_ENABLED` from `true` to
+`false` in `functions.php` (or define the constant earlier, e.g. in
+`wp-config.php` — the definition is guarded by `! defined()`). That single
+value is the whole action — no template, Polylang, routing, redirect, content
+or database change is required. The switcher's data layer
+(`conexao_language_switcher_data()` and `conexao_language_switch_url()`) is
+deliberately left intact while disabled, so the markup — PT current-language
+indicator, EN link, EN destination, `hreflang`, `lang` and the ARIA
+attributes — returns unchanged when the value is flipped back.
 
 While the flag is `false` the switcher is **absent from the rendered HTML**, not
 merely hidden: the container, its items and its ARIA markup are all omitted, so
@@ -927,7 +929,7 @@ runs slightly over is preferred over an artificial split.
 - `tests/test-leisure-related-events.php` — Phase 3C related-events helper tests (run: `docker compose exec wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-leisure-related-events.php`)
 - `tests/test-leisure-attribute-normalization.php` — leisure attribute environment normalization tests (`Interior + exterior` suppresses redundant `Interior`/`Exterior`, including the legacy-meta fallback; card renders through the shared helper; run: `docker compose exec wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-leisure-attribute-normalization.php`)
 - `tests/test-leisure-card-excerpt-language.php` — Stage 7 leisure card-description language selection (`conexao_leisure_card_excerpt()`: PT unchanged, EN translation via `_leisure_excerpt_en`, B2 fallback when absent; renders the real card template part in each language; rollout-engine invariants: preview/drift-refusal/idempotency/remove rollback; run: `docker compose exec wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-leisure-card-excerpt-language.php`)
-- `tests/test-language-switcher-flag.php` — language-switcher exposure gate. Proves the DISABLED state renders no switcher markup at all in either context (count 0 for the container, `--desktop`, `--mobile` and items, with no orphaned ARIA and nothing merely CSS-hidden), that desktop and mobile share the single `CONEXAO_LANGUAGE_SWITCHER_ENABLED` flag through one shared renderer, that the switcher is only hidden and never removed (data layer still resolves both languages), and that English/Polylang/routing/SEO output is identical on both sides of the flag. The ENABLED state is proven in a child process that pre-defines the same constant as `true`, so flipping that one value is verified to restore the pre-existing markup (run: `docker compose exec wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-language-switcher-flag.php`)
+- `tests/test-language-switcher-flag.php` — language-switcher exposure gate. Proves the ENABLED shipped default renders the real switcher in both header contexts through one shared renderer (container, PT current-language indicator, EN link and destination, `hreflang`, `lang`, ARIA, no duplicate controls), that desktop and mobile share the single `CONEXAO_LANGUAGE_SWITCHER_ENABLED` flag with no separate desktop/mobile flag and no duplicated visibility condition, and that the flag writes no rewrite rules and leaves language-URL, hreflang, canonical and Polylang registrations untouched. The DISABLED state is proven in a child process that pre-defines the same constant as `false`: it asserts no switcher markup is emitted at all (count 0 for the container, `--desktop`, `--mobile` and items, with no orphaned ARIA and nothing merely CSS-hidden) and that the data layer still resolves both languages, so flipping that one value removes or restores the switcher (run: `docker compose exec wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-language-switcher-flag.php`)
 - `assets/js/main.js` — frontend JavaScript
 ## UI convergence Phase 1 (T1.1–T1.5, 2026-10-03)
 
@@ -1189,3 +1191,38 @@ _Last verified: 2026-10-27 by Halloween witch animation_
 _Last verified: 2026-10-27 by Halloween theme compatibility_
 _Last verified: 2026-10-27 by Halloween mobile spontaneous appearances_
 _Last verified: 2026-11-05 by Lazer header cleanup (proximity control removed)_
+
+### Theme independence and the Commemorative Events plugin
+
+The theme is a **consumer** of the `conexao-commemorative` plugin's public API.
+The plugin owns event management; the theme owns visual presentation.
+
+#### How the theme integrates
+
+1. **Registers packages** via the `conexao_commemorative_presentations` filter in `inc/commemorative-presentations.php`
+2. **Dispatches placements** using `conexao_commemorative_render_placement()` in templates
+3. **Enqueues assets** conditionally via `conexao_commemorative_enqueue_assets()`
+4. **Handles missing plugin gracefully** — all dispatcher functions return `false` when the plugin is inactive, no fatal errors
+
+#### What happens when the plugin is deactivated
+
+- `conexao_commemorative_has_placement()` → `false`
+- `conexao_commemorative_render_placement()` → `false`
+- `conexao_commemorative_request_plan()` → empty plan
+- `conexao_commemorative_enqueue_assets()` → enqueues nothing
+- No PHP warnings, no fatal errors, ordinary site functionality unaffected
+
+#### What happens when the theme changes
+
+- Plugin continues managing events (scheduling, admin, preview, cache)
+- New theme must register packages via the filter to display presentations
+- Event records, translations, scheduling all preserved
+
+#### Verified compatibility
+
+Tested with:
+- **Conexão BR Irlanda** (this theme) — full presentation support (Halloween, Christmas, New Year)
+- **Twenty Twenty-Five** (default WordPress theme) — plugin initializes, event admin works, scheduling works, records accessible, preview works, no fatal errors
+
+_Last verified: 2026-11-17 by the language-switcher default-enabled change (shipped constant true; gate rebuilt around the enabled default with a disabled child-process proof)_
+_Last verified: 2026-11-25 by the theme independence implementation_

@@ -1,0 +1,10 @@
+capture_ts_utc	source_id	type	status	last_import	last_import_status	events_imported	last_error	source_health	continuation_record_present	label
+2026-11-15T19:22:20Z	eventbrite_meath	eventbrite	active	2026-11-14 14:23:45	success	4	EMPTY	{"consecutive_failures":0,"last_success":"2026-11-14 14:23:45"}	NO	CURRENT REGISTRY SNAPSHOT
+2026-11-15T19:22:20Z	eventbrite_laois	eventbrite	active	2026-11-14 14:17:00	success	1	EMPTY	{"consecutive_failures":0,"last_success":"2026-11-14 14:17:00"}	NO	CURRENT REGISTRY SNAPSHOT
+2026-11-15T19:22:20Z	eventbrite_mayo	eventbrite	active	2026-11-14 14:23:24	error	0	Failed to fetch events from Eventbrite — Mayo. HTTP status: 429.	{"consecutive_failures":1,"last_failure":"2026-11-14 14:23:24","total_failures":1}	NO	CURRENT REGISTRY SNAPSHOT
+2026-11-15T19:22:20Z	eventbrite_kerry	eventbrite	active	2026-11-14 14:11:46	success	2	EMPTY	{"consecutive_failures":0,"last_success":"2026-11-14 14:11:46"}	NO	CURRENT REGISTRY SNAPSHOT
+2026-11-15T19:22:20Z	eventbrite_westmeath	eventbrite	active	2026-11-14 14:31:21	success	7	EMPTY	{"consecutive_failures":0,"last_success":"2026-11-14 14:31:21"}	NO	CURRENT REGISTRY SNAPSHOT
+2026-11-15T19:22:20Z	eventbrite_clare	eventbrite	active	2026-11-14 14:02:10	success	5	EMPTY	{"consecutive_failures":0,"last_success":"2026-11-14 14:02:10"}	NO	CURRENT REGISTRY SNAPSHOT
+2026-11-15T19:22:20Z	eventbrite_cork	eventbrite	active	2026-11-15 14:01:21	success	0	EMPTY	{"consecutive_failures":0,"last_success":"2026-11-15 14:01:21","last_failure":"2026-11-14 19:46:15","total_failures":2}	YES	CURRENT REGISTRY SNAPSHOT
+2026-11-15T19:22:20Z	eventbrite_leitrim	eventbrite	active	2026-11-14 14:17:10	success	1	EMPTY	{"consecutive_failures":0,"last_success":"2026-11-14 14:17:10"}	NO	CURRENT REGISTRY SNAPSHOT
+2026-11-15T19:22:20Z	eventbrite_offaly	eventbrite	active	2026-11-14 14:24:51	success	2	EMPTY	{"consecutive_failures":0,"last_success":"2026-11-14 14:24:51"}	NO	CURRENT REGISTRY SNAPSHOT

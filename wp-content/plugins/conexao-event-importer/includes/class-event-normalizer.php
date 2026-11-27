@@ -215,6 +215,25 @@ class Conexao_Event_Normalizer {
 			'validation_errors' => $validation_errors,
 		);
 
+		/*
+		 * Stage 2 / P5 — per-field enrichment state.
+		 *
+		 * Handlers that enrich from a detail page declare, for each
+		 * detail-owned field, whether the value was retrieved, is genuinely
+		 * empty, is unavailable (retrieval failed) or was not evaluated. The
+		 * engine's write path preserves the stored value for the last two.
+		 *
+		 * The key is ADDITIVE and only present when a handler declared it, so
+		 * every other source produces exactly the payload it produced before.
+		 */
+		$enrichment = ( isset( $raw['_enrichment'] ) && class_exists( 'Conexao_Event_Enrichment_State' ) )
+			? Conexao_Event_Enrichment_State::sanitize_map( $raw['_enrichment'] )
+			: array();
+
+		if ( ! empty( $enrichment ) ) {
+			$result['enrichment'] = $enrichment;
+		}
+
 		if ( null !== $ticket_show_ids ) {
 			$result['_ticket_show_ids'] = $ticket_show_ids;
 		}

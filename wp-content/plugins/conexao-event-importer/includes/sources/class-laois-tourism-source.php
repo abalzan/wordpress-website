@@ -30,12 +30,42 @@ class Conexao_Source_Laois_Tourism extends Conexao_Source_Base {
 		$html = $this->fetch_html( $url );
 
 		if ( empty( $html ) ) {
+			// A 200 with an empty body is not an enumerable listing: mark the
+			// walk incomplete so it can never be recorded as a complete empty
+			// import nor authorise absence-based reconciliation (Stage 2 / P3+P4).
+			$this->mark_fetch_incomplete();
+
+			Conexao_Import_Log::add(
+				$this->get_id(),
+				'error',
+				'Página de eventos do Laois Tourism veio vazia; a enumeração está incompleta.',
+				array(
+					'url'    => $url,
+					'run_id' => $this->get_current_run_id(),
+				)
+			);
+
 			return array();
 		}
 
 		$dom = $this->parse_html( $html );
 		if ( ! $dom ) {
-			Conexao_Import_Log::add( $this->get_id(), 'error', 'Não foi possível analisar o HTML da página de eventos.' );
+			// The listing was retrieved but could not be parsed. That is not a
+			// valid empty listing: mark the walk incomplete so it cannot be
+			// recorded as a complete successful empty import nor reconcile
+			// absence (Stage 2 / P3+P4).
+			$this->mark_fetch_incomplete();
+
+			Conexao_Import_Log::add(
+				$this->get_id(),
+				'error',
+				'Não foi possível analisar o HTML da página de eventos.',
+				array(
+					'url'    => $url,
+					'run_id' => $this->get_current_run_id(),
+				)
+			);
+
 			return array();
 		}
 

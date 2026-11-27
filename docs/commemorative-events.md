@@ -240,8 +240,120 @@ runs and the HTTP acceptance row passes vacuously. Whether production serves the
 landing pages in its sitemap is **NOT VERIFIED** — see
 [`testing.md`](testing.md) §"Sitemap evidence semantics".
 
+## 7. Theme independence
+
+The `conexao-commemorative` plugin is **fully theme-independent**. It owns event
+management (scheduling, eligibility, resolution, activation, preview, cache) and
+exposes a stable public API. The theme consumes this API for presentation.
+
+### 7.1 Separation of responsibilities
+
+| Concern | Owner | Implementation |
+|---|---|---|
+| Event records (CPT) | Plugin | `commemorative_event` post type, meta fields |
+| Scheduling rules | Plugin | `fixed_annual`, `variable_annual`, `one_off`, `window` |
+| Eligibility & ranking | Plugin | `Conexao_Commemorative_Resolver` |
+| Activation boundary & cache | Plugin | `Conexao_Commemorative_Cache` |
+| Administrator preview | Plugin | `Conexao_Commemorative_Preview` |
+| Admin UX | Plugin | `Conexao_Commemorative_Admin` |
+| Experience packages | Theme | `conexao_commemorative_presentations` filter |
+| Placement templates | Theme | `template-parts/commemorative/` |
+| CSS/JS assets | Theme | `assets/css/presentations/`, `assets/js/presentations/` |
+| Dispatch logic | Theme | `inc/commemorative-presentations.php` |
+
+### 7.2 Public API (theme-independent)
+
+The plugin exposes these functions for any theme to consume:
+
+| Function | Purpose |
+|---|---|
+| `conexao_commemorative_active( $now = null )` | Selected event as `Conexao_Commemorative_Event` or `null` |
+| `conexao_commemorative_is_active( $now = null )` | Whether an experience is displayed |
+| `conexao_commemorative_resolution( $now = null )` | Winner, superseded, occurrence year, conflicts |
+| `conexao_commemorative_preview_event()` | Authorised preview record or `null` |
+| `conexao_commemorative_is_preview()` | Whether current request is a preview |
+| `conexao_commemorative_next_boundary()` | Armed activation boundary |
+| `conexao_commemorative_presentations()` | Registered experience packages |
+| `conexao_commemorative_admin_overview( $post_id )` | Computed window/eligibility/reason for admin |
+| `conexao_commemorative_reason_label()` | Human-readable reason |
+
+**Filters for theme integration:**
+
+| Filter | Purpose |
+|---|---|
+| `conexao_commemorative_presentations` | Theme registers package definitions |
+| `conexao_commemorative_purge_caches` | Fired on targeted cache purge (CDN/host hooks here) |
+
+### 7.3 How another theme integrates
+
+1. **Register packages** via the `conexao_commemorative_presentations` filter:
+   ```php
+   add_filter( 'conexao_commemorative_presentations', function( $packages ) {
+       $packages['my_package'] = array(
+           'label'      => 'My Experience',
+           'status'     => 'implemented',
+           'design'     => array( 'motif' => 'star', 'energy' => 'calm', ... ),
+           'placements' => array(
+               'homepage_hero' => array(
+                   'template' => 'template-parts/commemorative/homepage-hero',
+                   'content'  => 'template-parts/commemorative/my_package/hero',
+                   'styles'   => array( 'assets/css/presentations/my_package.css' ),
+                   'scripts'  => array( 'assets/js/presentations/my_package/my_package.js' ),
+               ),
+           ),
+       );
+       return $packages;
+   } );
+   ```
+
+2. **Create templates** in `template-parts/commemorative/<package>/` for each placement.
+
+3. **Add assets** (CSS/JS) under `assets/css/presentations/` and `assets/js/presentations/`.
+
+4. **Render placements** using the dispatcher functions:
+   ```php
+   if ( conexao_commemorative_has_placement( 'homepage_hero' ) ) {
+       conexao_commemorative_render_placement( 'homepage_hero' );
+   }
+   ```
+
+5. **Enqueue assets** conditionally:
+   ```php
+   add_action( 'wp_enqueue_scripts', 'conexao_commemorative_enqueue_assets' );
+   ```
+
+### 7.4 What happens when the theme changes
+
+- **Plugin active, theme switched**: Event management continues working. No commemorative presentations render until the new theme registers packages.
+- **Plugin deactivated, theme active**: Theme's `conexao_commemorative_has_placement()` returns `false`, `conexao_commemorative_render_placement()` returns `false`. No fatal errors. Ordinary site functionality unaffected.
+- **Both active**: Full commemorative experience with theme's visual implementation.
+
+### 7.5 Architectural regression protection
+
+The test `test-commemorative-theme-independence.php` verifies:
+- No direct references to `conexao-br-irlanda` in plugin code
+- No theme directory functions (`get_template_directory()`, etc.) in plugin
+- No theme constants (`CONEXAO_THEME_*`) in plugin
+- No theme-specific functions (`conexao_asset_version`, etc.) in plugin
+- Public API functions exist and are callable
+- Filter `conexao_commemorative_presentations` is available
+- Event records retrievable without theme
+- Scheduling works without theme
+- Admin overview works without theme
+- Preview functions exist
+- Cache/boundary functions work without theme
+
+Run with: `./scripts/run-tests.sh --only conexao-commemorative`
+
+### 7.6 Verified compatibility
+
+Tested with:
+- **Conexão BR Irlanda** (custom theme) — full presentation support
+- **Twenty Twenty-Five** (default WordPress theme) — plugin initializes, event admin works, scheduling works, records accessible, preview works, no fatal errors
+
 _Last verified: 2026-11-06 by the commemorative-events local remediation_
 _Last verified: 2026-11-06 by the Christmas homepage popup UI fix (the welcome dialog ships closed; the compact fallback and preview trigger replace the inline band)_
 _Last verified: 2026-11-07 by the Christmas welcome top-of-screen popup fix (the welcome auto-opens in the signed preview and pins below every top obstruction)_
 _Last verified: 2026-11-07 by the agent, skills and documentation audit (theme-internals link corrected)_
+_Last verified: 2026-11-25 by the theme independence implementation (plugin tested with Twenty Twenty-Five theme)_
 

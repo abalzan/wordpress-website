@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Conexão BR Irlanda — Event Importer (Local Tools)
  * Description: Local-only event import/export tooling. Fetches, normalizes, deduplicates, and imports events from configured external sources into the local WordPress database. Event images are downloaded into the Media Library locally, then the complete event data (with embedded images) is exported to JSON for import into the production WordPress.com site. Production-critical event runtime behavior (meta/taxonomy registration, _event_status, public query filtering, status admin UI) lives in the separate "Conexão BR Irlanda — Event Runtime" plugin.
- * Version: 1.9.1
+ * Version: 1.10.1
  * Requires Plugins: conexao-data-model, conexao-event-runtime
  * Text Domain: conexao-event-importer
  *
@@ -12,7 +12,7 @@
 defined( 'ABSPATH' ) || exit;
 
 define( 'CONEXAO_EVENT_IMPORTER_FILE', __FILE__ );
-define( 'CONEXAO_EVENT_IMPORTER_VERSION', '1.9.1' );
+define( 'CONEXAO_EVENT_IMPORTER_VERSION', '1.10.1' );
 define( 'CONEXAO_EVENT_IMPORTER_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CONEXAO_EVENT_IMPORTER_URL', plugin_dir_url( __FILE__ ) );
 
@@ -30,7 +30,12 @@ require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-jsonld-location.
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-location.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-address.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-jsonld-location.php';
+// Stage 2 / P5 — per-field partial-enrichment state (additive; read by the
+// normalizer and the importer's write path).
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-conexao-event-enrichment-state.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-normalizer.php';
+// Stage 4 — date-only write contract for `_event_date` / `_event_end_date`.
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-conexao-event-date-contract.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-date-filter.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-conexao-ics-recurrence.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-conexao-laois-tourism-series.php';
@@ -63,6 +68,10 @@ require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-transfer-admin.p
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-multi-import.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-image-sync-admin.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-cleanup.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-cleanup-lock.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-cleanup-attachment-review.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-cleanup-retry-queue.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-cleanup-run.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-cleanup-admin.php';
 
 // Stage 2: language guard for imported events (Polylang-aware, no-op without
@@ -135,6 +144,9 @@ final class Conexao_Event_Importer {
 	/** @var Conexao_Event_Cleanup */
 	public $cleanup;
 
+	/** @var Conexao_Event_Cleanup_Run */
+	public $cleanup_runner;
+
 	/** @var Conexao_Event_Cleanup_Admin */
 	public $cleanup_admin;
 
@@ -152,21 +164,20 @@ final class Conexao_Event_Importer {
 		$this->sources   = new Conexao_Event_Sources();
 		$this->location  = new Conexao_Event_Location();
 		$this->importer  = new Conexao_Event_Importer_Engine( $this->sources, $this->location );
-		$this->dashboard = new Conexao_Import_Dashboard( $this->sources, $this->importer );
+
+		// Log actions (download / clear / retired-page redirect). Constructed
+		// BEFORE the dashboard so the dashboard can reuse the same instance for
+		// its retired Import Logs redirect instead of building a second one.
+		$this->log_admin = new Conexao_Import_Log_Admin();
+
+		$this->dashboard = new Conexao_Import_Dashboard( $this->sources, $this->importer, $this->log_admin );
 		$this->transfer  = new Conexao_Event_Transfer_Admin();
 		$this->image_sync = new Conexao_Event_Image_Sync_Admin();
 		$this->cleanup   = new Conexao_Event_Cleanup();
-		$this->cleanup_admin = new Conexao_Event_Cleanup_Admin( $this->cleanup );
-
-		// Import Logs admin screen + secure download / clear actions.
-		$this->log_admin = new Conexao_Import_Log_Admin();
+		$this->cleanup_runner = new Conexao_Event_Cleanup_Run();
+		$this->cleanup_admin = new Conexao_Event_Cleanup_Admin( $this->cleanup, $this->cleanup_runner );
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_assets' ) );
-
-		// Settings page under the Event Import menu (late priority so the
-		// parent menu from Conexao_Event_Sources exists first).
-		$settings = new Conexao_Import_Settings();
-		add_action( 'admin_menu', array( $settings, 'register_admin_menu' ), 20 );
 
 		// Allow webcal:// protocol in iCalendar source URLs.
 		add_filter( 'kses_allowed_protocols', array( $this, 'allow_webcal_protocol' ) );
@@ -195,7 +206,7 @@ final class Conexao_Event_Importer {
 	 * Runtime plugin; only import tooling screens are covered here.
 	 */
 	public function admin_assets( $hook ) {
-		$is_import_screen = false !== strpos( $hook, 'conexao-events' ) || false !== strpos( $hook, 'conexao-event-import' ) || false !== strpos( $hook, 'conexao-event-export' ) || false !== strpos( $hook, 'conexao-event-cleanup' ) || false !== strpos( $hook, 'conexao-import-log' ) || false !== strpos( $hook, 'conexao-event-sources' );
+		$is_import_screen = false !== strpos( $hook, 'conexao-events' ) || false !== strpos( $hook, 'conexao-event-import' ) || false !== strpos( $hook, 'conexao-event-export' ) || false !== strpos( $hook, 'conexao-event-cleanup' ) || false !== strpos( $hook, 'conexao-event-sources' );
 		if ( ! $is_import_screen ) {
 			return;
 		}

@@ -3,11 +3,42 @@
  * Tests for the manual event cleanup engine (Conexao_Event_Cleanup).
  *
  * Regression suite for the "past events not purged" defect.
+ *
+ * ## Safety (Stage 0.5)
+ *
+ * This suite creates its own event fixtures and deletes exactly those. It does
+ * NOT call Conexao_Event_Cleanup::run_cleanup(), because that deletes EVERY past
+ * event in the shared database; the per-fixture apply path (`delete_event_with_media`)
+ * plus a sentinel prove the same deletion semantics with a bounded blast radius.
+ *
+ * The cleanup status/history options are redirected to this process's test rows
+ * by their accessors and reset through test_options_reset_test_store(), which
+ * validates the keys before deleting anything.
  */
 
 require_once dirname( __DIR__, 4 ) . '/tests/bootstrap.php';
 require_once WP_PLUGIN_DIR . '/conexao-event-importer/includes/class-event-cleanup.php';
 require_once WP_PLUGIN_DIR . '/conexao-event-importer/includes/class-import-settings.php';
+
+// Secondary safeguard: prove the per-process store isolation before touching
+// any cleanup option or content.
+test_require_operator_store_isolation();
+
+// Read-only baseline of the operator's cleanup records. The suite must leave
+// both byte-identical: its own writes go to this process's test rows.
+$cleanup_live_status_before = (string) $GLOBALS['wpdb']->get_var(
+	$GLOBALS['wpdb']->prepare(
+		"SELECT option_value FROM {$GLOBALS['wpdb']->options} WHERE option_name = %s",
+		Conexao_Event_Cleanup::STATUS_OPTION
+	)
+);
+
+$cleanup_live_history_before = (string) $GLOBALS['wpdb']->get_var(
+	$GLOBALS['wpdb']->prepare(
+		"SELECT option_value FROM {$GLOBALS['wpdb']->options} WHERE option_name = %s",
+		Conexao_Event_Cleanup::HISTORY_OPTION
+	)
+);
 
 // Replicate the production trigger context: cleanup runs from wp-admin
 // (admin-post.php) or WP-CLI, where is_admin() / WP_CLI bypass the event
@@ -489,9 +520,19 @@ if ( class_exists( 'Conexao_Event_Query' ) ) {
 }
 
 // ---------------------------------------------------------------------------
-// 14. Full run_cleanup() end-to-end: finds, deletes, reports accurately.
+// 14. Per-fixture cleanup: each fixture is purged individually, and an
+//     unrelated past event is NOT touched.
+//
+// Stage 0.5 removed the global run_cleanup() call from this suite. run_cleanup()
+// deletes EVERY past event in the shared database — operator content included —
+// and cannot be made safe without a dedicated test database. The per-fixture
+// apply path below deletes exactly the ids this suite created, and the sentinel
+// proves the suite's scope is its own fixtures.
+//
+// Coverage note (docs/reports/2026-11-14-stage-0-5-test-safety.md): the
+// end-to-end run_cleanup() proof is DEFERRED to the isolated-database stage.
 // ---------------------------------------------------------------------------
-test_section( 'Full cleanup run — run_cleanup()' );
+test_section( 'Per-fixture cleanup — each fixture purged individually' );
 
 $end_to_end_fixtures = array();
 for ( $i = 0; $i < 5; $i++ ) {
@@ -505,26 +546,46 @@ for ( $i = 0; $i < 5; $i++ ) {
     );
 }
 
-$run_result = $cleanup->run_cleanup();
+// A past event that belongs to no fixture list. If the suite still deleted
+// everything the engine selected, this would disappear; it must survive.
+$cleanup_unrelated_sentinel = cleanup_test_event(
+    'unrelated past sentinel (must survive)',
+    array(
+        '_event_date'     => cleanup_test_day_offset( -2 ),
+        '_event_status'   => 'published',
+        '_event_imported' => '1',
+    )
+);
+
 assert_true(
-    (int) $run_result['events_found'] >= count( $end_to_end_fixtures ),
-    'run_cleanup() finds at least the end-to-end fixtures'
+    cleanup_test_is_selected( $cleanup, $cleanup_unrelated_sentinel ),
+    'the unrelated past sentinel IS a cleanup candidate (so its survival proves scope, not eligibility)'
 );
-assert_true(
-    (int) $run_result['events_deleted'] >= count( $end_to_end_fixtures ),
-    'run_cleanup() deletes at least the end-to-end fixtures'
-);
-assert_equals(
-    0,
-    count( $run_result['errors'] ),
-    'run_cleanup() reports no deletion errors for end-to-end fixtures'
-);
+
 foreach ( $end_to_end_fixtures as $fixture_id ) {
+    $run_result = cleanup_test_apply_one( $cleanup, $fixture_id );
+
+    assert_equals(
+        1,
+        (int) $run_result['events_deleted'],
+        'end-to-end fixture #' . $fixture_id . ' deleted by the per-fixture apply path'
+    );
+    assert_equals(
+        0,
+        count( $run_result['errors'] ),
+        'end-to-end fixture #' . $fixture_id . ' reports no deletion errors'
+    );
     assert_true(
         null === get_post( $fixture_id ),
         'end-to-end fixture #' . $fixture_id . ' is PURGED (post row removed from the database)'
     );
 }
+
+assert_equals(
+    'publish',
+    get_post_status( $cleanup_unrelated_sentinel ),
+    'an unrelated past event SURVIVES the per-fixture cleanup (no global purge)'
+);
 
 
 // ---------------------------------------------------------------------------
@@ -533,7 +594,64 @@ foreach ( $end_to_end_fixtures as $fixture_id ) {
 foreach ( $cleanup_test_event_ids as $cleanup_test_event_id ) {
 	wp_delete_post( $cleanup_test_event_id, true );
 }
-delete_option( 'conexao_event_cleanup_status' );
-delete_option( 'conexao_event_cleanup_history' );
+
+// Reset only THIS PROCESS's cleanup test stores. The helper validates every
+// requested key before deleting anything, so it cannot reach an operator row.
+$cleanup_reset = test_options_reset_test_store( array( 'cleanup_status', 'cleanup_history' ) );
+
+assert_true(
+	$cleanup_reset['ok'],
+	'the reset helper accepts the two cleanup test stores (' . wp_json_encode( $cleanup_reset ) . ')'
+);
+
+assert_equals(
+	2,
+	count( $cleanup_reset['deleted'] ) + count( $cleanup_reset['absent'] ),
+	'the reset helper accounts for exactly the two cleanup test stores'
+);
+
+assert_equals(
+	array(),
+	$cleanup_reset['rejected'],
+	'the reset helper rejected nothing'
+);
+
+foreach ( array( 'cleanup_status', 'cleanup_history' ) as $cleanup_store_key ) {
+	$cleanup_test_key = test_operator_store_option_name( $cleanup_store_key );
+
+	assert_true(
+		0 === strpos( $cleanup_test_key, 'conexao_event_cleanup_' ) && false !== strpos( $cleanup_test_key, '__test__' ),
+		'the "' . $cleanup_store_key . '" store resolved to a test key, not the operator option'
+	);
+	assert_true(
+		null === get_option( $cleanup_test_key, null ),
+		'the "' . $cleanup_store_key . '" test store no longer exists after the reset'
+	);
+}
+
+// The operator's cleanup records are byte-identical: the suite never wrote them.
+$cleanup_live_status_after = (string) $GLOBALS['wpdb']->get_var(
+	$GLOBALS['wpdb']->prepare(
+		"SELECT option_value FROM {$GLOBALS['wpdb']->options} WHERE option_name = %s",
+		Conexao_Event_Cleanup::STATUS_OPTION
+	)
+);
+
+$cleanup_live_history_after = (string) $GLOBALS['wpdb']->get_var(
+	$GLOBALS['wpdb']->prepare(
+		"SELECT option_value FROM {$GLOBALS['wpdb']->options} WHERE option_name = %s",
+		Conexao_Event_Cleanup::HISTORY_OPTION
+	)
+);
+
+assert_true(
+	$cleanup_live_status_after === $cleanup_live_status_before,
+	'the live cleanup status option received no writes (byte-identical)'
+);
+
+assert_true(
+	$cleanup_live_history_after === $cleanup_live_history_before,
+	'the live cleanup history option received no writes (byte-identical)'
+);
 
 test_finish( 'Event Cleanup Purge' );

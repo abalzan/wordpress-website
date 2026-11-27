@@ -20,8 +20,10 @@ mtime is unusable for this rule. A fresh `git clone` (exactly what CI does)
 gives every file the checkout time, so mtime would report every catalogue as
 fresh regardless of the real order of changes, and a `touch` would fabricate a
 failure. Git's per-file commit timestamp is the deterministic, reproducible
-signal: it survives a clone, a branch switch and a CI runner, and it reflects
-the actual last change to the strings.
+signal: it survives a full clone, a branch switch and a CI runner, and it
+reflects the actual last change to the strings. Modified worktree files use
+their mtime only to compare uncommitted edits locally; CI checks clean files
+against full Git history.
 
 ## Scope
 
@@ -125,11 +127,24 @@ def components() -> list[tuple[str, str]]:
 
 
 def git_timestamp(path: str) -> int | None:
-    """Last commit timestamp for a path, or None when Git cannot answer.
+    """Last commit time, or mtime for a modified worktree file.
 
     None means "unknown freshness", which the caller treats as a FAILURE so the
     gate can never pass because the signal was unavailable.
     """
+    status = subprocess.run(
+        ["git", "status", "--porcelain", "--untracked-files=no", "--", path],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if status.returncode == 0 and status.stdout.strip():
+        try:
+            return int(os.path.getmtime(path))
+        except OSError:
+            return None
+
     proc = subprocess.run(
         ["git", "log", "-1", "--format=%ct", "--", path],
         cwd=REPO_ROOT,
@@ -144,6 +159,20 @@ def git_timestamp(path: str) -> int | None:
         return int(value)
     except ValueError:
         return None
+
+
+def git_history_is_shallow() -> bool | None:
+    """Return whether per-file commit history is incomplete, or None on error."""
+    proc = subprocess.run(
+        ["git", "rev-parse", "--is-shallow-repository"],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if proc.returncode != 0:
+        return None
+    return proc.stdout.strip() == "true"
 
 
 def translatable_sources(directory: str) -> list[str]:
@@ -168,7 +197,15 @@ def translatable_sources(directory: str) -> list[str]:
 def main() -> int:
     print("== Stage L i18n catalogue freshness gate ==")
     print(f"   repo:  {REPO_ROOT}")
-    print("   signal: git commit time per file (mtime is not reproducible in CI)")
+    print("   signal: full-history Git commit time; modified worktree files use mtime")
+
+    shallow = git_history_is_shallow()
+    if shallow is None:
+        FAILURES.append("could not determine whether the Git history is shallow")
+        return 1
+    if shallow:
+        FAILURES.append("full Git history is required for reproducible per-file freshness checks")
+        return 1
 
     pairs = components()
     check(len(pairs) > 0, "components resolved from plugins.json + the theme")

@@ -204,6 +204,27 @@ final class Conexao_Admin_Ux_Fields {
 				break;
 			case 'taxonomy':
 				$taxonomy = isset( $field['taxonomy'] ) ? $field['taxonomy'] : 'conexao_category';
+
+				// County taxonomy: the editor must offer the 26 approved
+				// counties only (LAYER 2/3), keyed by canonical slug. A stray,
+				// duplicated, imported or numeric term in the database can
+				// never be selected — or even seen — here.
+				if ( 'conexao_county' === $taxonomy && class_exists( 'Conexao_Data_Model_Counties' ) ) {
+					$current_terms = wp_get_object_terms( $post_id, $taxonomy, array( 'fields' => 'slugs' ) );
+					$current_slug  = ( ! is_wp_error( $current_terms ) && ! empty( $current_terms ) )
+						? Conexao_Data_Model_Counties::normalize( reset( $current_terms ) )
+						: '';
+
+					$html .= '<select class="conexao-field-input" id="' . esc_attr( $id ) . '" name="conexao_taxonomies[' . esc_attr( $taxonomy ) . ']">';
+					$html .= '<option value="">' . esc_html__( '— Selecionar —', 'conexao-admin-ux' ) . '</option>';
+					foreach ( Conexao_Data_Model_Counties::all() as $county_slug => $county_name ) {
+						$html .= '<option value="' . esc_attr( $county_slug ) . '" ' . selected( $current_slug, $county_slug, false ) . '>' . esc_html( $county_name ) . '</option>';
+					}
+					$html .= '</select>';
+					$html .= '<p class="conexao-field-help">' . esc_html__( 'Lista fixa de 26 condados aprovados da República da Irlanda.', 'conexao-admin-ux' ) . '</p>';
+					break;
+				}
+
 				$terms    = get_terms( array( 'taxonomy' => $taxonomy, 'hide_empty' => false, 'orderby' => 'name' ) );
 				$current  = wp_get_object_terms( $post_id, $taxonomy, array( 'fields' => 'ids' ) );
 				$current  = is_wp_error( $current ) ? array() : $current;
@@ -445,6 +466,27 @@ final class Conexao_Admin_Ux_Fields {
 
 			$value = isset( $meta[ $id ] ) ? $meta[ $id ] : '';
 
+			// County meta (LAYER 2): only an approved county may be stored.
+			// A crafted submission (a numeric id, "Belfast", a stray term
+			// name) is REJECTED — the previously stored value is preserved
+			// rather than overwritten with junk, and validate() reports the
+			// problem to the editor.
+			if ( class_exists( 'Conexao_Data_Model_Counties' ) && in_array( $key, Conexao_Data_Model_Counties::META_KEYS, true ) ) {
+				$raw_county = is_string( $value ) ? trim( $value ) : '';
+				if ( '' === $raw_county ) {
+					delete_post_meta( $post_id, $key );
+					continue;
+				}
+
+				$county_slug = Conexao_Data_Model_Counties::normalize( $raw_county );
+				if ( '' === $county_slug ) {
+					continue; // Keep the stored value; validate() blocks the save.
+				}
+
+				update_post_meta( $post_id, $key, Conexao_Data_Model_Counties::COUNTIES[ $county_slug ] );
+				continue;
+			}
+
 			switch ( $field['type'] ) {
 				case 'contacts':
 					// Structured repeater: sanitize every row through the
@@ -593,14 +635,29 @@ final class Conexao_Admin_Ux_Fields {
 				if ( ! taxonomy_exists( $taxonomy ) ) {
 					continue;
 				}
-				if ( is_array( $term_value ) ) {
-					$term_ids = array_map( "absint", $term_value );
-					$term_ids = array_filter( $term_ids );
-					wp_set_object_terms( $post_id, array_values( $term_ids ), $taxonomy );
-				} else {
-					$term_id = absint( $term_value );
-					wp_set_object_terms( $post_id, $term_id ? array( $term_id ) : array(), $taxonomy );
+
+				// County taxonomy (LAYER 2): the submitted value is a canonical
+				// county SLUG, not a raw term id. It is normalised against the
+				// master list, so a forged POST (a term id, a numeric value, an
+				// unapproved name) can never assign — or create — a county.
+				if ( 'conexao_county' === $taxonomy && class_exists( 'Conexao_Data_Model_Counties' ) ) {
+					$submitted   = is_array( $term_value ) ? reset( $term_value ) : $term_value;
+					$county_slug = Conexao_Data_Model_Counties::normalize( $submitted );
+
+					if ( '' === $county_slug ) {
+						continue; // Keep the existing assignment.
+					}
+
+					$county_id = Conexao_Data_Model_Counties::ensure_term( $county_slug );
+					if ( $county_id > 0 ) {
+						wp_set_object_terms( $post_id, array( $county_id ), 'conexao_county' );
+					}
+					continue;
 				}
+
+				$term_ids = array_map( "absint", $term_value );
+				$term_ids = array_filter( $term_ids );
+				wp_set_object_terms( $post_id, array_values( $term_ids ), $taxonomy );
 			}
 		}
 
@@ -608,17 +665,11 @@ final class Conexao_Admin_Ux_Fields {
 		// /lazer/ ?county= filter works. The county is stored as a select meta
 		// (_leisure_county) in the editor, but the public filter queries the
 		// shared conexao_county taxonomy.
-		if ( 'leisure' === get_post_type( $post_id ) && ! empty( $meta['leisure_county'] ) ) {
-			$county = sanitize_text_field( $meta['leisure_county'] );
-			if ( taxonomy_exists( 'conexao_county' ) ) {
-				$term = term_exists( $county, 'conexao_county' );
-				if ( ! $term ) {
-					$term = wp_insert_term( $county, 'conexao_county' );
-				}
-				if ( $term && ! is_wp_error( $term ) ) {
-					$term_id = is_array( $term ) ? $term['term_id'] : $term;
-					wp_set_object_terms( $post_id, array( (int) $term_id ), 'conexao_county' );
-				}
+		if ( 'leisure' === get_post_type( $post_id ) && ! empty( $meta['leisure_county'] ) && class_exists( 'Conexao_Data_Model_Counties' ) ) {
+			$county_slug = Conexao_Data_Model_Counties::normalize( $meta['leisure_county'] );
+			$term_id     = '' === $county_slug ? 0 : Conexao_Data_Model_Counties::ensure_term( $county_slug );
+			if ( $term_id > 0 ) {
+				wp_set_object_terms( $post_id, array( $term_id ), 'conexao_county' );
 			}
 		}
 	}
@@ -736,6 +787,31 @@ final class Conexao_Admin_Ux_Fields {
 			}
 			if ( ( '' === $lat ) !== ( '' === $lng ) ) {
 				$errors[] = 'Informe a latitude e a longitude em conjunto (ou deixe ambas vazias).';
+			}
+		}
+
+		// County (LAYER 2): only the 26 approved counties are accepted. An
+		// invalid value is reported to the editor and is never persisted —
+		// save() preserves the previously stored value instead of overwriting
+		// it with junk.
+		if ( class_exists( 'Conexao_Data_Model_Counties' ) ) {
+			foreach ( Conexao_Data_Model_Counties::META_KEYS as $county_meta_key ) {
+				$county_id = ltrim( $county_meta_key, '_' );
+				if ( ! isset( $meta[ $county_id ] ) ) {
+					continue;
+				}
+				$submitted = is_string( $meta[ $county_id ] ) ? trim( $meta[ $county_id ] ) : '';
+				if ( '' !== $submitted && ! Conexao_Data_Model_Counties::is_valid_value( $submitted ) ) {
+					$errors[] = 'County inválido: use a lista dos 26 condados aprovados da República da Irlanda.';
+				}
+			}
+
+			if ( isset( $data['conexao_taxonomies']['conexao_county'] ) ) {
+				$submitted = $data['conexao_taxonomies']['conexao_county'];
+				$submitted = is_array( $submitted ) ? reset( $submitted ) : $submitted;
+				if ( '' !== trim( (string) $submitted ) && ! Conexao_Data_Model_Counties::is_valid_value( $submitted ) ) {
+					$errors[] = 'County inválido: selecione um dos 26 condados aprovados.';
+				}
 			}
 		}
 
@@ -1152,15 +1228,15 @@ final class Conexao_Admin_Ux_Fields {
 		}
 
 		// Ensure county + town taxonomies stay in sync with structured fields.
+		// County (LAYER 2): resolved through the master list. An invalid value
+		// is ignored (the existing assignment is kept) and an explicit empty
+		// value clears the assignment — unchanged behaviour for cleared fields.
 		$county = isset( $fields['event_county'] ) ? sanitize_text_field( $fields['event_county'] ) : '';
-		if ( $county && taxonomy_exists( 'conexao_county' ) ) {
-			$term = term_exists( $county, 'conexao_county' );
-			if ( ! $term ) {
-				$term = wp_insert_term( $county, 'conexao_county' );
-			}
-			if ( $term && ! is_wp_error( $term ) ) {
-				$term_id = is_array( $term ) ? $term['term_id'] : $term;
-				wp_set_object_terms( $post_id, array( (int) $term_id ), 'conexao_county' );
+		if ( $county && class_exists( 'Conexao_Data_Model_Counties' ) ) {
+			$county_slug = Conexao_Data_Model_Counties::normalize( $county );
+			$term_id     = '' === $county_slug ? 0 : Conexao_Data_Model_Counties::ensure_term( $county_slug );
+			if ( $term_id > 0 ) {
+				wp_set_object_terms( $post_id, array( $term_id ), 'conexao_county' );
 			}
 		} elseif ( '' === $county && isset( $fields['event_county'] ) ) {
 			wp_set_object_terms( $post_id, array(), 'conexao_county' );
@@ -1173,8 +1249,8 @@ final class Conexao_Admin_Ux_Fields {
 				$term = wp_insert_term( $town_meta, 'conexao_town' );
 			}
 			if ( $term && ! is_wp_error( $term ) ) {
-				$term_id = is_array( $term ) ? $term['term_id'] : $term;
-				wp_set_object_terms( $post_id, array( (int) $term_id ), 'conexao_town' );
+				$term_id = (int) $term['term_id'];
+				wp_set_object_terms( $post_id, array( $term_id ), 'conexao_town' );
 			}
 		} elseif ( '' === $town_meta && isset( $fields['event_town'] ) ) {
 			wp_set_object_terms( $post_id, array(), 'conexao_town' );
