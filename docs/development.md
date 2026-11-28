@@ -41,10 +41,15 @@ static analysis in `phpstan.neon.dist`):
     `php scripts/phpcs-baseline.php update <report.json> phpcs-baseline.json`
     (generate the report with
     `vendor/bin/phpcs -q --report=json > <report.json>`).
-  - `phpstan-baseline.neon` — the 298 legacy level-5 errors (generated
-    2026-09-25). It **must not grow**: a new error fails `composer analyse`.
-    After *deliberately* fixing legacy errors, regenerate it with
-    `vendor/bin/phpstan analyse --generate-baseline`.
+  - `phpstan-baseline.neon` — the legacy level-5 findings, isolated by rule +
+    file + count (**148 entries** as of 2026-11-27, down from 171). It **must
+    not grow**: a new error fails `composer analyse`.
+    The reduction procedure is *fix first, then delete the entry*: repair the
+    underlying defect, re-run `vendor/bin/phpstan analyse`, and remove exactly
+    the entries PHPStan then reports as `ignore.unmatched`. That report is the
+    proof a removal is justified; `--generate-baseline` is **not** the routine
+    tool because it can silently absorb a new error alongside the removals.
+    Use it only when a toolchain upgrade changes the rule set itself.
   - New violations introduced after Stage C are always visible (the gates
     fail); shrinking the baselines is the expected direction.
 - **PHP floor**: PHPCS `testVersion` is `8.0-` (engineering standard §2.1).
@@ -132,11 +137,11 @@ in `phpcs-baseline.json`) **remains, and CI does not require it to be zero**:
   source. Its non-zero result cannot fail an otherwise-valid run.
 - A future debt-reduction stage is what will turn the raw command green.
 
-**PHPStan semantics:** level **5**, with the 331 legacy errors isolated in
-`phpstan-baseline.neon`. The baseline is part of the blocking gate and must
-not grow: a new PHPStan error fails `./scripts/lint.sh`. CI neither
-regenerates the baseline nor changes the level, and does not upgrade
-`phpstan/phpstan`.
+**PHPStan semantics:** level **5**, with the legacy findings isolated in
+`phpstan-baseline.neon` (**148 entries** on 2026-11-27). The baseline is part of
+the blocking gate and must not grow: a new PHPStan error fails
+`./scripts/lint.sh`. CI neither regenerates the baseline nor changes the level,
+and does not upgrade `phpstan/phpstan`.
 
 **Version floor.** `phpstan/phpstan` is pinned at `^2.2` and
 `szepeviktor/phpstan-wordpress` at `^2.0`. The two MUST be upgraded together:
@@ -144,8 +149,19 @@ the 1.x line of the WordPress extension hard-requires `phpstan/phpstan:
 ^1.10.31`, so raising PHPStan alone is unsatisfiable. The 1.12.x "old
 version" notice is gone as of this upgrade. The baseline was re-generated
 once for the 2.x rule set (the stricter always-true/impossible-type checks
-report additional pre-existing debt); it is **frozen again at 331 from this
-point** and must not grow.
+report additional pre-existing debt): 331 entries at that point, 171 after the
+Stage G/I/K/L work, **148 after the 2026-11-27 debt-reduction pass**. It must
+not grow again.
+
+**Reducing the baseline.** One finding is fixed at a time and its entry is
+deleted only once PHPStan itself reports it as `ignore.unmatched` — a removal
+without a code fix would surface as a new unbaselined error and fail the gate.
+Deliberate non-fixes stay baselined with their reason recorded in the change's
+plan/report; the largest such group is the `function.alreadyNarrowedType` /
+`function.impossibleType` defensive guards (`is_array()`, `is_wp_error()`,
+`instanceof WP_Post`) that protect against third-party filters, and the DOM/XML
+importer parsers, where the real fix is an `instanceof DOMElement` guard rather
+than a type assertion.
 
 **No production contact.** CI is read-only with respect to production: it
 never connects to conexaobr.ie or WordPress.com and deploys nothing. The

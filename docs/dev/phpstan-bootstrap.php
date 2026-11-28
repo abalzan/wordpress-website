@@ -19,6 +19,9 @@
  *     a third-party plugin that is deliberately NOT committed to this
  *     repository (see docs/development.md), so only its API signatures are
  *     stubbed. Every stub carries `@param`/`@return` metadata and no logic.
+ *  4. The WP-CLI runner class (`WP_CLI`), which exists only inside a WP-CLI
+ *     process. Only the signatures are stubbed; the one namespaced helper the
+ *     codebase calls stays in the baseline (see the note at the end of file).
  *
  * Everything is capability-guarded (`defined()`/`function_exists()`/
  * `class_exists()`), so the file stays inert if a real symbol exists.
@@ -180,6 +183,16 @@ if ( ! class_exists( 'PLL' ) ) {
 
 		/** @var PLL_Links */
 		public $links;
+
+		/**
+		 * Current language, set by Polylang during `parse_request`.
+		 *
+		 * Read by `inc/i18n/fallback.php` to restore the requested language
+		 * on the B2 shell. Polylang assigns it a `PLL_Language` object.
+		 *
+		 * @var PLL_Language|null
+		 */
+		public $curlang;
 	}
 }
 
@@ -325,3 +338,76 @@ if ( ! function_exists( 'pll_save_term_translations' ) ) {
 	function pll_save_term_translations( $translations ) {
 	}
 }
+
+/*
+ * WP-CLI stubs (developer tooling, not committed and never present in
+ * production).
+ *
+ * `WP_CLI` is declared only when a process runs under WP-CLI, so the class is
+ * invisible to static analysis. `conexao-event-importer` is a local-only
+ * tooling plugin whose CLI commands are reachable exclusively through WP-CLI,
+ * and every use is already inside an `if ( defined( 'WP_CLI' ) && WP_CLI )`
+ * guard — the stub therefore only supplies the signatures PHPStan needs and
+ * cannot mask a real runtime path.
+ *
+ * The one namespaced helper this codebase calls,
+ * `WP_CLI\Utils\format_items()`, is NOT stubbed here: declaring a function in a
+ * namespace would force this whole file into `namespace { … }` blocks. Its
+ * single `function.notFound` finding stays in `phpstan-baseline.neon` instead.
+ */
+if ( ! class_exists( 'WP_CLI' ) ) {
+	/**
+	 * WP-CLI command runner stub.
+	 */
+	class WP_CLI {
+
+		/**
+		 * Write a line to STDOUT.
+		 *
+		 * @param string $message Message to print.
+		 * @return void
+		 */
+		public static function log( $message ) {
+		}
+
+		/**
+		 * Write a success line to STDOUT.
+		 *
+		 * @param string $message Message to print.
+		 * @return void
+		 */
+		public static function success( $message ) {
+		}
+
+		/**
+		 * Write a warning to STDERR.
+		 *
+		 * @param string $message Message to print.
+		 * @return void
+		 */
+		public static function warning( $message ) {
+		}
+
+		/**
+		 * Write an error to STDERR and exit.
+		 *
+		 * @param string $message  Message to print.
+		 * @param bool   $exit     Whether to halt the process.
+		 * @return void
+		 */
+		public static function error( $message, $exit = true ) {
+		}
+
+		/**
+		 * Register a command with WP-CLI.
+		 *
+		 * @param string            $name     Command name.
+		 * @param string|object     $callable Handler or class name.
+		 * @param array<mixed>      $args     Command arguments.
+		 * @return void
+		 */
+		public static function add_command( $name, $callable, $args = array() ) {
+		}
+	}
+}
+

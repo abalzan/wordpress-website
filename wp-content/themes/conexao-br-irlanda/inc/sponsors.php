@@ -97,8 +97,8 @@ function conexao_sponsor_carousel_image( $sponsor_id, $sponsor_title = '', $eage
 	// ~700 device px and 512 is the closest adequate candidate.
 	$html .= ' sizes="(min-width: 769px) 30vw, 46vw"';
 	if ( $dimensions ) {
-		$html .= ' width="' . esc_attr( (int) $dimensions[1] ) . '"'
-			. ' height="' . esc_attr( (int) $dimensions[2] ) . '"';
+		$html .= ' width="' . esc_attr( (string) (int) $dimensions[1] ) . '"'
+			. ' height="' . esc_attr( (string) (int) $dimensions[2] ) . '"';
 	}
 	// Above-the-fold usage (homepage Hero carousel, first slide) loads
 	// eagerly; every other usage stays lazy. The Hero renders its first

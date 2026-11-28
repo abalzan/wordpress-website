@@ -73,7 +73,7 @@ if ( ! $hero_events->have_posts() ) {
 			</svg>
 			<?php esc_html_e( 'Próximos Eventos', 'conexao-br-irlanda' ); ?>
 		</h3>
-		<span class="hero-events-count"><?php echo esc_html( $hero_events->post_count ); ?> <?php esc_html_e( 'na agenda', 'conexao-br-irlanda' ); ?></span>
+		<span class="hero-events-count"><?php echo esc_html( (string) $hero_events->post_count ); ?> <?php esc_html_e( 'na agenda', 'conexao-br-irlanda' ); ?></span>
 	</header>
 
 	<div class="hero-events-list">

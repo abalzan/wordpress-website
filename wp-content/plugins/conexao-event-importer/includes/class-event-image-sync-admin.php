@@ -166,7 +166,7 @@ class Conexao_Event_Image_Sync_Admin {
 						<?php foreach ( $failed as $failure ) : ?>
 							<li>
 								<?php echo esc_html( isset( $failure['title'] ) ? $failure['title'] : '#' . absint( $failure['id'] ) ); ?>
-								(<a href="<?php echo esc_url( get_edit_post_link( $failure['id'] ) ); ?>"><?php echo esc_html( absint( $failure['id'] ) ); ?></a>)
+								(<a href="<?php echo esc_url( get_edit_post_link( $failure['id'] ) ); ?>"><?php echo esc_html( (string) absint( $failure['id'] ) ); ?></a>)
 							</li>
 						<?php endforeach; ?>
 					</ul>

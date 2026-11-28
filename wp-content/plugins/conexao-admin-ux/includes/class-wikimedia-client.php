@@ -147,11 +147,6 @@ final class Conexao_Wikimedia_Client {
 		$img_width  = isset( $ii['thumbwidth'] ) ? (int) $ii['thumbwidth'] : ( isset( $ii['width'] ) ? (int) $ii['width'] : 0 );
 		$img_height = isset( $ii['thumbheight'] ) ? (int) $ii['thumbheight'] : ( isset( $ii['height'] ) ? (int) $ii['height'] : 0 );
 
-		if ( ! $img_url ) {
-			// Try the full URL if no thumb URL.
-			$img_url = isset( $file['url'] ) ? $file['url'] : ( isset( $ii['url'] ) ? $ii['url'] : '' );
-		}
-
 		// Commons file page URL.
 		$page_url = $this->file_page_url( $filename );
 

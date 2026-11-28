@@ -140,7 +140,7 @@ final class Conexao_Admin_Ux_Fields {
 				$options  = isset( $field['options'] ) && is_array( $field['options'] ) ? $field['options'] : array();
 				$selected = is_array( $value )
 					? $value
-					: array_filter( array_map( 'trim', explode( ',', (string) $value ) ), 'strlen' );
+					: array_filter( array_map( 'trim', explode( ',', (string) $value ) ), fn( $token ): bool => '' !== $token );
 				$selected = array_map( 'strval', (array) $selected );
 
 				$html .= '<div class="conexao-multiselect">';
@@ -233,7 +233,7 @@ final class Conexao_Admin_Ux_Fields {
 				$html    .= '<option value="">' . esc_html__( '— Selecionar —', 'conexao-admin-ux' ) . '</option>';
 				if ( ! is_wp_error( $terms ) ) {
 					foreach ( $terms as $term ) {
-						$html .= '<option value="' . esc_attr( $term->term_id ) . '" ' . selected( (int) $selected, $term->term_id, false ) . '>' . esc_html( $term->name ) . '</option>';
+						$html .= '<option value="' . esc_attr( (string) $term->term_id ) . '" ' . selected( (int) $selected, $term->term_id, false ) . '>' . esc_html( $term->name ) . '</option>';
 					}
 				}
 				$html .= '</select>';
@@ -255,7 +255,7 @@ final class Conexao_Admin_Ux_Fields {
 						$opt_id  = $id . '-' . sanitize_html_class( $term->slug );
 						$checked = in_array( (int) $term->term_id, $current, true ) ? ' checked="checked"' : '';
 						$html   .= '<label class="conexao-taxonomy-multi-option" for="' . esc_attr( $opt_id ) . '">';
-						$html   .= '<input type="checkbox" id="' . esc_attr( $opt_id ) . '" name="conexao_taxonomies[' . esc_attr( $taxonomy ) . '][]" value="' . esc_attr( $term->term_id ) . '"' . $checked . ' />';
+						$html   .= '<input type="checkbox" id="' . esc_attr( $opt_id ) . '" name="conexao_taxonomies[' . esc_attr( $taxonomy ) . '][]" value="' . esc_attr( (string) $term->term_id ) . '"' . $checked . ' />';
 						$html   .= ' <span>' . esc_html( $term->name ) . '</span>';
 						$html   .= '</label>';
 					}
@@ -357,7 +357,7 @@ final class Conexao_Admin_Ux_Fields {
 					? Conexao_Data_Model_Contacts::types()
 					: array();
 
-				$html .= '<div class="conexao-contacts" data-next-index="' . esc_attr( count( $rows ) ) . '">';
+				$html .= '<div class="conexao-contacts" data-next-index="' . esc_attr( (string) count( $rows ) ) . '">';
 				$html .= '<div class="conexao-contacts-rows">';
 				foreach ( $rows as $row_index => $row ) {
 					$row_type = isset( $row['type'] ) ? $row['type'] : 'outro';
@@ -456,11 +456,7 @@ final class Conexao_Admin_Ux_Fields {
 			// save_event_recurrence() below so that invalid rules are never
 			// stored and switching back to "Evento único" clears the entire
 			// group.
-			if ( 'event' === get_post_type( $post_id ) && in_array(
-				$key,
-				array( '_event_recurrence', '_event_recurrence_days', '_event_recurrence_start', '_event_recurrence_end' ),
-				true
-			) ) {
+			if ( 'event' === get_post_type( $post_id ) && self::is_event_recurrence_key( $key ) ) {
 				continue;
 			}
 
@@ -524,7 +520,7 @@ final class Conexao_Admin_Ux_Fields {
 					$value = self::normalize_media_value( $value );
 					break;
 				case 'number':
-					$value = ( '' !== $value && null !== $value ) ? absint( $value ) : '';
+					$value = ( '' !== $value ) ? absint( $value ) : '';
 					break;
 				case 'coordinate':
 					// Geographic coordinate. An invalid submission must NOT
@@ -558,7 +554,7 @@ final class Conexao_Admin_Ux_Fields {
 					if ( is_array( $value ) ) {
 						$values = $value;
 					} else {
-						$values = array_filter( array_map( 'trim', explode( ',', (string) $value ) ), 'strlen' );
+						$values = array_filter( array_map( 'trim', explode( ',', (string) $value ) ), fn( $token ): bool => '' !== $token );
 					}
 					$options = isset( $field['options'] ) && is_array( $field['options'] ) ? $field['options'] : array();
 					$allowed = array_map( 'strval', array_keys( $options ) );
@@ -1294,7 +1290,7 @@ final class Conexao_Admin_Ux_Fields {
 		if ( is_array( $value ) ) {
 			$tokens = $value;
 		} else {
-			$tokens = array_filter( array_map( 'trim', explode( ',', (string) $value ) ), 'strlen' );
+			$tokens = array_filter( array_map( 'trim', explode( ',', (string) $value ) ), fn( $token ): bool => '' !== $token );
 		}
 
 		$days = array();

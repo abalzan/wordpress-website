@@ -385,7 +385,7 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 							while ( $popular_query->have_posts() ) : $popular_query->the_post(); ?>
 								<li>
 									<a href="<?php the_permalink(); ?>">
-										<span class="sidebar-list-number"><?php echo esc_html( $pop_count ); ?></span>
+										<span class="sidebar-list-number"><?php echo esc_html( (string) $pop_count ); ?></span>
 										<?php the_title(); ?>
 									</a>
 								</li>

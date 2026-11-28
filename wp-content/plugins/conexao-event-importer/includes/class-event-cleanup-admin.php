@@ -515,28 +515,28 @@ class Conexao_Event_Cleanup_Admin {
 				<div class="conexao-import-stat">
 					<span class="conexao-import-stat-label"><?php esc_html_e( 'Past events found (last run)', 'conexao-event-importer' ); ?></span>
 					<span class="conexao-import-stat-value">
-						<?php echo isset( $status['events_found'] ) ? esc_html( (int) $status['events_found'] ) : '&mdash;'; ?>
+						<?php echo isset( $status['events_found'] ) ? esc_html( (string) (int) $status['events_found'] ) : '&mdash;'; ?>
 					</span>
 				</div>
 
 				<div class="conexao-import-stat">
 					<span class="conexao-import-stat-label"><?php esc_html_e( 'Events deleted (last run)', 'conexao-event-importer' ); ?></span>
 					<span class="conexao-import-stat-value">
-						<?php echo isset( $status['events_deleted'] ) ? esc_html( (int) $status['events_deleted'] ) : '&mdash;'; ?>
+						<?php echo isset( $status['events_deleted'] ) ? esc_html( (string) (int) $status['events_deleted'] ) : '&mdash;'; ?>
 					</span>
 				</div>
 
 				<div class="conexao-import-stat">
 					<span class="conexao-import-stat-label"><?php esc_html_e( 'Images deleted (last run)', 'conexao-event-importer' ); ?></span>
 					<span class="conexao-import-stat-value">
-						<?php echo isset( $status['images_deleted'] ) ? esc_html( (int) $status['images_deleted'] ) : '&mdash;'; ?>
+						<?php echo isset( $status['images_deleted'] ) ? esc_html( (string) (int) $status['images_deleted'] ) : '&mdash;'; ?>
 					</span>
 				</div>
 
 				<div class="conexao-import-stat">
 					<span class="conexao-import-stat-label"><?php esc_html_e( 'Images preserved (last run)', 'conexao-event-importer' ); ?></span>
 					<span class="conexao-import-stat-value">
-						<?php echo isset( $status['images_preserved'] ) ? esc_html( (int) $status['images_preserved'] ) : '&mdash;'; ?>
+						<?php echo isset( $status['images_preserved'] ) ? esc_html( (string) (int) $status['images_preserved'] ) : '&mdash;'; ?>
 					</span>
 				</div>
 			</div>

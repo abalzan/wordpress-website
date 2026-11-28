@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-26 20:20+0000\n"
+"POT-Creation-Date: 2026-11-27 22:34+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 
 
@@ -254,10 +254,10 @@ msgstr ""
 #: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:436
 msgid "Abrir evento original ↗"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:886
+#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:887
 msgid "Não foi possível publicar."
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:894
+#: wp-content/plugins/conexao-admin-ux/includes/class-editor.php:895
 msgid "Preencha os campos obrigatórios antes de publicar."
 msgstr ""
 #: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:76
@@ -299,31 +299,31 @@ msgstr ""
 #: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:392
 msgid "—"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:927
+#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:923
 msgid "Tipo de contato"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:928
+#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:924
 msgid "Tipo…"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:941
+#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:937
 msgid "nome@exemplo.com"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:943
+#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:939
 msgid "https://wa.me/353… ou número com DDI"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:944
+#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:940
 msgid "https://"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:946
+#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:942
 msgid "Link do contato"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:949
+#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:945
 msgid "Mover para cima"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:950
+#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:946
 msgid "Mover para baixo"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:951
+#: wp-content/plugins/conexao-admin-ux/includes/class-fields.php:947
 msgid "Remover contato"
 msgstr ""
 #: wp-content/plugins/conexao-admin-ux/includes/class-leisure-image-admin.php:51
@@ -560,13 +560,13 @@ msgstr ""
 #: wp-content/plugins/conexao-admin-ux/includes/class-translation-state.php:321
 msgid "Adicionar tradução"
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-wikimedia-client.php:284
+#: wp-content/plugins/conexao-admin-ux/includes/class-wikimedia-client.php:279
 msgid "Tipo de arquivo n\\u00e3o suportado."
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-wikimedia-client.php:293
+#: wp-content/plugins/conexao-admin-ux/includes/class-wikimedia-client.php:288
 msgid "N\\u00e3o foi poss\\u00edvel ler o arquivo baixado."
 msgstr ""
-#: wp-content/plugins/conexao-admin-ux/includes/class-wikimedia-client.php:304
+#: wp-content/plugins/conexao-admin-ux/includes/class-wikimedia-client.php:299
 msgid "Tipo de arquivo n\\u00e3o permitido."
 msgstr ""
 
