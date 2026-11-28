@@ -175,6 +175,37 @@ FAIL: theme ZIP ships a file under tests/
 
 SECRET = "wp_app_pass_super_secret_value_9f3c"
 
+# A job that runs two layers APPENDS two complete summary blocks to one log: the
+# PHP layer first, then the acceptance layer — whose own block reports
+# `In-process PHP suites: 0` because that layer ran no PHP suite. A parser that
+# keeps the last match silently under-reports 153 as 0. This is the real shape of
+# the CI integration log (`run-tests-php.log`), taken from run 46077733894.
+TWO_BLOCK_LOG = """\
+In-process PHP suites (serial, one process per suite)
+[PASS] plugin/conexao-data-model/test-content-type-registration.php (2.10s) — 337 passed, 0 failed
+
+----------------------------------------
+In-process PHP suites: 153 total, 153 passed, 0 failed
+Assertions: 11631 passed, 0 failed
+----------------------------------------
+ALL TESTS PASSED
+
+In-process PHP suites (serial, one process per suite)
+
+----------------------------------------
+In-process PHP suites: 0 total, 0 passed, 0 failed
+HTTP acceptance suites: 5 total, 5 passed, 0 failed
+----------------------------------------
+ALL TESTS PASSED
+"""
+
+# The same two-block shape where the SECOND block reports the failure.
+TWO_BLOCK_LOG_SECOND_FAILS = TWO_BLOCK_LOG.replace(
+    "HTTP acceptance suites: 5 total, 5 passed, 0 failed",
+    "HTTP acceptance suites: 5 total, 4 passed, 1 failed",
+).replace("ALL TESTS PASSED\n", "ALL TESTS PASSED\n", 1) + "\nTESTS FAILED\nfailing suites:\n  - tests/acceptance/verify-routing-http.py\n"
+
+
 LINT_LOG_OK = """\
 ==> [1/3] PHP syntax check (php -l, 579 files)
 OK: no PHP parse errors.
@@ -225,6 +256,8 @@ def main() -> int:
         release = write("release.log", RELEASE_LOG)
         lint_ok = write("lint-ok.log", LINT_LOG_OK)
         lint_fail = write("lint-fail.log", LINT_LOG_FAIL)
+        two_block = write("two-block.log", TWO_BLOCK_LOG)
+        two_block_fail = write("two-block-fail.log", TWO_BLOCK_LOG_SECOND_FAILS)
 
 
         # -- 1. Passing harness log ----------------------------------------
@@ -318,6 +351,36 @@ def main() -> int:
         check(
             "theme ZIP ships a file under tests/" in out,
             "the second release FAIL detail is missing",
+        )
+
+        # -- 5b. Two appended summary blocks (the real integration log shape) --
+        rc, out = run("--kind=harness", f"--log={two_block}")
+        check(rc == 0, "a two-block log must exit 0")
+        check(
+            re.search(r"\|\s*In-process PHP suites\s*\|\s*153\s*\|\s*153\s*\|\s*0\s*\|", out) is not None,
+            "regression: the PHP layer total must survive a later '0 total' block (153, not 0)",
+        )
+        check(
+            re.search(r"\|\s*HTTP acceptance suites\s*\|\s*5\s*\|\s*5\s*\|\s*0\s*\|", out) is not None,
+            "regression: the acceptance layer total must be reported alongside the PHP total",
+        )
+        check(
+            re.search(r"\|\s*Assertions \(in-process PHP\)\s*\|\s*11631\s*\|\s*11631\s*\|\s*0\s*\|", out) is not None,
+            "regression: the assertion count must survive a later block",
+        )
+
+        rc, out = run("--kind=harness", f"--log={two_block_fail}")
+        check(
+            "TESTS FAILED" in out,
+            "regression: a failure in the SECOND block must win over a pass in the first",
+        )
+        check(
+            "ALL TESTS PASSED" not in out,
+            "regression: a two-block log whose second block fails must never report an overall pass",
+        )
+        check(
+            "verify-routing-http.py" in out,
+            "regression: the second block's failing-suite name must be listed",
         )
 
         # -- 6. lint.sh ----------------------------------------------------

@@ -145,31 +145,52 @@ function conexao_ci_summary_harness( $log, $max ) {
 	$verdict = '';
 	$in_fail = false;
 
+	/**
+	 * Keep the ROW WITH THE LARGEST TOTAL for a layer.
+	 *
+	 * A job that runs two layers appends two complete summary blocks to one log:
+	 * the PHP layer (`--php`) prints `In-process PHP suites: 153 …`, then the
+	 * acceptance layer (`--acceptance`) prints its own block, which reports
+	 * `In-process PHP suites: 0 …` because that layer ran no PHP suite. Taking the
+	 * LAST match would therefore replace 153 with 0 and under-report the run. The
+	 * largest total is the one that actually describes the layer.
+	 *
+	 * @param array<int, int>|null $current Current row.
+	 * @param array<int, int>      $candidate Candidate row.
+	 * @return array<int, int>
+	 */
+	$keep_largest = static function ( $current, array $candidate ) {
+		if ( null === $current ) {
+			return $candidate;
+		}
+		return ( $candidate[0] > $current[0] ) ? $candidate : $current;
+	};
+
 	foreach ( $lines as $line ) {
 		$line = rtrim( $line, "\r" );
 
 		if ( preg_match( '/^In-process PHP suites: (\d+) total, (\d+) passed, (\d+) failed/', $line, $m ) ) {
-			$totals['php'] = array( (int) $m[1], (int) $m[2], (int) $m[3] );
+			$totals['php'] = $keep_largest( $totals['php'], array( (int) $m[1], (int) $m[2], (int) $m[3] ) );
 			continue;
 		}
 		if ( preg_match( '/^Assertions: (\d+) passed, (\d+) failed/', $line, $m ) ) {
-			$totals['assert'] = array( (int) $m[1], (int) $m[2] );
+			$totals['assert'] = $keep_largest( $totals['assert'], array( (int) $m[1], (int) $m[2] ) );
 			continue;
 		}
 		if ( preg_match( '/^Script-contract suites: (\d+) total, (\d+) passed, (\d+) failed/', $line, $m ) ) {
-			$totals['scripts'] = array( (int) $m[1], (int) $m[2], (int) $m[3] );
+			$totals['scripts'] = $keep_largest( $totals['scripts'], array( (int) $m[1], (int) $m[2], (int) $m[3] ) );
 			continue;
 		}
 		if ( preg_match( '/^HTTP acceptance suites: (\d+) total, (\d+) passed, (\d+) failed/', $line, $m ) ) {
-			$totals['accept'] = array( (int) $m[1], (int) $m[2], (int) $m[3] );
+			$totals['accept'] = $keep_largest( $totals['accept'], array( (int) $m[1], (int) $m[2], (int) $m[3] ) );
 			continue;
 		}
 		if ( preg_match( '/WordPress bootstrap failures: (\d+)/', $line, $m ) ) {
-			$totals['blocked'] = (int) $m[1];
+			$totals['blocked'] = max( (int) $totals['blocked'], (int) $m[1] );
 			continue;
 		}
 		if ( preg_match( '/prerequisite failures:\s+(\d+)/', $line, $m ) ) {
-			$totals['prereq'] = (int) $m[1];
+			$totals['prereq'] = max( (int) $totals['prereq'], (int) $m[1] );
 			continue;
 		}
 		if ( false !== strpos( $line, 'acceptance environment: BLOCKED' ) ) {
@@ -181,7 +202,11 @@ function conexao_ci_summary_harness( $log, $max ) {
 			continue;
 		}
 		if ( preg_match( '/^(ALL TESTS PASSED|TESTS FAILED)$/', $line, $m ) ) {
-			$verdict = $m[1];
+			// A log can hold several summary blocks; a failure in ANY of them
+			// must win over a pass in an earlier one.
+			if ( 'TESTS FAILED' === $m[1] || '' === $verdict ) {
+				$verdict = $m[1];
+			}
 			continue;
 		}
 		if ( 'failing suites:' === $line ) {
@@ -190,7 +215,10 @@ function conexao_ci_summary_harness( $log, $max ) {
 		}
 		if ( $in_fail ) {
 			if ( preg_match( '/^\s+- (.+)$/', $line, $m ) ) {
-				$failing[] = trim( $m[1] );
+				$name = trim( $m[1] );
+				if ( ! in_array( $name, $failing, true ) ) {
+					$failing[] = $name;
+				}
 				continue;
 			}
 			$in_fail = false;
@@ -201,7 +229,6 @@ function conexao_ci_summary_harness( $log, $max ) {
 		conexao_ci_summary_unavailable( 'the harness log contained no recognisable run-tests.sh summary block' );
 		return;
 	}
-
 	if ( 'ALL TESTS PASSED' === $verdict ) {
 		echo ':white_check_mark: **ALL TESTS PASSED**' . "\n\n";
 	} elseif ( 'TESTS FAILED' === $verdict ) {
