@@ -158,5 +158,82 @@ for `wp-content/` only — no production probing and no coverage of WordPress co
 or third-party code. That is stated rather than implied, because "the reviewed
 paths pass" is not "the application is secure".
 
-_Last verified: 2026-11-27 by the REST/admin write security audit_
+## 9. Extension — 2026-11-28: scheduled write paths and computed metadata keys
+
+This section extends the audit above. It does not revise §1–§8; it closes the
+two gaps §2 and finding I-3 recorded as open.
+
+### 9.1 Scope added
+
+| Added surface | Method |
+|---|---|
+| **Scheduled write paths** — `wp_schedule_event()` / `wp_schedule_single_event()` | enumerated, traced to their callbacks, and permanently gated (detector E) |
+| **Computed metadata keys** — 13 registrations previously "statically undecidable" | resolved from source and judged exactly like a literal key (detector D extended) |
+
+### 9.2 Scheduled write-path inventory (2 hooks)
+
+| Hook | Owner | Registered | Callback | Arguments | Concurrency | Verdict |
+|---|---|---|---|---|---|---|
+| `conexao_commemorative_boundary` | `conexao-commemorative` (production) | `add_action( self::HOOK, array( __CLASS__, 'handle_scheduled_boundary' ) )` | cache flush + re-arm | **none** (deliberate: `wp_clear_scheduled_hook()` can then always clear it) | `acquire_lock()`/`release_lock()` around the per-request fallback | no finding |
+| `conexao_event_import_continuation` | `conexao-event-importer` (`production: false`) | plugin bootstrap closure → `handle_cron()` → `run_due()` | resumes one source's enumeration | source slug, re-read from the persisted record and refused unless `state === scheduled` | per-source `acquire_lock( $id )` | no finding |
+
+Neither callback reads a request superglobal, neither hook is also an
+`admin_post_*`/`wp_ajax_*` surface, and the two `shutdown`/`wp_loaded` fail-safes
+are **different hooks** — so no request can trigger a scheduled write.
+
+**Deliberate non-requirement:** a cron callback is *not* required to carry a
+nonce or `current_user_can()`. There is no authenticated user at cron time;
+demanding one would make the feature unreachable or push an author to fake a
+system nonce. The applicable properties are registration, resolvability,
+request-independence and argument identity, and those are what the gate now
+enforces.
+
+### 9.3 Computed metadata keys (0 undecided, 116 keys resolved)
+
+The detector now resolves `self::CONST` / `Class::CONST` (including a constant
+declared in another file), `foreach` over an array literal, a local array
+variable, a static property array, the nested
+`foreach ( $fields as $key => $type )` shape, and `array_merge()` of class
+constants. Coverage went from **13 undecided** to **0**, with **116 keys**
+resolved.
+
+Two loops registered **protected** keys as `show_in_rest => true` without an
+declared `auth_callback` (the `_provider_*` loop and the legacy editorial-fields
+loop). WordPress already fails those closed — `wp-includes/meta.php:1512-1516`
+falls back to `__return_false` for a protected key — so the runtime behaviour was
+already "REST reads yes, REST writes never". The remediation declares
+`'auth_callback' => '__return_false'` explicitly, which is **provably
+behaviour-identical** (it is the callback WordPress would have installed) and
+makes the decision statically auditable. `conexao-data-model` `1.8.0 → 1.8.1`.
+
+**Accepted residual risk: none.** No REST client gained or lost a capability. A
+future change that *wants* REST writes for those fields must now declare a real
+capability check, and the gate will require it.
+
+### 9.4 Tests and proofs added
+
+| Evidence | Result |
+|---|---|
+| `python3 tests/scripts/verify-write-endpoint-authorization.py` | `audited: 34 handlers, 2 REST routes, 21 meta registrations, 2 scheduled write paths`; `116 keys resolved, 0 undecided`; **29 passed, 0 failed** (was 17) |
+| Detector negative proofs (in-gate) | computed-meta violation caught; nested/loop key sets resolve; unregistered scheduled hook caught; `$_GET` in a cron callback caught; scheduled hook doubling as `admin_post_*` caught; both green controls clean |
+| Real-file mutation: remove the declared `auth_callback` from `class-meta.php` | **exit 1**, naming all 11 computed keys |
+| Real-file mutation: read `$_GET` inside `handle_scheduled_boundary()` | **exit 1**, naming the hook and callback |
+| Both mutations reverted | **exit 0**, `29 passed, 0 failed` |
+
+### 9.5 Limitations of the extension
+
+Carried over from §6, plus: scheduled-path evidence is **static only** (no
+production cron was run or observed); delegation is followed 3 hops and
+class-scoped across files; and the gate proves structure, not business-logic
+correctness. WordPress core, Jetpack, Polylang and the hosting platform remain
+out of scope.
+
+### 9.6 Status of the extension
+
+**PASS WITH LIMITATION.** Both previously open gaps are closed and permanently
+enforced. The full narrative, inventory and proofs are in
+[`2026-11-28-scheduled-and-computed-meta-security.md`](2026-11-28-scheduled-and-computed-meta-security.md).
+
+_Last verified: 2026-11-28 by the REST/admin write security audit (extended with the 2026-11-28 scheduled-path and computed-meta sections; §1–§8 preserved as the 2026-11-27 record)_
+
 
