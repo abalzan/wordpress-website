@@ -231,7 +231,7 @@ class Conexao_Source_Motorsport_Ireland extends Conexao_Source_Base {
 		}
 
 		$xpath = new DOMXPath( $dom );
-		$cards  = $xpath->query( '//article[contains(concat(" ", normalize-space(@class), " "), " eventlist-event--upcoming ")]' );
+		$cards = $xpath->query( '//article[contains(concat(" ", normalize-space(@class), " "), " eventlist-event--upcoming ")]' );
 
 		if ( ! $cards || 0 === $cards->length ) {
 			$cards = $xpath->query( '//article[contains(concat(" ", normalize-space(@class), " "), " eventlist-event ") and not(contains(concat(" ", normalize-space(@class), " "), " eventlist-event--past "))]' );
@@ -242,6 +242,10 @@ class Conexao_Source_Motorsport_Ireland extends Conexao_Source_Base {
 		}
 
 		foreach ( $cards as $card ) {
+			$card = self::as_element( $card );
+			if ( ! $card ) {
+				continue;
+			}
 			$event = self::parse_listing_card( $card, $xpath, $base_url );
 			if ( empty( $event ) ) {
 				continue;
@@ -302,7 +306,8 @@ class Conexao_Source_Motorsport_Ireland extends Conexao_Source_Base {
 		} else {
 			$uid_nodes = $xpath->query( './/*[starts-with(@id, "item-")]', $card );
 			if ( $uid_nodes && $uid_nodes->length > 0 ) {
-				$uid_attr = $uid_nodes->item( 0 )->getAttribute( 'id' );
+				$uid_node = self::as_element( $uid_nodes->item( 0 ) );
+				$uid_attr = $uid_node ? $uid_node->getAttribute( 'id' ) : '';
 				if ( preg_match( '/^item-([0-9a-fA-F]+)$/', $uid_attr, $m ) ) {
 					$event['source_id'] = $m[1];
 				}
@@ -315,8 +320,11 @@ class Conexao_Source_Motorsport_Ireland extends Conexao_Source_Base {
 			$title_node = $title_nodes->item( 0 );
 			$link       = $xpath->query( './/a[@href]', $title_node );
 			if ( $link && $link->length > 0 ) {
-				$event['url']   = self::resolve_url_static( $link->item( 0 )->getAttribute( 'href' ), $base_url );
-				$event['title'] = self::clean_text( $link->item( 0 )->textContent );
+				$title_link = self::as_element( $link->item( 0 ) );
+				if ( $title_link ) {
+					$event['url']   = self::resolve_url_static( $title_link->getAttribute( 'href' ), $base_url );
+					$event['title'] = self::clean_text( $title_link->textContent );
+				}
 			}
 			if ( '' === $event['title'] ) {
 				$event['title'] = self::clean_text( $title_node->textContent );
@@ -328,6 +336,10 @@ class Conexao_Source_Motorsport_Ireland extends Conexao_Source_Base {
 			$any_link = $xpath->query( './/a[@href]', $card );
 			if ( $any_link && $any_link->length > 0 ) {
 				foreach ( $any_link as $a ) {
+					$a = self::as_element( $a );
+					if ( ! $a ) {
+						continue;
+					}
 					$href = $a->getAttribute( 'href' );
 					if ( preg_match( '#/events/[^/]+#', $href ) ) {
 						$event['url'] = self::resolve_url_static( $href, $base_url );
@@ -340,8 +352,9 @@ class Conexao_Source_Motorsport_Ireland extends Conexao_Source_Base {
 		// HTML datetime fallback (used only when JSON-LD is unavailable).
 		$time_nodes = $xpath->query( './/time[@datetime]', $card );
 		if ( $time_nodes && $time_nodes->length > 0 ) {
-			$dt     = $time_nodes->item( 0 )->getAttribute( 'datetime' );
-			$parsed = self::parse_html_datetime( $dt );
+			$time_node = self::as_element( $time_nodes->item( 0 ) );
+			$dt        = $time_node ? $time_node->getAttribute( 'datetime' ) : '';
+			$parsed    = self::parse_html_datetime( $dt );
 			if ( '' !== $parsed['date'] ) {
 				$event['start_date'] = $parsed['date'];
 				$event['start_time'] = $parsed['time'];
@@ -475,14 +488,14 @@ class Conexao_Source_Motorsport_Ireland extends Conexao_Source_Base {
 			$end   = isset( $event_data['endDate'] ) ? (string) $event_data['endDate'] : '';
 
 			if ( '' !== $start ) {
-				$parsed                = self::parse_ist_iso_datetime( $start );
-				$result['start_date']  = $parsed['date'];
-				$result['start_time']  = $parsed['time'];
+				$parsed               = self::parse_ist_iso_datetime( $start );
+				$result['start_date'] = $parsed['date'];
+				$result['start_time'] = $parsed['time'];
 			}
 			if ( '' !== $end ) {
-				$parsed              = self::parse_ist_iso_datetime( $end );
-				$result['end_date']  = $parsed['date'];
-				$result['end_time']  = $parsed['time'];
+				$parsed             = self::parse_ist_iso_datetime( $end );
+				$result['end_date'] = $parsed['date'];
+				$result['end_time'] = $parsed['time'];
 			}
 
 			if ( '' !== $result['start_date'] ) {
@@ -496,7 +509,11 @@ class Conexao_Source_Motorsport_Ireland extends Conexao_Source_Base {
 	/**
 	 * Find the first schema.org/Event object in decoded JSON-LD data.
 	 *
-	 * @param array $data Decoded JSON-LD data.
+	 * The parameter is `mixed` on purpose: callers pass `json_decode(...)`
+	 * output, which is any JSON value. The `is_array()` guard below is the
+	 * real type check, not a redundant one.
+	 *
+	 * @param mixed $data Decoded JSON-LD data.
 	 * @return array|null Event object or null.
 	 */
 	protected static function find_jsonld_event( $data ) {
@@ -701,6 +718,13 @@ class Conexao_Source_Motorsport_Ireland extends Conexao_Source_Base {
 		}
 
 		$clone = $container->cloneNode( true );
+
+		// Elements are the only nodes that expose `getElementsByTagName()`.
+		// A non-element container (a bare text node) has no descendants to
+		// clean, so its own text is the whole visible content.
+		if ( ! $clone instanceof DOMElement ) {
+			return self::clean_text( self::strip_css_leak( $container->textContent ) );
+		}
 
 		foreach ( array( 'style', 'script' ) as $tag ) {
 			$list = $clone->getElementsByTagName( $tag );

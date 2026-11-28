@@ -94,11 +94,11 @@ defined( 'ABSPATH' ) || exit;
 
 class Conexao_Source_Mondello_Park extends Conexao_Source_Base {
 
-	const SOURCE_KEY          = 'mondellopark';
+	const SOURCE_KEY            = 'mondellopark';
 	const DEFAULT_DISCOVERY_URL = 'https://mondellopark.ie/wp-json/wp/v2/events?per_page=100';
-	const DETAIL_URL_PATTERN  = 'https://mondellopark.ie/events/%s/';
-	const MAX_DETAIL_PAGES    = 60;
-	const DEFAULT_CRAWL_DELAY = 1.0;
+	const DETAIL_URL_PATTERN    = 'https://mondellopark.ie/events/%s/';
+	const MAX_DETAIL_PAGES      = 60;
+	const DEFAULT_CRAWL_DELAY   = 1.0;
 
 	public function get_http_user_agent() {
 		return apply_filters(
@@ -199,7 +199,7 @@ class Conexao_Source_Mondello_Park extends Conexao_Source_Base {
 			return array();
 		}
 
-		$events    = array();
+		$events     = array();
 		$seen_slugs = array();
 
 		foreach ( $json as $item ) {
@@ -218,13 +218,13 @@ class Conexao_Source_Mondello_Park extends Conexao_Source_Base {
 			}
 			$seen_slugs[ $slug ] = true;
 
-			$id        = isset( $item['id'] ) ? (int) $item['id'] : 0;
-			$title_raw = isset( $item['title']['rendered'] )
+			$id         = isset( $item['id'] ) ? (int) $item['id'] : 0;
+			$title_raw  = isset( $item['title']['rendered'] )
 				? (string) $item['title']['rendered']
 				: (string) ( $item['title'] ?? '' );
-			$title     = html_entity_decode( $title_raw, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
-			$title     = trim( $title );
-			$link      = isset( $item['link'] ) ? (string) $item['link'] : '';
+			$title      = html_entity_decode( $title_raw, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+			$title      = trim( $title );
+			$link       = isset( $item['link'] ) ? (string) $item['link'] : '';
 			$categories = isset( $item['event_category'] )
 				? (array) $item['event_category']
 				: array();
@@ -274,7 +274,7 @@ class Conexao_Source_Mondello_Park extends Conexao_Source_Base {
 				'_parse_warnings'       => array(),
 			);
 
-			$mapped_categories = self::map_categories( $categories );
+			$mapped_categories         = self::map_categories( $categories );
 			$raw['category']           = isset( $mapped_categories[0] ) ? (string) $mapped_categories[0] : '';
 			$raw['_source_categories'] = $mapped_categories;
 
@@ -304,7 +304,7 @@ class Conexao_Source_Mondello_Park extends Conexao_Source_Base {
 	 * @return array[]
 	 */
 	public function fetch_event_details( $events ) {
-		$max_detail = isset( $this->config['max_detail_pages'] )
+		$max_detail  = isset( $this->config['max_detail_pages'] )
 			? max( 1, (int) $this->config['max_detail_pages'] )
 			: self::MAX_DETAIL_PAGES;
 		$crawl_delay = isset( $this->config['crawl_delay'] )
@@ -331,7 +331,7 @@ class Conexao_Source_Mondello_Park extends Conexao_Source_Base {
 			try {
 				$html = $this->fetch_html( $url );
 				if ( empty( $html ) ) {
-					$event['_no_detail'] = true;
+					$event['_no_detail']        = true;
 					$event['_parse_warnings'][] = sprintf( 'Página de detalhe vazia: %s', $url );
 				} else {
 					$this->enrich_from_html( $event, $html, $url );
@@ -339,18 +339,18 @@ class Conexao_Source_Mondello_Park extends Conexao_Source_Base {
 			} catch ( Conexao_Source_Fetch_Exception $e ) {
 				$code = $e->getCode();
 				if ( in_array( $code, array( 301, 302, 307, 308 ), true ) ) {
-					$event['_redirect'] = $url;
+					$event['_redirect']         = $url;
 					$event['_parse_warnings'][] = sprintf(
 						'Página de detalhe redireciona (%d): %s', $code, $url
 					);
 				} else {
-					$event['_no_detail'] = true;
+					$event['_no_detail']        = true;
 					$event['_parse_warnings'][] = sprintf(
 						'Falha ao buscar detalhe (%d): %s', $code, $url
 					);
 				}
 			} catch ( Exception $e ) {
-				$event['_no_detail'] = true;
+				$event['_no_detail']        = true;
 				$event['_parse_warnings'][] = sprintf(
 					'Erro inesperado no detalhe: %s', $e->getMessage()
 				);
@@ -504,7 +504,8 @@ class Conexao_Source_Mondello_Park extends Conexao_Source_Base {
 			'//a[contains(concat(" ", normalize-space(@class), " "), " book-now ")]' 
 		);
 		if ( $book_now && $book_now->length > 0 ) {
-			$href = $book_now->item( 0 )->getAttribute( 'href' );
+			$book_now_node = self::as_element( $book_now->item( 0 ) );
+			$href          = $book_now_node ? $book_now_node->getAttribute( 'href' ) : '';
 			if ( '' !== $href ) {
 				return self::strip_utm( $href );
 			}
@@ -519,8 +520,8 @@ class Conexao_Source_Mondello_Park extends Conexao_Source_Base {
 			// button before the primary "Book Now" button, so DOM order
 			// alone selects the wrong show ID (verified 2026-09-12).
 			for ( $i = 0; $i < $ts_links->length; $i++ ) {
-				$node  = $ts_links->item( $i );
-				$label = strtolower( trim( $this->extract_text( $node ) ) );
+				$node  = self::as_element( $ts_links->item( $i ) );
+				$label = $node ? strtolower( trim( $this->extract_text( $node ) ) ) : '';
 				if ( '' !== $label && false !== strpos( $label, 'book now' ) ) {
 					$href = $node->getAttribute( 'href' );
 					if ( '' !== $href ) {
@@ -530,7 +531,8 @@ class Conexao_Source_Mondello_Park extends Conexao_Source_Base {
 			}
 
 			// Fallback: first Ticketsolve link in DOM order.
-			$href = $ts_links->item( 0 )->getAttribute( 'href' );
+			$first_link = self::as_element( $ts_links->item( 0 ) );
+			$href       = $first_link ? $first_link->getAttribute( 'href' ) : '';
 			if ( '' !== $href ) {
 				return self::strip_utm( $href );
 			}
@@ -562,7 +564,11 @@ class Conexao_Source_Mondello_Park extends Conexao_Source_Base {
 		);
 		if ( $ts_links ) {
 			for ( $i = 0; $i < $ts_links->length; $i++ ) {
-				$show_id = self::show_id_from_url( $ts_links->item( $i )->getAttribute( 'href' ) );
+				$link_node = self::as_element( $ts_links->item( $i ) );
+				if ( ! $link_node ) {
+					continue;
+				}
+				$show_id = self::show_id_from_url( $link_node->getAttribute( 'href' ) );
 				if ( '' !== $show_id && ! in_array( $show_id, $ids, true ) ) {
 					$ids[] = $show_id;
 				}
@@ -619,7 +625,11 @@ class Conexao_Source_Mondello_Park extends Conexao_Source_Base {
 	/**
 	 * Convert Mondello Park REST category IDs to Conexão category names.
 	 *
-	 * @param int[] $category_ids
+	 * The parameter is `mixed` on purpose: callers pass the decoded REST
+	 * payload member (`$raw['_source_categories']`), which is not guaranteed
+	 * to be an array. The `is_array()` guard below is the real type check.
+	 *
+	 * @param mixed $category_ids
 	 * @return string[]
 	 */
 	public static function map_categories( $category_ids ) {
@@ -643,7 +653,7 @@ class Conexao_Source_Mondello_Park extends Conexao_Source_Base {
 				if ( isset( $mapping[ $cid ] ) ) {
 					$name = $mapping[ $cid ];
 					if ( ! isset( $seen[ $name ] ) ) {
-						$mapped[]   = $name;
+						$mapped[]      = $name;
 						$seen[ $name ] = true;
 					}
 				} else {
@@ -676,14 +686,18 @@ class Conexao_Source_Mondello_Park extends Conexao_Source_Base {
 	}
 
 	/**
-	 * Extract text from a DOMElement.
+	 * Extract the text of a DOM node.
 	 *
-	 * @param DOMElement $node
-	 * @param string     $selector Optional CSS selector (ignored; returns node text).
+	 * `DOMXPath::query()`/`DOMNodeList::item()` are nullable and dynamically
+	 * typed, so the element guard lives here once instead of at every call
+	 * site. A non-element (or missing) node yields '' — the same result as an
+	 * element with no text.
+	 *
+	 * @param DOMNode|null $node Node to extract from.
 	 * @return string
 	 */
-	protected function extract_text( $node, $selector = '' ) {
-		if ( ! $node ) {
+	protected function extract_text( $node ) {
+		if ( ! $node instanceof DOMElement ) {
 			return '';
 		}
 		return self::clean_text( trim( $node->textContent ) );
@@ -822,12 +836,15 @@ class Conexao_Source_Mondello_Park extends Conexao_Source_Base {
 	 * @return int|false
 	 */
 	protected static function month_name_to_number( $name ) {
-		$map = array(
+		$map  = array(
 			'january' => 1, 'february' => 2, 'march' => 3, 'april' => 4,
 			'may' => 5, 'june' => 6, 'july' => 7, 'august' => 8,
 			'september' => 9, 'october' => 10, 'november' => 11, 'december' => 12,
 			'jan' => 1, 'feb' => 2, 'mar' => 3, 'apr' => 4,
-			'may' => 5, 'jun' => 6, 'jul' => 7, 'aug' => 8,
+			// May has no abbreviation of its own — its short form IS 'may',
+			// already mapped above. A duplicate key here would be silently
+			// collapsed by PHP and hide that fact.
+			'jun' => 6, 'jul' => 7, 'aug' => 8,
 			'sep' => 9, 'oct' => 10, 'nov' => 11, 'dec' => 12,
 		);
 		$name = strtolower( (string) $name );

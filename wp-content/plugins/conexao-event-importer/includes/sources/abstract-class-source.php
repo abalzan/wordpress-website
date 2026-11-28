@@ -365,18 +365,45 @@ abstract class Conexao_Source_Base {
 	}
 
 	/**
-	 * Extract text from a DOMElement.
+	 * Narrow a DOM node to an element.
 	 *
-	 * @param DOMElement $node     Node to extract from.
-	 * @param string     $selector CSS selector (basic).
-	 * @return string
+	 * DOM traversal in these parsers is dynamically typed: `DOMXPath::query()`
+	 * returns `DOMNodeList|false`, `DOMNodeList::item()` returns `?DOMNode`,
+	 * and iterating a node list may yield a `DOMNameSpaceNode`. None of those
+	 * expose the element-only APIs the parsers rely on (`getAttribute()`,
+	 * `getElementsByTagName()`), so every attribute read funnels through this
+	 * single guard instead of an unchecked call on a wider type.
+	 *
+	 * A non-element node is never cast, guessed or re-queried: the caller
+	 * treats `null` exactly as it treats an element that lacks the attribute,
+	 * which is what the previous unchecked call produced in practice (the
+	 * attribute was simply absent). Unexpected node types therefore fail
+	 * safely instead of raising.
+	 *
+	 * @param mixed $node Candidate node.
+	 * @return DOMElement|null The element, or null for any other node type.
 	 */
-	protected function extract_text( $node, $selector = '' ) {
-		if ( $selector ) {
-			$found = $node->querySelector( $selector );
-			if ( $found ) {
-				return trim( $found->textContent );
-			}
+	protected static function as_element( $node ) {
+		return $node instanceof DOMElement ? $node : null;
+	}
+
+	/**
+	 * Extract the text of a DOM node.
+	 *
+	 * Accepts `DOMNode|null` because `DOMNodeList::item()` is nullable: the
+	 * null case is decided here once rather than at every call site.
+	 *
+	 * There is deliberately no CSS-selector parameter. PHP's DOM extension
+	 * exposes no `querySelector()` on `DOMElement` (only the separate PHP 8.4
+	 * `Dom\Element` API has one), so a selector could never be honoured. The
+	 * previous signature advertised one and would have raised on an undefined
+	 * method had any caller passed it; no caller ever did.
+	 *
+	 * @param DOMNode|null $node Node to extract from.
+	 * @return string Trimmed text, or '' for a non-element / missing node.
+	 */
+	protected function extract_text( $node ) {
+		if ( ! $node instanceof DOMElement ) {
 			return '';
 		}
 		return trim( $node->textContent );
@@ -563,19 +590,19 @@ abstract class Conexao_Source_Base {
 			'timeout'    => 30,
 			'user-agent' => $this->get_http_user_agent(),
 		);
-		$args = array_merge( $default_args, $args );
+		$args         = array_merge( $default_args, $args );
 
 		$this->respect_request_delay();
 
-		$max_retries   = (int) apply_filters( 'conexao_event_importer_http_max_retries', self::HTTP_MAX_RETRIES );
+		$max_retries     = (int) apply_filters( 'conexao_event_importer_http_max_retries', self::HTTP_MAX_RETRIES );
 		$rate_limit_hits = 0;
-		$last_code     = 0;
+		$last_code       = 0;
 
 		for ( $attempt = 1; $attempt <= $max_retries; $attempt++ ) {
-			$started = microtime( true );
-			$response = $this->request_get( $url, $args );
+			$started                      = microtime( true );
+			$response                     = $this->request_get( $url, $args );
 			$this->http_last_request_time = microtime( true );
-			$duration = (float) ( $this->http_last_request_time - $started );
+			$duration                     = (float) ( $this->http_last_request_time - $started );
 
 			if ( is_wp_error( $response ) ) {
 				Conexao_Import_Log::add(
@@ -599,16 +626,16 @@ abstract class Conexao_Source_Base {
 				continue;
 			}
 
-			$code      = (int) wp_remote_retrieve_response_code( $response );
-			$last_code = $code;
-			$headers   = wp_remote_retrieve_headers( $response );
-			$content_type     = isset( $headers['content-type'] ) ? (string) $headers['content-type'] : '';
+			$code               = (int) wp_remote_retrieve_response_code( $response );
+			$last_code          = $code;
+			$headers            = wp_remote_retrieve_headers( $response );
+			$content_type       = isset( $headers['content-type'] ) ? (string) $headers['content-type'] : '';
 			$retry_after_header = isset( $headers['retry-after'] ) ? (string) $headers['retry-after'] : '';
-			$retry_after = '' !== $retry_after_header
+			$retry_after        = '' !== $retry_after_header
 				? self::parse_retry_after( $retry_after_header )
 				: null;
 
-			$body = wp_remote_retrieve_body( $response );
+			$body         = wp_remote_retrieve_body( $response );
 			$body_preview = substr( strip_tags( (string) $body ), 0, 200 );
 
 			Conexao_Import_Log::add(

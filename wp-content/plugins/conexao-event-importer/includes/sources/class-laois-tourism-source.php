@@ -160,7 +160,8 @@ class Conexao_Source_Laois_Tourism extends Conexao_Source_Base {
 		// URL: find the first link.
 		$link = $xpath->query( './/a', $node );
 		if ( $link && $link->length > 0 ) {
-			$href = $link->item( 0 )->getAttribute( 'href' );
+			$anchor = self::as_element( $link->item( 0 ) );
+			$href   = $anchor ? $anchor->getAttribute( 'href' ) : '';
 			if ( $href ) {
 				$event['url'] = $this->resolve_url( $href, $base );
 			}
@@ -174,7 +175,8 @@ class Conexao_Source_Laois_Tourism extends Conexao_Source_Base {
 		// Image: find the first image.
 		$img = $xpath->query( './/img', $node );
 		if ( $img && $img->length > 0 ) {
-			$src = $img->item( 0 )->getAttribute( 'src' );
+			$image = self::as_element( $img->item( 0 ) );
+			$src   = $image ? $image->getAttribute( 'src' ) : '';
 			if ( $src ) {
 				$event['image'] = $this->resolve_url( $src, $base );
 			}

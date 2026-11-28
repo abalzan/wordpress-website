@@ -564,8 +564,11 @@ class Conexao_Source_ICalendar extends Conexao_Source_Base {
 				$hour = (int) $matches[4];
 				$min  = (int) $matches[5];
 
-				// If UTC (Z suffix), convert to Dublin time.
-				if ( isset( $matches[7] ) && 'Z' === $matches[7] ) {
+				// If UTC (Z suffix), convert to Dublin time. The regex makes
+				// the optional group contain only a literal 'Z', so "the group
+				// matched" is exactly "the value is UTC" — comparing the
+				// captured string again would be redundant.
+				if ( isset( $matches[7] ) ) {
 					$timestamp = mktime( $hour, $min, 0, (int) $matches[2], (int) $matches[3], (int) $matches[1] );
 					if ( $timestamp ) {
 						// Convert to Europe/Dublin.

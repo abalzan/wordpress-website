@@ -174,6 +174,10 @@ class Conexao_Lazer_Importer {
 	 * @return int|false Index of the entry, or false.
 	 */
 	protected function find_zip_entry( $zip, $basename ) {
+		// `ZipArchive::$numFiles` is PHP's own camelCase property; it cannot be
+		// renamed to satisfy the naming sniff, and this is the only place the
+		// repository reads it.
+		// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 		for ( $i = 0; $i < $zip->numFiles; $i++ ) {
 			$name = $zip->getNameIndex( $i );
 			if ( basename( $name ) === $basename ) {
