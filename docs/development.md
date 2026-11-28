@@ -110,6 +110,50 @@ every workflow input are unchanged. The approved set is normative in
 [engineering-standard.md](engineering-standard.md) §1.7; moving to a higher
 major is a separate change, not routine upkeep.
 
+### Reporting and failure diagnostics
+
+Every blocking job now writes a **GitHub Actions job summary** and uploads an
+**evidence artifact**, so a red run can be diagnosed from the run page without
+re-running anything locally. Both are produced from what actually executed — no
+analyser, test layer or gate is invoked a second time just to report on it.
+
+| Job | Summary (`$GITHUB_STEP_SUMMARY`) | Artifact |
+|---|---|---|
+| Static quality | `lint.sh` verdict, the PHP-syntax file count, the PHPCS legacy-baseline counts, whether new PHPCS violations exist, and the PHPStan result; on failure the structured PHPStan report is summarised with per-file counts and the first messages | `static-quality-evidence`: `lint.log`, and on failure `phpstan.json` + `phpcs.json` |
+| Release integrity | the gate's `N passed, M failed` total and **every** `FAIL:` line | `release-manifest`: `dist/release.json` + the gate log |
+| Script contracts | per-layer totals, assertion counts, non-PASS suites and the harness's own failing-suite list, for both the static and the PHP-backed runs | `script-contract-evidence` (existing) |
+| Integration | the same harness table for the PHP and HTTP layers, plus one row per permanent gate with the **new vs pre-existing** violation split | `integration-evidence`: the harness log, service logs and `gate.json` |
+
+`scripts/ci-summary.php` renders all of it (see
+[`scripts/README.md`](../scripts/README.md)); `tests/scripts/verify-ci-summary-output.py`
+is the blocking gate over the renderer, including mutation-based negative
+controls that prove the gate can go red.
+
+Three rules make the reporting safe:
+
+1. **Reporting never decides a verdict.** Each summary step runs with
+   `if: always()` and every renderer call is `|| true`; the renderer itself
+   always exits 0. A missing input prints a visible `Summary unavailable` notice
+   rather than failing silently — or, worse, looking like a pass.
+2. **Capturing output never masks a failure.** The gate commands run under
+   `set -uo pipefail` and exit with `${PIPESTATUS[0]}`, so `tee` captures the log
+   while the harness's own status stays the step status.
+3. **No secret can be uploaded.** The evidence set is analyser and harness output
+   only: `lint.log`, `phpstan.json`, `phpcs.json`, `run-tests*.log`,
+   `release-integrity.log`, `gate.json`, the service logs and an aggregate row
+   count. `docker compose config`, the container environment, `.env`,
+   `.conexao-test.env`, WP-CLI credentials and session cookies are never
+   collected. The renderer reads exactly the one file it is given, and the
+   export-safety check inside its gate asserts that a credential-shaped value in
+   a log does not reach the summary.
+
+`gate.json` is written with an explicit `--out "$RUNNER_TEMP/ci-evidence/gate.json"`.
+The script's default is a **date-stamped** `docs/evidence/<today>-stage-l/gate.json`,
+which a fixed workflow path can never match — that is why an earlier revision
+silently uploaded nothing on any run that was not that one date. CI therefore
+uses the explicit path; a local run with no `--out` keeps the documented
+date-stamped evidence directory.
+
 ### Blocking gates
 
 | Command | Role |
