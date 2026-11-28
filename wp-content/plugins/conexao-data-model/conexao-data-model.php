@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Conexão BR Irlanda Data Model
  * Description: Content types, shared taxonomies, and editorial fields for the Conexão BR Irlanda portal.
- * Version: 1.8.0
+ * Version: 1.8.1
  * Text Domain: conexao-data-model
  *
  * @package Conexao_BR_Irlanda_Data_Model
@@ -208,6 +208,16 @@ final class Conexao_Data_Model {
 					'single'       => true,
 					'type'         => $type,
 					'show_in_rest' => true,
+					// Every key is protected (underscore-prefixed) and is
+					// written only by the wp-admin editor, never over REST.
+					// WordPress falls back to `__return_false` for a protected
+					// key with no `auth_callback`, so REST writes are already
+					// refused; declaring it explicitly makes that security
+					// decision visible and statically auditable instead of
+					// inherited from a core default. Behaviour is identical:
+					// an unauthenticated or unprivileged REST write still gets
+					// 403 `rest_cannot_update`.
+					'auth_callback' => '__return_false',
 				)
 			);
 		}

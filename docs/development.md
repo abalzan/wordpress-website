@@ -42,8 +42,9 @@ static analysis in `phpstan.neon.dist`):
     (generate the report with
     `vendor/bin/phpcs -q --report=json > <report.json>`).
   - `phpstan-baseline.neon` — the legacy level-5 findings, isolated by rule +
-    file + count (**148 entries** as of 2026-11-27, down from 171). It **must
-    not grow**: a new error fails `composer analyse`.
+    file + count (**130 entries / 171 suppressed messages** as of 2026-11-28,
+    down from 171 / 255 at the 2.x re-baseline, then 148 / 213 after the first
+    reduction pass). It **must not grow**: a new error fails `composer analyse`.
     The reduction procedure is *fix first, then delete the entry*: repair the
     underlying defect, re-run `vendor/bin/phpstan analyse`, and remove exactly
     the entries PHPStan then reports as `ignore.unmatched`. That report is the
@@ -182,10 +183,10 @@ in `phpcs-baseline.json`) **remains, and CI does not require it to be zero**:
 - A future debt-reduction stage is what will turn the raw command green.
 
 **PHPStan semantics:** level **5**, with the legacy findings isolated in
-`phpstan-baseline.neon` (**148 entries** on 2026-11-27). The baseline is part of
-the blocking gate and must not grow: a new PHPStan error fails
-`./scripts/lint.sh`. CI neither regenerates the baseline nor changes the level,
-and does not upgrade `phpstan/phpstan`.
+`phpstan-baseline.neon` (**130 entries / 171 suppressed messages** on
+2026-11-28). The baseline is part of the blocking gate and must not grow: a new
+PHPStan error fails `./scripts/lint.sh`. CI neither regenerates the baseline nor
+changes the level, and does not upgrade `phpstan/phpstan`.
 
 **Version floor.** `phpstan/phpstan` is pinned at `^2.2` and
 `szepeviktor/phpstan-wordpress` at `^2.0`. The two MUST be upgraded together:
@@ -194,8 +195,11 @@ the 1.x line of the WordPress extension hard-requires `phpstan/phpstan:
 version" notice is gone as of this upgrade. The baseline was re-generated
 once for the 2.x rule set (the stricter always-true/impossible-type checks
 report additional pre-existing debt): 331 entries at that point, 171 after the
-Stage G/I/K/L work, **148 after the 2026-11-27 debt-reduction pass**. It must
-not grow again.
+Stage G/I/K/L work, 148 after the 2026-11-27 debt-reduction pass, and **130
+entries / 171 suppressed messages after the 2026-11-28 DOM/XML importer
+hardening** (the deferred group: `instanceof DOMElement` guards, a null-safe
+`extract_text()`, the unreachable `querySelector()` branch removed, and four
+provably dead `isset()`/`empty()` checks). It must not grow again.
 
 **Reducing the baseline.** One finding is fixed at a time and its entry is
 deleted only once PHPStan itself reports it as `ignore.unmatched` — a removal
@@ -203,9 +207,9 @@ without a code fix would surface as a new unbaselined error and fail the gate.
 Deliberate non-fixes stay baselined with their reason recorded in the change's
 plan/report; the largest such group is the `function.alreadyNarrowedType` /
 `function.impossibleType` defensive guards (`is_array()`, `is_wp_error()`,
-`instanceof WP_Post`) that protect against third-party filters, and the DOM/XML
-importer parsers, where the real fix is an `instanceof DOMElement` guard rather
-than a type assertion.
+`instanceof WP_Post`) that protect against third-party filters, plus the
+remaining `is_string()` checks on declared-string parameters in the importer
+parsers, which guard decoded/remote payloads rather than the declared type.
 
 **No production contact.** CI is read-only with respect to production: it
 never connects to conexaobr.ie or WordPress.com and deploys nothing. The
@@ -515,6 +519,33 @@ docker compose up -d                 # local WordPress must be running first
   `http://localhost:8080`; a `conexaobr.ie` base URL is refused.
 - Full reference: **[docs/testing.md](testing.md)**. The authoritative policy is
   still [engineering-standard.md](engineering-standard.md) §8.
+
+### Opt-in local checks that are not part of the default runner
+
+These need a browser or a running stack and are executed explicitly. They exit
+`2` (never `0`) when their environment is unavailable.
+
+```bash
+# Bilingual (PT/EN) browser acceptance: home, guides, jobs, filters,
+# canonical/hreflang, keyboard focus, overflow, zero uncaught errors
+python3 tests/browser/verify-bilingual-journeys-browser.py
+python3 tests/browser/verify-bilingual-journeys-browser.py --negative-control
+
+# Frontend performance baseline (local only): TTFB / LCP / CLS / INP proxy /
+# transfer bytes / request count, median of N cold loads per route+viewport
+python3 tests/browser/verify-frontend-performance-baseline.py --repeats 5 \
+    --out docs/evidence/<date>-frontend-performance/perf-baseline.json
+```
+
+The write-endpoint authorisation gate is **blocking** and needs no browser:
+
+```bash
+python3 tests/scripts/verify-write-endpoint-authorization.py
+```
+
+It audits `admin_post_*`/`wp_ajax_*` handlers, REST routes, meta registrations
+(**including computed keys**, which it resolves from source) and every scheduled
+write path, and it carries an injected negative proof for each detector.
 
 ## Repository Hygiene
 

@@ -59,7 +59,7 @@ same conventions, no special runner, no hand-maintained list.
 | Legacy EN→PT redirect precedence | A legacy EN path keeps its **301** to the **PT** destination even when a newly created EN page has the same slug, and the legacy table still runs before Polylang's canonical. The conflicting page is created and deleted inside the suite. | `test-redirect-precedence.php` | In-process PHP |
 | Documentation drift | Orchestrates the Stage G/I/K gates (it does not reimplement them) and owns the §9.2 rules: `_Last verified:` markers on the living reference set, no root-level report/evidence file, `AGENTS.md` stays orientation, the authoritative sources still exist. | `verify-documentation-drift.py` | Script contract |
 | i18n catalogue freshness | A `.pot` is never older than the PHP defining its strings. Clean checkouts use **git commit time**; CI fetches full history and shallow history fails closed. Modified worktree files use mtime only to compare uncommitted local edits. | `verify-i18n-freshness.py`, `scripts/i18n-check.sh` | Script contract |
-| Write-endpoint authorisation | Every `admin_post_*`/`wp_ajax_*` handler (literal hooks **and** `'admin_post_' . CONST`) resolves to a handler that checks a **capability**, and a **nonce** wherever it can reach a state change; no `*_nopriv_*` registration exists; every `register_rest_route()` declares a `permission_callback` and no non-read-only route pairs with `__return_true`; every protected, REST-exposed meta declares an `auth_callback`. Coverage floors (≥25 handlers / ≥2 routes / ≥10 meta sites) stop a blind gate from passing, and every detector carries an **injected negative proof**. | `verify-write-endpoint-authorization.py` | Script contract |
+| Write-endpoint authorisation | Every `admin_post_*`/`wp_ajax_*` handler (literal hooks **and** `'admin_post_' . CONST`) resolves to a handler that checks a **capability**, and a **nonce** wherever it can reach a state change; no `*_nopriv_*` registration exists; every `register_rest_route()` declares a `permission_callback` and no non-read-only route pairs with `__return_true`; every protected, REST-exposed meta declares an `auth_callback` — **including computed keys**, which are resolved from `self::`/`Class::` constants, `foreach` over array literals/local arrays/static properties and `array_merge()` (116 keys resolved, 0 undecided); every **scheduled** write path (`wp_schedule_event()`/`wp_schedule_single_event()`) resolves to a hook registered with `add_action()` **anywhere in `wp-content/`**, whose callback exists, which is **not** also an `admin_post_*`/`wp_ajax_*` surface, and whose body (plus same-file and class-scoped delegation) reads **no request superglobal**. A cron callback is deliberately **not** required to carry a nonce or `current_user_can()`: there is no user context at cron time, so requiring them would only push authors to fake them. Coverage floors (≥25 handlers / ≥2 routes / ≥10 meta sites / ≥2 scheduled paths / ≥10 resolvable meta keys) stop a blind gate from passing, and every detector carries an **injected negative proof**. | `verify-write-endpoint-authorization.py` | Script contract |
 
 #### The commemorative gates (r10 Stages 4–6)
 
@@ -851,6 +851,61 @@ Its browserless halves are blocking: the in-process suite
 `wp-content/plugins/conexao-event-importer/tests/test-bulk-actions.php` (action
 semantics, validation, notices, capability/nonce) and the Node gate above.
 
+### The bilingual journey browser acceptance
+
+`tests/browser/verify-bilingual-journeys-browser.py` covers what only a rendered
+document shows, for **both** languages, on the existing opt-in layer:
+
+```bash
+python3 tests/browser/verify-bilingual-journeys-browser.py                  # happy path
+python3 tests/browser/verify-bilingual-journeys-browser.py --negative-control
+```
+
+It drives six journeys — PT/EN homepage, PT/EN guides archive, PT/EN jobs
+landing — at **1440×1000** and **390×844**, and asserts per page: status 200 and
+exactly one non-empty `<h1>`; a self-referential `<link rel="canonical">` for
+its own language; the correct `pt-BR` / `en` / `x-default` hreflang trio,
+identical from both languages; no horizontal overflow; a real card grid on the
+archive journeys; and **no uncaught browser error** (a `pageerror`, or an
+"Uncaught" console error) during the journey.
+
+It also proves the parts a static check cannot reach:
+
+- **the language switcher is coherent with its own product flag.** The suite
+  never assumes the flag's value. When `CONEXAO_LANGUAGE_SWITCHER_ENABLED`
+  renders the switcher, its group must hold exactly one `aria-current` item and
+  every link must resolve to a real path; when the flag removes it, it must be
+  absent from **both** languages. English itself, `/en/` routes, canonical and
+  hreflang are asserted regardless of the flag.
+- **the filters work.** On the guides and jobs journeys it follows a *real*
+  filter link the page renders and requires a changed URL that stays inside the
+  same language archive, a rendered heading, and no uncaught error. A pointer
+  click is used when the control is painted; a collapsed desktop dropdown falls
+  back to the href that same link advertises (never a hand-built URL).
+- **keyboard access.** Tab reaches a primary-header control (home) and a card
+  link (guides), each matching `:focus-visible` with a painted outline.
+
+`--negative-control` injects a 3000px-wide element, a second `<h1>` and a
+language switcher whose only link has an empty `href` into the real page, and
+requires the same predicates to go **red** (48 assertions across the 12
+journey×viewport combinations). Its browserless halves are blocking: the HTTP
+matrices for the same routes and the in-process language suites.
+
+### The frontend performance baseline collector
+
+`tests/browser/verify-frontend-performance-baseline.py` is the measurement
+procedure behind [`docs/frontend.md`](frontend.md#measured-performance-baseline-2026-11-28):
+
+```bash
+python3 tests/browser/verify-frontend-performance-baseline.py --repeats 5 \
+    --out docs/evidence/<date>-frontend-performance/perf-baseline.json
+```
+
+Local only (a production host is refused before a socket opens). It records, per
+route × viewport × repetition, TTFB, LCP, CLS, an interaction-latency **proxy**
+(one scripted theme-toggle activation — not field INP), request count, transfer
+bytes and the largest assets, then reports the median. It writes no content.
+
 ### What lives where
 
 | Path | Class | In the default runner? |
@@ -858,6 +913,8 @@ semantics, validation, notices, capability/nonce) and the Node gate above.
 | `tests/acceptance/verify-*-http.py` | `ACCEPTANCE_TEST` | yes, under `--acceptance` |
 | `wp-content/*/*/tests/test-*.php` | `DEFAULT_TEST` | yes |
 | `tests/browser/verify-*.py` | `BROWSER_TEST` | no — opt-in, run explicitly |
+| `tests/browser/verify-bilingual-journeys-browser.py` | `BROWSER_TEST` | no — opt-in; refuses production, exits `2` when the environment is unavailable |
+| `tests/browser/verify-frontend-performance-baseline.py` | `BROWSER_TEST` (measurement) | no — opt-in; writes JSON only with `--out`, exits `2` when unavailable |
 | `tests/js/test-*.mjs` | `NODE_TEST` | no — opt-in, run explicitly |
 
 ---
@@ -997,4 +1054,4 @@ Documented special handling, never run by default.
 test-plugin-separation.php requires deliberate plugin-activation change.
 *Counting method: suites classified as MANUAL in `scripts/run-tests.sh --list`, excluding the section header line.*
 
-_Last verified: 2026-11-27 by the documentation and agent-skill rationalisation (test-layer, isolation and permanent-gate claims re-checked; the test-exec wrapper contract repointed to this document)_
+_Last verified: 2026-11-28 by the roadmap completion (the bilingual journey browser suite, the performance baseline collector and the extended write-endpoint gate — computed meta keys and scheduled write paths — documented; the test-layer, isolation and permanent-gate claims re-checked)_

@@ -32,8 +32,8 @@ defined( 'ABSPATH' ) || exit;
 
 class Conexao_Source_Ivvcc extends Conexao_Source_Base {
 
-	const DEFAULT_URL        = 'https://www.ivvcc.ie/upcoming-events-calendar/';
-	const MAX_DETAIL_PAGES   = 40;
+	const DEFAULT_URL         = 'https://www.ivvcc.ie/upcoming-events-calendar/';
+	const MAX_DETAIL_PAGES    = 40;
 	const DEFAULT_CRAWL_DELAY = 10; // Seconds between HTTP requests (robots.txt Crawl-delay).
 
 	/**
@@ -187,12 +187,13 @@ class Conexao_Source_Ivvcc extends Conexao_Source_Base {
 	 * @return array
 	 */
 	public static function extract_ics_params( $card, $xpath ) {
-		$out = array( 'event_id' => '', 'sunix' => '', 'eunix' => '' );
+		$out   = array( 'event_id' => '', 'sunix' => '', 'eunix' => '' );
 		$links = $xpath->query( './/a[contains(@href, "eventon_ics_download")]', $card );
 		if ( ! $links || 0 === $links->length ) {
 			return $out;
 		}
-		$href = html_entity_decode( $links->item( 0 )->getAttribute( 'href' ) );
+		$ics_anchor = self::as_element( $links->item( 0 ) );
+		$href       = html_entity_decode( $ics_anchor ? $ics_anchor->getAttribute( 'href' ) : '' );
 		foreach ( array( 'event_id', 'sunix', 'eunix' ) as $key ) {
 			if ( preg_match( '/[?&]' . $key . '=([^&"\']+)/', $href, $mm ) ) {
 				$out[ $key ] = $mm[1];
@@ -277,9 +278,9 @@ class Conexao_Source_Ivvcc extends Conexao_Source_Base {
 		if ( 0 === strpos( $url, '//' ) ) {
 			return 'https:' . $url;
 		}
-		$parts = parse_url( $base );
+		$parts  = parse_url( $base );
 		$scheme = isset( $parts['scheme'] ) ? $parts['scheme'] : 'https';
-		$host = isset( $parts['host'] ) ? $parts['host'] : 'www.ivvcc.ie';
+		$host   = isset( $parts['host'] ) ? $parts['host'] : 'www.ivvcc.ie';
 		if ( 0 === strpos( $url, '/' ) ) {
 			return $scheme . '://' . $host . $url;
 		}
@@ -310,9 +311,9 @@ class Conexao_Source_Ivvcc extends Conexao_Source_Base {
 			return $out;
 		}
 		// UTC wall time == the time the source itself renders.
-		$start = new DateTimeImmutable( '@' . (int) $start_unix );
+		$start             = new DateTimeImmutable( '@' . (int) $start_unix );
 		$out['start_date'] = $start->format( 'Y-m-d' );
-		$stime = $start->format( 'H:i' );
+		$stime             = $start->format( 'H:i' );
 		if ( in_array( $stime, self::PLACEHOLDER_TIMES, true ) ) {
 			$out['warning'] = 'placeholder time ' . $stime . ' dropped (all-day)';
 		} else {
@@ -333,7 +334,7 @@ class Conexao_Source_Ivvcc extends Conexao_Source_Base {
 			&& $start->format( 'H:i' ) === $end->format( 'H:i' )
 			&& 0 === ( ( $end_unix - $start_unix ) % 86400 )
 		) {
-			$out['end_date'] = $end->format( 'Y-m-d' );
+			$out['end_date']   = $end->format( 'Y-m-d' );
 			$out['start_time'] = '';
 			if ( '' !== $out['warning'] ) {
 				$out['warning'] .= '; ';
@@ -426,8 +427,8 @@ class Conexao_Source_Ivvcc extends Conexao_Source_Base {
 		}
 		$xpath = new DOMXPath( $dom );
 		$cards = $xpath->query( '//*[contains(concat(" ", normalize-space(@class), " "), " eventon_list_event ")]' );
-		$ctx = ( $cards && $cards->length > 0 ) ? $cards->item( 0 ) : $dom->documentElement;
-		$sid = '';
+		$ctx   = ( $cards && $cards->length > 0 ) ? $cards->item( 0 ) : $dom->documentElement;
+		$sid   = '';
 		if ( $ctx instanceof DOMElement ) {
 			$sid = trim( $ctx->getAttribute( 'data-event_id' ) );
 		}
@@ -462,8 +463,12 @@ class Conexao_Source_Ivvcc extends Conexao_Source_Base {
 		}
 		$imgs = $xpath->query( './/img[@src]', $ctx );
 		if ( $imgs ) {
-			foreach ( $imgs as $img ) {
-				$src = trim( $img->getAttribute( 'src' ) );
+			foreach ( $imgs as $img_node ) {
+				$img_node = self::as_element( $img_node );
+				if ( ! $img_node ) {
+					continue;
+				}
+				$src = trim( $img_node->getAttribute( 'src' ) );
 				if ( '' === $src ) {
 					continue;
 				}
@@ -493,7 +498,7 @@ class Conexao_Source_Ivvcc extends Conexao_Source_Base {
 	 */
 	public static function parse_card( $card, $xpath, $base_url ) {
 		$event = self::blank_event();
-		$sid = trim( $card->getAttribute( 'data-event_id' ) );
+		$sid   = trim( $card->getAttribute( 'data-event_id' ) );
 		if ( '' !== $sid && preg_match( '/^\d+$/', $sid ) ) {
 			$event['source_id'] = $sid;
 		}
@@ -509,7 +514,8 @@ class Conexao_Source_Ivvcc extends Conexao_Source_Base {
 		}
 		$un = $xpath->query( './/*[@itemprop="url"]', $card );
 		if ( $un && $un->length > 0 ) {
-			$href = $un->item( 0 )->getAttribute( 'href' );
+			$url_node = self::as_element( $un->item( 0 ) );
+			$href     = $url_node ? $url_node->getAttribute( 'href' ) : '';
 			if ( '' !== $href ) {
 				$event['url'] = self::resolve_url_static( $href, $base_url );
 			}
@@ -518,6 +524,10 @@ class Conexao_Source_Ivvcc extends Conexao_Source_Base {
 			$links = $xpath->query( './/a[@href]', $card );
 			if ( $links ) {
 				foreach ( $links as $link ) {
+					$link = self::as_element( $link );
+					if ( ! $link ) {
+						continue;
+					}
 					$href = $link->getAttribute( 'href' );
 					if ( preg_match( '#/events/[^/]+/?$#', $href ) ) {
 						$event['url'] = self::resolve_url_static( $href, $base_url );
@@ -528,11 +538,11 @@ class Conexao_Source_Ivvcc extends Conexao_Source_Base {
 		}
 		$dt = trim( $card->getAttribute( 'data-time' ) );
 		if ( preg_match( '/^(\d+)-(\d+)$/', $dt, $mm ) ) {
-			$mapped = self::map_unix_range( (int) $mm[1], (int) $mm[2] );
+			$mapped              = self::map_unix_range( (int) $mm[1], (int) $mm[2] );
 			$event['start_date'] = $mapped['start_date'];
 			$event['start_time'] = $mapped['start_time'];
-			$event['end_date'] = $mapped['end_date'];
-			$event['end_time'] = $mapped['end_time'];
+			$event['end_date']   = $mapped['end_date'];
+			$event['end_time']   = $mapped['end_time'];
 			if ( '' !== $mapped['warning'] ) {
 				$event['_warnings'][] = $mapped['warning'];
 			}
@@ -560,7 +570,7 @@ class Conexao_Source_Ivvcc extends Conexao_Source_Base {
 		}
 		$hay = $event['title'] . ' ' . $event['description'] . ' ' . $event['location'];
 		if ( preg_match( '/date\s+to\s+be\s+advised|\bTBA\b|to\s+be\s+confirmed/i', $hay ) ) {
-			$event['_skip'] = true;
+			$event['_skip']        = true;
 			$event['_skip_reason'] = 'TBA / date to be advised';
 		}
 		return $event;
@@ -588,6 +598,10 @@ class Conexao_Source_Ivvcc extends Conexao_Source_Base {
 			return $events;
 		}
 		foreach ( $cards as $card ) {
+			$card = self::as_element( $card );
+			if ( ! $card ) {
+				continue;
+			}
 			$event = self::parse_card( $card, $xpath, $base_url );
 			if ( empty( $event['source_id'] ) || empty( $event['title'] ) ) {
 				continue;

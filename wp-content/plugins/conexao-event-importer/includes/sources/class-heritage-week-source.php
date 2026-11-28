@@ -215,6 +215,10 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 
 				if ( $cards && $cards->length > 0 ) {
 					foreach ( $cards as $card ) {
+						$card = self::as_element( $card );
+						if ( ! $card ) {
+							continue;
+						}
 						// Time budget check (per event for detail enrichment).
 						if ( ( microtime( true ) - $started_at ) > $budget ) {
 							$this->mark_fetch_incomplete();
@@ -415,7 +419,8 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 		// Original event URL.
 		$link = $xpath->query( './/a[contains(concat(" ", normalize-space(@class), " "), " link-block ")]', $card );
 		if ( $link && $link->length > 0 ) {
-			$href = $link->item( 0 )->getAttribute( 'href' );
+			$link_anchor = self::as_element( $link->item( 0 ) );
+			$href        = $link_anchor ? $link_anchor->getAttribute( 'href' ) : '';
 			if ( $href ) {
 				$event['url'] = $this->resolve_url( $href, $base );
 			}
@@ -433,7 +438,8 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 		// 1. Background-image from figure.portrait (usually highest quality on listing).
 		$figure = $xpath->query( './/figure[contains(concat(" ", normalize-space(@class), " "), " portrait ")]', $card );
 		if ( $figure && $figure->length > 0 ) {
-			$style = $figure->item( 0 )->getAttribute( 'style' );
+			$figure_node = self::as_element( $figure->item( 0 ) );
+			$style       = $figure_node ? $figure_node->getAttribute( 'style' ) : '';
 			if ( preg_match( '/background-image:\s*url\(([^)]+)\)/i', $style, $m ) ) {
 				$candidate = $this->resolve_url( trim( $m[1], '"\'' ), $base );
 				if ( strpos( $candidate, '/logos/' ) === false ) {
@@ -446,6 +452,10 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 		$imgs = $xpath->query( './/img', $card );
 		if ( $imgs ) {
 			foreach ( $imgs as $img_node ) {
+				$img_node = self::as_element( $img_node );
+				if ( ! $img_node ) {
+					continue;
+				}
 				// src attribute.
 				$src = $img_node->getAttribute( 'src' );
 				if ( $src ) {
@@ -613,7 +623,7 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 			return null;
 		}
 		foreach ( array( '!j F Y', '!Y-m-d', '!d/m/Y' ) as $format ) {
-			$date = DateTimeImmutable::createFromFormat( $format, $value, $timezone );
+			$date   = DateTimeImmutable::createFromFormat( $format, $value, $timezone );
 			$errors = DateTimeImmutable::getLastErrors();
 			if ( false !== $date && ( false === $errors || ( 0 === $errors['warning_count'] && 0 === $errors['error_count'] ) ) ) {
 				return $date;
@@ -632,7 +642,7 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 	protected function parse_listing_time( $value, DateTimeZone $timezone ) {
 		$value = trim( (string) $value );
 		foreach ( array( '!g:i a', '!g a', '!H:i', '!H' ) as $format ) {
-			$time = DateTimeImmutable::createFromFormat( $format, $value, $timezone );
+			$time   = DateTimeImmutable::createFromFormat( $format, $value, $timezone );
 			$errors = DateTimeImmutable::getLastErrors();
 			if ( false !== $time && ( false === $errors || ( 0 === $errors['warning_count'] && 0 === $errors['error_count'] ) ) ) {
 				return $time;
@@ -707,6 +717,10 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 		$blocked_forward = false;
 
 		foreach ( $nav as $anchor ) {
+			$anchor = self::as_element( $anchor );
+			if ( ! $anchor ) {
+				continue;
+			}
 			$href = trim( (string) $anchor->getAttribute( 'href' ) );
 			if ( '' === $href ) {
 				continue;
@@ -756,6 +770,10 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 		}
 
 		foreach ( $nodes as $anchor ) {
+			$anchor = self::as_element( $anchor );
+			if ( ! $anchor ) {
+				continue;
+			}
 			$href = trim( (string) $anchor->getAttribute( 'href' ) );
 			if ( '' === $href ) {
 				continue;
@@ -782,6 +800,10 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 		$base_normalized = $this->normalize_pagination_url( $base );
 
 		foreach ( $nodes as $anchor ) {
+			$anchor = self::as_element( $anchor );
+			if ( ! $anchor ) {
+				continue;
+			}
 			$href = trim( (string) $anchor->getAttribute( 'href' ) );
 			if ( '' === $href ) {
 				continue;
@@ -890,7 +912,7 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 			return $event;
 		}
 
-		$html = $this->fetch_detail_html( $event['url'] );
+		$html                         = $this->fetch_detail_html( $event['url'] );
 		$event['detail_fetch_status'] = $this->last_detail_fetch_status;
 		if ( empty( $html ) ) {
 			// A transport/HTTP failure or an empty body tells us nothing about
@@ -905,7 +927,7 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 		$dom = $this->parse_html( $html );
 		if ( ! $dom ) {
 			$event['detail_fetch_status'] = 'invalid_html';
-			$event['_enrichment'] = class_exists( 'Conexao_Event_Enrichment_State' )
+			$event['_enrichment']         = class_exists( 'Conexao_Event_Enrichment_State' )
 				? Conexao_Event_Enrichment_State::all_unavailable()
 				: array();
 			return $event;
@@ -921,16 +943,16 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 		// Values found here take precedence over the labelled details list.
 		$jsonld_location = ( new Conexao_Event_Jsonld_Location() )->extract( $html );
 		if ( ! empty( $jsonld_location['venue'] ) ) {
-			$event['venue']            = $jsonld_location['venue'];
-			$enrichment['venue']       = Conexao_Event_Enrichment_State::POPULATED;
+			$event['venue']      = $jsonld_location['venue'];
+			$enrichment['venue'] = Conexao_Event_Enrichment_State::POPULATED;
 		} else {
 			// No Event.location.name on the page. Omission is NOT proof that
 			// the event has no venue, so the stored value is preserved.
 			$enrichment['venue'] = Conexao_Event_Enrichment_State::UNAVAILABLE;
 		}
 		if ( ! empty( $jsonld_location['address'] ) ) {
-			$event['address']          = $jsonld_location['address'];
-			$enrichment['address']     = Conexao_Event_Enrichment_State::POPULATED;
+			$event['address']      = $jsonld_location['address'];
+			$enrichment['address'] = Conexao_Event_Enrichment_State::POPULATED;
 		} else {
 			$enrichment['address'] = Conexao_Event_Enrichment_State::UNAVAILABLE;
 		}
@@ -1004,6 +1026,10 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 		$imgs = $xpath->query( '//figure[contains(concat(" ", normalize-space(@class), " "), " photo ")]//img' );
 		if ( $imgs ) {
 			foreach ( $imgs as $img_node ) {
+				$img_node = self::as_element( $img_node );
+				if ( ! $img_node ) {
+					continue;
+				}
 				$this->collect_img_candidates( $img_node, $event['url'], $detail_candidates );
 			}
 		}
@@ -1012,7 +1038,8 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 		$figures = $xpath->query( '//figure[contains(concat(" ", normalize-space(@class), " "), " photo ")]' );
 		if ( $figures ) {
 			foreach ( $figures as $fig ) {
-				$style = $fig->getAttribute( 'style' );
+				$fig   = self::as_element( $fig );
+				$style = $fig ? $fig->getAttribute( 'style' ) : '';
 				if ( preg_match( '/background-image:\s*url\(([^)]+)\)/i', $style, $m ) ) {
 					$candidate = $this->resolve_url( trim( $m[1], '"\'' ), $event['url'] );
 					if ( strpos( $candidate, '/logos/' ) === false ) {
@@ -1026,6 +1053,10 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 		$all_imgs = $xpath->query( '//img[@srcset]' );
 		if ( $all_imgs ) {
 			foreach ( $all_imgs as $img_node ) {
+				$img_node = self::as_element( $img_node );
+				if ( ! $img_node ) {
+					continue;
+				}
 				$this->collect_img_candidates( $img_node, $event['url'], $detail_candidates );
 			}
 		}
@@ -1259,11 +1290,10 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 		}
 
 		// Filter out logos and placeholders.
+		// `$urls` was already trimmed, de-duplicated and emptied by the
+		// `array_filter()` above, so every element here is a non-empty string.
 		$filtered = array();
 		foreach ( $urls as $url ) {
-			if ( empty( $url ) ) {
-				continue;
-			}
 			if ( strpos( $url, '/logos/' ) !== false ) {
 				continue;
 			}

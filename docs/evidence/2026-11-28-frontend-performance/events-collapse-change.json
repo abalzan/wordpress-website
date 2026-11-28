@@ -1,0 +1,49 @@
+{
+  "kind": "frontend-performance-change-evidence",
+  "generated_at_utc": "2026-11-28",
+  "change": "conexao_event_collapse_logical_ids(): batch the post-meta and language reads",
+  "environment": {
+    "stack": "local Docker WordPress (compose.yaml), unthrottled",
+    "php": "8.5",
+    "wordpress_data": "restored production snapshot: 3803 published events, 1266 upcoming",
+    "note": "Local, unthrottled numbers. Comparable only between runs on this machine; not production values."
+  },
+  "method": "read-only probe: bootstraps wp-load.php, calls Conexao_Event_Query::upcoming_events() and conexao_event_collapse_logical_ids() with the returned IDs, then times the archive WP_Query. Executed once with inc/events.php stashed (before) and once with it applied (after), same dataset, same container.",
+  "before": {
+    "collapse_logical_ids_seconds": 0.821,
+    "collapse_logical_ids_queries": 2533,
+    "ids_in": 1266,
+    "ids_out": 1266,
+    "main_archive_query_seconds": 1.022,
+    "plain_archive_query_seconds": 2.839,
+    "archive_ttfb_seconds_curl": [2.699, 2.187, 2.094]
+  },
+  "after": {
+    "collapse_logical_ids_seconds": 0.135,
+    "collapse_logical_ids_queries": 4,
+    "ids_in": 1266,
+    "ids_out": 1266,
+    "main_archive_query_seconds": 1.041,
+    "plain_archive_query_seconds": 2.753,
+    "archive_ttfb_seconds_curl": [1.419, 1.465, 1.734]
+  },
+  "equivalence_proof": {
+    "method": "the surviving ordered ID list was serialised to JSON before and after the change and compared element by element",
+    "result": "identical",
+    "ids": 1266
+  },
+  "remaining_bottlenecks_measured": [
+    {
+      "surface": "event archive main query (/eventos/, /en/eventos/)",
+      "cause": "WP_Query with post__in over 1266 (PT) / ~3200 (EN) event IDs, joined with the Polylang term relationship and the _event_status meta gate",
+      "seconds": "0.99-1.35 (PT), 4.2-4.3 TTFB (EN)",
+      "left_unchanged_because": "narrowing the ID set or caching the paginated result changes published ordering/pagination semantics and needs its own invalidation matrix; out of scope for a reviewable patch"
+    },
+    {
+      "surface": "homepage (/ and /en/)",
+      "cause": "one WP_Query takes ~1.0 s of the ~1.1 s render: post__in over ~1300 event IDs joined with wp_term_relationships and the _event_status postmeta, LIMIT 2 (the hero/featured events slot)",
+      "seconds": "1.4-2.1 TTFB",
+      "left_unchanged_because": "the candidate list must stay whole because the query itself applies the status/language filters; slicing it before the query would change which events are selected"
+    }
+  ]
+}

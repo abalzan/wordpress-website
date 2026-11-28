@@ -46,7 +46,25 @@ final class Conexao_Data_Model_Meta {
 	public function register_meta() {
 		foreach ( self::$fields as $post_type => $fields ) {
 			foreach ( $fields as $key => $type ) {
-				register_post_meta( $post_type, $key, array( 'single' => true, 'type' => 'checkbox' === $type ? 'boolean' : 'string', 'show_in_rest' => true, 'sanitize_callback' => 'url' === $type ? 'esc_url_raw' : ( 'checkbox' === $type ? 'rest_sanitize_boolean' : 'sanitize_text_field' ) ) );
+				register_post_meta(
+					$post_type,
+					$key,
+					array(
+						'single'            => true,
+						'type'              => 'checkbox' === $type ? 'boolean' : 'string',
+						'show_in_rest'      => true,
+						'sanitize_callback' => 'url' === $type ? 'esc_url_raw' : ( 'checkbox' === $type ? 'rest_sanitize_boolean' : 'sanitize_text_field' ),
+						// These legacy editorial fields are REST-READABLE but
+						// deliberately not REST-writable: they are saved by the
+						// classic meta box above. WordPress already refuses the
+						// write (it falls back to `__return_false` for a
+						// protected key with no `auth_callback`), so declaring
+						// the callback explicitly states the intent and keeps
+						// the decision statically auditable — with identical
+						// runtime behaviour (403 `rest_cannot_update`).
+						'auth_callback'     => '__return_false',
+					)
+				);
 			}
 		}
 

@@ -1,5 +1,6 @@
 parameters:
 	ignoreErrors:
+
 		-
 			message: '#^Action callback returns string but should not return anything\.$#'
 			identifier: return.void
@@ -373,124 +374,22 @@ parameters:
 			path: wp-content/plugins/conexao-event-importer/includes/class-import-settings.php
 
 		-
-			message: '#^Call to an undefined method DOMElement\:\:querySelector\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: wp-content/plugins/conexao-event-importer/includes/sources/abstract-class-source.php
-
-		-
 			message: '#^Offset ''events'' on array\{events\: array\<array\>, pagination\: array, raw\: array\} in isset\(\) always exists and is not nullable\.$#'
 			identifier: isset.offset
 			count: 1
 			path: wp-content/plugins/conexao-event-importer/includes/sources/class-eventbrite-source.php
 
 		-
-			message: '#^Call to an undefined method DOMNameSpaceNode\|DOMNode\:\:getAttribute\(\)\.$#'
-			identifier: method.notFound
-			count: 10
-			path: wp-content/plugins/conexao-event-importer/includes/sources/class-heritage-week-source.php
-
-		-
-			message: '#^Parameter \#1 \$card of method Conexao_Source_Heritage_Week\:\:extract_listing_event\(\) expects DOMElement, DOMNameSpaceNode\|DOMNode given\.$#'
-			identifier: argument.type
-			count: 1
-			path: wp-content/plugins/conexao-event-importer/includes/sources/class-heritage-week-source.php
-
-		-
-			message: '#^Parameter \#1 \$img_node of method Conexao_Source_Heritage_Week\:\:collect_img_candidates\(\) expects DOMElement, DOMNameSpaceNode\|DOMNode given\.$#'
-			identifier: argument.type
-			count: 2
-			path: wp-content/plugins/conexao-event-importer/includes/sources/class-heritage-week-source.php
-
-		-
-			message: '#^Variable \$url in empty\(\) always exists and is not falsy\.$#'
-			identifier: empty.variable
-			count: 1
-			path: wp-content/plugins/conexao-event-importer/includes/sources/class-heritage-week-source.php
-
-		-
-			message: '#^Strict comparison using \=\=\= between ''Z'' and ''Z'' will always evaluate to true\.$#'
-			identifier: identical.alwaysTrue
-			count: 1
-			path: wp-content/plugins/conexao-event-importer/includes/sources/class-icalendar-source.php
-
-		-
-			message: '#^Call to an undefined method DOMNameSpaceNode\|DOMNode\:\:getAttribute\(\)\.$#'
-			identifier: method.notFound
-			count: 4
-			path: wp-content/plugins/conexao-event-importer/includes/sources/class-ivvcc-source.php
-
-		-
 			message: '#^Call to function is_string\(\) with string will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 2
 			path: wp-content/plugins/conexao-event-importer/includes/sources/class-ivvcc-source.php
 
 		-
-			message: '#^Parameter \#1 \$card of static method Conexao_Source_Ivvcc\:\:parse_card\(\) expects DOMElement, DOMNameSpaceNode\|DOMNode given\.$#'
-			identifier: argument.type
-			count: 1
-			path: wp-content/plugins/conexao-event-importer/includes/sources/class-ivvcc-source.php
-
-		-
-			message: '#^Call to an undefined method DOMNameSpaceNode\|DOMNode\:\:getAttribute\(\)\.$#'
-			identifier: method.notFound
-			count: 2
-			path: wp-content/plugins/conexao-event-importer/includes/sources/class-laois-tourism-source.php
-
-		-
-			message: '#^Array has 2 duplicate keys with value ''may'' \(''may'', ''may''\)\.$#'
-			identifier: array.duplicateKey
-			count: 1
-			path: wp-content/plugins/conexao-event-importer/includes/sources/class-mondello-park-source.php
-
-		-
-			message: '#^Call to an undefined method DOMNameSpaceNode\|DOMNode\:\:getAttribute\(\)\.$#'
-			identifier: method.notFound
-			count: 4
-			path: wp-content/plugins/conexao-event-importer/includes/sources/class-mondello-park-source.php
-
-		-
-			message: '#^Call to function is_array\(\) with non\-empty\-array\<int\> will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: wp-content/plugins/conexao-event-importer/includes/sources/class-mondello-park-source.php
-
-		-
 			message: '#^Call to function is_string\(\) with string will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 1
 			path: wp-content/plugins/conexao-event-importer/includes/sources/class-mondello-park-source.php
-
-		-
-			message: '#^Negated boolean expression is always false\.$#'
-			identifier: booleanNot.alwaysFalse
-			count: 1
-			path: wp-content/plugins/conexao-event-importer/includes/sources/class-mondello-park-source.php
-
-		-
-			message: '#^Parameter \#1 \$node of method Conexao_Source_Mondello_Park\:\:extract_text\(\) expects DOMElement, DOMNameSpaceNode\|DOMNode\|null given\.$#'
-			identifier: argument.type
-			count: 4
-			path: wp-content/plugins/conexao-event-importer/includes/sources/class-mondello-park-source.php
-
-		-
-			message: '#^Call to an undefined method \(DOMNode\|false\)\:\:getElementsByTagName\(\)\.$#'
-			identifier: method.notFound
-			count: 2
-			path: wp-content/plugins/conexao-event-importer/includes/sources/class-motorsport-ireland-source.php
-
-		-
-			message: '#^Call to an undefined method DOMNameSpaceNode\|DOMNode\:\:getAttribute\(\)\.$#'
-			identifier: method.notFound
-			count: 4
-			path: wp-content/plugins/conexao-event-importer/includes/sources/class-motorsport-ireland-source.php
-
-		-
-			message: '#^Call to function is_array\(\) with array will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: wp-content/plugins/conexao-event-importer/includes/sources/class-motorsport-ireland-source.php
 
 		-
 			message: '#^Call to function is_string\(\) with string will always evaluate to true\.$#'
@@ -502,12 +401,6 @@ parameters:
 			message: '#^Offset ''source_id'' on non\-empty\-array in isset\(\) always exists and is not nullable\.$#'
 			identifier: isset.offset
 			count: 2
-			path: wp-content/plugins/conexao-event-importer/includes/sources/class-motorsport-ireland-source.php
-
-		-
-			message: '#^Parameter \#1 \$card of static method Conexao_Source_Motorsport_Ireland\:\:parse_listing_card\(\) expects DOMElement, DOMNameSpaceNode\|DOMNode given\.$#'
-			identifier: argument.type
-			count: 1
 			path: wp-content/plugins/conexao-event-importer/includes/sources/class-motorsport-ireland-source.php
 
 		-

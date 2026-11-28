@@ -1,0 +1,4873 @@
+{
+  "kind": "frontend-performance-baseline",
+  "generated_at_utc": "2026-11-28T14:33:09Z",
+  "base_url": "http://localhost:8080",
+  "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.7922.34 Safari/537.36",
+  "repeats": 5,
+  "viewport_set": [
+    {
+      "name": "desktop",
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "routes": [
+    {
+      "id": "pt-home",
+      "language": "pt",
+      "kind": "home",
+      "path": "/"
+    },
+    {
+      "id": "en-home",
+      "language": "en",
+      "kind": "home",
+      "path": "/en/"
+    },
+    {
+      "id": "pt-guides",
+      "language": "pt",
+      "kind": "archive",
+      "path": "/guias/"
+    },
+    {
+      "id": "en-guides",
+      "language": "en",
+      "kind": "archive",
+      "path": "/en/guias/"
+    },
+    {
+      "id": "pt-jobs",
+      "language": "pt",
+      "kind": "archive",
+      "path": "/empregos/"
+    },
+    {
+      "id": "en-jobs",
+      "language": "en",
+      "kind": "archive",
+      "path": "/en/empregos/"
+    },
+    {
+      "id": "pt-events",
+      "language": "pt",
+      "kind": "archive",
+      "path": "/eventos/"
+    },
+    {
+      "id": "en-events",
+      "language": "en",
+      "kind": "archive",
+      "path": "/en/eventos/"
+    },
+    {
+      "id": "pt-leisure",
+      "language": "pt",
+      "kind": "archive",
+      "path": "/lazer/"
+    },
+    {
+      "id": "en-leisure",
+      "language": "en",
+      "kind": "archive",
+      "path": "/en/lazer/"
+    }
+  ],
+  "medians": [
+    {
+      "route": "pt-home",
+      "path": "/",
+      "language": "pt",
+      "kind": "home",
+      "viewport": "desktop",
+      "viewport_px": "1440x1000",
+      "median": {
+        "samples": 5,
+        "ttfb_ms_median": 1705.8,
+        "lcp_ms_median": 1840,
+        "lcp_ms_min": 1736,
+        "lcp_ms_max": 1968,
+        "cls_median": 0.0,
+        "inp_proxy_ms_median": 56,
+        "requests_median": 12,
+        "transfer_bytes_median": 276131
+      }
+    },
+    {
+      "route": "pt-home",
+      "path": "/",
+      "language": "pt",
+      "kind": "home",
+      "viewport": "mobile",
+      "viewport_px": "390x844",
+      "median": {
+        "samples": 5,
+        "ttfb_ms_median": 2076.5,
+        "lcp_ms_median": 2180,
+        "lcp_ms_min": 2048,
+        "lcp_ms_max": 2244,
+        "cls_median": 0.0,
+        "inp_proxy_ms_median": 40,
+        "requests_median": 12,
+        "transfer_bytes_median": 236329
+      }
+    },
+    {
+      "route": "en-home",
+      "path": "/en/",
+      "language": "en",
+      "kind": "home",
+      "viewport": "desktop",
+      "viewport_px": "1440x1000",
+      "median": {
+        "samples": 5,
+        "ttfb_ms_median": 1433.3,
+        "lcp_ms_median": 1564,
+        "lcp_ms_min": 1412,
+        "lcp_ms_max": 1620,
+        "cls_median": 0.0,
+        "inp_proxy_ms_median": 64,
+        "requests_median": 12,
+        "transfer_bytes_median": 276271
+      }
+    },
+    {
+      "route": "en-home",
+      "path": "/en/",
+      "language": "en",
+      "kind": "home",
+      "viewport": "mobile",
+      "viewport_px": "390x844",
+      "median": {
+        "samples": 5,
+        "ttfb_ms_median": 1295.5,
+        "lcp_ms_median": 1436,
+        "lcp_ms_min": 1356,
+        "lcp_ms_max": 1612,
+        "cls_median": 0.0,
+        "inp_proxy_ms_median": 40,
+        "requests_median": 12,
+        "transfer_bytes_median": 236469
+      }
+    },
+    {
+      "route": "pt-guides",
+      "path": "/guias/",
+      "language": "pt",
+      "kind": "archive",
+      "viewport": "desktop",
+      "viewport_px": "1440x1000",
+      "median": {
+        "samples": 5,
+        "ttfb_ms_median": 117.2,
+        "lcp_ms_median": 208,
+        "lcp_ms_min": 160,
+        "lcp_ms_max": 256,
+        "cls_median": 0.1,
+        "inp_proxy_ms_median": 24,
+        "requests_median": 11,
+        "transfer_bytes_median": 148666
+      }
+    },
+    {
+      "route": "pt-guides",
+      "path": "/guias/",
+      "language": "pt",
+      "kind": "archive",
+      "viewport": "mobile",
+      "viewport_px": "390x844",
+      "median": {
+        "samples": 5,
+        "ttfb_ms_median": 89,
+        "lcp_ms_median": 172,
+        "lcp_ms_min": 160,
+        "lcp_ms_max": 196,
+        "cls_median": 0.1,
+        "inp_proxy_ms_median": 24,
+        "requests_median": 10,
+        "transfer_bytes_median": 129008
+      }
+    },
+    {
+      "route": "en-guides",
+      "path": "/en/guias/",
+      "language": "en",
+      "kind": "archive",
+      "viewport": "desktop",
+      "viewport_px": "1440x1000",
+      "median": {
+        "samples": 5,
+        "ttfb_ms_median": 119.4,
+        "lcp_ms_median": 220,
+        "lcp_ms_min": 192,
+        "lcp_ms_max": 268,
+        "cls_median": 0.1,
+        "inp_proxy_ms_median": 24,
+        "requests_median": 11,
+        "transfer_bytes_median": 148911
+      }
+    },
+    {
+      "route": "en-guides",
+      "path": "/en/guias/",
+      "language": "en",
+      "kind": "archive",
+      "viewport": "mobile",
+      "viewport_px": "390x844",
+      "median": {
+        "samples": 5,
+        "ttfb_ms_median": 98.1,
+        "lcp_ms_median": 184,
+        "lcp_ms_min": 172,
+        "lcp_ms_max": 248,
+        "cls_median": 0.0,
+        "inp_proxy_ms_median": 16,
+        "requests_median": 10,
+        "transfer_bytes_median": 129253
+      }
+    },
+    {
+      "route": "pt-jobs",
+      "path": "/empregos/",
+      "language": "pt",
+      "kind": "archive",
+      "viewport": "desktop",
+      "viewport_px": "1440x1000",
+      "median": {
+        "samples": 5,
+        "ttfb_ms_median": 89,
+        "lcp_ms_median": 208,
+        "lcp_ms_min": 172,
+        "lcp_ms_max": 228,
+        "cls_median": 0.0,
+        "inp_proxy_ms_median": 32,
+        "requests_median": 10,
+        "transfer_bytes_median": 134894
+      }
+    },
+    {
+      "route": "pt-jobs",
+      "path": "/empregos/",
+      "language": "pt",
+      "kind": "archive",
+      "viewport": "mobile",
+      "viewport_px": "390x844",
+      "median": {
+        "samples": 5,
+        "ttfb_ms_median": 85.3,
+        "lcp_ms_median": 176,
+        "lcp_ms_min": 164,
+        "lcp_ms_max": 208,
+        "cls_median": 0.0,
+        "inp_proxy_ms_median": 24,
+        "requests_median": 10,
+        "transfer_bytes_median": 134894
+      }
+    },
+    {
+      "route": "en-jobs",
+      "path": "/en/empregos/",
+      "language": "en",
+      "kind": "archive",
+      "viewport": "desktop",
+      "viewport_px": "1440x1000",
+      "median": {
+        "samples": 5,
+        "ttfb_ms_median": 90.5,
+        "lcp_ms_median": 188,
+        "lcp_ms_min": 180,
+        "lcp_ms_max": 232,
+        "cls_median": 0.0,
+        "inp_proxy_ms_median": 32,
+        "requests_median": 10,
+        "transfer_bytes_median": 134551
+      }
+    },
+    {
+      "route": "en-jobs",
+      "path": "/en/empregos/",
+      "language": "en",
+      "kind": "archive",
+      "viewport": "mobile",
+      "viewport_px": "390x844",
+      "median": {
+        "samples": 5,
+        "ttfb_ms_median": 99.6,
+        "lcp_ms_median": 204,
+        "lcp_ms_min": 188,
+        "lcp_ms_max": 224,
+        "cls_median": 0.0,
+        "inp_proxy_ms_median": 24,
+        "requests_median": 10,
+        "transfer_bytes_median": 134551
+      }
+    },
+    {
+      "route": "pt-events",
+      "path": "/eventos/",
+      "language": "pt",
+      "kind": "archive",
+      "viewport": "desktop",
+      "viewport_px": "1440x1000",
+      "median": {
+        "samples": 5,
+        "ttfb_ms_median": 1733.7,
+        "lcp_ms_median": 1876,
+        "lcp_ms_min": 1576,
+        "lcp_ms_max": 5720,
+        "cls_median": 0.0,
+        "inp_proxy_ms_median": 32,
+        "requests_median": 19,
+        "transfer_bytes_median": 425072
+      }
+    },
+    {
+      "route": "pt-events",
+      "path": "/eventos/",
+      "language": "pt",
+      "kind": "archive",
+      "viewport": "mobile",
+      "viewport_px": "390x844",
+      "median": {
+        "samples": 5,
+        "ttfb_ms_median": 1474.9,
+        "lcp_ms_median": 1596,
+        "lcp_ms_min": 1472,
+        "lcp_ms_max": 1896,
+        "cls_median": 0.0,
+        "inp_proxy_ms_median": 24,
+        "requests_median": 16,
+        "transfer_bytes_median": 267079
+      }
+    },
+    {
+      "route": "en-events",
+      "path": "/en/eventos/",
+      "language": "en",
+      "kind": "archive",
+      "viewport": "desktop",
+      "viewport_px": "1440x1000",
+      "median": {
+        "samples": 5,
+        "ttfb_ms_median": 4312.7,
+        "lcp_ms_median": 4428,
+        "lcp_ms_min": 4360,
+        "lcp_ms_max": 4676,
+        "cls_median": 0.0,
+        "inp_proxy_ms_median": 24,
+        "requests_median": 19,
+        "transfer_bytes_median": 424434
+      }
+    },
+    {
+      "route": "en-events",
+      "path": "/en/eventos/",
+      "language": "en",
+      "kind": "archive",
+      "viewport": "mobile",
+      "viewport_px": "390x844",
+      "median": {
+        "samples": 5,
+        "ttfb_ms_median": 4243.5,
+        "lcp_ms_median": 4356,
+        "lcp_ms_min": 4300,
+        "lcp_ms_max": 4552,
+        "cls_median": 0.0,
+        "inp_proxy_ms_median": 24,
+        "requests_median": 16,
+        "transfer_bytes_median": 266441
+      }
+    },
+    {
+      "route": "pt-leisure",
+      "path": "/lazer/",
+      "language": "pt",
+      "kind": "archive",
+      "viewport": "desktop",
+      "viewport_px": "1440x1000",
+      "median": {
+        "samples": 5,
+        "ttfb_ms_median": 98.5,
+        "lcp_ms_median": 192,
+        "lcp_ms_min": 184,
+        "lcp_ms_max": 220,
+        "cls_median": 0.0,
+        "inp_proxy_ms_median": 32,
+        "requests_median": 13,
+        "transfer_bytes_median": 164654
+      }
+    },
+    {
+      "route": "pt-leisure",
+      "path": "/lazer/",
+      "language": "pt",
+      "kind": "archive",
+      "viewport": "mobile",
+      "viewport_px": "390x844",
+      "median": {
+        "samples": 5,
+        "ttfb_ms_median": 94.9,
+        "lcp_ms_median": 180,
+        "lcp_ms_min": 176,
+        "lcp_ms_max": 200,
+        "cls_median": 0.0,
+        "inp_proxy_ms_median": 24,
+        "requests_median": 12,
+        "transfer_bytes_median": 144996
+      }
+    },
+    {
+      "route": "en-leisure",
+      "path": "/en/lazer/",
+      "language": "en",
+      "kind": "archive",
+      "viewport": "desktop",
+      "viewport_px": "1440x1000",
+      "median": {
+        "samples": 5,
+        "ttfb_ms_median": 108.1,
+        "lcp_ms_median": 200,
+        "lcp_ms_min": 200,
+        "lcp_ms_max": 240,
+        "cls_median": 0.0,
+        "inp_proxy_ms_median": 32,
+        "requests_median": 13,
+        "transfer_bytes_median": 163788
+      }
+    },
+    {
+      "route": "en-leisure",
+      "path": "/en/lazer/",
+      "language": "en",
+      "kind": "archive",
+      "viewport": "mobile",
+      "viewport_px": "390x844",
+      "median": {
+        "samples": 5,
+        "ttfb_ms_median": 106.9,
+        "lcp_ms_median": 184,
+        "lcp_ms_min": 176,
+        "lcp_ms_max": 336,
+        "cls_median": 0.0,
+        "inp_proxy_ms_median": 24,
+        "requests_median": 12,
+        "transfer_bytes_median": 144130
+      }
+    }
+  ],
+  "samples": [
+    {
+      "route": "pt-home",
+      "path": "/",
+      "viewport": "desktop",
+      "language": "pt",
+      "kind": "home",
+      "status": 200,
+      "ttfb_ms": 1590,
+      "dom_content_loaded_ms": 1785.7,
+      "load_ms": 1874.7,
+      "lcp_ms": 1748,
+      "cls": 0.0009,
+      "inp_proxy_ms": 64,
+      "interaction_observed": true,
+      "requests": 12,
+      "transfer_bytes": 276131,
+      "largest_assets": [
+        {
+          "name": "conexaobr_Hero_image-1600.webp",
+          "type": "link",
+          "bytes": 140182
+        },
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "pt-home",
+      "path": "/",
+      "viewport": "desktop",
+      "language": "pt",
+      "kind": "home",
+      "status": 200,
+      "ttfb_ms": 1610.9,
+      "dom_content_loaded_ms": 1726,
+      "load_ms": 1730.3,
+      "lcp_ms": 1736,
+      "cls": 0.0009,
+      "inp_proxy_ms": 48,
+      "interaction_observed": true,
+      "requests": 12,
+      "transfer_bytes": 276131,
+      "largest_assets": [
+        {
+          "name": "conexaobr_Hero_image-1600.webp",
+          "type": "link",
+          "bytes": 140182
+        },
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "pt-home",
+      "path": "/",
+      "viewport": "desktop",
+      "language": "pt",
+      "kind": "home",
+      "status": 200,
+      "ttfb_ms": 1705.8,
+      "dom_content_loaded_ms": 1824.1,
+      "load_ms": 1828.9,
+      "lcp_ms": 1840,
+      "cls": 0.0008,
+      "inp_proxy_ms": 56,
+      "interaction_observed": true,
+      "requests": 12,
+      "transfer_bytes": 276131,
+      "largest_assets": [
+        {
+          "name": "conexaobr_Hero_image-1600.webp",
+          "type": "link",
+          "bytes": 140182
+        },
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "pt-home",
+      "path": "/",
+      "viewport": "desktop",
+      "language": "pt",
+      "kind": "home",
+      "status": 200,
+      "ttfb_ms": 1712.6,
+      "dom_content_loaded_ms": 1872,
+      "load_ms": 1955.1,
+      "lcp_ms": 1868,
+      "cls": 0.0009,
+      "inp_proxy_ms": 56,
+      "interaction_observed": true,
+      "requests": 12,
+      "transfer_bytes": 276131,
+      "largest_assets": [
+        {
+          "name": "conexaobr_Hero_image-1600.webp",
+          "type": "link",
+          "bytes": 140182
+        },
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "pt-home",
+      "path": "/",
+      "viewport": "desktop",
+      "language": "pt",
+      "kind": "home",
+      "status": 200,
+      "ttfb_ms": 1837.9,
+      "dom_content_loaded_ms": 1955.3,
+      "load_ms": 1959.2,
+      "lcp_ms": 1968,
+      "cls": 0.0008,
+      "inp_proxy_ms": 80,
+      "interaction_observed": true,
+      "requests": 12,
+      "transfer_bytes": 276131,
+      "largest_assets": [
+        {
+          "name": "conexaobr_Hero_image-1600.webp",
+          "type": "link",
+          "bytes": 140182
+        },
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "pt-home",
+      "path": "/",
+      "viewport": "mobile",
+      "language": "pt",
+      "kind": "home",
+      "status": 200,
+      "ttfb_ms": 2076.8,
+      "dom_content_loaded_ms": 2174.2,
+      "load_ms": 2181.7,
+      "lcp_ms": 2224,
+      "cls": 0.0002,
+      "inp_proxy_ms": 136,
+      "interaction_observed": true,
+      "requests": 12,
+      "transfer_bytes": 236329,
+      "largest_assets": [
+        {
+          "name": "conexaobr_Hero_image_mobile.webp",
+          "type": "link",
+          "bytes": 100380
+        },
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "pt-home",
+      "path": "/",
+      "viewport": "mobile",
+      "language": "pt",
+      "kind": "home",
+      "status": 200,
+      "ttfb_ms": 2133.2,
+      "dom_content_loaded_ms": 2244,
+      "load_ms": 2385.6,
+      "lcp_ms": 2244,
+      "cls": 0.0001,
+      "inp_proxy_ms": 56,
+      "interaction_observed": true,
+      "requests": 12,
+      "transfer_bytes": 236329,
+      "largest_assets": [
+        {
+          "name": "conexaobr_Hero_image_mobile.webp",
+          "type": "link",
+          "bytes": 100380
+        },
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "pt-home",
+      "path": "/",
+      "viewport": "mobile",
+      "language": "pt",
+      "kind": "home",
+      "status": 200,
+      "ttfb_ms": 2076.5,
+      "dom_content_loaded_ms": 2178.7,
+      "load_ms": 2183.1,
+      "lcp_ms": 2180,
+      "cls": 0.0001,
+      "inp_proxy_ms": 40,
+      "interaction_observed": true,
+      "requests": 12,
+      "transfer_bytes": 236329,
+      "largest_assets": [
+        {
+          "name": "conexaobr_Hero_image_mobile.webp",
+          "type": "link",
+          "bytes": 100380
+        },
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "pt-home",
+      "path": "/",
+      "viewport": "mobile",
+      "language": "pt",
+      "kind": "home",
+      "status": 200,
+      "ttfb_ms": 1926.6,
+      "dom_content_loaded_ms": 2061.1,
+      "load_ms": 2149.7,
+      "lcp_ms": 2048,
+      "cls": 0.0001,
+      "inp_proxy_ms": 40,
+      "interaction_observed": true,
+      "requests": 12,
+      "transfer_bytes": 236329,
+      "largest_assets": [
+        {
+          "name": "conexaobr_Hero_image_mobile.webp",
+          "type": "link",
+          "bytes": 100380
+        },
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "pt-home",
+      "path": "/",
+      "viewport": "mobile",
+      "language": "pt",
+      "kind": "home",
+      "status": 200,
+      "ttfb_ms": 1970.7,
+      "dom_content_loaded_ms": 2075.1,
+      "load_ms": 2080,
+      "lcp_ms": 2076,
+      "cls": 0.0002,
+      "inp_proxy_ms": 40,
+      "interaction_observed": true,
+      "requests": 12,
+      "transfer_bytes": 236329,
+      "largest_assets": [
+        {
+          "name": "conexaobr_Hero_image_mobile.webp",
+          "type": "link",
+          "bytes": 100380
+        },
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "en-home",
+      "path": "/en/",
+      "viewport": "desktop",
+      "language": "en",
+      "kind": "home",
+      "status": 200,
+      "ttfb_ms": 1473.1,
+      "dom_content_loaded_ms": 1623.6,
+      "load_ms": 1719.7,
+      "lcp_ms": 1620,
+      "cls": 0.0006,
+      "inp_proxy_ms": 64,
+      "interaction_observed": true,
+      "requests": 12,
+      "transfer_bytes": 276271,
+      "largest_assets": [
+        {
+          "name": "conexaobr_Hero_image-1600.webp",
+          "type": "link",
+          "bytes": 140182
+        },
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "en-home",
+      "path": "/en/",
+      "viewport": "desktop",
+      "language": "en",
+      "kind": "home",
+      "status": 200,
+      "ttfb_ms": 1371.1,
+      "dom_content_loaded_ms": 1496.6,
+      "load_ms": 1500.4,
+      "lcp_ms": 1508,
+      "cls": 0.0006,
+      "inp_proxy_ms": 56,
+      "interaction_observed": true,
+      "requests": 12,
+      "transfer_bytes": 276271,
+      "largest_assets": [
+        {
+          "name": "conexaobr_Hero_image-1600.webp",
+          "type": "link",
+          "bytes": 140182
+        },
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "en-home",
+      "path": "/en/",
+      "viewport": "desktop",
+      "language": "en",
+      "kind": "home",
+      "status": 200,
+      "ttfb_ms": 1245.3,
+      "dom_content_loaded_ms": 1415.5,
+      "load_ms": 1532.2,
+      "lcp_ms": 1412,
+      "cls": 0.0006,
+      "inp_proxy_ms": 72,
+      "interaction_observed": true,
+      "requests": 12,
+      "transfer_bytes": 276271,
+      "largest_assets": [
+        {
+          "name": "conexaobr_Hero_image-1600.webp",
+          "type": "link",
+          "bytes": 140182
+        },
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "en-home",
+      "path": "/en/",
+      "viewport": "desktop",
+      "language": "en",
+      "kind": "home",
+      "status": 200,
+      "ttfb_ms": 1433.3,
+      "dom_content_loaded_ms": 1570.7,
+      "load_ms": 1651.9,
+      "lcp_ms": 1564,
+      "cls": 0.0006,
+      "inp_proxy_ms": 72,
+      "interaction_observed": true,
+      "requests": 12,
+      "transfer_bytes": 276271,
+      "largest_assets": [
+        {
+          "name": "conexaobr_Hero_image-1600.webp",
+          "type": "link",
+          "bytes": 140182
+        },
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "en-home",
+      "path": "/en/",
+      "viewport": "desktop",
+      "language": "en",
+      "kind": "home",
+      "status": 200,
+      "ttfb_ms": 1446.5,
+      "dom_content_loaded_ms": 1562.7,
+      "load_ms": 1566.5,
+      "lcp_ms": 1572,
+      "cls": 0.0006,
+      "inp_proxy_ms": 64,
+      "interaction_observed": true,
+      "requests": 12,
+      "transfer_bytes": 276271,
+      "largest_assets": [
+        {
+          "name": "conexaobr_Hero_image-1600.webp",
+          "type": "link",
+          "bytes": 140182
+        },
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "en-home",
+      "path": "/en/",
+      "viewport": "mobile",
+      "language": "en",
+      "kind": "home",
+      "status": 200,
+      "ttfb_ms": 1500,
+      "dom_content_loaded_ms": 1609.4,
+      "load_ms": 1613.7,
+      "lcp_ms": 1612,
+      "cls": 0.0001,
+      "inp_proxy_ms": 32,
+      "interaction_observed": true,
+      "requests": 12,
+      "transfer_bytes": 236469,
+      "largest_assets": [
+        {
+          "name": "conexaobr_Hero_image_mobile.webp",
+          "type": "link",
+          "bytes": 100380
+        },
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "en-home",
+      "path": "/en/",
+      "viewport": "mobile",
+      "language": "en",
+      "kind": "home",
+      "status": 200,
+      "ttfb_ms": 1295.5,
+      "dom_content_loaded_ms": 1432.6,
+      "load_ms": 1441.7,
+      "lcp_ms": 1436,
+      "cls": 0.0002,
+      "inp_proxy_ms": 56,
+      "interaction_observed": true,
+      "requests": 12,
+      "transfer_bytes": 236469,
+      "largest_assets": [
+        {
+          "name": "conexaobr_Hero_image_mobile.webp",
+          "type": "link",
+          "bytes": 100380
+        },
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "en-home",
+      "path": "/en/",
+      "viewport": "mobile",
+      "language": "en",
+      "kind": "home",
+      "status": 200,
+      "ttfb_ms": 1247.1,
+      "dom_content_loaded_ms": 1367.8,
+      "load_ms": 1372.3,
+      "lcp_ms": 1368,
+      "cls": 0.0002,
+      "inp_proxy_ms": 40,
+      "interaction_observed": true,
+      "requests": 12,
+      "transfer_bytes": 236469,
+      "largest_assets": [
+        {
+          "name": "conexaobr_Hero_image_mobile.webp",
+          "type": "link",
+          "bytes": 100380
+        },
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "en-home",
+      "path": "/en/",
+      "viewport": "mobile",
+      "language": "en",
+      "kind": "home",
+      "status": 200,
+      "ttfb_ms": 1362.2,
+      "dom_content_loaded_ms": 1461.4,
+      "load_ms": 1522.9,
+      "lcp_ms": 1464,
+      "cls": 0.0001,
+      "inp_proxy_ms": 40,
+      "interaction_observed": true,
+      "requests": 12,
+      "transfer_bytes": 236469,
+      "largest_assets": [
+        {
+          "name": "conexaobr_Hero_image_mobile.webp",
+          "type": "link",
+          "bytes": 100380
+        },
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "en-home",
+      "path": "/en/",
+      "viewport": "mobile",
+      "language": "en",
+      "kind": "home",
+      "status": 200,
+      "ttfb_ms": 1255.4,
+      "dom_content_loaded_ms": 1353.3,
+      "load_ms": 1356.5,
+      "lcp_ms": 1356,
+      "cls": 0.0002,
+      "inp_proxy_ms": 40,
+      "interaction_observed": true,
+      "requests": 12,
+      "transfer_bytes": 236469,
+      "largest_assets": [
+        {
+          "name": "conexaobr_Hero_image_mobile.webp",
+          "type": "link",
+          "bytes": 100380
+        },
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "pt-guides",
+      "path": "/guias/",
+      "viewport": "desktop",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 117.2,
+      "dom_content_loaded_ms": 186.1,
+      "load_ms": 227.9,
+      "lcp_ms": 208,
+      "cls": 0.0605,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 11,
+      "transfer_bytes": 148666,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "logo_dark_mode.webp",
+          "type": "img",
+          "bytes": 19658
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "pt-guides",
+      "path": "/guias/",
+      "viewport": "desktop",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 75.9,
+      "dom_content_loaded_ms": 139.5,
+      "load_ms": 179.7,
+      "lcp_ms": 160,
+      "cls": 0.0925,
+      "inp_proxy_ms": 32,
+      "interaction_observed": true,
+      "requests": 11,
+      "transfer_bytes": 148666,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "logo_dark_mode.webp",
+          "type": "img",
+          "bytes": 19658
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "pt-guides",
+      "path": "/guias/",
+      "viewport": "desktop",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 118.9,
+      "dom_content_loaded_ms": 187.9,
+      "load_ms": 204.5,
+      "lcp_ms": 204,
+      "cls": 0.0925,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 11,
+      "transfer_bytes": 148666,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "logo_dark_mode.webp",
+          "type": "img",
+          "bytes": 19658
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "pt-guides",
+      "path": "/guias/",
+      "viewport": "desktop",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 115.8,
+      "dom_content_loaded_ms": 156.3,
+      "load_ms": 231.7,
+      "lcp_ms": 256,
+      "cls": 0.0604,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 11,
+      "transfer_bytes": 148666,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "logo_dark_mode.webp",
+          "type": "img",
+          "bytes": 19658
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "pt-guides",
+      "path": "/guias/",
+      "viewport": "desktop",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 138.8,
+      "dom_content_loaded_ms": 202.5,
+      "load_ms": 230,
+      "lcp_ms": 232,
+      "cls": 0.0605,
+      "inp_proxy_ms": 32,
+      "interaction_observed": true,
+      "requests": 11,
+      "transfer_bytes": 148666,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "logo_dark_mode.webp",
+          "type": "img",
+          "bytes": 19658
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "pt-guides",
+      "path": "/guias/",
+      "viewport": "mobile",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 85.1,
+      "dom_content_loaded_ms": 147,
+      "load_ms": 237.7,
+      "lcp_ms": 160,
+      "cls": 0.1447,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 10,
+      "transfer_bytes": 129008,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "pt-guides",
+      "path": "/guias/",
+      "viewport": "mobile",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 82.1,
+      "dom_content_loaded_ms": 151.1,
+      "load_ms": 171.5,
+      "lcp_ms": 160,
+      "cls": 0.1446,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 10,
+      "transfer_bytes": 129008,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "pt-guides",
+      "path": "/guias/",
+      "viewport": "mobile",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 89,
+      "dom_content_loaded_ms": 163.1,
+      "load_ms": 182.1,
+      "lcp_ms": 172,
+      "cls": 0.1404,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 10,
+      "transfer_bytes": 129008,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "pt-guides",
+      "path": "/guias/",
+      "viewport": "mobile",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 102.3,
+      "dom_content_loaded_ms": 182.9,
+      "load_ms": 204.2,
+      "lcp_ms": 196,
+      "cls": 0.1447,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 10,
+      "transfer_bytes": 129008,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "pt-guides",
+      "path": "/guias/",
+      "viewport": "mobile",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 116.3,
+      "dom_content_loaded_ms": 153.3,
+      "load_ms": 261.7,
+      "lcp_ms": 196,
+      "cls": 0.1447,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 10,
+      "transfer_bytes": 129008,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "en-guides",
+      "path": "/en/guias/",
+      "viewport": "desktop",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 131.2,
+      "dom_content_loaded_ms": 197.4,
+      "load_ms": 214,
+      "lcp_ms": 216,
+      "cls": 0.0978,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 11,
+      "transfer_bytes": 148911,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "logo_dark_mode.webp",
+          "type": "img",
+          "bytes": 19658
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "en-guides",
+      "path": "/en/guias/",
+      "viewport": "desktop",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 111.9,
+      "dom_content_loaded_ms": 208.5,
+      "load_ms": 210.5,
+      "lcp_ms": 224,
+      "cls": 0.0978,
+      "inp_proxy_ms": 40,
+      "interaction_observed": true,
+      "requests": 11,
+      "transfer_bytes": 148911,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "logo_dark_mode.webp",
+          "type": "img",
+          "bytes": 19658
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "en-guides",
+      "path": "/en/guias/",
+      "viewport": "desktop",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 175.2,
+      "dom_content_loaded_ms": 212.4,
+      "load_ms": 267.9,
+      "lcp_ms": 268,
+      "cls": 0.0866,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 11,
+      "transfer_bytes": 148911,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "logo_dark_mode.webp",
+          "type": "img",
+          "bytes": 19658
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "en-guides",
+      "path": "/en/guias/",
+      "viewport": "desktop",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 119.4,
+      "dom_content_loaded_ms": 198.5,
+      "load_ms": 231.1,
+      "lcp_ms": 220,
+      "cls": 0.0866,
+      "inp_proxy_ms": 32,
+      "interaction_observed": true,
+      "requests": 11,
+      "transfer_bytes": 148911,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "logo_dark_mode.webp",
+          "type": "img",
+          "bytes": 19658
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "en-guides",
+      "path": "/en/guias/",
+      "viewport": "desktop",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 104.5,
+      "dom_content_loaded_ms": 177,
+      "load_ms": 198.5,
+      "lcp_ms": 192,
+      "cls": 0.0523,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 11,
+      "transfer_bytes": 148911,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "logo_dark_mode.webp",
+          "type": "img",
+          "bytes": 19658
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "en-guides",
+      "path": "/en/guias/",
+      "viewport": "mobile",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 134.5,
+      "dom_content_loaded_ms": 236.6,
+      "load_ms": 246,
+      "lcp_ms": 248,
+      "cls": 0.002,
+      "inp_proxy_ms": 16,
+      "interaction_observed": true,
+      "requests": 10,
+      "transfer_bytes": 129253,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "en-guides",
+      "path": "/en/guias/",
+      "viewport": "mobile",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 85.5,
+      "dom_content_loaded_ms": 150.4,
+      "load_ms": 173.9,
+      "lcp_ms": 172,
+      "cls": 0.0015,
+      "inp_proxy_ms": 40,
+      "interaction_observed": true,
+      "requests": 10,
+      "transfer_bytes": 129253,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "en-guides",
+      "path": "/en/guias/",
+      "viewport": "mobile",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 89,
+      "dom_content_loaded_ms": 153.4,
+      "load_ms": 225.8,
+      "lcp_ms": 176,
+      "cls": 0.0015,
+      "inp_proxy_ms": 40,
+      "interaction_observed": true,
+      "requests": 10,
+      "transfer_bytes": 129253,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "en-guides",
+      "path": "/en/guias/",
+      "viewport": "mobile",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 109.9,
+      "dom_content_loaded_ms": 180.7,
+      "load_ms": 196,
+      "lcp_ms": 196,
+      "cls": 0.0015,
+      "inp_proxy_ms": 16,
+      "interaction_observed": true,
+      "requests": 10,
+      "transfer_bytes": 129253,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "en-guides",
+      "path": "/en/guias/",
+      "viewport": "mobile",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 98.1,
+      "dom_content_loaded_ms": 166.5,
+      "load_ms": 189.6,
+      "lcp_ms": 184,
+      "cls": 0.0015,
+      "inp_proxy_ms": 16,
+      "interaction_observed": true,
+      "requests": 10,
+      "transfer_bytes": 129253,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "pt-jobs",
+      "path": "/empregos/",
+      "viewport": "desktop",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 119.1,
+      "dom_content_loaded_ms": 213.1,
+      "load_ms": 315.2,
+      "lcp_ms": 228,
+      "cls": 0.0009,
+      "inp_proxy_ms": 40,
+      "interaction_observed": true,
+      "requests": 10,
+      "transfer_bytes": 134894,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "pt-jobs",
+      "path": "/empregos/",
+      "viewport": "desktop",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 89,
+      "dom_content_loaded_ms": 126.2,
+      "load_ms": 190.1,
+      "lcp_ms": 208,
+      "cls": 0.0009,
+      "inp_proxy_ms": 40,
+      "interaction_observed": true,
+      "requests": 10,
+      "transfer_bytes": 134894,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "pt-jobs",
+      "path": "/empregos/",
+      "viewport": "desktop",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 77.5,
+      "dom_content_loaded_ms": 158.1,
+      "load_ms": 164.8,
+      "lcp_ms": 172,
+      "cls": 0.0009,
+      "inp_proxy_ms": 32,
+      "interaction_observed": true,
+      "requests": 10,
+      "transfer_bytes": 134894,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "pt-jobs",
+      "path": "/empregos/",
+      "viewport": "desktop",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 98.5,
+      "dom_content_loaded_ms": 139.7,
+      "load_ms": 251.3,
+      "lcp_ms": 224,
+      "cls": 0.0009,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 10,
+      "transfer_bytes": 134894,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "pt-jobs",
+      "path": "/empregos/",
+      "viewport": "desktop",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 76.1,
+      "dom_content_loaded_ms": 157.9,
+      "load_ms": 169.3,
+      "lcp_ms": 176,
+      "cls": 0.0009,
+      "inp_proxy_ms": 32,
+      "interaction_observed": true,
+      "requests": 10,
+      "transfer_bytes": 134894,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "pt-jobs",
+      "path": "/empregos/",
+      "viewport": "mobile",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 123.8,
+      "dom_content_loaded_ms": 201.6,
+      "load_ms": 205.6,
+      "lcp_ms": 208,
+      "cls": 0.0002,
+      "inp_proxy_ms": 32,
+      "interaction_observed": true,
+      "requests": 10,
+      "transfer_bytes": 134894,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "pt-jobs",
+      "path": "/empregos/",
+      "viewport": "mobile",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 81.4,
+      "dom_content_loaded_ms": 118.7,
+      "load_ms": 202.5,
+      "lcp_ms": 172,
+      "cls": 0.0002,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 10,
+      "transfer_bytes": 134894,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "pt-jobs",
+      "path": "/empregos/",
+      "viewport": "mobile",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 87.5,
+      "dom_content_loaded_ms": 120.9,
+      "load_ms": 195.1,
+      "lcp_ms": 176,
+      "cls": 0.0002,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 10,
+      "transfer_bytes": 134894,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "pt-jobs",
+      "path": "/empregos/",
+      "viewport": "mobile",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 75.7,
+      "dom_content_loaded_ms": 152.1,
+      "load_ms": 162,
+      "lcp_ms": 164,
+      "cls": 0.0002,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 10,
+      "transfer_bytes": 134894,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "pt-jobs",
+      "path": "/empregos/",
+      "viewport": "mobile",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 85.3,
+      "dom_content_loaded_ms": 120.7,
+      "load_ms": 179.6,
+      "lcp_ms": 184,
+      "cls": 0.0002,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 10,
+      "transfer_bytes": 134894,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "en-jobs",
+      "path": "/en/empregos/",
+      "viewport": "desktop",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 124.4,
+      "dom_content_loaded_ms": 215,
+      "load_ms": 222.8,
+      "lcp_ms": 232,
+      "cls": 0.0004,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 10,
+      "transfer_bytes": 134551,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "en-jobs",
+      "path": "/en/empregos/",
+      "viewport": "desktop",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 91.4,
+      "dom_content_loaded_ms": 183.2,
+      "load_ms": 280.4,
+      "lcp_ms": 196,
+      "cls": 0.0004,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 10,
+      "transfer_bytes": 134551,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "en-jobs",
+      "path": "/en/empregos/",
+      "viewport": "desktop",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 88.3,
+      "dom_content_loaded_ms": 121.6,
+      "load_ms": 176.2,
+      "lcp_ms": 188,
+      "cls": 0.0007,
+      "inp_proxy_ms": 40,
+      "interaction_observed": true,
+      "requests": 10,
+      "transfer_bytes": 134551,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "en-jobs",
+      "path": "/en/empregos/",
+      "viewport": "desktop",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 90.5,
+      "dom_content_loaded_ms": 169.6,
+      "load_ms": 248.5,
+      "lcp_ms": 184,
+      "cls": 0.0004,
+      "inp_proxy_ms": 32,
+      "interaction_observed": true,
+      "requests": 10,
+      "transfer_bytes": 134551,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "en-jobs",
+      "path": "/en/empregos/",
+      "viewport": "desktop",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 84.8,
+      "dom_content_loaded_ms": 116.4,
+      "load_ms": 174.3,
+      "lcp_ms": 180,
+      "cls": 0.0007,
+      "inp_proxy_ms": 32,
+      "interaction_observed": true,
+      "requests": 10,
+      "transfer_bytes": 134551,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "en-jobs",
+      "path": "/en/empregos/",
+      "viewport": "mobile",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 96.6,
+      "dom_content_loaded_ms": 141.2,
+      "load_ms": 203.8,
+      "lcp_ms": 224,
+      "cls": 0.0002,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 10,
+      "transfer_bytes": 134551,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "en-jobs",
+      "path": "/en/empregos/",
+      "viewport": "mobile",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 97,
+      "dom_content_loaded_ms": 181.2,
+      "load_ms": 184.6,
+      "lcp_ms": 188,
+      "cls": 0.0002,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 10,
+      "transfer_bytes": 134551,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "en-jobs",
+      "path": "/en/empregos/",
+      "viewport": "mobile",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 107.5,
+      "dom_content_loaded_ms": 144.4,
+      "load_ms": 199.6,
+      "lcp_ms": 204,
+      "cls": 0.0002,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 10,
+      "transfer_bytes": 134551,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "en-jobs",
+      "path": "/en/empregos/",
+      "viewport": "mobile",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 99.6,
+      "dom_content_loaded_ms": 208.4,
+      "load_ms": 209.2,
+      "lcp_ms": 216,
+      "cls": 0.0002,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 10,
+      "transfer_bytes": 134551,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "en-jobs",
+      "path": "/en/empregos/",
+      "viewport": "mobile",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 107.7,
+      "dom_content_loaded_ms": 139.4,
+      "load_ms": 193.2,
+      "lcp_ms": 192,
+      "cls": 0.0002,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 10,
+      "transfer_bytes": 134551,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "pt-events",
+      "path": "/eventos/",
+      "viewport": "desktop",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 5593.8,
+      "dom_content_loaded_ms": 5675.7,
+      "load_ms": 5705.6,
+      "lcp_ms": 5720,
+      "cls": 0.0011,
+      "inp_proxy_ms": 32,
+      "interaction_observed": true,
+      "requests": 19,
+      "transfer_bytes": 425072,
+      "largest_assets": [
+        {
+          "name": "irish-card-market-winter-2026-84871ea646-640x360.jpg",
+          "type": "img",
+          "bytes": 70121
+        },
+        {
+          "name": "cruachan-and-waylander-cc6e60ed55-640x360.jpg",
+          "type": "img",
+          "bytes": 68214
+        },
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "the-power-within-to-unlock-your-mind-4d96e88d55-640x360.jpg",
+          "type": "img",
+          "bytes": 40890
+        },
+        {
+          "name": "whos-that-girl-eurythmics-annie-lennox-experience-live-in-concert-88f7",
+          "type": "img",
+          "bytes": 34746
+        }
+      ]
+    },
+    {
+      "route": "pt-events",
+      "path": "/eventos/",
+      "viewport": "desktop",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 1551.5,
+      "dom_content_loaded_ms": 1630.4,
+      "load_ms": 1653.8,
+      "lcp_ms": 1664,
+      "cls": 0.002,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 19,
+      "transfer_bytes": 425072,
+      "largest_assets": [
+        {
+          "name": "irish-card-market-winter-2026-84871ea646-640x360.jpg",
+          "type": "img",
+          "bytes": 70121
+        },
+        {
+          "name": "cruachan-and-waylander-cc6e60ed55-640x360.jpg",
+          "type": "img",
+          "bytes": 68214
+        },
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "the-power-within-to-unlock-your-mind-4d96e88d55-640x360.jpg",
+          "type": "img",
+          "bytes": 40890
+        },
+        {
+          "name": "whos-that-girl-eurythmics-annie-lennox-experience-live-in-concert-88f7",
+          "type": "img",
+          "bytes": 34746
+        }
+      ]
+    },
+    {
+      "route": "pt-events",
+      "path": "/eventos/",
+      "viewport": "desktop",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 1733.7,
+      "dom_content_loaded_ms": 1825.7,
+      "load_ms": 1827.3,
+      "lcp_ms": 1876,
+      "cls": 0.0011,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 19,
+      "transfer_bytes": 425072,
+      "largest_assets": [
+        {
+          "name": "irish-card-market-winter-2026-84871ea646-640x360.jpg",
+          "type": "img",
+          "bytes": 70121
+        },
+        {
+          "name": "cruachan-and-waylander-cc6e60ed55-640x360.jpg",
+          "type": "img",
+          "bytes": 68214
+        },
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "the-power-within-to-unlock-your-mind-4d96e88d55-640x360.jpg",
+          "type": "img",
+          "bytes": 40890
+        },
+        {
+          "name": "whos-that-girl-eurythmics-annie-lennox-experience-live-in-concert-88f7",
+          "type": "img",
+          "bytes": 34746
+        }
+      ]
+    },
+    {
+      "route": "pt-events",
+      "path": "/eventos/",
+      "viewport": "desktop",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 1859.5,
+      "dom_content_loaded_ms": 1936,
+      "load_ms": 2059.5,
+      "lcp_ms": 1988,
+      "cls": 0.0011,
+      "inp_proxy_ms": 32,
+      "interaction_observed": true,
+      "requests": 19,
+      "transfer_bytes": 425072,
+      "largest_assets": [
+        {
+          "name": "irish-card-market-winter-2026-84871ea646-640x360.jpg",
+          "type": "img",
+          "bytes": 70121
+        },
+        {
+          "name": "cruachan-and-waylander-cc6e60ed55-640x360.jpg",
+          "type": "img",
+          "bytes": 68214
+        },
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "the-power-within-to-unlock-your-mind-4d96e88d55-640x360.jpg",
+          "type": "img",
+          "bytes": 40890
+        },
+        {
+          "name": "whos-that-girl-eurythmics-annie-lennox-experience-live-in-concert-88f7",
+          "type": "img",
+          "bytes": 34746
+        }
+      ]
+    },
+    {
+      "route": "pt-events",
+      "path": "/eventos/",
+      "viewport": "desktop",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 1454.3,
+      "dom_content_loaded_ms": 1534,
+      "load_ms": 1557.9,
+      "lcp_ms": 1576,
+      "cls": 0.0011,
+      "inp_proxy_ms": 32,
+      "interaction_observed": true,
+      "requests": 19,
+      "transfer_bytes": 425157,
+      "largest_assets": [
+        {
+          "name": "irish-card-market-winter-2026-84871ea646-640x360.jpg",
+          "type": "img",
+          "bytes": 70121
+        },
+        {
+          "name": "cruachan-and-waylander-cc6e60ed55-640x360.jpg",
+          "type": "img",
+          "bytes": 68214
+        },
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "the-power-within-to-unlock-your-mind-4d96e88d55-640x360.jpg",
+          "type": "img",
+          "bytes": 40890
+        },
+        {
+          "name": "whos-that-girl-eurythmics-annie-lennox-experience-live-in-concert-88f7",
+          "type": "img",
+          "bytes": 34746
+        }
+      ]
+    },
+    {
+      "route": "pt-events",
+      "path": "/eventos/",
+      "viewport": "mobile",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 1726.8,
+      "dom_content_loaded_ms": 1854.5,
+      "load_ms": 1977.1,
+      "lcp_ms": 1896,
+      "cls": 0.0003,
+      "inp_proxy_ms": 32,
+      "interaction_observed": true,
+      "requests": 16,
+      "transfer_bytes": 267079,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "the-power-within-to-unlock-your-mind-4d96e88d55-640x360.jpg",
+          "type": "img",
+          "bytes": 40890
+        },
+        {
+          "name": "whos-that-girl-eurythmics-annie-lennox-experience-live-in-concert-88f7",
+          "type": "img",
+          "bytes": 34746
+        },
+        {
+          "name": "duke-special-songs-from-the-deep-forest-20th-anniversary-show-c7f52815",
+          "type": "img",
+          "bytes": 28861
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        }
+      ]
+    },
+    {
+      "route": "pt-events",
+      "path": "/eventos/",
+      "viewport": "mobile",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 1474.9,
+      "dom_content_loaded_ms": 1508.9,
+      "load_ms": 1568.3,
+      "lcp_ms": 1596,
+      "cls": 0.0003,
+      "inp_proxy_ms": 32,
+      "interaction_observed": true,
+      "requests": 16,
+      "transfer_bytes": 267079,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "the-power-within-to-unlock-your-mind-4d96e88d55-640x360.jpg",
+          "type": "img",
+          "bytes": 40890
+        },
+        {
+          "name": "whos-that-girl-eurythmics-annie-lennox-experience-live-in-concert-88f7",
+          "type": "img",
+          "bytes": 34746
+        },
+        {
+          "name": "duke-special-songs-from-the-deep-forest-20th-anniversary-show-c7f52815",
+          "type": "img",
+          "bytes": 28861
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        }
+      ]
+    },
+    {
+      "route": "pt-events",
+      "path": "/eventos/",
+      "viewport": "mobile",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 1357.9,
+      "dom_content_loaded_ms": 1427.5,
+      "load_ms": 1452.1,
+      "lcp_ms": 1472,
+      "cls": 0.0003,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 16,
+      "transfer_bytes": 267079,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "the-power-within-to-unlock-your-mind-4d96e88d55-640x360.jpg",
+          "type": "img",
+          "bytes": 40890
+        },
+        {
+          "name": "whos-that-girl-eurythmics-annie-lennox-experience-live-in-concert-88f7",
+          "type": "img",
+          "bytes": 34746
+        },
+        {
+          "name": "duke-special-songs-from-the-deep-forest-20th-anniversary-show-c7f52815",
+          "type": "img",
+          "bytes": 28861
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        }
+      ]
+    },
+    {
+      "route": "pt-events",
+      "path": "/eventos/",
+      "viewport": "mobile",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 1499.5,
+      "dom_content_loaded_ms": 1569.5,
+      "load_ms": 1584.3,
+      "lcp_ms": 1596,
+      "cls": 0.0003,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 16,
+      "transfer_bytes": 267164,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "the-power-within-to-unlock-your-mind-4d96e88d55-640x360.jpg",
+          "type": "img",
+          "bytes": 40890
+        },
+        {
+          "name": "whos-that-girl-eurythmics-annie-lennox-experience-live-in-concert-88f7",
+          "type": "img",
+          "bytes": 34746
+        },
+        {
+          "name": "duke-special-songs-from-the-deep-forest-20th-anniversary-show-c7f52815",
+          "type": "img",
+          "bytes": 28861
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        }
+      ]
+    },
+    {
+      "route": "pt-events",
+      "path": "/eventos/",
+      "viewport": "mobile",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 1419.8,
+      "dom_content_loaded_ms": 1492.3,
+      "load_ms": 1511.2,
+      "lcp_ms": 1536,
+      "cls": 0.0003,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 16,
+      "transfer_bytes": 267079,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "the-power-within-to-unlock-your-mind-4d96e88d55-640x360.jpg",
+          "type": "img",
+          "bytes": 40890
+        },
+        {
+          "name": "whos-that-girl-eurythmics-annie-lennox-experience-live-in-concert-88f7",
+          "type": "img",
+          "bytes": 34746
+        },
+        {
+          "name": "duke-special-songs-from-the-deep-forest-20th-anniversary-show-c7f52815",
+          "type": "img",
+          "bytes": 28861
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        }
+      ]
+    },
+    {
+      "route": "en-events",
+      "path": "/en/eventos/",
+      "viewport": "desktop",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 4220.9,
+      "dom_content_loaded_ms": 4281.1,
+      "load_ms": 4344.7,
+      "lcp_ms": 4360,
+      "cls": 0.0008,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 19,
+      "transfer_bytes": 424434,
+      "largest_assets": [
+        {
+          "name": "irish-card-market-winter-2026-84871ea646-640x360.jpg",
+          "type": "img",
+          "bytes": 70121
+        },
+        {
+          "name": "cruachan-and-waylander-cc6e60ed55-640x360.jpg",
+          "type": "img",
+          "bytes": 68214
+        },
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "the-power-within-to-unlock-your-mind-4d96e88d55-640x360.jpg",
+          "type": "img",
+          "bytes": 40890
+        },
+        {
+          "name": "whos-that-girl-eurythmics-annie-lennox-experience-live-in-concert-88f7",
+          "type": "img",
+          "bytes": 34746
+        }
+      ]
+    },
+    {
+      "route": "en-events",
+      "path": "/en/eventos/",
+      "viewport": "desktop",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 4561.4,
+      "dom_content_loaded_ms": 4637.2,
+      "load_ms": 4663.9,
+      "lcp_ms": 4676,
+      "cls": 0.0008,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 19,
+      "transfer_bytes": 424434,
+      "largest_assets": [
+        {
+          "name": "irish-card-market-winter-2026-84871ea646-640x360.jpg",
+          "type": "img",
+          "bytes": 70121
+        },
+        {
+          "name": "cruachan-and-waylander-cc6e60ed55-640x360.jpg",
+          "type": "img",
+          "bytes": 68214
+        },
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "the-power-within-to-unlock-your-mind-4d96e88d55-640x360.jpg",
+          "type": "img",
+          "bytes": 40890
+        },
+        {
+          "name": "whos-that-girl-eurythmics-annie-lennox-experience-live-in-concert-88f7",
+          "type": "img",
+          "bytes": 34746
+        }
+      ]
+    },
+    {
+      "route": "en-events",
+      "path": "/en/eventos/",
+      "viewport": "desktop",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 4312.7,
+      "dom_content_loaded_ms": 4388.5,
+      "load_ms": 4416.1,
+      "lcp_ms": 4428,
+      "cls": 0.0005,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 19,
+      "transfer_bytes": 424434,
+      "largest_assets": [
+        {
+          "name": "irish-card-market-winter-2026-84871ea646-640x360.jpg",
+          "type": "img",
+          "bytes": 70121
+        },
+        {
+          "name": "cruachan-and-waylander-cc6e60ed55-640x360.jpg",
+          "type": "img",
+          "bytes": 68214
+        },
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "the-power-within-to-unlock-your-mind-4d96e88d55-640x360.jpg",
+          "type": "img",
+          "bytes": 40890
+        },
+        {
+          "name": "whos-that-girl-eurythmics-annie-lennox-experience-live-in-concert-88f7",
+          "type": "img",
+          "bytes": 34746
+        }
+      ]
+    },
+    {
+      "route": "en-events",
+      "path": "/en/eventos/",
+      "viewport": "desktop",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 4374.3,
+      "dom_content_loaded_ms": 4452.9,
+      "load_ms": 4472.7,
+      "lcp_ms": 4512,
+      "cls": 0.0008,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 19,
+      "transfer_bytes": 424434,
+      "largest_assets": [
+        {
+          "name": "irish-card-market-winter-2026-84871ea646-640x360.jpg",
+          "type": "img",
+          "bytes": 70121
+        },
+        {
+          "name": "cruachan-and-waylander-cc6e60ed55-640x360.jpg",
+          "type": "img",
+          "bytes": 68214
+        },
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "the-power-within-to-unlock-your-mind-4d96e88d55-640x360.jpg",
+          "type": "img",
+          "bytes": 40890
+        },
+        {
+          "name": "whos-that-girl-eurythmics-annie-lennox-experience-live-in-concert-88f7",
+          "type": "img",
+          "bytes": 34746
+        }
+      ]
+    },
+    {
+      "route": "en-events",
+      "path": "/en/eventos/",
+      "viewport": "desktop",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 4261.3,
+      "dom_content_loaded_ms": 4333.9,
+      "load_ms": 4351.3,
+      "lcp_ms": 4364,
+      "cls": 0.0005,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 19,
+      "transfer_bytes": 424434,
+      "largest_assets": [
+        {
+          "name": "irish-card-market-winter-2026-84871ea646-640x360.jpg",
+          "type": "img",
+          "bytes": 70121
+        },
+        {
+          "name": "cruachan-and-waylander-cc6e60ed55-640x360.jpg",
+          "type": "img",
+          "bytes": 68214
+        },
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "the-power-within-to-unlock-your-mind-4d96e88d55-640x360.jpg",
+          "type": "img",
+          "bytes": 40890
+        },
+        {
+          "name": "whos-that-girl-eurythmics-annie-lennox-experience-live-in-concert-88f7",
+          "type": "img",
+          "bytes": 34746
+        }
+      ]
+    },
+    {
+      "route": "en-events",
+      "path": "/en/eventos/",
+      "viewport": "mobile",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 4243.5,
+      "dom_content_loaded_ms": 4314.3,
+      "load_ms": 4327.4,
+      "lcp_ms": 4356,
+      "cls": 0.0197,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 16,
+      "transfer_bytes": 266441,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "the-power-within-to-unlock-your-mind-4d96e88d55-640x360.jpg",
+          "type": "img",
+          "bytes": 40890
+        },
+        {
+          "name": "whos-that-girl-eurythmics-annie-lennox-experience-live-in-concert-88f7",
+          "type": "img",
+          "bytes": 34746
+        },
+        {
+          "name": "duke-special-songs-from-the-deep-forest-20th-anniversary-show-c7f52815",
+          "type": "img",
+          "bytes": 28861
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        }
+      ]
+    },
+    {
+      "route": "en-events",
+      "path": "/en/eventos/",
+      "viewport": "mobile",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 4433.1,
+      "dom_content_loaded_ms": 4505.6,
+      "load_ms": 4523,
+      "lcp_ms": 4552,
+      "cls": 0.0197,
+      "inp_proxy_ms": 32,
+      "interaction_observed": true,
+      "requests": 16,
+      "transfer_bytes": 266441,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "the-power-within-to-unlock-your-mind-4d96e88d55-640x360.jpg",
+          "type": "img",
+          "bytes": 40890
+        },
+        {
+          "name": "whos-that-girl-eurythmics-annie-lennox-experience-live-in-concert-88f7",
+          "type": "img",
+          "bytes": 34746
+        },
+        {
+          "name": "duke-special-songs-from-the-deep-forest-20th-anniversary-show-c7f52815",
+          "type": "img",
+          "bytes": 28861
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        }
+      ]
+    },
+    {
+      "route": "en-events",
+      "path": "/en/eventos/",
+      "viewport": "mobile",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 4178.6,
+      "dom_content_loaded_ms": 4248.8,
+      "load_ms": 4270.8,
+      "lcp_ms": 4300,
+      "cls": 0.0197,
+      "inp_proxy_ms": 32,
+      "interaction_observed": true,
+      "requests": 16,
+      "transfer_bytes": 266441,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "the-power-within-to-unlock-your-mind-4d96e88d55-640x360.jpg",
+          "type": "img",
+          "bytes": 40890
+        },
+        {
+          "name": "whos-that-girl-eurythmics-annie-lennox-experience-live-in-concert-88f7",
+          "type": "img",
+          "bytes": 34746
+        },
+        {
+          "name": "duke-special-songs-from-the-deep-forest-20th-anniversary-show-c7f52815",
+          "type": "img",
+          "bytes": 28861
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        }
+      ]
+    },
+    {
+      "route": "en-events",
+      "path": "/en/eventos/",
+      "viewport": "mobile",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 4363.4,
+      "dom_content_loaded_ms": 4433.6,
+      "load_ms": 4464.1,
+      "lcp_ms": 4480,
+      "cls": 0.0197,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 16,
+      "transfer_bytes": 266441,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "the-power-within-to-unlock-your-mind-4d96e88d55-640x360.jpg",
+          "type": "img",
+          "bytes": 40890
+        },
+        {
+          "name": "whos-that-girl-eurythmics-annie-lennox-experience-live-in-concert-88f7",
+          "type": "img",
+          "bytes": 34746
+        },
+        {
+          "name": "duke-special-songs-from-the-deep-forest-20th-anniversary-show-c7f52815",
+          "type": "img",
+          "bytes": 28861
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        }
+      ]
+    },
+    {
+      "route": "en-events",
+      "path": "/en/eventos/",
+      "viewport": "mobile",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 4208.8,
+      "dom_content_loaded_ms": 4284.4,
+      "load_ms": 4357.6,
+      "lcp_ms": 4312,
+      "cls": 0.0197,
+      "inp_proxy_ms": 16,
+      "interaction_observed": true,
+      "requests": 16,
+      "transfer_bytes": 266441,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "the-power-within-to-unlock-your-mind-4d96e88d55-640x360.jpg",
+          "type": "img",
+          "bytes": 40890
+        },
+        {
+          "name": "whos-that-girl-eurythmics-annie-lennox-experience-live-in-concert-88f7",
+          "type": "img",
+          "bytes": 34746
+        },
+        {
+          "name": "duke-special-songs-from-the-deep-forest-20th-anniversary-show-c7f52815",
+          "type": "img",
+          "bytes": 28861
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        }
+      ]
+    },
+    {
+      "route": "pt-leisure",
+      "path": "/lazer/",
+      "viewport": "desktop",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 132.7,
+      "dom_content_loaded_ms": 203.6,
+      "load_ms": 238.6,
+      "lcp_ms": 220,
+      "cls": 0.0098,
+      "inp_proxy_ms": 48,
+      "interaction_observed": true,
+      "requests": 13,
+      "transfer_bytes": 164654,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "logo_dark_mode.webp",
+          "type": "img",
+          "bytes": 19658
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "pt-leisure",
+      "path": "/lazer/",
+      "viewport": "desktop",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 94.3,
+      "dom_content_loaded_ms": 169.3,
+      "load_ms": 186.9,
+      "lcp_ms": 188,
+      "cls": 0.0098,
+      "inp_proxy_ms": 32,
+      "interaction_observed": true,
+      "requests": 13,
+      "transfer_bytes": 164654,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "logo_dark_mode.webp",
+          "type": "img",
+          "bytes": 19658
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "pt-leisure",
+      "path": "/lazer/",
+      "viewport": "desktop",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 102.2,
+      "dom_content_loaded_ms": 174.8,
+      "load_ms": 188.9,
+      "lcp_ms": 196,
+      "cls": 0.0098,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 13,
+      "transfer_bytes": 164654,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "logo_dark_mode.webp",
+          "type": "img",
+          "bytes": 19658
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "pt-leisure",
+      "path": "/lazer/",
+      "viewport": "desktop",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 88.7,
+      "dom_content_loaded_ms": 162,
+      "load_ms": 176.3,
+      "lcp_ms": 184,
+      "cls": 0.0098,
+      "inp_proxy_ms": 32,
+      "interaction_observed": true,
+      "requests": 13,
+      "transfer_bytes": 164654,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "logo_dark_mode.webp",
+          "type": "img",
+          "bytes": 19658
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "pt-leisure",
+      "path": "/lazer/",
+      "viewport": "desktop",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 98.5,
+      "dom_content_loaded_ms": 168.5,
+      "load_ms": 192.4,
+      "lcp_ms": 192,
+      "cls": 0.0098,
+      "inp_proxy_ms": 32,
+      "interaction_observed": true,
+      "requests": 13,
+      "transfer_bytes": 164654,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "logo_dark_mode.webp",
+          "type": "img",
+          "bytes": 19658
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "pt-leisure",
+      "path": "/lazer/",
+      "viewport": "mobile",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 92,
+      "dom_content_loaded_ms": 161.8,
+      "load_ms": 184.5,
+      "lcp_ms": 176,
+      "cls": 0.0507,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 12,
+      "transfer_bytes": 144996,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "pt-leisure",
+      "path": "/lazer/",
+      "viewport": "mobile",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 126.3,
+      "dom_content_loaded_ms": 193.7,
+      "load_ms": 238.1,
+      "lcp_ms": 200,
+      "cls": 0.0495,
+      "inp_proxy_ms": 16,
+      "interaction_observed": true,
+      "requests": 12,
+      "transfer_bytes": 144996,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "pt-leisure",
+      "path": "/lazer/",
+      "viewport": "mobile",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 93.1,
+      "dom_content_loaded_ms": 159.5,
+      "load_ms": 182.9,
+      "lcp_ms": 180,
+      "cls": 0.0495,
+      "inp_proxy_ms": 32,
+      "interaction_observed": true,
+      "requests": 12,
+      "transfer_bytes": 144996,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "pt-leisure",
+      "path": "/lazer/",
+      "viewport": "mobile",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 94.9,
+      "dom_content_loaded_ms": 163.5,
+      "load_ms": 185.5,
+      "lcp_ms": 180,
+      "cls": 0.0495,
+      "inp_proxy_ms": 32,
+      "interaction_observed": true,
+      "requests": 12,
+      "transfer_bytes": 144996,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "pt-leisure",
+      "path": "/lazer/",
+      "viewport": "mobile",
+      "language": "pt",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 95.1,
+      "dom_content_loaded_ms": 161.7,
+      "load_ms": 180.8,
+      "lcp_ms": 176,
+      "cls": 0.0507,
+      "inp_proxy_ms": 16,
+      "interaction_observed": true,
+      "requests": 12,
+      "transfer_bytes": 144996,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "en-leisure",
+      "path": "/en/lazer/",
+      "viewport": "desktop",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 141.4,
+      "dom_content_loaded_ms": 219.1,
+      "load_ms": 231,
+      "lcp_ms": 240,
+      "cls": 0.0098,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 13,
+      "transfer_bytes": 163788,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "logo_dark_mode.webp",
+          "type": "img",
+          "bytes": 19658
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "en-leisure",
+      "path": "/en/lazer/",
+      "viewport": "desktop",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 105.2,
+      "dom_content_loaded_ms": 179.8,
+      "load_ms": 280.8,
+      "lcp_ms": 200,
+      "cls": 0.0098,
+      "inp_proxy_ms": 40,
+      "interaction_observed": true,
+      "requests": 13,
+      "transfer_bytes": 163788,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "logo_dark_mode.webp",
+          "type": "img",
+          "bytes": 19658
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "en-leisure",
+      "path": "/en/lazer/",
+      "viewport": "desktop",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 107.5,
+      "dom_content_loaded_ms": 181.1,
+      "load_ms": 344.2,
+      "lcp_ms": 200,
+      "cls": 0.0098,
+      "inp_proxy_ms": 32,
+      "interaction_observed": true,
+      "requests": 13,
+      "transfer_bytes": 163788,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "logo_dark_mode.webp",
+          "type": "img",
+          "bytes": 19658
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "en-leisure",
+      "path": "/en/lazer/",
+      "viewport": "desktop",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 122.6,
+      "dom_content_loaded_ms": 202.2,
+      "load_ms": 516.2,
+      "lcp_ms": 220,
+      "cls": 0.0098,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 13,
+      "transfer_bytes": 163788,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "logo_dark_mode.webp",
+          "type": "img",
+          "bytes": 19658
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "en-leisure",
+      "path": "/en/lazer/",
+      "viewport": "desktop",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 108.1,
+      "dom_content_loaded_ms": 179.6,
+      "load_ms": 506,
+      "lcp_ms": 200,
+      "cls": 0.0103,
+      "inp_proxy_ms": 40,
+      "interaction_observed": true,
+      "requests": 13,
+      "transfer_bytes": 163788,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "logo_dark_mode.webp",
+          "type": "img",
+          "bytes": 19658
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        }
+      ]
+    },
+    {
+      "route": "en-leisure",
+      "path": "/en/lazer/",
+      "viewport": "mobile",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 250.2,
+      "dom_content_loaded_ms": 286.1,
+      "load_ms": 348.2,
+      "lcp_ms": 336,
+      "cls": 0.031,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 12,
+      "transfer_bytes": 144678,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "en-leisure",
+      "path": "/en/lazer/",
+      "viewport": "mobile",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 106.9,
+      "dom_content_loaded_ms": 173.7,
+      "load_ms": 187.3,
+      "lcp_ms": 184,
+      "cls": 0.031,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 12,
+      "transfer_bytes": 144130,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "en-leisure",
+      "path": "/en/lazer/",
+      "viewport": "mobile",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 104.8,
+      "dom_content_loaded_ms": 170.7,
+      "load_ms": 188.5,
+      "lcp_ms": 176,
+      "cls": 0.031,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 12,
+      "transfer_bytes": 144130,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "en-leisure",
+      "path": "/en/lazer/",
+      "viewport": "mobile",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 145.8,
+      "dom_content_loaded_ms": 190.4,
+      "load_ms": 236.7,
+      "lcp_ms": 236,
+      "cls": 0.031,
+      "inp_proxy_ms": 24,
+      "interaction_observed": true,
+      "requests": 12,
+      "transfer_bytes": 144130,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "route": "en-leisure",
+      "path": "/en/lazer/",
+      "viewport": "mobile",
+      "language": "en",
+      "kind": "archive",
+      "status": 200,
+      "ttfb_ms": 103.3,
+      "dom_content_loaded_ms": 169.9,
+      "load_ms": 193.5,
+      "lcp_ms": 184,
+      "cls": 0.031,
+      "inp_proxy_ms": 32,
+      "interaction_observed": true,
+      "requests": 12,
+      "transfer_bytes": 144130,
+      "largest_assets": [
+        {
+          "name": "main.css",
+          "type": "link",
+          "bytes": 44433
+        },
+        {
+          "name": "main.js",
+          "type": "script",
+          "bytes": 27383
+        },
+        {
+          "name": "dark-mode.css",
+          "type": "link",
+          "bytes": 13167
+        },
+        {
+          "name": "header-nav.css",
+          "type": "link",
+          "bytes": 8432
+        },
+        {
+          "name": "logo_dark_mode-240.webp",
+          "type": "img",
+          "bytes": 7902
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Local Docker WordPress with no network throttling: absolute values are not",
+    "production numbers and are comparable only between runs on this machine.",
+    "INP is an interaction-latency proxy from one scripted activation, not field INP.",
+    "CLS is the sum of non-input layout shifts (no session-window segmentation).",
+    "No Lighthouse score and no performance budget were measured or derived."
+  ],
+  "failures": 0
+}

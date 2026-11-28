@@ -205,6 +205,40 @@ The two halves are enforced separately and both are blocking:
 
 Adding a cache without following the first rule fails CI.
 
+## Measured performance baseline (2026-11-28)
+
+Performance work in this theme is asserted by measurement, not by intent. The
+current baseline, the exact procedure and the remaining bottlenecks are in
+[`docs/reports/2026-11-28-frontend-performance-baseline.md`](reports/2026-11-28-frontend-performance-baseline.md);
+the machine-readable numbers are in
+`docs/evidence/2026-11-28-frontend-performance/`.
+
+```bash
+# local only; refuses a production host
+python3 tests/browser/verify-frontend-performance-baseline.py --repeats 5 \
+    --out docs/evidence/<date>-frontend-performance/perf-baseline.json
+```
+
+| Fact | Value (local, unthrottled, medians of 5) |
+|---|---|
+| Fast surfaces | `/guias/`, `/empregos/`, `/lazer/` and their EN pairs: **≤120 ms TTFB**, LCP 172–220 ms |
+| Slow surfaces | **homepage** 1.4–2.1 s TTFB and **`/eventos/`** 1.5–4.3 s TTFB |
+| CLS | **0.0–0.1** on every measured route — no layout-shift work is justified |
+| INP proxy | **16–64 ms** — no interaction work is justified |
+| Transfer per page | **126–415 KB**, 10–19 requests |
+
+Two rules follow from that baseline and MUST be respected by any later change:
+
+1. **Do not "optimise" what the numbers show is already fast.** A change to the
+   guides/jobs/leisure surfaces, to CLS or to interaction latency needs a
+   *new* measurement that shows a problem first.
+2. **The remaining cost is server-side query shape**, not assets:
+   `conexao_event_collapse_logical_ids()` is now batched (2,533 → 4 queries,
+   0.82 s → 0.14 s, identical output), and the largest remaining item is the
+   `post__in`-over-thousands event query used by the archive and by the homepage
+   featured-events slot. Changing that is a design change with its own
+   invalidation matrix — see the report's §6 before touching it.
+
 ## JavaScript
 
 Single file: `assets/js/main.js` (deferred, no dependencies).
@@ -410,4 +444,4 @@ surprises and disables any in-flight CSS animation. The system adds no
 persistent preference, sound, asset request, or animation loop. The cadence and
 bounds above are the contract, asserted by the seasonal theme tests.
 
-_Last verified: 2026-11-27 by the documentation and agent-skill rationalisation (design-token, cache-key and CSS-load-order claims re-checked; links repaired after the historical-document prune)_
+_Last verified: 2026-11-28 by the frontend performance baseline (the measured baseline, its procedure and the remaining bottlenecks added; design-token, cache-key and CSS-load-order claims unchanged)_
